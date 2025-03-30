@@ -1,12 +1,24 @@
 import { Component } from '@angular/core';
-import {ButtonModule} from 'primeng/button';
+import {DemoServicio} from './demo/DemoServicio';
 
 @Component({
   selector: 'app-root',
-  imports: [ButtonModule],
+  imports: [],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
   title = 'ShowSync-Frontend';
+
+  mensaje: string = '';
+
+  constructor(private DemoServicio: DemoServicio ) {
+  }
+
+  ngOnInit(): void {
+    this.DemoServicio.getMensaje().subscribe(
+      (response) => this.mensaje = response,
+      (error) => console.error('Error:', error)
+    );
+  }
 }
