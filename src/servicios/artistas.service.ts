@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {environment} from '../environments/environment';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {catchError, Observable, throwError} from 'rxjs';
+import {Artistas} from '../interfaces/artistas';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,12 @@ export class ArtistasService {
 
   }
 
+  artistasPorGenero(genero: string): Observable<Artistas[]> {
+    return this.http.get<Artistas[]>(`${this.apiUrl}/artistas-por-genero`, {params:{genero}});
+  }
+
   private erroresArtistas(erros:HttpErrorResponse): Observable<never> {
     return throwError(() => new Error('Error al obtener el catálogo de artistas. Inténtelo más tarde'));
   }
+
 }
