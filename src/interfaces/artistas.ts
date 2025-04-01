@@ -1,5 +1,5 @@
 export interface Artistas {
-  nombre: string;
+  nombreArtista: string;
+  nombreGenero:string[];
   imagen:string;
-  generos:string[];
 }
