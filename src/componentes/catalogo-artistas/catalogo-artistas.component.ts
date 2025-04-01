@@ -30,6 +30,7 @@ export class CatalogoArtistasComponent {
   listarArtistas():void {
     this.artistasService.listarArtistasConGeneros().subscribe({
       next: results => {
+        console.error('Datos recibidos:', results);
         this.artistasLista = results;
       }, error: error => {
         this.errorMsj = error.message;
