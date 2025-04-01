@@ -11,10 +11,15 @@ export class ArtistasService {
   constructor(private http: HttpClient) { }
 
   private apiUrl:string = `${environment.apiUrl}/artistas`;
+  // private apiUrl:string = "http://localhost:8080/artistas/listar-artistas";
 
   listarArtistasConGeneros(): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/listar-artistas`).pipe(
-      catchError(this.erroresArtistas)
+    return this.http.get(`${this.apiUrl}/listar-artistas`).pipe(
+      catchError(error => {
+        console.error('URL solicitada:', `${this.apiUrl}/listar-artistas`);
+        console.error('Error en listarArtistasConGeneros:', error);
+        return throwError(() => new Error('Error en la petición de artistas'));
+      })
     );
 
   }
