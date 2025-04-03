@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {Artistas} from '../../interfaces/artistas';
 import {ArtistasService} from '../../servicios/artistas.service';
 import {NgForOf, NgIf} from '@angular/common';
-import {GenerosMusicales} from '../../interfaces/generos-musicales';
 import {GenerosMusicalesService} from '../../servicios/generos-musicales.service';
 import {FormsModule} from '@angular/forms';
 
@@ -25,6 +24,7 @@ export class CatalogoArtistasComponent implements OnInit {
   generos: string[] = [];
   generoSeleccionado: string = '';
   errorMsj:string ='';
+  busqueda:string ='';
 
   constructor(private artistasService: ArtistasService, private generosMusicalesService: GenerosMusicalesService) {
   }
@@ -34,30 +34,6 @@ export class CatalogoArtistasComponent implements OnInit {
     this.cargarGeneros();
   }
 
-  // listarArtistas():void {
-  //   if(this.generoSeleccionado){
-  //     this.artistasService.artistasPorGenero(this.generoSeleccionado).subscribe({
-  //       next: resultado => {
-  //         this.artistasLista = resultado;
-  //         console.error("Error en listarArtistas",resultado);
-  //       },
-  //       error: (err) => {
-  //         this.errorMsj = "Error al filtrar artistas: " + err.message;
-  //         console.error("Error en listarArtistas:", err);
-  //       }
-  //       });
-  //
-  //   }else{
-  //     this.artistasService.listarArtistasConGeneros().subscribe({
-  //       next: results => {
-  //         console.error('Datos recibidos:', results);
-  //         this.artistasLista = results;
-  //       }, error: (error) => {
-  //         this.errorMsj = error.message;
-  //       }
-  //     })
-  //   }
-  // }
 
   listarArtistas(): void {
     if (this.generoSeleccionado && this.generoSeleccionado.trim() !== "") {
@@ -84,6 +60,20 @@ export class CatalogoArtistasComponent implements OnInit {
     }
   }
 
+
+  buscar():void{
+    this.artistasService.buscarPorNombre(this.busqueda).subscribe({
+      next: resultado => {
+        this.artistasLista = resultado;
+        console.log("Busqueda:", resultado);
+      },
+      error: (err) => {
+        this.errorMsj = "Error al buscar: " + err.message;
+      }
+    })
+
+  }
+
   cargarGeneros() {
     this.generosMusicalesService.listarGeneros().subscribe({
       next: data => {
@@ -99,5 +89,18 @@ export class CatalogoArtistasComponent implements OnInit {
     console.log('Género seleccionado:', this.generoSeleccionado);
     this.listarArtistas();
   }
+
+  onBuscarPorNombre(busqueda: string) {
+    this.busqueda = busqueda;
+    console.log('Buscado:', this.busqueda);
+    this.buscar();
+  }
+
+  limpiarBusqueda(): void {
+    this.busqueda = ''; // Limpia la búsqueda
+    this.artistasLista = [];
+    this.listarArtistas();// Limpia la lista de artistas
+  }
+
 
 }

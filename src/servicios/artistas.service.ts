@@ -29,6 +29,10 @@ export class ArtistasService {
     return this.http.get<Artistas[]>(`${this.apiUrl}/artistas-por-genero`, {params:{genero}});
   }
 
+  buscarPorNombre(termino: string): Observable<Artistas[]> {
+    return this.http.get<Artistas[]>(`${this.apiUrl}/buscar`, {params:{termino}});
+  }
+
   private erroresArtistas(erros:HttpErrorResponse): Observable<never> {
     return throwError(() => new Error('Error al obtener el catálogo de artistas. Inténtelo más tarde'));
   }
