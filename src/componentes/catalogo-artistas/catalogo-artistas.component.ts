@@ -22,7 +22,7 @@ import {FormsModule} from '@angular/forms';
 export class CatalogoArtistasComponent implements OnInit {
 
   artistasLista: Artistas[] = [];
-  generos: GenerosMusicales[] = [];
+  generos: string[] = [];
   generoSeleccionado: string = '';
   errorMsj:string ='';
 
@@ -34,28 +34,53 @@ export class CatalogoArtistasComponent implements OnInit {
     this.cargarGeneros();
   }
 
-  listarArtistas():void {
-    if(this.generoSeleccionado){
+  // listarArtistas():void {
+  //   if(this.generoSeleccionado){
+  //     this.artistasService.artistasPorGenero(this.generoSeleccionado).subscribe({
+  //       next: resultado => {
+  //         this.artistasLista = resultado;
+  //         console.error("Error en listarArtistas",resultado);
+  //       },
+  //       error: (err) => {
+  //         this.errorMsj = "Error al filtrar artistas: " + err.message;
+  //         console.error("Error en listarArtistas:", err);
+  //       }
+  //       });
+  //
+  //   }else{
+  //     this.artistasService.listarArtistasConGeneros().subscribe({
+  //       next: results => {
+  //         console.error('Datos recibidos:', results);
+  //         this.artistasLista = results;
+  //       }, error: (error) => {
+  //         this.errorMsj = error.message;
+  //       }
+  //     })
+  //   }
+  // }
+
+  listarArtistas(): void {
+    if (this.generoSeleccionado && this.generoSeleccionado.trim() !== "") {
       this.artistasService.artistasPorGenero(this.generoSeleccionado).subscribe({
         next: resultado => {
           this.artistasLista = resultado;
-          console.error("Error en listarArtistas",resultado);
+          console.log("Artistas filtrados:", resultado); // Cambia a console.log
         },
         error: (err) => {
           this.errorMsj = "Error al filtrar artistas: " + err.message;
           console.error("Error en listarArtistas:", err);
         }
-        });
-
-    }else{
+      });
+    } else {
       this.artistasService.listarArtistasConGeneros().subscribe({
         next: results => {
-          console.error('Datos recibidos:', results);
+          console.log('Datos recibidos:', results); // Cambia a console.log
           this.artistasLista = results;
-        }, error: (error) => {
+        },
+        error: (error) => {
           this.errorMsj = error.message;
         }
-      })
+      });
     }
   }
 
@@ -70,8 +95,8 @@ export class CatalogoArtistasComponent implements OnInit {
   }
 
   onGeneroSeleccionado(genero: string) {
-    // this.generoSeleccionado = genero;
-    const generoFiltrado = this.generoSeleccionado.trim().toUpperCase();
+    this.generoSeleccionado = genero;
+    console.log('Género seleccionado:', this.generoSeleccionado);
     this.listarArtistas();
   }
 
