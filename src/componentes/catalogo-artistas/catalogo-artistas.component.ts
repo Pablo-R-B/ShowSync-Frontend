@@ -4,16 +4,18 @@ import {ArtistasService} from '../../servicios/artistas.service';
 import {NgForOf, NgIf} from '@angular/common';
 import {GenerosMusicalesService} from '../../servicios/generos-musicales.service';
 import {FormsModule} from '@angular/forms';
+import {HeroComponent} from "../hero/hero.component";
 
 
 
 @Component({
   selector: 'app-catalogo-artistas',
-  imports: [
-    NgIf,
-    NgForOf,
-    FormsModule
-  ],
+    imports: [
+        NgIf,
+        NgForOf,
+        FormsModule,
+        HeroComponent
+    ],
   templateUrl: './catalogo-artistas.component.html',
   standalone: true,
   styleUrl: './catalogo-artistas.component.css'
