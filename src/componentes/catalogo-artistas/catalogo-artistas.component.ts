@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Artistas} from '../../interfaces/artistas';
 import {ArtistasService} from '../../servicios/artistas.service';
 import {NgForOf, NgIf} from '@angular/common';
+import {GenerosMusicales} from '../../interfaces/generos-musicales';
 import {GenerosMusicalesService} from '../../servicios/generos-musicales.service';
 import {FormsModule} from '@angular/forms';
 import {HeroComponent} from "../hero/hero.component";
