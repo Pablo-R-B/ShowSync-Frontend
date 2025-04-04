@@ -11,7 +11,7 @@ export class DemoServicio {
   private apiUrl:string = `${environment.apiUrl}/hola-mundo`;
   constructor(private http: HttpClient) { }
 
-  getMensaje(): Observable<string> {
-    return this.http.get(this.apiUrl, { responseType: 'text' });
-  }
+  // getMensaje(): Observable<string> {
+  //   return this.http.get(this.apiUrl, { responseType: 'text' });
+  // }
 }

@@ -2,10 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {Artistas} from '../../interfaces/artistas';
 import {ArtistasService} from '../../servicios/artistas.service';
 import {NgForOf, NgIf} from '@angular/common';
-import {GenerosMusicales} from '../../interfaces/generos-musicales';
 import {GenerosMusicalesService} from '../../servicios/generos-musicales.service';
 import {FormsModule} from '@angular/forms';
-
+import {HeroComponent} from '../hero/hero.component';
 
 
 @Component({
@@ -13,7 +12,8 @@ import {FormsModule} from '@angular/forms';
   imports: [
     NgIf,
     NgForOf,
-    FormsModule
+    FormsModule,
+    HeroComponent
   ],
   templateUrl: './catalogo-artistas.component.html',
   standalone: true,
@@ -25,6 +25,7 @@ export class CatalogoArtistasComponent implements OnInit {
   generos: string[] = [];
   generoSeleccionado: string = '';
   errorMsj:string ='';
+  busqueda:string = ''
 
   constructor(private artistasService: ArtistasService, private generosMusicalesService: GenerosMusicalesService) {
   }

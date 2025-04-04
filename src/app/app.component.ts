@@ -18,10 +18,10 @@ export class AppComponent {
   constructor(private DemoServicio: DemoServicio ) {
   }
 
-  ngOnInit(): void {
-    this.DemoServicio.getMensaje().subscribe(
-      (response) => this.mensaje = response,
-      (error) => console.error('Error:', error)
-    );
-  }
+  // ngOnInit(): void {
+  //   this.DemoServicio.getMensaje().subscribe(
+  //     (response) => this.mensaje = response,
+  //     (error) => console.error('Error:', error)
+  //   );
+  // }
 }
