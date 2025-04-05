@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {Artistas} from '../../interfaces/artistas';
 import {ArtistasService} from '../../servicios/artistas.service';
 import {NgForOf, NgIf} from '@angular/common';
-import {GenerosMusicales} from '../../interfaces/generos-musicales';
 import {GenerosMusicalesService} from '../../servicios/generos-musicales.service';
 import {FormsModule} from '@angular/forms';
 import {HeroComponent} from "../hero/hero.component";
@@ -11,12 +10,12 @@ import {HeroComponent} from "../hero/hero.component";
 
 @Component({
   selector: 'app-catalogo-artistas',
-    imports: [
-        NgIf,
-        NgForOf,
-        FormsModule,
-        HeroComponent
-    ],
+  imports: [
+    FormsModule,
+    HeroComponent,
+    NgIf,
+    NgForOf,
+  ],
   templateUrl: './catalogo-artistas.component.html',
   standalone: true,
   styleUrl: './catalogo-artistas.component.css'
@@ -28,6 +27,8 @@ export class CatalogoArtistasComponent implements OnInit {
   generoSeleccionado: string = '';
   errorMsj:string ='';
   busqueda:string ='';
+  private todosLosArtistas: Artistas[] = [];
+  private artistasPorGeneroCache: { [genero: string]: Artistas[] } = {};
 
   constructor(private artistasService: ArtistasService, private generosMusicalesService: GenerosMusicalesService) {
   }
@@ -42,8 +43,11 @@ export class CatalogoArtistasComponent implements OnInit {
     if (this.generoSeleccionado && this.generoSeleccionado.trim() !== "") {
       this.artistasService.artistasPorGenero(this.generoSeleccionado).subscribe({
         next: resultado => {
-          this.artistasLista = resultado;
-          console.log("Artistas filtrados:", resultado); // Cambia a console.log
+          this.artistasLista = this.busqueda
+          ? resultado.filter(artista => artista.nombre.toLowerCase()
+              .includes(this.busqueda.toLowerCase()))
+            : resultado;
+          console.log("Artistas filtrados por género y búsqueda:", this.artistasLista); // Cambia a console.log
         },
         error: (err) => {
           this.errorMsj = "Error al filtrar artistas: " + err.message;
@@ -53,8 +57,11 @@ export class CatalogoArtistasComponent implements OnInit {
     } else {
       this.artistasService.listarArtistasConGeneros().subscribe({
         next: results => {
-          console.log('Datos recibidos:', results); // Cambia a console.log
-          this.artistasLista = results;
+          this.artistasLista = this.busqueda
+            ? results.filter((artista: { nombre: string; }) => artista.nombre.toLowerCase().
+            includes(this.busqueda.toLowerCase()))
+            : results;
+          console.log('Datos recibidos y filtrados por búsqueda:', this.artistasLista);
         },
         error: (error) => {
           this.errorMsj = error.message;
@@ -65,16 +72,7 @@ export class CatalogoArtistasComponent implements OnInit {
 
 
   buscar():void{
-    this.artistasService.buscarPorNombre(this.busqueda).subscribe({
-      next: resultado => {
-        this.artistasLista = resultado;
-        console.log("Busqueda:", resultado);
-      },
-      error: (err) => {
-        this.errorMsj = "Error al buscar: " + err.message;
-      }
-    })
-
+    this.listarArtistas();
   }
 
   cargarGeneros() {

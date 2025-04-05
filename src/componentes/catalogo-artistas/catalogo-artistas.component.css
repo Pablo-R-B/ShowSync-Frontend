@@ -1,0 +1,9 @@
+.fondo{
+  background-image: url("public/fondo_catalogo-artistas.png");
+  background-color: red;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+
+}
