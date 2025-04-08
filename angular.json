@@ -85,7 +85,8 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              }
+              },
+              "src/public"
             ],
             "styles": [
               "src/styles.css"
@@ -97,6 +98,6 @@
     }
   },
   "cli": {
-    "analytics": "7136c587-5143-4fc0-985c-86b36d9e2166"
+    "analytics": "6418c83b-a22d-4d1d-bc5e-7c0efeff722d"
   }
 }
