@@ -38,7 +38,8 @@
         <div *ngIf="registroForm.get('email')?.touched && registroForm.get('email')?.hasError('required')" class="text-red-500 text-sm">
           El correo electrónico es obligatorio.
         </div>
-        <div *ngIf="registroForm.get('email')?.touched && registroForm.get('email')?.hasError('email')" class="text-red-500 text-sm">
+
+        <div *ngIf="registroForm.get('email')?.touched && (registroForm.get('email')?.hasError('email') || registroForm.get('email')?.hasError('pattern'))" class="text-red-500 text-sm">
           El correo electrónico no es válido.
         </div>
         <div *ngIf="registroForm.get('email')?.touched && registroForm.get('email')?.hasError('emailTaken')" class="text-red-500 text-sm">

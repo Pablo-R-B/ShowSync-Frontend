@@ -32,7 +32,7 @@ export class RegistroComponent {
   ) {
     this.registroForm = this.fb.group({
       nombreUsuario: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, Validators.email, Validators.pattern(/^[^@]+@[^@]+\.[a-zA-Z]{2,}$/)]],
       fechaNacimiento: ['', [Validators.required]],
       contrasena: ['', [Validators.required, Validators.minLength(6)]],
       repetirContrasena: ['', [Validators.required]],
@@ -40,6 +40,8 @@ export class RegistroComponent {
       terminos: [false, [Validators.requiredTrue]]
     }, { updateOn: 'change' , validator: this.compararContrasenas});
   }
+
+
 
   onSubmit() {
     // Marca todos los controles como tocados para disparar la validación
