@@ -1,29 +1,16 @@
 import { Component } from '@angular/core';
-import {DemoServicio} from './demo/DemoServicio';
-import {RouterOutlet} from '@angular/router';
-import {BarraNavegacionComponent} from '../componentes/barra-navegacion/barra-navegacion.component';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
   imports: [
     RouterOutlet,
-    BarraNavegacionComponent
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css'] // <-- aquí falta la "s"
 })
 export class AppComponent {
   title = 'ShowSync-Frontend';
-
   mensaje: string = '';
-
-  constructor(private DemoServicio: DemoServicio ) {
-  }
-
-  // ngOnInit(): void {
-  //   this.DemoServicio.getMensaje().subscribe(
-  //     (response) => this.mensaje = response,
-  //     (error) => console.error('Error:', error)
-  //   );
-  // }
 }

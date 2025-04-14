@@ -1,6 +1,9 @@
 import { Routes } from '@angular/router';
-import {CatalogoArtistasComponent} from '../componentes/catalogo-artistas/catalogo-artistas.component';
+import {RegistroComponent} from './paginas/registro/registro.component';
+
 
 export const routes: Routes = [
-  {path:'catalogo-artistas', component:CatalogoArtistasComponent, pathMatch:'full'},
+  { path: 'auth/registro', component: RegistroComponent },
+  { path: '', redirectTo: 'auth/registro', pathMatch: 'full' },
+  { path: '**', redirectTo: 'auth/registro' }
 ];
