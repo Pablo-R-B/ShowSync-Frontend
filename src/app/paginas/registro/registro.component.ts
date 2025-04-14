@@ -11,7 +11,8 @@ import { Router } from '@angular/router';
     ReactiveFormsModule,
     FormsModule,
     NgClass,
-    NgIf
+    NgIf,
+
   ]
 })
 export class RegistroComponent {
@@ -24,6 +25,8 @@ export class RegistroComponent {
   progreso: number = 0;
   contador: number = 5;
   timerInterval: any;
+  submitted = false;
+
 
   constructor(
     private registroService: RegistroService,
@@ -31,7 +34,7 @@ export class RegistroComponent {
     protected router: Router
   ) {
     this.registroForm = this.fb.group({
-      nombreUsuario: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]],
+      nombreUsuario: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
       email: ['', [Validators.required, Validators.email, Validators.pattern(/^[^@]+@[^@]+\.[a-zA-Z]{2,}$/)]],
       fechaNacimiento: ['', [Validators.required]],
       contrasena: ['', [Validators.required, Validators.minLength(6)]],
@@ -44,13 +47,15 @@ export class RegistroComponent {
 
 
   onSubmit() {
+    this.submitted = true;
+
     // Marca todos los controles como tocados para disparar la validación
     this.registroForm.markAllAsTouched();
 
     // Verifica si el formulario es inválido
     if (this.registroForm.invalid) {
-      console.error('Debes aceptar los términos y condiciones.');
-      this.mensaje = '¿Has aceptado los términos y condiciones?';
+      console.error('Quizás tengas que revisar los campos como aceptar los términos.');
+      this.mensaje = 'Revisa los campos. ¿Has aceptado los términos de uso?';
       this.error = true;
       return;
     }
@@ -93,7 +98,7 @@ export class RegistroComponent {
   startCountdown() {
     this.progreso = 0;
     this.contador = 5;
-    const totalDuration = 5000; // 5 segundos
+    const totalDuration = 5000; // 5000ms = 5 seconds
 
     const startTime = Date.now();
     const endTime = startTime + totalDuration;

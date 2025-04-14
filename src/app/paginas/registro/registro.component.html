@@ -18,6 +18,9 @@
         <div *ngIf="registroForm.get('nombreUsuario')?.touched && registroForm.get('nombreUsuario')?.hasError('minlength')" class="text-red-500 text-sm">
           El nombre de usuario debe tener al menos 3 caracteres.
         </div>
+        <div *ngIf="registroForm.get('nombreUsuario')?.touched && registroForm.get('nombreUsuario')?.hasError('maxlength')" class="text-red-500 text-sm">
+          El nombre de usuario no puede tener más de 20 caracteres.
+        </div>
         <div *ngIf="registroForm.get('nombreUsuario')?.touched && registroForm.get('nombreUsuario')?.hasError('usernameTaken')" class="text-red-500 text-sm">
           El nombre de usuario ya está en uso.
         </div>
@@ -128,15 +131,14 @@
           />
           Acepto los términos y condiciones de uso
         </label>
-        <div *ngIf="registroForm.get('terminos')?.hasError('requiredTrue') && registroForm.get('terminos')?.touched" class="text-red-500 text-sm">
-          Debes aceptar los términos y condiciones.
+        <div *ngIf="(registroForm.get('terminos')?.hasError('requiredTrue') && (registroForm.get('terminos')?.touched || submitted))" class="text-red-500 text-sm">          Debes aceptar los términos y condiciones.
         </div>
       </div>
 
       <!-- Botón de registro -->
       <button
         type="submit"
-        class="w-full bg-gray-600 hover:bg-gray-500 text-white py-3 rounded-full text-lg font-semibold transition duration-300"
+        class="w-full bg-customGrisOscurso hover:bg-gray-500 text-white py-3 rounded-full text-lg font-semibold transition duration-300"
         [disabled]="loading"
 
       >
@@ -161,29 +163,39 @@
 
     </form>
 
-    <!-- Mensaje de correo enviado + redirección -->
-    <div *ngIf="correoEnviado" class="mt-6 flex flex-col items-center justify-center">
-      <div class="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg shadow-lg flex items-center space-x-4 animate-fade-in-down mb-4">
-        <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2l4-4m5 2a9 9 0 11-18 0a9 9 0 0118 0z"></path>
-        </svg>
-        <span class="font-semibold text-lg text-center">¡Registro exitoso! Revisa tu correo para validar tu cuenta.</span>
-      </div>
+    <!-- Fondo oscuro -->
+    <div *ngIf="correoEnviado" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
 
-      <p class="text-sm text-gray-600 mb-2">Serás redirigido al login en {{ contador }} segundos...</p>
+      <!-- Modal -->
+      <div class="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
 
-      <div class="w-2/3 bg-gray-200 rounded-full h-4 mt-2 overflow-hidden">
-        <div class="w-2/3 bg-gray-200 rounded-full h-4 mt-2">
-          <div class="bg-green-500 h-4 rounded-full" [style.width.%]="progreso"></div>
+        <!-- Mensaje de éxito -->
+        <div class="bg-customGrisClaro border border-customBurbundy text-customBurbundy px-6 py-4 rounded-lg shadow-lg flex items-center space-x-4 mb-4">
+          <svg class="w-8 h-8 text-customGrisOscurso" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2l4-4m5 2a9 9 0 11-18 0a9 9 0 0118 0z"></path>
+          </svg>
+          <span class="font-semibold text-lg text-center">¡Registro exitoso! Revisa tu correo para validar tu cuenta.</span>
         </div>
 
-      </div>
+        <!-- Contador de redirección -->
+        <p class="text-sm text-gray-600 mb-2">Serás redirigido al login en {{ contador }} segundos...</p>
 
-      <button (click)="router.navigate(['auth/login'])"
-              class="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-full transition duration-300">
-        Ir ahora al Login
-      </button>
+        <!-- Barra de progreso -->
+        <div class="w-full bg-gray-200 rounded-full h-4 mt-2 overflow-hidden">
+          <div class="bg-gray-200 rounded-full h-4 mt-2">
+            <div class="bg-customRed h-4 rounded-full" [style.width.%]="progreso"></div>
+          </div>
+        </div>
+
+        <!-- Botón de redirección -->
+        <button (click)="router.navigate(['auth/login'])"
+                class="mt-4 bg-customRed hover:bg-customBurbundy text-white font-bold py-2 px-6 rounded-full transition duration-300">
+          Ir ahora al Login
+        </button>
+
+      </div>
     </div>
+
 
   </div>
 </div>
