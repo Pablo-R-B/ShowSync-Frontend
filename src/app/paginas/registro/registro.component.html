@@ -4,8 +4,8 @@
     <hr class="border-gray-600 mb-6">
 
     <form [formGroup]="registroForm" (ngSubmit)="onSubmit()">
-
-    <!-- Nombre de usuario -->
+      <!-- === CAMPOS (se mantienen igual) === -->
+      <!-- Nombre de usuario -->
       <div class="mb-4">
         <input
           type="text"
@@ -25,6 +25,7 @@
           placeholder="Correo electrónico"
           class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
           formControlName="email"
+
         />
         <div *ngIf="registroForm.get('email')?.touched && registroForm.get('email')?.hasError('required')" class="text-red-500 text-sm">
           El correo electrónico es obligatorio.
@@ -41,6 +42,7 @@
           placeholder="Fecha de nacimiento"
           class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
           formControlName="fechaNacimiento"
+
         />
         <div *ngIf="registroForm.get('fechaNacimiento')?.touched && registroForm.get('fechaNacimiento')?.hasError('required')" class="text-red-500 text-sm">
           La fecha de nacimiento es obligatoria.
@@ -54,6 +56,7 @@
           placeholder="Contraseña"
           class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
           formControlName="contrasena"
+
         />
         <div *ngIf="registroForm.get('contrasena')?.touched && registroForm.get('contrasena')?.hasError('required')" class="text-red-500 text-sm">
           La contraseña es obligatoria.
@@ -70,6 +73,7 @@
           placeholder="Repetir contraseña"
           class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
           formControlName="repetirContrasena"
+
         />
         <div *ngIf="registroForm.get('repetirContrasena')?.touched && registroForm.get('repetirContrasena')?.hasError('required')" class="text-red-500 text-sm">
           Debes repetir la contraseña.
@@ -77,35 +81,32 @@
         <div *ngIf="registroForm.get('repetirContrasena')?.touched && registroForm.get('repetirContrasena')?.hasError('mustMatch')" class="text-red-500 text-sm">
           Las contraseñas no coinciden.
         </div>
-
       </div>
-
-
 
       <!-- Selección de rol -->
       <div class="mb-4">
         <select
           class="bg-gray-200 text-gray-800 rounded-full p-3 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
           formControlName="rol"
+
         >
-          <option disabled selected>---- Elige rol -----</option>
+          <option disabled>---- Elige rol -----</option>
           <option value="ARTISTA">Artista</option>
           <option value="PROMOTOR">Promotor</option>
         </select>
         <div *ngIf="registroForm.get('rol')?.touched && registroForm.get('rol')?.hasError('required')" class="text-red-500 text-sm">
           El rol es obligatorio.
         </div>
-
-
-
       </div>
+
       <!-- Términos y condiciones -->
       <div class="flex items-center justify-between mb-6 gap-4">
         <label class="flex items-center text-white text-sm">
           <input
             type="checkbox"
-            class="mr-2 accent-gray-500"
+            class="mr-2 600"
             formControlName="terminos"
+
           />
           Acepto los términos y condiciones de uso
         </label>
@@ -114,38 +115,56 @@
         </div>
       </div>
 
-
-
       <!-- Botón de registro -->
       <button
         type="submit"
         class="w-full bg-gray-600 hover:bg-gray-500 text-white py-3 rounded-full text-lg font-semibold transition duration-300"
+        [disabled]="loading || registroForm.invalid"
+
       >
-        Registrarse
+        {{ loading ? 'Registrando...' : 'Registrarse' }}
       </button>
 
-      <!-- Aviso de correo enviado -->
-      <div *ngIf="correoEnviado" class="mt-6 flex items-center justify-center">
-        <div class="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg shadow-lg flex items-center space-x-4 animate-fade-in-down">
-          <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-               xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M9 12l2 2l4-4m5 2a9 9 0 11-18 0a9 9 0 0118 0z">
-            </path>
-          </svg>
-          <span class="font-semibold text-lg">¡Registro exitoso! Revisa tu correo para validar tu cuenta.</span>
-        </div>
+      <div *ngIf="loading" class="flex justify-center items-center mt-2">
+        <svg class="animate-spin h-5 w-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+        </svg>
+        <span class="ml-2 text-gray-600">Cargando...</span>
       </div>
 
 
 
-      <!-- Mensaje de error o éxito -->
-      <div *ngIf="mensaje" [ngClass]="{ 'text-red-500': error, 'text-green-500': !error }" class="mt-4 text-center">
+      <!-- Mensaje de error o éxito general -->
+      <div *ngIf="mensaje && !correoEnviado" [ngClass]="{ 'text-red-500': error, 'text-green-500': !error }" class="mt-4 text-center">
         {{ mensaje }}
       </div>
+
     </form>
+
+    <!-- Mensaje de correo enviado + redirección -->
+    <div *ngIf="correoEnviado" class="mt-6 flex flex-col items-center justify-center">
+      <div class="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg shadow-lg flex items-center space-x-4 animate-fade-in-down mb-4">
+        <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2l4-4m5 2a9 9 0 11-18 0a9 9 0 0118 0z"></path>
+        </svg>
+        <span class="font-semibold text-lg text-center">¡Registro exitoso! Revisa tu correo para validar tu cuenta.</span>
+      </div>
+
+      <p class="text-sm text-gray-600 mb-2">Serás redirigido al login en {{ contador }} segundos...</p>
+
+      <div class="w-2/3 bg-gray-200 rounded-full h-4 mt-2 overflow-hidden">
+        <div class="w-2/3 bg-gray-200 rounded-full h-4 mt-2">
+          <div class="bg-green-500 h-4 rounded-full" [style.width.%]="progreso"></div>
+        </div>
+
+      </div>
+
+      <button (click)="router.navigate(['auth/login'])"
+              class="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-full transition duration-300">
+        Ir ahora al Login
+      </button>
+    </div>
+
   </div>
 </div>
-
-
-
