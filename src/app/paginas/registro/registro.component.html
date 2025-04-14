@@ -4,7 +4,6 @@
     <hr class="border-gray-600 mb-6">
 
     <form [formGroup]="registroForm" (ngSubmit)="onSubmit()">
-      <!-- === CAMPOS (se mantienen igual) === -->
       <!-- Nombre de usuario -->
       <div class="mb-4">
         <input
@@ -16,6 +15,15 @@
         <div *ngIf="registroForm.get('nombreUsuario')?.touched && registroForm.get('nombreUsuario')?.hasError('required')" class="text-red-500 text-sm">
           El nombre de usuario es obligatorio.
         </div>
+        <div *ngIf="registroForm.get('nombreUsuario')?.touched && registroForm.get('nombreUsuario')?.hasError('minlength')" class="text-red-500 text-sm">
+          El nombre de usuario debe tener al menos 3 caracteres.
+        </div>
+        <div *ngIf="registroForm.get('nombreUsuario')?.touched && registroForm.get('nombreUsuario')?.hasError('usernameTaken')" class="text-red-500 text-sm">
+          El nombre de usuario ya está en uso.
+        </div>
+
+
+
       </div>
 
       <!-- Email -->
@@ -33,6 +41,9 @@
         <div *ngIf="registroForm.get('email')?.touched && registroForm.get('email')?.hasError('email')" class="text-red-500 text-sm">
           El correo electrónico no es válido.
         </div>
+        <div *ngIf="registroForm.get('email')?.touched && registroForm.get('email')?.hasError('emailTaken')" class="text-red-500 text-sm">
+          El correo electrónico ya está en uso.
+        </div>
       </div>
 
       <!-- Fecha de nacimiento -->
@@ -47,6 +58,10 @@
         <div *ngIf="registroForm.get('fechaNacimiento')?.touched && registroForm.get('fechaNacimiento')?.hasError('required')" class="text-red-500 text-sm">
           La fecha de nacimiento es obligatoria.
         </div>
+        <div *ngIf="registroForm.get('fechaNacimiento')?.touched && registroForm.get('fechaNacimiento')?.hasError('minDate')" class="text-red-500 text-sm">
+          Debes ser mayor de edad.
+        </div>
+
       </div>
 
       <!-- Contraseña -->
@@ -62,8 +77,9 @@
           La contraseña es obligatoria.
         </div>
         <div *ngIf="registroForm.get('contrasena')?.touched && registroForm.get('contrasena')?.hasError('minlength')" class="text-red-500 text-sm">
-          La contraseña debe tener al menos 6 caracteres.
+          La contraseña debe tener al menos 6 caracteres, algún número, carácter especial y mayúscula.
         </div>
+
       </div>
 
       <!-- Repetir contraseña -->
@@ -97,6 +113,7 @@
         <div *ngIf="registroForm.get('rol')?.touched && registroForm.get('rol')?.hasError('required')" class="text-red-500 text-sm">
           El rol es obligatorio.
         </div>
+
       </div>
 
       <!-- Términos y condiciones -->
@@ -110,7 +127,7 @@
           />
           Acepto los términos y condiciones de uso
         </label>
-        <div *ngIf="registroForm.get('terminos')?.touched && registroForm.get('terminos')?.hasError('requiredTrue')" class="text-red-500 text-sm">
+        <div *ngIf="registroForm.get('terminos')?.hasError('requiredTrue') && registroForm.get('terminos')?.touched" class="text-red-500 text-sm">
           Debes aceptar los términos y condiciones.
         </div>
       </div>
@@ -119,7 +136,7 @@
       <button
         type="submit"
         class="w-full bg-gray-600 hover:bg-gray-500 text-white py-3 rounded-full text-lg font-semibold transition duration-300"
-        [disabled]="loading || registroForm.invalid"
+        [disabled]="loading"
 
       >
         {{ loading ? 'Registrando...' : 'Registrarse' }}
@@ -132,6 +149,7 @@
         </svg>
         <span class="ml-2 text-gray-600">Cargando...</span>
       </div>
+
 
 
 

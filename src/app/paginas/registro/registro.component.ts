@@ -31,30 +31,33 @@ export class RegistroComponent {
     protected router: Router
   ) {
     this.registroForm = this.fb.group({
-      nombreUsuario: ['', Validators.required],
+      nombreUsuario: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]],
       email: ['', [Validators.required, Validators.email]],
+      fechaNacimiento: ['', [Validators.required]],
       contrasena: ['', [Validators.required, Validators.minLength(6)]],
       repetirContrasena: ['', [Validators.required]],
-      fechaNacimiento: ['', Validators.required],
-      rol: ['', Validators.required],
-      terminos: [false, Validators.requiredTrue],
-    }, { validator: this.compararContrasenas });
+      rol: ['', [Validators.required]],
+      terminos: [false, [Validators.requiredTrue]]
+    }, { updateOn: 'change' , validator: this.compararContrasenas});
   }
 
   onSubmit() {
+    // Marca todos los controles como tocados para disparar la validación
     this.registroForm.markAllAsTouched();
 
+    // Verifica si el formulario es inválido
     if (this.registroForm.invalid) {
+      console.error('Debes aceptar los términos y condiciones.');
       this.mensaje = '¿Has aceptado los términos y condiciones?';
       this.error = true;
       return;
     }
-
+    // Si el formulario es válido, sigue con la lógica de registro
     this.loading = true;
     this.mensaje = '';
     this.error = false;
 
-    // Deshabilita todos los controles del formulario mientras se carga
+    // Deshabilita el formulario mientras se carga
     this.registroForm.disable();
 
     const datos = {
@@ -65,27 +68,25 @@ export class RegistroComponent {
 
     this.registroService.registrar(datos).subscribe({
       next: (respuesta) => {
-        this.mensaje = respuesta;
+        this.mensaje = 'Registro exitoso';
         this.error = false;
         this.registroForm.reset();
         this.correoEnviado = true;
         this.startCountdown();
-
-
-        // Habilitar nuevamente el formulario después de la respuesta exitosa
         this.registroForm.enable();
       },
       error: (err) => {
         console.error(err);
-        this.mensaje = err.error?.mensaje || 'Ocurrió un error inesperado. Intenta más tarde.';
+        this.mensaje = err.error || 'Ocurrió un error inesperado. Intenta más tarde.';
         this.error = true;
         this.loading = false;
-
-        // Habilita nuevamente el formulario en caso de error también
         this.registroForm.enable();
       }
     });
+
+    console.log('Formulario enviado.');
   }
+
 
   startCountdown() {
     this.progreso = 0;
