@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RegistroService } from '../../servicios/registro.service';
 import { NgClass, NgIf } from '@angular/common';
-import { Router } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-registro',
@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
     FormsModule,
     NgClass,
     NgIf,
+    RouterLink,
 
   ]
 })

@@ -1,1 +1,52 @@
-<p>header works!</p>
+<header class="bg-black text-white px-6 py-4 shadow-md backdrop-blur-sm bg-opacity-90">
+  <div class="flex items-center justify-between max-w-screen-xl mx-auto">
+    <!-- Logo y enlaces -->
+    <div class="flex items-center space-x-6">
+      <img src="assets/images/logo_1.png"
+           alt="Logo ShowSync"
+           class="h-16 w-auto drop-shadow-md max-w-[180px] object-contain">
+
+      <!-- Enlaces navegación -->
+      <div class="hidden md:flex space-x-14 font-medula text-3xl">
+        <a routerLink="/inicio" class="hover:text-customGrisMedio transition">Inicio</a>
+        <a routerLink="/eventos" class="hover:text-customGrisMedio transition">Eventos</a>
+      </div>
+    </div>
+
+
+    <!-- Botones en pantallas grandes -->
+    <div class="hidden md:flex items-center space-x-4">
+      <button routerLink="/auth/login"
+              class="bg-transparent border border-white hover:bg-white hover:text-black text-white font-semibold py-2 px-4 rounded transition">
+        Entrar
+      </button>
+      <button routerLink="/auth/registro"
+              class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded transition">
+        Registro
+      </button>
+    </div>
+
+    <!-- Menú hamburguesa para móviles -->
+    <button class="md:hidden" (click)="toggleMenu()" aria-label="Menú">
+      <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2"
+           viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Menú móvil -->
+  <div *ngIf="menuAbierto" class="md:hidden mt-4 space-y-2 text-center">
+    <a routerLink="/inicio" class="block hover:text-gray-400 transition">Inicio</a>
+    <a routerLink="/eventos" class="block hover:text-gray-400 transition">Eventos</a>
+    <button routerLink="/auth/login"
+            class="w-full bg-transparent border border-white hover:bg-white hover:text-black text-white font-semibold py-2 px-4 rounded transition">
+      Entrar
+    </button>
+    <button routerLink="/auth/registro"
+            class="w-full bg-customRed hover:bg-red-700 text-white font-semibold py-2 px-4 rounded transition">
+      Registro
+    </button>
+  </div>
+</header>

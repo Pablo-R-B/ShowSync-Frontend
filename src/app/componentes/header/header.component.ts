@@ -1,11 +1,21 @@
 import { Component } from '@angular/core';
+import {RouterLink} from '@angular/router';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-header',
-  imports: [],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  styleUrls: ['./header.component.css'],
+  imports: [
+    RouterLink,
+    NgIf
+  ],
+
 })
 export class HeaderComponent {
+  menuAbierto = false;
 
+  toggleMenu() {
+    this.menuAbierto = !this.menuAbierto;
+  }
 }

@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import {timeout} from 'rxjs';
 
 @Component({
   selector: 'app-recuperar',
