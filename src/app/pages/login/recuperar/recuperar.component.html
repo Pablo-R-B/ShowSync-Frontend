@@ -1,0 +1,35 @@
+<div class="min-h-screen bg-cover bg-center flex items-center justify-center"
+     style="background-image: url('assets/images/fondo_2.png')">
+  <div class="bg-black bg-opacity-80 text-white p-10 rounded-[2rem] w-full max-w-md shadow-2xl">
+    <h2 class="text-5xl font-medula text-center mb-8 ">Recuperar contraseña</h2>
+
+    <form (ngSubmit)="onRecuperar()" class="space-y-6">
+      <p class="text-center text-gray-300 text-sm">
+        Introduce tu correo electrónico y te enviaremos las instrucciones para recuperar tu contraseña.
+      </p>
+
+      <input
+        type="email"
+        [(ngModel)]="email"
+        name="email"
+        placeholder="Correo electrónico"
+        required
+        class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-300"
+      />
+
+      <button
+        type="submit"
+        class="w-full bg-gray-600 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded-full transition duration-300"
+      >
+        Enviar instrucciones
+      </button>
+
+      <p *ngIf="mensaje" class="text-green-400 text-center mt-4">{{ mensaje }}</p>
+      <p *ngIf="error" class="text-red-400 text-center mt-4">{{ error }}</p>
+
+      <div class="text-center mt-4">
+        <a routerLink="/auth/login" class="text-gray-300 hover:text-white hover:underline text-sm">Volver al login</a>
+      </div>
+    </form>
+  </div>
+</div>

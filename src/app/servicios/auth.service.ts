@@ -7,12 +7,13 @@ import { Observable } from 'rxjs';
 })
 export class AuthService {
 
-  private apiUrl = 'http://localhost:8081/auth/login'; // Ajusta el puerto si tu backend corre en otro
+  private apiUrl = 'http://localhost:8081/auth/login';
 
   constructor(private http: HttpClient) {}
 
   login(email: string, contrasena: string): Observable<any> {
     const body = { email, contrasena };
-    return this.http.post(this.apiUrl, body);
+    return this.http.post(this.apiUrl, body, { responseType: 'text' });
+
   }
 }
