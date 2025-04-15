@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {AuthService} from '../../servicios/auth.service';
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
@@ -9,7 +9,8 @@ import {NgIf} from '@angular/common';
   templateUrl: './login.component.html',
   imports: [
     FormsModule,
-    NgIf
+    NgIf,
+    RouterLink
   ],
   styleUrls: ['./login.component.css']
 })
