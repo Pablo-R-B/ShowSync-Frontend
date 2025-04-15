@@ -14,15 +14,24 @@
         name="email"
         placeholder="Correo electrónico"
         required
+        [disabled]="loading"
         class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-300"
       />
 
       <button
         type="submit"
         class="w-full bg-gray-600 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded-full transition duration-300"
+        [disabled]="loading"
       >
         Enviar instrucciones
       </button>
+      <div *ngIf="loading" class="flex justify-center items-center mt-2">
+        <svg class="animate-spin h-5 w-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+        </svg>
+        <span class="ml-2 text-gray-600">Cargando...</span>
+      </div>
 
       <p *ngIf="mensaje" class="text-green-400 text-center mt-4">{{ mensaje }}</p>
       <p *ngIf="error" class="text-red-400 text-center mt-4">{{ error }}</p>
