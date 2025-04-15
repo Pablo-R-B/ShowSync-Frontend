@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import {Component, Type} from '@angular/core';
 import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
 import {HeaderComponent} from './componentes/header/header.component';
 import {filter} from 'rxjs';
 import {NgIf} from '@angular/common';
+import {Menu} from 'primeng/menu';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,7 @@ import {NgIf} from '@angular/common';
     RouterOutlet,
     HeaderComponent,
     NgIf,
-  ],
+   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
