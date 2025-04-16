@@ -1,17 +1,13 @@
 import {Component} from '@angular/core';
 import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
-import {HeaderComponent} from './componentes/header/header.component';
 import {filter} from 'rxjs';
-import {NgIf} from '@angular/common';
+import {ButtonModule} from 'primeng/button';
+
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    RouterOutlet,
-    HeaderComponent,
-    NgIf,
-   ],
+  imports: [ButtonModule, RouterOutlet],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
