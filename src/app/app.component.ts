@@ -2,12 +2,14 @@ import {Component} from '@angular/core';
 import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
 import {filter} from 'rxjs';
 import {ButtonModule} from 'primeng/button';
+import {HeaderComponent} from './componentes/header/header.component';
+import {FooterComponent} from './componentes/footer/footer.component';
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [ButtonModule, RouterOutlet],
+  imports: [ButtonModule, RouterOutlet, HeaderComponent, FooterComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
