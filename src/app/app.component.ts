@@ -1,29 +1,29 @@
-import { Component } from '@angular/core';
-import {DemoServicio} from './demo/DemoServicio';
-import {RouterOutlet} from '@angular/router';
-import {BarraNavegacionComponent} from '../componentes/barra-navegacion/barra-navegacion.component';
+import {Component} from '@angular/core';
+import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
+import {HeaderComponent} from './componentes/header/header.component';
+import {filter} from 'rxjs';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
   imports: [
     RouterOutlet,
-    BarraNavegacionComponent
-  ],
+    HeaderComponent,
+    NgIf,
+   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'ShowSync-Frontend';
+  mostrarHeader = true;
 
-  mensaje: string = '';
-
-  constructor(private DemoServicio: DemoServicio ) {
+  constructor(private router: Router) {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      const rutasSinHeader = ['/auth/login', '/auth/registro', 'auth/restablecer', '/auth/recuperar'];
+      this.mostrarHeader = !rutasSinHeader.includes(event.urlAfterRedirects);
+    });
   }
-
-  // ngOnInit(): void {
-  //   this.DemoServicio.getMensaje().subscribe(
-  //     (response) => this.mensaje = response,
-  //     (error) => console.error('Error:', error)
-  //   );
-  // }
 }

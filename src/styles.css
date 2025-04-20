@@ -3,3 +3,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@font-face {
+  font-family: 'Medula One';
+  src: url('./assets/fonts/MedulaOne-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
