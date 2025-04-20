@@ -12,6 +12,7 @@ import {NgIf} from '@angular/common';
     NgIf,
     RouterLink
   ],
+  standalone: true,
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
@@ -29,7 +30,7 @@ export class LoginComponent {
         // Guardamos el token en localStorage o donde quieras
         localStorage.setItem('token', token);
         // Redirigimos a otra página, por ejemplo el "home"
-        this.router.navigate(['/home']);
+        this.router.navigate(['/catalogo-artistas']);
       },
       error: (err) => {
         console.error(err);

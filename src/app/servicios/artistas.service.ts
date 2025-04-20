@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import {environment} from '../environments/environment';
-import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
-import {catchError, Observable, throwError} from 'rxjs';
-import {Artistas} from '../interfaces/artistas';
 import {RespuestaPaginada} from '../interfaces/respuesta-paginada';
+import {Artistas} from '../interfaces/artistas';
+import {Observable, throwError} from 'rxjs';
+import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -57,5 +57,4 @@ export class ArtistasService {
   private erroresArtistas(erros:HttpErrorResponse): Observable<never> {
     return throwError(() => new Error('Error al obtener el catálogo de artistas. Inténtelo más tarde'));
   }
-
 }

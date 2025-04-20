@@ -1,30 +1,27 @@
 import {Component, OnInit} from '@angular/core';
-import {Artistas} from '../../interfaces/artistas';
-import {ArtistasService} from '../../servicios/artistas.service';
+import {Paginator} from 'primeng/paginator';
 import {NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {HeroComponent} from "../hero/hero.component";
 import {GenerosMusicalesService} from '../../servicios/generos-musicales.service';
-import {Paginator} from 'primeng/paginator';
+import {Artistas} from '../../interfaces/artistas';
+import {ArtistasService} from '../../servicios/artistas.service';
 import {RespuestaPaginada} from '../../interfaces/respuesta-paginada';
-
-
+import {HeroComponent} from '../../componentes/hero/hero.component';
 
 @Component({
   selector: 'app-catalogo-artistas',
   imports: [
-    FormsModule,
-    HeroComponent,
-    NgIf,
-    NgForOf,
     Paginator,
+    NgForOf,
+    NgIf,
+    FormsModule,
+    HeroComponent
   ],
   templateUrl: './catalogo-artistas.component.html',
   standalone: true,
   styleUrl: './catalogo-artistas.component.css'
 })
 export class CatalogoArtistasComponent implements OnInit {
-
   artistasLista: Artistas[] = [];
   generos: string[] = [];
   generoSeleccionado: string = '';
