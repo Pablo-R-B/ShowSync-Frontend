@@ -2,9 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {Artistas} from '../../interfaces/artistas';
 import {ArtistasService} from '../../servicios/artistas.service';
 import {NgForOf, NgIf} from '@angular/common';
-import {GenerosMusicalesService} from '../../servicios/generos-musicales.service';
 import {FormsModule} from '@angular/forms';
 import {HeroComponent} from "../hero/hero.component";
+import {GenerosMusicalesService} from '../../servicios/generos-musicales.service';
+import {Paginator} from 'primeng/paginator';
+import {RespuestaPaginada} from '../../interfaces/respuesta-paginada';
 
 
 
@@ -15,6 +17,7 @@ import {HeroComponent} from "../hero/hero.component";
     HeroComponent,
     NgIf,
     NgForOf,
+    Paginator,
   ],
   templateUrl: './catalogo-artistas.component.html',
   standalone: true,
@@ -27,6 +30,10 @@ export class CatalogoArtistasComponent implements OnInit {
   generoSeleccionado: string = '';
   errorMsj:string ='';
   busqueda:string ='';
+  pageSize: number = 6;
+  totalItems: number = 0;
+  paginas: number[] = [];
+  paginaActual: number = 1;
   private todosLosArtistas: Artistas[] = [];
   private artistasPorGeneroCache: { [genero: string]: Artistas[] } = {};
 
@@ -41,12 +48,10 @@ export class CatalogoArtistasComponent implements OnInit {
 
   listarArtistas(): void {
     if (this.generoSeleccionado && this.generoSeleccionado.trim() !== "") {
-      this.artistasService.artistasPorGenero(this.generoSeleccionado).subscribe({
-        next: resultado => {
-          this.artistasLista = this.busqueda
-          ? resultado.filter(artista => artista.nombre.toLowerCase()
-              .includes(this.busqueda.toLowerCase()))
-            : resultado;
+      this.artistasService.artistasPorGenero(this.generoSeleccionado, this.paginaActual, this.pageSize, this.busqueda).subscribe({
+        next: (resultado: RespuestaPaginada<Artistas>) => {
+          this.artistasLista = resultado.items;
+          this.totalItems = resultado.totalItems;
           console.log("Artistas filtrados por género y búsqueda:", this.artistasLista); // Cambia a console.log
         },
         error: (err) => {
@@ -55,13 +60,10 @@ export class CatalogoArtistasComponent implements OnInit {
         }
       });
     } else {
-      this.artistasService.listarArtistasConGeneros().subscribe({
-        next: results => {
-          this.artistasLista = this.busqueda
-            ? results.filter((artista: { nombre: string; }) => artista.nombre.toLowerCase().
-            includes(this.busqueda.toLowerCase()))
-            : results;
-          console.log('Datos recibidos y filtrados por búsqueda:', this.artistasLista);
+      this.artistasService.listarArtistasConGeneros(this.paginaActual, this.pageSize, this.busqueda).subscribe({
+        next: (results:RespuestaPaginada<Artistas>) => {
+          this.artistasLista = results.items;
+          this.totalItems = results.totalItems;
         },
         error: (error) => {
           this.errorMsj = error.message;
@@ -77,11 +79,11 @@ export class CatalogoArtistasComponent implements OnInit {
 
   cargarGeneros() {
     this.generosMusicalesService.listarGeneros().subscribe({
-      next: data => {
+      next: (data: string[]) => {
         this.generos = data
         console.error('Datos recibidos:', data);
       },
-      error: (err) => console.error('Error al cargar géneros:', err)
+      error: (err: any) => console.error('Error al cargar géneros:', err)
     });
   }
 
@@ -101,6 +103,12 @@ export class CatalogoArtistasComponent implements OnInit {
     this.busqueda = ''; // Limpia la búsqueda
     this.artistasLista = [];
     this.listarArtistas();// Limpia la lista de artistas
+  }
+
+  onPageChange(event: any): void {
+    this.paginaActual = event.page; // Índice de la página (empezando en 0)
+    this.pageSize = event.rows; // Tamaño de página seleccionado (6, 10 o 15)
+    this.listarArtistas(); // Vuelve a cargar los datos con los nuevos parámetros
   }
 
 

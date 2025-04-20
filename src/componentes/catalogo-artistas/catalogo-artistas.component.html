@@ -77,6 +77,12 @@
   </div>
 </div>
 </div>
+<div class="card flex justify-center">
+  <p-paginator (onPageChange)="onPageChange($event)" [first]="paginaActual * pageSize" [rows]="pageSize"
+               [totalRecords]="totalItems" [rowsPerPageOptions]="[6, 10,15]" />
+</div>
+
+
 
 <!--###################################-->
 
