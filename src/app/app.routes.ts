@@ -4,6 +4,10 @@ import {RegistroComponent} from './pages/registro/registro.component';
 import {LoginComponent} from './pages/login/login.component';
 import {RecuperarComponent} from './pages/login/recuperar/recuperar.component';
 import {RestablecerComponent} from './pages/login/restablecer/restablecer.component';
+import {PromotoresComponent} from './pages/promotores/promotores.component';
+import {EventosComponent} from './pages/eventos/eventos.component';
+import {BusquedaEventosComponent} from './pages/busqueda-eventos/busqueda-eventos.component';
+import {BusquedaPromotoresComponent} from './pages/busqueda-promotores/busqueda-promotores.component';
 
 export const routes: Routes = [
   { path: 'auth/registro', component: RegistroComponent },
@@ -13,6 +17,13 @@ export const routes: Routes = [
 //  { path: '', redirectTo: 'auth/registro', pathMatch: 'full' },
 //  { path: '**', redirectTo: 'auth/registro' },
   { path: '', redirectTo: 'landing-page', pathMatch: 'full' },
-  { path: 'landing-page', component: LandingPageComponent }
+  { path: 'landing-page', component: LandingPageComponent },
+  { path: 'promotores', component: PromotoresComponent },
+  { path: 'eventos/:id', component: EventosComponent },
+  { path: 'eventos', component: EventosComponent },
+  { path: 'busqueda-eventos', component: BusquedaEventosComponent},
+  { path: 'busqueda-promotores', component: BusquedaPromotoresComponent }
+
+
 
 ];
