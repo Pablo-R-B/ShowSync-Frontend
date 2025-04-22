@@ -1,0 +1,36 @@
+<!-- Vista detallada del evento -->
+<div *ngIf="evento" class="bg-zinc-900 text-white p-6 rounded-xl border border-zinc-700 shadow-lg max-w-4xl mx-auto mt-8">
+  <!-- Título del evento -->
+  <h1 class="text-4xl font-extrabold text-center text-indigo-500 mb-6">{{ evento.nombreEvento }}</h1>
+
+  <!-- Imagen del evento -->
+  <div class="mb-8">
+    <img [src]="evento.imagenEvento" alt="Imagen del evento" class="w-full max-w-xl mx-auto rounded-xl shadow-md" />
+  </div>
+
+  <!-- Descripción y detalles del evento -->
+  <div class="space-y-6">
+    <p class="text-xl"><strong class="font-semibold">Descripción:</strong> {{ evento.descripcion }}</p>
+    <p class="text-xl"><strong class="font-semibold">Estado:</strong> {{ evento.estado }}</p>
+    <p class="text-xl"><strong class="font-semibold">Fecha:</strong> {{ evento.fechaEvento | date:'longDate' }}</p>
+    <p class="text-xl"><strong class="font-semibold">Sala:</strong> {{ evento.nombreSala }}</p>
+    <p class="text-xl"><strong class="font-semibold">Promotor:</strong> {{ evento.nombrePromotor }}</p>
+    <p class="text-xl"><strong class="font-semibold">Géneros Musicales:</strong> {{ evento.generosMusicales.join(', ') }}</p>
+
+    <!-- Artistas asignados -->
+    <div class="text-xl">
+      <strong class="font-semibold">Artistas Asignados:</strong>
+      <span *ngIf="evento.artistasAsignados?.length; else sinArtistas">
+        {{ evento.artistasAsignados.join(', ') }}
+      </span>
+      <ng-template #sinArtistas>
+        <span class="text-gray-400">Sin artistas asignados</span>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<!-- Si no hay evento cargado, mostrar un mensaje de error o cargando -->
+<div *ngIf="!evento" class="text-center text-white p-6">
+  <p class="text-lg">Cargando el evento... o este no existe</p>
+</div>
