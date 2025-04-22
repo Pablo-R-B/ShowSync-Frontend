@@ -1,8 +1,9 @@
-import {Component} from '@angular/core';
-import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
-import {HeaderComponent} from './componentes/header/header.component';
-import {filter} from 'rxjs';
-import {NgIf} from '@angular/common';
+import { Component } from '@angular/core';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { HeaderComponent } from './componentes/header/header.component';
+import { FooterComponent } from './componentes/footer/footer.component';
+import { filter } from 'rxjs/operators';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -10,20 +11,32 @@ import {NgIf} from '@angular/common';
   imports: [
     RouterOutlet,
     HeaderComponent,
+    FooterComponent,
     NgIf,
-   ],
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
   mostrarHeader = true;
+  showFooter = true;
+
+  // Rutas en las que se ocultan header y footer
+  private readonly hiddenRoutes = [
+
+    '/auth/login',
+    '/auth/registro',
+    '/auth/restablecer',
+    '/auth/recuperar'
+  ];
 
   constructor(private router: Router) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
-      const rutasSinHeader = ['/auth/login', '/auth/registro', 'auth/restablecer', '/auth/recuperar'];
-      this.mostrarHeader = !rutasSinHeader.includes(event.urlAfterRedirects);
+      const ocultar = this.hiddenRoutes.includes(event.urlAfterRedirects);
+      this.mostrarHeader = !ocultar;
+      this.showFooter = !ocultar;
     });
   }
 }
