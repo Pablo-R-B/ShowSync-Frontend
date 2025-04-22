@@ -51,4 +51,8 @@ export class FormularioSalaComponent implements OnInit {
       });
     }
   }
+
+  cancelar(): void {
+    this.router.navigate(['/admin/salas']);
+  }
 }

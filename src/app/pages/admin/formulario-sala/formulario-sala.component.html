@@ -42,8 +42,11 @@
       <input class="border rounded w-full p-2" [(ngModel)]="sala.imagen" name="imagen" />
     </div>
 
-    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">
+    <button type="submit" class="bg-customRed hover:bg-customBurbundy text-white px-4 py-2 rounded">
       {{ editando ? 'Actualizar' : 'Crear' }}
+    </button>
+    <button type="button" class="bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded ml-2" (click)="cancelar()">
+      Cancelar
     </button>
   </form>
 </div>
