@@ -33,6 +33,8 @@ export class LoginComponent {
         const decoded: TokenPayload = jwtDecode(token);
         console.log('Rol del usuario:', decoded.rol);
 
+        localStorage.setItem('username', decoded.nombre);
+
         switch (decoded.rol) {
           case 'ADMINISTRADOR':
             this.router.navigate(['admin/salas']);
