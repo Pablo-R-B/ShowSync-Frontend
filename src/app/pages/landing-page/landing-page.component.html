@@ -27,10 +27,13 @@
   <p class="mt-4 font-bold">
     <i class="fa-solid fa-bolt fa-spin text-yellow-400 text-2xl"></i> "Descubre y sigue a tus artistas favoritos."
   </p>
-  <button class="mt-6 bg-gray-200 text-black font-bold px-4 py-2 rounded hover:bg-gray-300">Regístrate</button>
+  <button
+    class="mt-6 bg-gray-200 text-black font-bold px-4 py-2 rounded hover:bg-gray-300"
+    [routerLink]="['/auth/registro']">
+    Regístrate
+  </button>
+
 </div>
-
-
 
 
 
@@ -60,8 +63,11 @@
     <img src="/assets/concierto2.jpg" alt="Concierto 2" class="w-64 h-39 object-cover rounded">
     <img src="/assets/concierto3.jpg" alt="Concierto 3" class="w-64 h-39 object-cover rounded">
   </div>
-  <button class="mt-6 bg-gray-200 text-black font-bold px-4 py-2 rounded hover:bg-gray-300">Ver más Conciertos</button>
+  <button class="mt-6 bg-gray-200 text-black font-bold px-4 py-2 rounded hover:bg-gray-300"
+          [routerLink]="['/promotores']">Ver más Conciertos</button>
 </div>
+
+
 
 </body>
 

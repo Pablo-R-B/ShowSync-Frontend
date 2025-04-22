@@ -29,7 +29,7 @@ export class LoginComponent {
         // Guardamos el token en localStorage o donde quieras
         localStorage.setItem('token', token);
         // Redirigimos a otra página, por ejemplo el "home"
-        this.router.navigate(['/home']);
+        this.router.navigate(['//landing-page']);
       },
       error: (err) => {
         console.error(err);
