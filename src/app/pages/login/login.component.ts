@@ -27,7 +27,6 @@ export class LoginComponent {
   onLogin() {
     this.authService.login(this.email, this.contrasena).subscribe({
       next: (token) => {
-        console.log('Token recibido:', token);
         localStorage.setItem('token', token);
 
         // Decodificar el token y redirigir según el rol
@@ -36,7 +35,7 @@ export class LoginComponent {
 
         switch (decoded.rol) {
           case 'ADMINISTRADOR':
-            this.router.navigate(['/admin']);
+            this.router.navigate(['admin/salas']);
             break;
           case 'PROMOTOR':
             this.router.navigate(['/promotor']);

@@ -1,4 +1,10 @@
-<app-header *ngIf="mostrarHeader"></app-header>
-<router-outlet></router-outlet>
-<app-footer *ngIf="showFooter"></app-footer>
+<div class="min-h-screen flex flex-col">
+  <app-header *ngIf="mostrarHeader"></app-header>
 
+  <!-- Este main ocupa el espacio disponible -->
+  <main class="flex-grow">
+    <router-outlet></router-outlet>
+  </main>
+
+  <app-footer *ngIf="showFooter"></app-footer>
+</div>
