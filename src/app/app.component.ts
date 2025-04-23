@@ -8,6 +8,7 @@ import {HeaderComponent} from './componentes/header/header.component';
 import {FooterComponent} from './componentes/footer/footer.component';
 
 
+// @ts-ignore
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -15,9 +16,9 @@ import {FooterComponent} from './componentes/footer/footer.component';
     ButtonModule,
     RouterOutlet,
     HeaderComponent,
-    FooterComponent],
+    FooterComponent,
     FullCalendarModule,
-    NgIf,
+    NgIf],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

@@ -25,9 +25,8 @@ export const routes: Routes = [
   { path: 'promotores', component: PromotoresComponent },
   { path: 'eventos/:id', component: EventosComponent },
   { path: 'eventos', component: EventosComponent },
+  { path: 'busqueda-promotores', component: BusquedaPromotoresComponent},
   { path: 'busqueda-eventos', component: BusquedaEventosComponent},
-  { path: 'busqueda-promotores', component: BusquedaPromotoresComponent }
-
 
 
   { path: 'salas/:id', component: PerfilSalaComponent },
