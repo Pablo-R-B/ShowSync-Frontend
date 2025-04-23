@@ -3,6 +3,9 @@ import {RegistroComponent} from './pages/registro/registro.component';
 import {LoginComponent} from './pages/login/login.component';
 import {RecuperarComponent} from './pages/login/recuperar/recuperar.component';
 import {RestablecerComponent} from './pages/login/restablecer/restablecer.component';
+import {PerfilSalaComponent} from './pages/perfil-sala/perfil-sala.component';
+import {FormularioSalaComponent} from './pages/admin/formulario-sala/formulario-sala.component';
+import {CatalogoArtistasComponent} from './pages/catalogo-artistas/catalogo-artistas.component';
 
 
 export const routes: Routes = [
