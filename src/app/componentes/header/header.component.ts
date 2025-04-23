@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import {Router, RouterLink} from '@angular/router';
-import {NgIf, NgOptimizedImage} from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
+import { NgIf, NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-header',
@@ -15,8 +15,9 @@ import {NgIf, NgOptimizedImage} from '@angular/common';
 })
 export class HeaderComponent {
   menuAbierto = false;
-  estaLogueado = !!localStorage.getItem('token');  // Puedes mejorar esto con un servicio
+  estaLogueado = !!localStorage.getItem('token');
   mostrarMenuPerfil = false;
+  username = localStorage.getItem('username') || '';
 
   constructor(private router: Router) {}
 
@@ -30,10 +31,10 @@ export class HeaderComponent {
 
   cerrarSesion() {
     localStorage.removeItem('token');
+    localStorage.removeItem('username');
     this.estaLogueado = false;
     this.mostrarMenuPerfil = false;
-    this.menuAbierto = false; // 👈 Cierra el menú hamburguesa
+    this.menuAbierto = false;
     this.router.navigate(['/auth/login']);
   }
-
 }
