@@ -5,7 +5,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { RecuperarComponent } from './pages/login/recuperar/recuperar.component';
 import { RestablecerComponent } from './pages/login/restablecer/restablecer.component';
 import { FormularioSalaComponent } from './pages/admin/formulario-sala/formulario-sala.component';
-import { PanelSalasComponent } from './pages/admin/panel-salas/panel-salas.component';
+import {PerfilSalaComponent} from './pages/perfil-sala/perfil-sala.component';
 
 export const routes: Routes = [
   // Rutas de autenticación
@@ -13,6 +13,7 @@ export const routes: Routes = [
   { path: 'auth/login', component: LoginComponent },
   { path: 'auth/recuperar', component: RecuperarComponent },
   { path: 'auth/restablecer', component: RestablecerComponent },
+  { path: 'salas/:id', component: PerfilSalaComponent },
 
   // Rutas del panel de administración
   {

@@ -4,6 +4,7 @@ import { HeaderComponent } from './componentes/header/header.component';
 import { FooterComponent } from './componentes/footer/footer.component';
 import { filter } from 'rxjs/operators';
 import { NgIf } from '@angular/common';
+import {FullCalendarModule} from '@fullcalendar/angular';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +14,7 @@ import { NgIf } from '@angular/common';
     HeaderComponent,
     FooterComponent,
     NgIf,
+    FullCalendarModule,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']

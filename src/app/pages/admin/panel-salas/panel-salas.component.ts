@@ -62,4 +62,8 @@ export class PanelSalasComponent implements OnInit {
       });
     }
   }
+  verPerfilSala(id: number): void {
+    this.router.navigate([`/salas/${id}`]);
+  }
+
 }
