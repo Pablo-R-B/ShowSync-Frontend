@@ -44,13 +44,13 @@ export class LoginComponent {
             this.router.navigate(['admin/salas']);
             break;
           case 'PROMOTOR':
-            this.router.navigate(['/promotor']);
+            this.router.navigate(['/landing-page']);
             break;
           case 'ARTISTA':
-            this.router.navigate(['/artista']);
+            this.router.navigate(['/landing-page']);
             break;
           default:
-            this.router.navigate(['/home']); // O una ruta por defecto
+            this.router.navigate(['/landing-page']); // O una ruta por defecto
         }
       },
       error: (err) => {
