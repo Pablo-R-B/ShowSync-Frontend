@@ -30,7 +30,7 @@ export class CatalogoArtistasComponent implements OnInit {
   pageSize: number = 6;
   totalItems: number = 0;
   paginas: number[] = [];
-  paginaActual: number = 1;
+  paginaActual: number = 0;
   private todosLosArtistas: Artistas[] = [];
   private artistasPorGeneroCache: { [genero: string]: Artistas[] } = {};
 
@@ -105,6 +105,9 @@ export class CatalogoArtistasComponent implements OnInit {
   onPageChange(event: any): void {
     this.paginaActual = event.page; // Índice de la página (empezando en 0)
     this.pageSize = event.rows; // Tamaño de página seleccionado (6, 10 o 15)
+    if (this.pageSize !== event.rows) {
+      this.paginaActual = 0;
+    }
     this.listarArtistas(); // Vuelve a cargar los datos con los nuevos parámetros
   }
 
