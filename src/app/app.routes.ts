@@ -22,7 +22,7 @@ export const routes: Routes = [
 //  { path: '**', redirectTo: 'auth/registro' },
   { path: '', redirectTo: 'landing-page', pathMatch: 'full' },
   { path: 'landing-page', component: LandingPageComponent },
-  { path: 'promotores', component: PromotoresComponent },
+  { path: 'promotores/:id', component: PromotoresComponent },
   { path: 'eventos/:id', component: EventosComponent },
   { path: 'eventos', component: EventosComponent },
   { path: 'busqueda-promotores', component: BusquedaPromotoresComponent},
