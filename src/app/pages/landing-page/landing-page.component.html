@@ -1,0 +1,73 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
+
+
+  <body class="bg-black  text-white">
+
+
+
+<!-- Hero Section -->
+<div class="relative w-full h-[500px]">
+  <img src="/assets/images/imagen1.jpeg" alt="Concierto" class="w-full h-full object-cover">
+  <div class="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 px-4">
+    <h1 class="text-3xl md:text-4xl font-bold text-center">
+      "Conéctate. Promociona. <br /> Vive la música con ShowSync."
+    </h1>
+  </div>
+</div>
+
+
+<!-- Info Section -->
+<div class="text-center py-8 px-4">
+  <p class="mt-4 font-bold">
+    <i class="fa-solid fa-bolt fa-spin text-yellow-400 text-2xl"></i> "Regístrate y promociona tu música."
+  </p>
+  <p class="mt-4 font-bold">
+    <i class="fa-solid fa-bolt fa-spin text-yellow-400 text-2xl"></i> "Encuentra talento para tus eventos."
+  </p>
+  <p class="mt-4 font-bold">
+    <i class="fa-solid fa-bolt fa-spin text-yellow-400 text-2xl"></i> "Descubre y sigue a tus artistas favoritos."
+  </p>
+  <button
+    class="mt-6 bg-gray-200 text-black font-bold px-4 py-2 rounded hover:bg-gray-300"
+    [routerLink]="['/auth/registro']">
+    Regístrate
+  </button>
+
+</div>
+
+
+
+<!-- Categorías -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 px-8 pb-8">
+  <div class="text-center">
+    <img src="/assets/images/salas.png" alt="Salas" class="w-full h-48 object-contain rounded mb-2">
+    <p>Salas</p>
+  </div>
+  <div class="text-center">
+    <img src="/assets/images/artistas.jpg" alt="Artistas" class="w-full h-48 object-contain rounded mb-2">
+    <p>Artistas</p>
+  </div>
+  <div class="text-center">
+    <img src="/assets/images/promotores.png" alt="Promotores" class="w-full h-48 object-contain rounded mb-2">
+    <p>Promotores</p>
+  </div>
+</div>
+
+
+
+<!-- Próximos Conciertos -->
+<div class="text-center pb-8">
+  <h2 class="text-2xl font-bold mb-6">Próximos Conciertos</h2>
+  <div class="flex flex-wrap justify-center gap-4 px-4">
+    <img src="/assets/images/concierto1.jpg" alt="Concierto 1" class="w-64 h-39 object-cover rounded">
+    <img src="/assets/images/concierto2.jpg" alt="Concierto 2" class="w-64 h-39 object-cover rounded">
+    <img src="/assets/images/concierto3.jpg" alt="Concierto 3" class="w-64 h-39 object-cover rounded">
+  </div>
+  <button class="mt-6 bg-gray-200 text-black font-bold px-4 py-2 rounded hover:bg-gray-300"
+          [routerLink]="['/promotores']">Ver más Conciertos</button>
+</div>
+
+
+
+</body>
+

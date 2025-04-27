@@ -3,8 +3,10 @@ import {Router, RouterLink} from '@angular/router';
 import {AuthService} from '../../servicios/auth.service';
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
-import {jwtDecode} from 'jwt-decode';
+
+
 import {TokenPayload} from '../../interfaces/TokenPayload';
+import {jwtDecode} from 'jwt-decode';
 
 @Component({
   selector: 'app-login',
@@ -28,6 +30,8 @@ export class LoginComponent {
     this.authService.login(this.email, this.contrasena).subscribe({
       next: (token) => {
         localStorage.setItem('token', token);
+        // Redirigimos a otra página, por ejemplo el "home"
+        this.router.navigate(['//landing-page']);
 
         // Decodificar el token y redirigir según el rol
         const decoded: TokenPayload = jwtDecode(token);
@@ -40,13 +44,13 @@ export class LoginComponent {
             this.router.navigate(['admin/salas']);
             break;
           case 'PROMOTOR':
-            this.router.navigate(['/admin/salas/nueva']);
+            this.router.navigate(['/landing-page']);
             break;
           case 'ARTISTA':
-            this.router.navigate(['/catalogo-artistas']);
+            this.router.navigate(['/landing-page']);
             break;
           default:
-            this.router.navigate(['/home']); // O una ruta por defecto
+            this.router.navigate(['/landing-page']); // O una ruta por defecto
         }
       },
       error: (err) => {

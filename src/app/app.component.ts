@@ -1,21 +1,24 @@
-import { Component } from '@angular/core';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { HeaderComponent } from './componentes/header/header.component';
-import { FooterComponent } from './componentes/footer/footer.component';
-import { filter } from 'rxjs/operators';
+import {Component} from '@angular/core';
+import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
+import {filter} from 'rxjs';
+import {ButtonModule} from 'primeng/button';
 import { NgIf } from '@angular/common';
 import {FullCalendarModule} from '@fullcalendar/angular';
+import {HeaderComponent} from './componentes/header/header.component';
+import {FooterComponent} from './componentes/footer/footer.component';
 
+
+// @ts-ignore
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
+    ButtonModule,
     RouterOutlet,
     HeaderComponent,
     FooterComponent,
-    NgIf,
     FullCalendarModule,
-  ],
+    NgIf],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

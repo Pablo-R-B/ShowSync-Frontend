@@ -1,0 +1,82 @@
+<div class="bg-[#7e001b] min-h-screen text-white font-sans">
+
+  <!-- Header Promotor -->
+  <div class="p-4 flex items-center gap-3 ml-[10%]">
+    <img [src]="promotor?.imagenPerfil || logoUrl"
+         [alt]="promotor?.nombrePromotor || 'Sounder Logo'"
+         class="w-12 h-12 rounded-full" />
+    <div>
+      <h1 class="text-2xl font-bold">{{ promotor?.nombrePromotor }}</h1>
+      <p class="text-sm text-gray-300">{{ promotor?.descripcion }}</p>
+    </div>
+  </div>
+
+  <!-- evento -->
+   <div class="flex justify-center mt-4" *ngIf="eventoDestacado">
+     <img [src]="eventoDestacado.imagenEvento || logoUrl"
+          alt="Evento Destacado"
+          class="w-[70%] h-[400px] object-cover rounded-xl shadow-xl" />
+   </div>
+  <div class="flex justify-end mt-2 mr-[10%]" *ngIf="eventoDestacado">
+    <button (click)="verDetallesEvento(eventoDestacado.id)"
+            class="bg-[#7e001b] hover:bg-[#a30027] text-white px-4 py-2 rounded-full border border-white">
+
+      Más información
+    </button>
+  </div>
+
+
+  <!-- Galería de eventos -->
+  <div class="bg-gray-800 mt-6 p-4 mx-[10%] rounded-xl shadow-lg">
+    <div class="flex justify-between items-center mb-4">
+      <div *ngIf="promotor">
+        <button class="bg-[#e50914] hover:bg-red-700 text-white px-3 py-1 rounded"
+                (click)="verEventosDePromotor(promotor.id)">
+          Ver todos los Eventos
+        </button>
+      </div>
+
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div *ngFor="let e of eventos" class="bg-gray-900 p-2 rounded-lg shadow">
+        <img [src]="e.imagenEvento" [alt]="e.nombreEvento"
+             class="rounded shadow hover:scale-105 transition-transform duration-300 w-full h-40 object-cover" />
+        <div class="mt-2 text-sm">
+          <p class="font-semibold">{{ e.nombreEvento }}</p>
+          <p class="text-gray-400">{{ e.fechaEvento | date:'dd/MM/yyyy' }}</p>
+          <p class="text-gray-400">{{ e.nombreSala }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Próximos eventos y artistas -->
+  <div class="flex flex-col md:flex-row justify-center gap-6 mt-10 px-[10%]">
+    <div class="bg-gray-800 rounded-xl p-4 w-full md:w-1/2 shadow-lg">
+      <h2 class="text-lg font-semibold mb-4">Eventos 🎫</h2>
+      <ul>
+        <li *ngFor="let ep of eventosProximos" class="mb-2 flex items-center gap-2">
+          <span class="bg-gray-500 text-white px-2 py-1 rounded text-xs">📅</span>
+          {{ ep.fecha }} - {{ ep.lugar }} - {{ ep.nombre }}
+        </li>
+      </ul>
+    </div>
+    <div class="bg-gray-800 rounded-xl p-4 w-full md:w-1/2 shadow-lg">
+      <h2 class="text-lg font-semibold mb-4">Artistas 🎤</h2>
+      <ul>
+        <li *ngFor="let artista of artistas" class="mb-2">🎵 {{ artista.nombre }}</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Botón Gestionar Salas -->
+  <div class="flex justify-center mt-12 mb-[75px]">
+    <button class="bg-gray-200 text-black px-16 py-6 text-3xl rounded-2xl shadow-lg hover:bg-gray-300 transition"
+            [routerLink]="['/salas']">
+      Gestionar Salas 📖
+    </button>
+  </div>
+
+
+  <div class="h-[10px]"></div>
+</div>

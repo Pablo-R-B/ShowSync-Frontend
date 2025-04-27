@@ -1,0 +1,114 @@
+<!-- Título principal -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+/>
+
+<div class="text-center py-8 bg-black text-white">
+  <h2 class="text-xl tracking-widest font-light uppercase">
+    ¿En busca de los conciertos y festivales de tus artistas favoritos?
+  </h2>
+</div>
+
+<!-- CONTENEDOR PRINCIPAL -->
+<div class="min-h-screen bg-black text-white p-6 flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-6">
+
+  <!-- FILTROS -->
+  <div class="bg-zinc-900 p-6 rounded-xl border border-zinc-700 w-full md:w-1/4">
+    <h2 class="text-xl font-bold mb-4 text-center">FILTROS</h2>
+
+    <!-- Filtro Género Musical -->
+    <label for="genero" class="block mb-2">Género musical</label>
+    <select id="genero" class="w-full mb-4 p-2 rounded bg-zinc-800 text-white border border-zinc-700">
+      <option value="">Todos</option>
+      <option *ngFor="let genero of generos" [value]="genero">{{ genero }}</option>
+    </select>
+
+    <!-- Filtro Fecha Desde -->
+    <label for="fechaDesde" class="block mb-2">Fecha (desde)</label>
+    <input type="date" id="fechaDesde" class="w-full mb-4 p-2 rounded bg-zinc-800 text-white border border-zinc-700" />
+
+    <!-- Filtro Fecha Hasta -->
+    <label for="fechaHasta" class="block mb-2">Fecha (hasta)</label>
+    <input type="date" id="fechaHasta" class="w-full mb-4 p-2 rounded bg-zinc-800 text-white border border-zinc-700" />
+
+
+    <!-- Filtro Estado del Evento -->
+    <label for="estado" class="block mb-2">Estado del evento</label>
+    <select id="estado" class="w-full mb-4 p-2 rounded bg-zinc-800 text-white border border-zinc-700">
+      <option value="">Todos</option>
+      <option *ngFor="let estado of estados" [value]="estado.toLowerCase()">{{ estado | titlecase }}</option>
+    </select>
+
+    <!-- Filtro Ubicación -->
+    <label for="ubicacion" class="block mb-2">Ubicación</label>
+    <input type="text" id="ubicacion" class="w-full mb-4 p-2 rounded bg-zinc-800 text-white border border-zinc-700" />
+
+    <!-- Botón de Aceptar -->
+    <button id="btnAceptar" class="bg-red-600 hover:bg-red-700 text-white w-full p-2 rounded mt-2">Aceptar</button>
+  </div>
+
+  <!-- EVENTOS -->
+  <div class="w-full md:w-3/4 space-y-6">
+    <div *ngFor="let evento of eventos" class="bg-zinc-900 rounded-xl border border-zinc-700 flex flex-col md:flex-row items-center p-4 space-y-4 md:space-y-0 md:space-x-4">
+
+      <!-- Imagen -->
+      <img [src]="evento.imagenEvento" alt="Imagen del evento" class="w-full md:w-1/4 h-32 object-cover rounded" />
+
+      <!-- Info del evento -->
+      <div class="flex-1 w-full text-center md:text-left">
+        <h3 class="text-xl font-semibold">{{ evento.nombreEvento }}</h3>
+        <div class="text-sm mt-1">📍 {{ evento.nombreSala }}</div>
+        <div class="text-sm mt-1">📅 {{ formatearFecha(evento.fechaEvento) }}</div>
+      </div>
+
+      <!-- Botones -->
+      <ng-container *ngIf="usuarioLogueado; else accesoDenegado">
+        <button
+          class="bg-slate-500 hover:bg-slate-600 text-white px-3 py-1 rounded"
+          (click)="verInfo(evento)"
+        >
+          + info
+        </button>
+      </ng-container>
+
+      <ng-template #accesoDenegado>
+        <button
+          class="bg-gray-600 text-white px-3 py-1 rounded opacity-60 cursor-not-allowed"
+          disabled
+          (click)="verInfo(evento)"
+        >
+          + info
+        </button>
+      </ng-template>
+
+
+      <!-- Corazón para seguir el evento -->
+      <button
+        class="text-3xl transition duration-300 ease-in-out"
+        [ngClass]="{
+      'text-red-500': evento.seguido,
+      'text-gray-400': !evento.seguido
+    }"
+        (click)="seguirEvento(evento)"
+        [disabled]="!usuarioLogueado"
+        title="Seguir evento"
+      >
+        <i class="fa" [ngClass]="evento.seguido ? 'fa-heart' : 'fa-heart-o'"></i>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div *ngIf="mostrarModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+    <div class="bg-white text-black p-6 rounded shadow-lg w-80 text-center">
+      <h2 class="text-xl font-semibold mb-4">Acción no permitida</h2>
+      <p class="mb-4">Debes iniciar sesión o registrarte para realizar esta acción.</p>
+      <button (click)="cerrarModal()" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+        Cerrar
+      </button>
+    </div>
+  </div>
+
+</div>
