@@ -1,0 +1,6 @@
+button i.fa {
+  transition: transform 0.2s ease;
+}
+button:hover i.fa {
+  transform: scale(1.2);
+}
