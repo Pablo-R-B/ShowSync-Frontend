@@ -3,6 +3,8 @@ import {Router, RouterLink} from '@angular/router';
 import {AuthService} from '../../servicios/auth.service';
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
+import {jwtDecode} from 'jwt-decode';
+import {TokenPayload} from '../../interfaces/TokenPayload';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +14,6 @@ import {NgIf} from '@angular/common';
     NgIf,
     RouterLink
   ],
-  standalone: true,
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
@@ -26,11 +27,27 @@ export class LoginComponent {
   onLogin() {
     this.authService.login(this.email, this.contrasena).subscribe({
       next: (token) => {
-        console.log('Token recibido:', token);
-        // Guardamos el token en localStorage o donde quieras
         localStorage.setItem('token', token);
-        // Redirigimos a otra página, por ejemplo el "home"
-        this.router.navigate(['/catalogo-artistas']);
+
+        // Decodificar el token y redirigir según el rol
+        const decoded: TokenPayload = jwtDecode(token);
+        console.log('Rol del usuario:', decoded.rol);
+
+        localStorage.setItem('username', decoded.nombre);
+
+        switch (decoded.rol) {
+          case 'ADMINISTRADOR':
+            this.router.navigate(['admin/salas']);
+            break;
+          case 'PROMOTOR':
+            this.router.navigate(['/admin/salas/nueva']);
+            break;
+          case 'ARTISTA':
+            this.router.navigate(['/catalogo-artistas']);
+            break;
+          default:
+            this.router.navigate(['/home']); // O una ruta por defecto
+        }
       },
       error: (err) => {
         console.error(err);
