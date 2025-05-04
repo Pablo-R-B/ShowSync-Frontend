@@ -1,12 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {Paginator} from 'primeng/paginator';
-import {NgForOf, NgIf} from '@angular/common';
+import {NgForOf, NgIf, NgOptimizedImage} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {GenerosMusicalesService} from '../../servicios/generos-musicales.service';
 import {Artistas} from '../../interfaces/artistas';
 import {ArtistasService} from '../../servicios/artistas.service';
 import {RespuestaPaginada} from '../../interfaces/respuesta-paginada';
 import {HeroComponent} from '../../componentes/hero/hero.component';
+import {Router, RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-catalogo-artistas',
@@ -15,7 +16,9 @@ import {HeroComponent} from '../../componentes/hero/hero.component';
     NgForOf,
     NgIf,
     FormsModule,
-    HeroComponent
+    HeroComponent,
+    NgOptimizedImage,
+    RouterLink
   ],
   templateUrl: './catalogo-artistas.component.html',
   standalone: true,
@@ -34,7 +37,8 @@ export class CatalogoArtistasComponent implements OnInit {
   private todosLosArtistas: Artistas[] = [];
   private artistasPorGeneroCache: { [genero: string]: Artistas[] } = {};
 
-  constructor(private artistasService: ArtistasService, private generosMusicalesService: GenerosMusicalesService) {
+  constructor(private artistasService: ArtistasService, private generosMusicalesService: GenerosMusicalesService,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -109,6 +113,19 @@ export class CatalogoArtistasComponent implements OnInit {
       this.paginaActual = 0;
     }
     this.listarArtistas(); // Vuelve a cargar los datos con los nuevos parámetros
+  }
+
+  async verDetallesArtista(idArtista: number) {
+    try {
+      if (idArtista) {
+        console.log("Ruta actual antes de navegar:", this.router.url);
+        await this.router.navigate(['/artista', idArtista]); // [[8]]
+      } else {
+        throw new Error("ID no válido");
+      }
+    } catch (error) {
+      console.error("Error en navegación:", error);
+    }
   }
 
 
