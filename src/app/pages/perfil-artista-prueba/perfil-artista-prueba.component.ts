@@ -2,11 +2,12 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Artistas} from '../../interfaces/artistas';
 import {ArtistasService} from '../../servicios/artistas.service';
 import {ActivatedRoute} from '@angular/router';
-import {NgForOf, NgIf} from '@angular/common';
+import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {EventoDTO, PromotoresService} from '../../servicios/PromotoresService';
 import {AuthService} from '../../servicios/auth.service';
 import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
+import {Postulacion} from '../../interfaces/postulacion';
 
 
 @Component({
@@ -14,7 +15,8 @@ import {PostulacionEventoService} from '../../servicios/postulacion-evento.servi
   imports: [
     NgIf,
     FormsModule,
-    NgForOf
+    NgForOf,
+    NgClass,
   ],
   templateUrl: './perfil-artista-prueba.component.html',
   standalone: true,
@@ -27,6 +29,8 @@ export class PerfilArtistaPruebaComponent implements OnInit{
   IdUsuarioDePromotor!: number;
   eventos: EventoDTO[] = [];
   artistaId!: number;
+  usuarioRol!:string | null;
+  postulaciones: Postulacion[] = [];
 
   constructor(private artistasService:ArtistasService, private route: ActivatedRoute,
               private promotoresService: PromotoresService, private authService: AuthService,
@@ -35,9 +39,9 @@ export class PerfilArtistaPruebaComponent implements OnInit{
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      const id = Number(params.get('id'));
-      if (id) {
-        this.artistasService.artistaPorId(+id).subscribe(
+      this.artistaId = Number(params.get('id'));
+      if (this.artistaId) {
+        this.artistasService.artistaPorId(+this.artistaId).subscribe(
           data => { this.artista = data; },
           err  => console.error('Error HTTP:', err)
         );
@@ -47,11 +51,20 @@ export class PerfilArtistaPruebaComponent implements OnInit{
     });
     this.IdUsuarioDePromotor = this.authService.userId;
     console.log("Usuario promtor", this.IdUsuarioDePromotor)
-    this.cargarEventosPromotor();
-    this.artistaId = Number(this.route.snapshot.paramMap.get('id'));
+    console.log("Artista id", this.artistaId)
+    this.usuarioRol = this.authService.userRole;
+    console.log("Rol usuario", this.usuarioRol);
+
+    if(this.usuarioRol === 'PROMOTOR'){
+      this.cargarEventosPromotor();
+    }
+
+    this.cargarPostulaciones();
+
 
 
   }
+
 
 
 
@@ -100,4 +113,14 @@ export class PerfilArtistaPruebaComponent implements OnInit{
 
       })
   }
+  cargarPostulaciones(): void {
+    this.postulacionService.listarPorArtista(this.artistaId)
+      .subscribe(data => this.postulaciones = data);
+  }
+
+  respuestaArtista(post: Postulacion, estado: 'aceptado' | 'rechazado') {
+    this.postulacionService.actualizarEstado(post.id, estado)
+      .subscribe(() => post.estado = estado);
+  }
+
   }

@@ -1,3 +1,19 @@
+<div  *ngIf="usuarioRol === 'ARTISTA'">
+<div *ngFor="let post of postulaciones" class="bg-white shadow-lg rounded-lg p-6">
+  <h3 class="text-xl font-bold text-gray-800">{{ post.eventoNombre }}</h3>
+  <p class="text-sm text-gray-600">Estado: <span [ngClass]="{'text-yellow-500': post.estado === 'pendiente', 'text-green-500': post.estado === 'aceptado', 'text-red-500': post.estado === 'rechazado'}">{{ post.estado }}</span></p>
+
+  <div *ngIf="post.estado === 'pendiente'" class="mt-4 flex space-x-2">
+    <button (click)="respuestaArtista(post, 'aceptado')" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition">
+      Aceptar
+    </button>
+    <button (click)="respuestaArtista(post, 'rechazado')" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition">
+      Rechazar
+    </button>
+  </div>
+</div>
+</div>
+
 <div class="min-h-screen p-10 pt-32 h-100">
   <!-- Mensaje de éxito -->
   <div
@@ -30,9 +46,10 @@
     <div *ngIf="artista" class="flex justify-center text-center p-5">
       <p>Soy {{artista.nombreArtista}}</p>
     </div>
+    <div  *ngIf="usuarioRol === 'PROMOTOR'">
     <button (click)="mostrarModal = true"
             class="py-3 bg-indigo-500 font-semibold text-white w-1/4 rounded-xl hover:bg-indigo-600">
-      Follow
+      Contratar
     </button>
     <div class="modal" *ngIf="mostrarModal">
       <div class="modal-content">
@@ -40,7 +57,7 @@
         <hr>
         <p>Vas a contratar a un artista</p>
 
-        <!-- Input desplegable -->
+         Input desplegable
         <label for="eventSelect">Selecciona un evento:</label>
         <div *ngIf="!eventos.length">
           <p>No tienes eventos disponibles para ofrecer.</p>
@@ -56,9 +73,11 @@
       </div>
     </div>
 
-
+    </div>
   </div>
 </div>
 </div>
+
+
 
 
