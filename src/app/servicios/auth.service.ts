@@ -16,6 +16,11 @@ export class AuthService {
     return this.http.post(this.apiUrl, body, {responseType:'text'} );
   }
 
+  get userId(): number {
+    const id = localStorage.getItem('userId');      // MDN: localStorage.getItem devuelve string o null :contentReference[oaicite:0]{index=0}
+    return id !== null && !isNaN(+id) ? +id : 0;
+  }
+
   isLoggedIn(): boolean {
     return !!localStorage.getItem('token');
   }
