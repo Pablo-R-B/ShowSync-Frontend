@@ -21,6 +21,12 @@ export class AuthService {
     return id !== null && !isNaN(+id) ? +id : 0;
   }
 
+  get userRole(): string | null {
+    const rol = localStorage.getItem('rol');
+    return rol ? rol : null;
+  }
+
+
   isLoggedIn(): boolean {
     return !!localStorage.getItem('token');
   }
