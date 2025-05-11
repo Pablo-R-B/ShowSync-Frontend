@@ -3,4 +3,5 @@ export interface TokenPayload {
   rol: 'ADMINISTRADOR' | 'ARTISTA' | 'PROMOTOR';
   exp: number;
   nombre: string;
+  id:number;
 }
