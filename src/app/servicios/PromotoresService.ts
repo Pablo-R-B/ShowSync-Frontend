@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface EventoDTO {
@@ -29,13 +29,17 @@ export class PromotoresService {
   constructor(private http: HttpClient) {}
 
   /** GET  /promotores/{id} */
-  cargarPromotorPorId(id: number): Observable<Promotor> {
+  cargarPromotorPorId(id: number | null): Observable<Promotor> {
     return this.http.get<Promotor>(`${this.apiUrl}/promotores/${id}`);
   }
 
   /** GET  /eventos/promotor/{promotorId} */
   cargarEventosDePromotor(promotorId: number): Observable<EventoDTO[]> {
     return this.http.get<EventoDTO[]>(`${this.apiUrl}/eventos/promotor/${promotorId}`);
+  }
+
+  listarEventosPorUsuarioDePromotor(usuarioIdPromotor:number): Observable<EventoDTO[]>{
+    return this.http.get<EventoDTO[]>(`${this.apiUrl}/eventos/promotor/usuarioPromotor/${usuarioIdPromotor}`);
   }
 
   /** GET  /eventos/catalogo */
