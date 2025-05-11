@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Paginator} from 'primeng/paginator';
-import {NgForOf, NgIf, NgOptimizedImage} from '@angular/common';
+import {NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {GenerosMusicalesService} from '../../servicios/generos-musicales.service';
 import {Artistas} from '../../interfaces/artistas';
@@ -17,7 +17,6 @@ import {Router, RouterLink} from '@angular/router';
     NgIf,
     FormsModule,
     HeroComponent,
-    NgOptimizedImage,
     RouterLink
   ],
   templateUrl: './catalogo-artistas.component.html',
