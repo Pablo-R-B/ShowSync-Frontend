@@ -8,9 +8,6 @@ import {PerfilSalaComponent} from './pages/perfil-sala/perfil-sala.component';
 import {FormularioSalaComponent} from './pages/admin/formulario-sala/formulario-sala.component';
 import {CatalogoArtistasComponent} from './pages/catalogo-artistas/catalogo-artistas.component';
 
-
-
-
 import {PromotoresComponent} from './pages/promotores/promotores.component';
 import {EventosComponent} from './pages/eventos/eventos.component';
 import {BusquedaEventosComponent} from './pages/busqueda-eventos/busqueda-eventos.component';
@@ -26,6 +23,7 @@ export const routes: Routes = [
 //  { path: '**', redirectTo: 'auth/registro' },
   { path: '', redirectTo: 'landing-page', pathMatch: 'full' },
   { path: 'landing-page', component: LandingPageComponent },
+  { path: 'promotores', component: PromotoresComponent },
   { path: 'promotores/:id', component: PromotoresComponent },
   { path: 'eventos/:id', component: EventosComponent },
   { path: 'eventos', component: EventosComponent },
