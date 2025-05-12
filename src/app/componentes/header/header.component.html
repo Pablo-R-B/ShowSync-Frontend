@@ -1,5 +1,6 @@
-<header class="bg-black text-white px-6 py-4 shadow-md backdrop-blur-sm bg-opacity-90">
-  <div class="flex items-center justify-between max-w-screen-xl mx-auto">
+<header class="fixed top-0 left-0 w-full bg-black text-white px-6 py-4 shadow-md backdrop-blur-sm bg-opacity-90 z-50">
+  <!-- Contenedor principal -->
+<div class="flex items-center justify-between max-w-screen-xl mx-auto">
     <!-- Logo y enlaces -->
     <div class="flex items-center space-x-6">
       <img ngSrc="assets/images/logo_1.png"
@@ -10,6 +11,7 @@
       <div class="hidden md:flex space-x-14 font-medula text-3xl">
         <a routerLink="landing-page" class="hover:text-customGrisMedio transition">Inicio</a>
         <a routerLink="/busqueda-eventos" class="hover:text-customGrisMedio transition">Eventos</a>
+        <a routerLink="/catalogo-artistas" class="hover:text-customGrisMedio transition">Artistas</a>
       </div>
     </div>
 
@@ -28,6 +30,7 @@
 
     <!-- Icono de usuario con menú -->
     <div *ngIf="estaLogueado" class="relative hidden md:flex items-center space-x-4">
+      <span class="text-white font-medium text-lg">¡Hola, {{ username }}!</span>
       <button (click)="toggleMenuPerfil()" class="hover:text-customGrisMedio transition">
         <svg xmlns="http://www.w3.org/2000/svg"
              fill="none" viewBox="0 0 24 24"
@@ -38,6 +41,7 @@
         </svg>
       </button>
 
+
       <!-- Menú desplegable -->
       <div *ngIf="mostrarMenuPerfil"
            class="absolute right-0 top-full mt-2 w-48 bg-white text-black rounded-lg shadow-lg z-50">
@@ -47,6 +51,7 @@
                 class="w-full text-left px-4 py-2 hover:bg-gray-100 transition">Cerrar sesión</button>
       </div>
     </div>
+
 
 
 
