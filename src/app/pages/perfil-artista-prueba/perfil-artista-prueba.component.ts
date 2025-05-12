@@ -7,7 +7,7 @@ import {FormsModule} from '@angular/forms';
 import {EventoDTO, PromotoresService} from '../../servicios/PromotoresService';
 import {AuthService} from '../../servicios/auth.service';
 import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
-import {Postulacion} from '../../interfaces/postulacion';
+import {Postulacion} from '../../interfaces/Postulacion';
 
 
 @Component({
@@ -20,7 +20,6 @@ import {Postulacion} from '../../interfaces/postulacion';
   ],
   templateUrl: './perfil-artista-prueba.component.html',
   standalone: true,
-  styleUrl: './perfil-artista-prueba.component.css'
 })
 export class PerfilArtistaPruebaComponent implements OnInit{
   artista:Artistas | undefined;
