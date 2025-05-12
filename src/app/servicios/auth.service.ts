@@ -13,8 +13,19 @@ export class AuthService {
 
   login(email: string, contrasena: string): Observable<any> {
     const body = { email, contrasena };
-    return this.http.post(this.apiUrl, body, { responseType: 'text' });
+    return this.http.post(this.apiUrl, body, {responseType:'text'} );
   }
+
+  get userId(): number {
+    const id = localStorage.getItem('userId');      // MDN: localStorage.getItem devuelve string o null :contentReference[oaicite:0]{index=0}
+    return id !== null && !isNaN(+id) ? +id : 0;
+  }
+
+  get userRole(): string | null {
+    const rol = localStorage.getItem('rol');
+    return rol ? rol : null;
+  }
+
 
   isLoggedIn(): boolean {
     return !!localStorage.getItem('token');

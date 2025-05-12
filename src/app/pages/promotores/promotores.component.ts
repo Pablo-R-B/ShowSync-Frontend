@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { EventoDTO, Promotor, PromotoresService } from '../../servicios/PromotoresService';
 import { CommonModule, DatePipe, NgForOf } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -25,16 +25,21 @@ export class PromotoresComponent implements OnInit {
   eventosProximos: Array<{ fecha: string; lugar: string; nombre: string }> = [];
   artistas: Array<{ nombre: string }> = [];
 
-  private idPromotor = 7; // Aquí debes cambiarlo dinámicamente si lo deseas.
+  private idPromotor = 0; // Aquí debes cambiarlo dinámicamente si lo deseas.
 
   constructor(
     private promotoresService: PromotoresService,
     private datePipe: DatePipe,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.obtenerPromotor();
+    // this.obtenerPromotor();
+    this.route.params.subscribe(params => {
+      this.idPromotor = +params['id'];
+      this.obtenerPromotor();
+    })
     this.obtenerEventos();
     this.obtenerArtistas();
   }
