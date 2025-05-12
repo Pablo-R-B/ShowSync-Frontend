@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgForOf } from '@angular/common';
 import { Router } from '@angular/router';
-import { SalaService } from '../../../servicios/sala.service';
+import { SalasService } from '../../../servicios/salas.service';
 
 @Component({
   selector: 'app-panel-salas',
@@ -19,7 +19,7 @@ export class PanelSalasComponent implements OnInit {
   filtro: string = '';
 
   constructor(
-    private salaService: SalaService,
+    private salaService: SalasService,
     private router: Router
   ) {}
 

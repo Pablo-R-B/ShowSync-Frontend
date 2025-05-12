@@ -11,7 +11,7 @@ import {CatalogoArtistasComponent} from './pages/catalogo-artistas/catalogo-arti
 import {PromotoresComponent} from './pages/promotores/promotores.component';
 import {EventosComponent} from './pages/eventos/eventos.component';
 import {BusquedaEventosComponent} from './pages/busqueda-eventos/busqueda-eventos.component';
-import {BusquedaPromotoresComponent} from './pages/busqueda-promotores/busqueda-promotores.component';
+import {PerfilPromotoresComponent} from './pages/perfil-promotores/perfil-promotores.component';
 
 export const routes: Routes = [
   { path: 'auth/registro', component: RegistroComponent },
@@ -25,7 +25,7 @@ export const routes: Routes = [
   { path: 'promotores', component: PromotoresComponent },
   { path: 'eventos/:id', component: EventosComponent },
   { path: 'eventos', component: EventosComponent },
-  { path: 'busqueda-promotores', component: BusquedaPromotoresComponent},
+  { path: 'perfil-promotores', component: PerfilPromotoresComponent},
   { path: 'busqueda-eventos', component: BusquedaEventosComponent},
 
 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SalaService } from '../../servicios/sala.service';
+import { SalasService } from '../../servicios/salas.service';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { NgIf } from '@angular/common';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -25,7 +25,7 @@ export class PerfilSalaComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private salaService: SalaService
+    private salaService: SalasService
   ) {}
 
   ngOnInit() {
