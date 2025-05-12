@@ -1,0 +1,73 @@
+<div class="bg-[#7e001b] min-h-screen text-white font-sans pt-[120px] px-[10%]">
+
+  <!-- Info del Promotor -->
+  <div class="flex items-center gap-4 mb-8">
+    <img [src]="promotor?.imagenPerfil || logoUrl" alt="Logo del promotor"
+         class="w-16 h-16 rounded-full border border-white shadow" />
+    <div>
+      <h1 class="text-2xl font-bold">{{ promotor?.nombrePromotor }}</h1>
+      <p class="text-sm text-gray-300">{{ promotor?.descripcion }}</p>
+    </div>
+  </div>
+
+  <!-- Panel de Gestión -->
+  <div class="grid md:grid-cols-2 gap-8">
+
+    <!-- Gestión de Eventos -->
+    <div class="bg-gray-800 p-6 rounded-xl shadow-lg">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold">Eventos 🎫</h2>
+        <button class="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded text-white"
+                (click)="abrirFormularioCrearEvento()">+ Crear</button>
+      </div>
+
+      <ul class="space-y-4 max-h-[400px] overflow-y-auto">
+        <li *ngFor="let evento of eventos" class="bg-gray-900 p-4 rounded-lg shadow">
+          <div class="flex justify-between items-center">
+            <div>
+              <h3 class="font-semibold">{{ evento.nombreEvento }}</h3>
+              <p class="text-sm text-gray-400">{{ evento.fechaEvento | date:'dd/MM/yyyy' }} - {{ evento.nombreSala }}</p>
+            </div>
+            <div class="flex gap-2">
+              <button class="text-yellow-400 hover:text-yellow-300"
+                      (click)="editarEvento(evento)">✏️</button>
+              <button class="text-red-500 hover:text-red-400"
+                      (click)="eliminarEvento(evento.id)">🗑️</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Gestión de Salas -->
+    <div class="bg-gray-800 p-6 rounded-xl shadow-lg">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold">Salas 🎧</h2>
+        <button class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white"
+                (click)="crearSala()">+ Añadir Sala</button>
+      </div>
+
+      <ul class="space-y-4 max-h-[400px] overflow-y-auto">
+        <li *ngFor="let sala of salas" class="bg-gray-900 p-4 rounded-lg shadow flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <img [src]="sala.logo || defaultSalaLogo" alt="Logo sala" class="w-10 h-10 rounded-full" />
+            <div>
+              <p class="font-semibold">{{ sala.nombre }}</p>
+              <p class="text-sm text-gray-400">{{ sala.ubicacion }}</p>
+            </div>
+          </div>
+          <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
+                  (click)="confirmarSala(sala.id)">Confirmar ✅</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Botón Final de Navegación -->
+  <div class="flex justify-center mt-12 mb-24">
+    <button class="bg-gray-200 text-black px-10 py-4 text-xl rounded-xl shadow hover:bg-gray-300 transition"
+            [routerLink]="['/promotor/dashboard']">
+      Volver al Panel Principal
+    </button>
+  </div>
+</div>
