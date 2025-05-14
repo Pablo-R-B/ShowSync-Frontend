@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 
 import { CommonModule, DatePipe, NgForOf } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import {Promotor} from '../../interfaces/Promotor';
 import {EventoDTO} from '../../interfaces/EventoDTO';
 import {PromotoresService} from '../../servicios/PromotoresService';
@@ -13,7 +12,7 @@ import {PromotoresService} from '../../servicios/PromotoresService';
   imports: [
     CommonModule,
     NgForOf,
-    RouterLink
+
   ],
   providers: [DatePipe],
   templateUrl: './promotores.component.html',
