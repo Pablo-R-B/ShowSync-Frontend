@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import { Router } from '@angular/router';
 import { EventoDTO, Promotor, PromotoresService } from '../../servicios/PromotoresService';
 import { CommonModule, DatePipe, NgForOf } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -25,36 +25,19 @@ export class PromotoresComponent implements OnInit {
   eventosProximos: Array<{ fecha: string; lugar: string; nombre: string }> = [];
   artistas: Array<{ nombre: string }> = [];
 
-  private idPromotor = 0; // Aquí debes cambiarlo dinámicamente si lo deseas.
+  private idPromotor = 7; // Aquí debes cambiarlo dinámicamente si lo deseas.
 
   constructor(
     private promotoresService: PromotoresService,
     private datePipe: DatePipe,
-    private router: Router,
-    private route: ActivatedRoute
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      if (params['id']) {
-        this.idPromotor = +params['id'];
-        if (isNaN(this.idPromotor)) {
-          console.error('ID de promotor inválido:', params['id']);
-          return;
-        }
-      } else {
-        // Puedes establecer un ID por defecto, o cargar una vista general
-        console.warn('No se proporcionó ID de promotor');
-        return;
-      }
-
-      this.obtenerPromotor();
-      this.obtenerEventos();
-      this.obtenerArtistas();
-    });
+    this.obtenerPromotor();
+    this.obtenerEventos();
+    this.obtenerArtistas();
   }
-
-
 
   // Obtener los detalles del promotor
   private obtenerPromotor() {
