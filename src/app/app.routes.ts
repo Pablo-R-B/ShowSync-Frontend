@@ -12,6 +12,8 @@ import {BusquedaEventosComponent} from './pages/busqueda-eventos/busqueda-evento
 import {PerfilPromotoresComponent} from './pages/perfil-promotores/perfil-promotores.component';
 import {PerfilArtistaPruebaComponent} from './pages/perfil-artista-prueba/perfil-artista-prueba.component';
 import {PromotoresComponent} from './pages/promotores/promotores.component';
+import {BusquedaPromotoresComponent} from './pages/busqueda-promotores/busqueda-promotores.component';
+
 
 export const routes: Routes = [
   { path: 'auth/registro', component: RegistroComponent },
@@ -24,10 +26,12 @@ export const routes: Routes = [
   { path: 'landing-page', component: LandingPageComponent },
   { path: 'promotores', component: PromotoresComponent },
   { path: 'promotores/:id', component: PromotoresComponent },
+  { path: 'busqueda-promotores', component: BusquedaPromotoresComponent },
   { path: 'eventos/:id', component: EventosComponent },
   { path: 'eventos', component: EventosComponent },
   { path: 'perfil-promotores', component: PerfilPromotoresComponent},
   { path: 'busqueda-eventos', component: BusquedaEventosComponent},
+
 
 
   { path: 'salas/:id', component: PerfilSalaComponent },

@@ -13,7 +13,7 @@
         <a routerLink="/busqueda-eventos" class="hover:text-customGrisMedio transition">Eventos</a>
         <a routerLink="/salas/:id" class="hover:text-customGrisMedio transition">Salas</a>
         <a routerLink="/catalogo-artistas" class="hover:text-customGrisMedio transition">Artistas</a>
-        <a routerLink="/promotores" class="hover:text-customGrisMedio transition">Promotores</a>
+        <a routerLink="/busqueda-promotores" class="hover:text-customGrisMedio transition">Promotores</a>
       </div>
     </div>
 
@@ -70,8 +70,9 @@
 
   <!-- Menú móvil -->
   <div *ngIf="menuAbierto" class="md:hidden mt-4 space-y-2 text-center">
-    <a routerLink="/inicio" class="block hover:text-gray-400 transition">Inicio</a>
-    <a routerLink="/eventos" class="block hover:text-gray-400 transition">Eventos</a>
+    <a routerLink="/landing-page" class="block hover:text-gray-400 transition">Inicio</a>
+    <a routerLink="/busqueda-eventos" class="block hover:text-gray-400 transition">Eventos</a>
+    <a routerLink="/busqueda-promotores" class="block hover:text-gray-400 transition">Promotores</a>
 
     <!-- Si NO está logueado -->
     <ng-container *ngIf="!estaLogueado">
