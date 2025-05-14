@@ -1,32 +1,19 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {Promotor} from '../interfaces/Promotor';
+import {EventoDTO} from '../interfaces/EventoDTO';
 
-export interface EventoDTO {
-  id: number;
-  nombreEvento: string;
-  descripcion: string;
-  fechaEvento: string;     // vendrá formateado como ISO desde el backend
-  estado: string;
-  imagenEvento: string;
-  idSala: number;
-  nombreSala: string;
-  idPromotor: number;
-  nombrePromotor: string;
-}
 
-export interface Promotor {
-  id: number;
-  nombrePromotor: string;
-  descripcion: string;
-  imagenPerfil: string;
-}
+
 
 @Injectable({ providedIn: 'root' })
 export class PromotoresService {
   private apiUrl = 'http://localhost:8081';
 
   constructor(private http: HttpClient) {}
+
+
 
   /** GET  /promotores/{id} */
   cargarPromotorPorId(id: number | null): Observable<Promotor> {
@@ -57,4 +44,26 @@ export class PromotoresService {
   cargarArtistasDePromotor(promotorId: number): Observable<{ nombre: string }[]> {
     return this.http.get<{ nombre: string }[]>(`${this.apiUrl}/promotores/${promotorId}/artistas`);
   }
+
+  // Método para obtener todos los promotores
+  obtenerPromotoras(): Observable<Promotor[]> {
+    return this.http.get<Promotor[]>(`${this.apiUrl}/promotores`);
+  }
+
+  // Método para crear un nuevo promotor
+  crearPromotor(promotor: Promotor): Observable<Promotor> {
+    return this.http.post<Promotor>(`${this.apiUrl}/promotores/crear`, promotor);
+  }
+
+  // Método para editar un promotor
+  editarPromotor(id: number, promotor: Promotor): Observable<Promotor> {
+    return this.http.put<Promotor>(`${this.apiUrl}/promotores/editar/${id}`, promotor);
+  }
+
+  // Método para eliminar un promotor
+  eliminarPromotor(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/promotores/eliminar/${id}`);
+  }
+
+
 }

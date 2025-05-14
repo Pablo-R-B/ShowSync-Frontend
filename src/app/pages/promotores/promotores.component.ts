@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { EventoDTO, Promotor, PromotoresService } from '../../servicios/PromotoresService';
+import {ActivatedRoute, Router} from '@angular/router';
+
 import { CommonModule, DatePipe, NgForOf } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import {Promotor} from '../../interfaces/Promotor';
+import {EventoDTO} from '../../interfaces/EventoDTO';
+import {PromotoresService} from '../../servicios/PromotoresService';
 
 @Component({
   selector: 'app-promotores',
@@ -25,18 +28,26 @@ export class PromotoresComponent implements OnInit {
   eventosProximos: Array<{ fecha: string; lugar: string; nombre: string }> = [];
   artistas: Array<{ nombre: string }> = [];
 
-  private idPromotor = 7; // Aquí debes cambiarlo dinámicamente si lo deseas.
+  idPromotor!: number;
 
   constructor(
     private promotoresService: PromotoresService,
     private datePipe: DatePipe,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.obtenerPromotor();
-    this.obtenerEventos();
-    this.obtenerArtistas();
+    // ✅ Obtenemos el ID desde la URL
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam) {
+      this.idPromotor = parseInt(idParam, 10);
+      this.obtenerPromotor();
+      this.obtenerEventos();
+      this.obtenerArtistas();
+    } else {
+      console.error('No se encontró ID de promotor en la ruta');
+    }
   }
 
   // Obtener los detalles del promotor
@@ -58,7 +69,7 @@ export class PromotoresComponent implements OnInit {
 
         if (data.length) {
           // Establecer el evento destacado
-          this.eventoDestacado = data[1];
+          this.eventoDestacado = data[0];
         }
 
         // Filtrar los eventos futuros

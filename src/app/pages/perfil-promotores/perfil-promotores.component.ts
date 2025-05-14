@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { EventosService } from '../../servicios/EventosService';
 import { SalasService } from '../../servicios/salas.service';
-import {DatePipe, NgForOf} from '@angular/common';
+import {DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-perfil-promotores',
@@ -10,7 +10,9 @@ import {DatePipe, NgForOf} from '@angular/common';
   imports: [
     RouterLink,
     NgForOf,
-    DatePipe
+    NgIf,
+    DatePipe,
+    NgClass
   ],
   templateUrl: './perfil-promotores.component.html',
   styleUrls: ['./perfil-promotores.component.css']
@@ -31,11 +33,7 @@ export class PerfilPromotoresComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.promotor = JSON.parse(localStorage.getItem('usuario') || '{}');
-    if (!this.promotor?.id) {
-      this.router.navigate(['/login']);
-      return;
-    }
+    this.promotor = JSON.parse(localStorage.getItem('promotor') || '{}');
     this.cargarEventos();
     this.cargarSalas();
   }
