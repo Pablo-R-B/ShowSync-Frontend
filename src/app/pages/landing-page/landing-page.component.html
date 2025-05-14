@@ -56,20 +56,61 @@
 </div>
 
 
+<!-- Próximos Conciertos  -->
+<section class="py-16 bg-black">
+  <div class="container mx-auto text-center">
+    <h2 class="text-4xl font-extrabold text-white mb-8">Próximos Eventos</h2>
 
-<!-- Próximos Conciertos -->
-<div class="text-center pb-8">
-  <h2 class="text-2xl font-bold mb-6">Próximos Conciertos</h2>
-  <div class="flex flex-wrap justify-center gap-4 px-4">
-    <img src="/assets/images/concierto1.jpg" alt="Concierto 1" class="w-64 h-39 object-cover rounded">
-    <img src="/assets/images/concierto2.jpg" alt="Concierto 2" class="w-64 h-39 object-cover rounded">
-    <img src="/assets/images/concierto3.jpg" alt="Concierto 3" class="w-64 h-39 object-cover rounded">
+    <div
+      #carousel
+      class="carousel-container flex overflow-hidden space-x-6 mx-auto max-w-6xl transition-all duration-300"
+      (mouseenter)="onMouseEnter()"
+      (mouseleave)="onMouseLeave()"
+    >
+      <div *ngFor="let evento of eventos"
+           class="carousel-item hover:scale-105 min-w-[300px] w-[300px] h-[400px] flex-shrink-0 relative group transition-transform duration-300">
+        <img [src]="evento.imagenEvento" alt="Evento {{ evento.nombreEvento }}"
+             class="w-full h-full object-cover rounded-xl shadow-lg">
+
+        <!-- Overlay con detalles del evento -->
+        <div
+          class="absolute inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl px-4">
+          <h3 class="text-white text-2xl font-bold text-center mb-2">{{ evento.nombreEvento }}</h3>
+          <p class="text-white text-sm text-center mb-4">{{ evento.descripcion }}</p>
+
+          <!-- Botón "Ver detalles" según si el usuario está logueado -->
+          <ng-container *ngIf="usuarioLogueado; else accesoDenegado">
+            <button
+              (click)="verDetallesEvento(evento.id)"
+              class="px-6 py-2 bg-blue-700 text-white font-semibold rounded-lg hover:bg-blue-500 transition duration-300 shadow-md">
+              Ver detalles
+            </button>
+          </ng-container>
+
+          <ng-template #accesoDenegado>
+            <button
+              (click)="mostrarAdvertencia()"
+              class="px-6 py-2 bg-gray-500 text-white font-semibold rounded-lg opacity-60 cursor-not-allowed">
+              Ver detalles
+            </button>
+          </ng-template>
+
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón centrado debajo del carrusel -->
+    <div class="mt-10">
+      <button
+        class="bg-white text-black font-bold text-lg px-8 py-3 rounded-full hover:bg-gray-200 transition duration-300 shadow-lg"
+        [routerLink]="['/busqueda-eventos']">
+        Ver más Eventos
+      </button>
+    </div>
   </div>
-  <button class="mt-6 bg-gray-200 text-black font-bold px-4 py-2 rounded hover:bg-gray-300"
-          [routerLink]="['/promotores']">Ver más Conciertos</button>
-</div>
+</section>
 
 
-
-</body>
+  </body>
 

@@ -7,11 +7,11 @@ import {RestablecerComponent} from './pages/login/restablecer/restablecer.compon
 import {PerfilSalaComponent} from './pages/perfil-sala/perfil-sala.component';
 import {FormularioSalaComponent} from './pages/admin/formulario-sala/formulario-sala.component';
 import {CatalogoArtistasComponent} from './pages/catalogo-artistas/catalogo-artistas.component';
-
-import {PromotoresComponent} from './pages/promotores/promotores.component';
 import {EventosComponent} from './pages/eventos/eventos.component';
 import {BusquedaEventosComponent} from './pages/busqueda-eventos/busqueda-eventos.component';
 import {PerfilPromotoresComponent} from './pages/perfil-promotores/perfil-promotores.component';
+import {PerfilArtistaPruebaComponent} from './pages/perfil-artista-prueba/perfil-artista-prueba.component';
+import {PromotoresComponent} from './pages/promotores/promotores.component';
 
 export const routes: Routes = [
   { path: 'auth/registro', component: RegistroComponent },
@@ -23,6 +23,7 @@ export const routes: Routes = [
   { path: '', redirectTo: 'landing-page', pathMatch: 'full' },
   { path: 'landing-page', component: LandingPageComponent },
   { path: 'promotores', component: PromotoresComponent },
+  { path: 'promotores/:id', component: PromotoresComponent },
   { path: 'eventos/:id', component: EventosComponent },
   { path: 'eventos', component: EventosComponent },
   { path: 'perfil-promotores', component: PerfilPromotoresComponent},
@@ -40,7 +41,8 @@ export const routes: Routes = [
   { path: 'admin/salas/editar/:id', component: FormularioSalaComponent },
 
   // Redirecciones
-  { path: '', redirectTo: 'auth/registro', pathMatch: 'full' },
+  // { path: '', redirectTo: 'auth/registro', pathMatch: 'full' },
   // { path: '**', redirectTo: 'auth/registro' },
-  {path: 'catalogo-artistas', component:CatalogoArtistasComponent, pathMatch: 'full'}
+  {path: 'catalogo-artistas', component:CatalogoArtistasComponent, pathMatch: 'full'},
+  {path: 'artista/:id', component: PerfilArtistaPruebaComponent, pathMatch: 'full'}
 ];
