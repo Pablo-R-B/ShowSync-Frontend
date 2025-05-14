@@ -1,5 +1,6 @@
 
 export interface Evento {
+  nombre: string;
   artistasAsignados: any;
   generosMusicales: any;
   nombrePromotor: string;

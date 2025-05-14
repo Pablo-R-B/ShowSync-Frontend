@@ -35,14 +35,26 @@ export class PromotoresComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // this.obtenerPromotor();
     this.route.params.subscribe(params => {
-      this.idPromotor = +params['id'];
+      if (params['id']) {
+        this.idPromotor = +params['id'];
+        if (isNaN(this.idPromotor)) {
+          console.error('ID de promotor inválido:', params['id']);
+          return;
+        }
+      } else {
+        // Puedes establecer un ID por defecto, o cargar una vista general
+        console.warn('No se proporcionó ID de promotor');
+        return;
+      }
+
       this.obtenerPromotor();
-    })
-    this.obtenerEventos();
-    this.obtenerArtistas();
+      this.obtenerEventos();
+      this.obtenerArtistas();
+    });
   }
+
+
 
   // Obtener los detalles del promotor
   private obtenerPromotor() {
