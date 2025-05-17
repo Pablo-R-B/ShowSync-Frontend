@@ -7,14 +7,12 @@ import {RestablecerComponent} from './pages/login/restablecer/restablecer.compon
 import {PerfilSalaComponent} from './pages/perfil-sala/perfil-sala.component';
 import {FormularioSalaComponent} from './pages/admin/formulario-sala/formulario-sala.component';
 import {CatalogoArtistasComponent} from './pages/catalogo-artistas/catalogo-artistas.component';
-
-import {PromotoresComponent} from './pages/promotores/promotores.component';
 import {EventosComponent} from './pages/eventos/eventos.component';
 import {BusquedaEventosComponent} from './pages/busqueda-eventos/busqueda-eventos.component';
 import {PerfilPromotoresComponent} from './pages/perfil-promotores/perfil-promotores.component';
-import {PerfilArtistaPruebaComponent} from './pages/perfil-artista-prueba/perfil-artista-prueba.component';
 import {PromotoresComponent} from './pages/promotores/promotores.component';
 import {BusquedaPromotoresComponent} from './pages/busqueda-promotores/busqueda-promotores.component';
+import {PerfilArtistaComponent} from './pages/perfil-artista/perfil-artista.component';
 
 
 export const routes: Routes = [

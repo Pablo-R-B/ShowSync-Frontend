@@ -2,13 +2,12 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Artistas} from '../../interfaces/artistas';
 import {EventoDTO, PromotoresService} from '../../servicios/PromotoresService';
 import {ArtistasService} from '../../servicios/artistas.service';
-import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
 import {ActivatedRoute} from '@angular/router';
-import {NgForOf, NgIf} from '@angular/common';
+import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {EventoDTO, PromotoresService} from '../../servicios/PromotoresService';
 import {AuthService} from '../../servicios/auth.service';
 import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
+import {Postulacion} from '../../interfaces/Postulacion';
 
 
 @Component({
