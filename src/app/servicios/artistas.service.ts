@@ -52,7 +52,7 @@ export class ArtistasService {
   }
 
   artistaPorId(id: number): Observable<Artistas> {
-    return this.http.get<Artistas>(`${this.apiUrl}/${id}`);
+    return this.http.get<Artistas>(`${this.apiUrl}/artista/${id}`);
   }
 
   private erroresArtistas(erros:HttpErrorResponse): Observable<never> {

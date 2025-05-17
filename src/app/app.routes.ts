@@ -12,6 +12,7 @@ import {PromotoresComponent} from './pages/promotores/promotores.component';
 import {EventosComponent} from './pages/eventos/eventos.component';
 import {BusquedaEventosComponent} from './pages/busqueda-eventos/busqueda-eventos.component';
 import {BusquedaPromotoresComponent} from './pages/busqueda-promotores/busqueda-promotores.component';
+import {PerfilArtistaComponent} from './pages/perfil-artista/perfil-artista.component';
 
 export const routes: Routes = [
   { path: 'auth/registro', component: RegistroComponent },
@@ -42,5 +43,6 @@ export const routes: Routes = [
   // Redirecciones
   // { path: '', redirectTo: 'auth/registro', pathMatch: 'full' },
   // { path: '**', redirectTo: 'auth/registro' },
-  {path: 'catalogo-artistas', component:CatalogoArtistasComponent, pathMatch: 'full'}
+  {path: 'catalogo-artistas', component:CatalogoArtistasComponent, pathMatch: 'full'},
+  {path:'artista/:id', component:PerfilArtistaComponent, pathMatch: 'full'}
 ];

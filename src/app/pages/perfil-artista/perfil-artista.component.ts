@@ -1,18 +1,26 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Artistas} from '../../interfaces/artistas';
 import {EventoDTO, PromotoresService} from '../../servicios/PromotoresService';
 import {ArtistasService} from '../../servicios/artistas.service';
 import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
 import {ActivatedRoute} from '@angular/router';
 import {AuthService} from '../../servicios/auth.service';
+import {Postulacion} from '../../interfaces/postulacion';
+import {NgClass, NgForOf, NgIf} from '@angular/common';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-perfil-artista',
-  imports: [],
+  imports: [
+    NgIf,
+    NgClass,
+    FormsModule,
+    NgForOf
+  ],
   templateUrl: './perfil-artista.component.html',
   styleUrl: './perfil-artista.component.css'
 })
-export class PerfilArtistaComponent {
+export class PerfilArtistaComponent implements OnInit{
   artista:Artistas | undefined;
   @Input() mostrarModal = false;
   eventoSeleccionado!:number
@@ -20,7 +28,7 @@ export class PerfilArtistaComponent {
   eventos: EventoDTO[] = [];
   artistaId!: number;
   usuarioRol!:string | null;
-  // postulaciones: Postulacion[] = [];
+  postulaciones: Postulacion[] = [];
 
   constructor(private artistasService:ArtistasService, private route: ActivatedRoute,
               private promotoresService: PromotoresService, private authService: AuthService,
@@ -42,7 +50,7 @@ export class PerfilArtistaComponent {
     this.IdUsuarioDePromotor = this.authService.userId;
     console.log("Usuario promtor", this.IdUsuarioDePromotor)
     console.log("Artista id", this.artistaId)
-    // this.usuarioRol = this.authService.userRole;
+    this.usuarioRol = this.authService.userRole
     console.log("Rol usuario", this.usuarioRol);
 
     if(this.usuarioRol === 'PROMOTOR'){
@@ -107,11 +115,11 @@ export class PerfilArtistaComponent {
   //   this.postulacionService.listarPorArtista(this.artistaId)
   //     .subscribe(data => this.postulaciones = data);
   // }
-  //
-  // respuestaArtista(post: Postulacion, estado: 'aceptado' | 'rechazado') {
-  //   this.postulacionService.actualizarEstado(post.id, estado)
-  //     .subscribe(() => post.estado = estado);
-  // }
+
+  respuestaArtista(post: Postulacion, estado: 'aceptado' | 'rechazado') {
+    this.postulacionService.actualizarEstado(post.id, estado)
+      .subscribe(() => post.estado = estado);
+  }
 
 
 
