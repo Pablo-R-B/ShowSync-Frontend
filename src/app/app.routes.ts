@@ -12,7 +12,6 @@ import {PromotoresComponent} from './pages/promotores/promotores.component';
 import {EventosComponent} from './pages/eventos/eventos.component';
 import {BusquedaEventosComponent} from './pages/busqueda-eventos/busqueda-eventos.component';
 import {BusquedaPromotoresComponent} from './pages/busqueda-promotores/busqueda-promotores.component';
-import {PerfilArtistaPruebaComponent} from './pages/perfil-artista-prueba/perfil-artista-prueba.component';
 
 export const routes: Routes = [
   { path: 'auth/registro', component: RegistroComponent },
@@ -43,6 +42,5 @@ export const routes: Routes = [
   // Redirecciones
   // { path: '', redirectTo: 'auth/registro', pathMatch: 'full' },
   // { path: '**', redirectTo: 'auth/registro' },
-  {path: 'catalogo-artistas', component:CatalogoArtistasComponent, pathMatch: 'full'},
-  {path: 'artista/:id', component: PerfilArtistaPruebaComponent, pathMatch: 'full'}
+  {path: 'catalogo-artistas', component:CatalogoArtistasComponent, pathMatch: 'full'}
 ];
