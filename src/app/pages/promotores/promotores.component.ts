@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 
 import { CommonModule, DatePipe, NgForOf } from '@angular/common';
-import { RouterLink } from '@angular/router';
+
 import {Promotor} from '../../interfaces/Promotor';
 import {EventoDTO} from '../../interfaces/EventoDTO';
 import {PromotoresService} from '../../servicios/PromotoresService';
@@ -12,8 +12,7 @@ import {PromotoresService} from '../../servicios/PromotoresService';
   standalone: true,
   imports: [
     CommonModule,
-    NgForOf,
-    RouterLink
+    NgForOf
   ],
   providers: [DatePipe],
   templateUrl: './promotores.component.html',
@@ -21,7 +20,7 @@ import {PromotoresService} from '../../servicios/PromotoresService';
 })
 export class PromotoresComponent implements OnInit {
   promotor: Promotor | null = null;
-  logoUrl: string = 'assets/logo.png';
+  logoUrl: string = 'logo_1.png';
 
   eventos: EventoDTO[] = [];
   eventoDestacado?: EventoDTO;

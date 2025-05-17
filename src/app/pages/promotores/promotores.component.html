@@ -1,32 +1,30 @@
-<div class="bg-[#7e001b] min-h-screen text-white font-sans pt-[140px]">
+<div class="bg-[#7e001b] min-h-screen text-white font-sans pt-[120px] sm:pt-[140px]">
   <!-- Header Promotor -->
-  <div class="p-4 flex items-center gap-3 ml-[10%]">
+  <div class="p-4 flex items-center gap-3 px-6 sm:ml-[10%]">
     <img [src]="promotor?.imagenPerfil || logoUrl"
-         [alt]="promotor?.nombrePromotor "
+         [alt]="promotor?.nombrePromotor"
          class="w-12 h-12 rounded-full" />
     <div>
-      <h1 class="text-2xl font-bold">{{ promotor?.nombrePromotor }}</h1>
+      <h1 class="text-xl sm:text-2xl font-bold">{{ promotor?.nombrePromotor }}</h1>
       <p class="text-sm text-gray-300">{{ promotor?.descripcion }}</p>
     </div>
   </div>
 
-  <!-- evento -->
-  <div class="flex justify-center mt-4" *ngIf="eventoDestacado">
+  <!-- Evento destacado -->
+  <div class="flex justify-center mt-4 px-4 sm:px-0" *ngIf="eventoDestacado">
     <img [src]="eventoDestacado.imagenEvento || logoUrl"
          alt="Evento Destacado"
-         class="w-[70%] h-[400px] object-cover rounded-xl shadow-xl" />
+         class="w-full sm:w-[80%] h-[220px] sm:h-[400px] object-cover rounded-xl shadow-xl transition-all duration-300" />
   </div>
-  <div class="flex justify-end mt-2 mr-[10%]" *ngIf="eventoDestacado">
+  <div class="flex justify-center sm:justify-end mt-2 px-4 sm:mr-[10%]" *ngIf="eventoDestacado">
     <button (click)="verDetallesEvento(eventoDestacado.id)"
-            class="bg-[#7e001b] hover:bg-[#a30027] text-white px-4 py-2 rounded-full border border-white">
-
+            class="bg-[#7e001b] hover:bg-[#a30027] text-white px-4 py-2 rounded-full border border-white mt-2">
       Más información
     </button>
   </div>
 
-
   <!-- Galería de eventos -->
-  <div class="bg-gray-800 mt-6 p-4 mx-[10%] rounded-xl shadow-lg">
+  <div class="bg-gray-800 mt-6 p-4 mx-4 sm:mx-[10%] rounded-xl shadow-lg">
     <div class="flex justify-between items-center mb-4">
       <div *ngIf="promotor">
         <button class="bg-[#e50914] hover:bg-red-700 text-white px-3 py-1 rounded"
@@ -34,8 +32,9 @@
           Ver todos los Eventos
         </button>
       </div>
-
     </div>
+
+    <!-- Grid de eventos -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
       <div *ngFor="let e of eventos" class="bg-gray-900 p-2 rounded-lg shadow">
         <img [src]="e.imagenEvento" [alt]="e.nombreEvento"
@@ -50,7 +49,8 @@
   </div>
 
   <!-- Próximos eventos y artistas -->
-  <div class="flex flex-col md:flex-row justify-center gap-6 mt-10 px-[10%]">
+  <div class="flex flex-col md:flex-row justify-center gap-6 mt-10 px-4 sm:px-[10%]">
+    <!-- Eventos -->
     <div class="bg-gray-800 rounded-xl p-4 w-full md:w-1/2 shadow-lg">
       <h2 class="text-lg font-semibold mb-4">Eventos 🎫</h2>
       <ul>
@@ -60,6 +60,8 @@
         </li>
       </ul>
     </div>
+
+    <!-- Artistas -->
     <div class="bg-gray-800 rounded-xl p-4 w-full md:w-1/2 shadow-lg">
       <h2 class="text-lg font-semibold mb-4">Artistas 🎤</h2>
       <ul>
@@ -68,7 +70,6 @@
     </div>
   </div>
 
-
-
-  <div class="h-[10px]"></div>
+  <!-- Espaciador final -->
+  <div class="h-[20px]"></div>
 </div>

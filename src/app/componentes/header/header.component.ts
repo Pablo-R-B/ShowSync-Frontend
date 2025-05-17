@@ -37,4 +37,13 @@ export class HeaderComponent {
     this.menuAbierto = false;
     this.router.navigate(['/auth/login']);
   }
+
+  getRutaPerfil() {
+    const rol = localStorage.getItem('rol');
+    if (rol === 'PROMOTOR') {
+      return '/perfil-promotores';
+    } else {
+      return '/login';
+    }
+  }
 }
