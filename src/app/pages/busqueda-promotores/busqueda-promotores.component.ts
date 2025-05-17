@@ -19,7 +19,7 @@ import {RouterLink} from '@angular/router';
   styleUrl: './busqueda-promotores.component.css'
 })
 export class BusquedaPromotoresComponent implements OnInit {
-  promotoras: Promotor[] = []; // Cambié 'promotor' por 'promotoras'
+  promotoras: Promotor[] = [];
   promotorSeleccionado: Promotor | null = null;
   nombrePromotoraSeleccionada: string = '';
   promotorasFiltradas: Promotor[] = [];

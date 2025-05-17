@@ -47,7 +47,7 @@
       <!-- Menú desplegable -->
       <div *ngIf="mostrarMenuPerfil"
            class="absolute right-0 top-full mt-2 w-48 bg-white text-black rounded-lg shadow-lg z-50">
-        <a routerLink="/perfil"
+        <a [routerLink]="getRutaPerfil()"
            class="block px-4 py-2 hover:bg-gray-100 transition">Perfil</a>
         <button (click)="cerrarSesion()"
                 class="w-full text-left px-4 py-2 hover:bg-gray-100 transition">Cerrar sesión</button>

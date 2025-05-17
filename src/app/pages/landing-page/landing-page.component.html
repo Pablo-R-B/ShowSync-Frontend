@@ -1,46 +1,26 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
+<body class="bg-black text-white font-sans">
 
-
-  <body class="bg-black  text-white">
-
-
-
-<!-- Hero Section -->
-<div class="relative w-full h-[500px] z-10">
+<!-- HERO -->
+<div class="relative w-full h-[300px] md:h-[500px] z-10">
   <img src="/assets/images/imagen1.jpeg" alt="Concierto" class="w-full h-full object-cover">
-  <div class="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 px-4 z-0">
-    <h1 class="text-3xl md:text-4xl font-bold text-center text-white">
-      "Conéctate. Promociona. <br /> Vive la música con ShowSync."
-    </h1>
+  <div class="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 px-4">
+    <h1 class="text-2xl md:text-4xl font-bold text-center">"Conéctate. Promociona. <br> Vive la música con ShowSync."</h1>
   </div>
 </div>
 
-
-
-
-<!-- Info Section -->
+<!-- INFO -->
 <div class="text-center py-8 px-4">
-  <p class="mt-4 font-bold">
-    <i class="fa-solid fa-bolt fa-spin text-yellow-400 text-2xl"></i> "Regístrate y promociona tu música."
-  </p>
-  <p class="mt-4 font-bold">
-    <i class="fa-solid fa-bolt fa-spin text-yellow-400 text-2xl"></i> "Encuentra talento para tus eventos."
-  </p>
-  <p class="mt-4 font-bold">
-    <i class="fa-solid fa-bolt fa-spin text-yellow-400 text-2xl"></i> "Descubre y sigue a tus artistas favoritos."
-  </p>
-  <button
-    class="mt-6 bg-gray-200 text-black font-bold px-4 py-2 rounded hover:bg-gray-300"
-    [routerLink]="['/auth/registro']">
-    Regístrate
-  </button>
-
+  <div class="space-y-4">
+    <p class="font-bold"><i class="fa-solid fa-bolt fa-spin text-yellow-400 text-2xl"></i> Regístrate y promociona tu música.</p>
+    <p class="font-bold"><i class="fa-solid fa-bolt fa-spin text-yellow-400 text-2xl"></i> Encuentra talento para tus eventos.</p>
+    <p class="font-bold"><i class="fa-solid fa-bolt fa-spin text-yellow-400 text-2xl"></i> Descubre y sigue a tus artistas favoritos.</p>
+  </div>
+  <button class="mt-6 bg-gray-200 text-black font-bold px-6 py-2 rounded hover:bg-gray-300" [routerLink]="['/auth/registro']">Regístrate</button>
 </div>
 
-
-
-<!-- Categorías -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 px-8 pb-8">
+<!-- CATEGORÍAS -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6 pb-8">
   <div class="text-center">
     <img src="/assets/images/salas.png" alt="Salas" class="w-full h-48 object-contain rounded mb-2">
     <p>Salas</p>
@@ -55,62 +35,34 @@
   </div>
 </div>
 
-
-<!-- Próximos Conciertos  -->
+<!--  EVENTOS -->
 <section class="py-16 bg-black">
-  <div class="container mx-auto text-center">
-    <h2 class="text-4xl font-extrabold text-white mb-8">Próximos Eventos</h2>
+  <div class="container mx-auto text-center px-4">
+    <h2 class="text-2xl md:text-4xl font-extrabold mb-8">Próximos Eventos</h2>
 
-    <div
-      #carousel
-      class="carousel-container flex overflow-hidden space-x-6 mx-auto max-w-6xl transition-all duration-300"
-      (mouseenter)="onMouseEnter()"
-      (mouseleave)="onMouseLeave()"
-    >
-      <div *ngFor="let evento of eventos"
-           class="carousel-item hover:scale-105 min-w-[300px] w-[300px] h-[400px] flex-shrink-0 relative group transition-transform duration-300">
-        <img [src]="evento.imagenEvento" alt="Evento {{ evento.nombreEvento }}"
-             class="w-full h-full object-cover rounded-xl shadow-lg">
+    <div #carousel class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-4 max-w-7xl mx-auto justify-items-center">
 
-        <!-- Overlay con detalles del evento -->
-        <div
-          class="absolute inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl px-4">
-          <h3 class="text-white text-2xl font-bold text-center mb-2">{{ evento.nombreEvento }}</h3>
+    <div *ngFor="let evento of eventos"
+           class="min-w-[280px] sm:min-w-[300px] w-[280px] h-[400px] flex-shrink-0 relative group transition-transform duration-300 hover:scale-105">
+        <img [src]="evento.imagenEvento" alt="Evento {{ evento.nombreEvento }}" class="w-full h-full object-cover rounded-xl shadow-lg">
+
+        <div class="absolute inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl px-4">
+          <h3 class="text-white text-xl md:text-2xl font-bold text-center mb-2">{{ evento.nombreEvento }}</h3>
           <p class="text-white text-sm text-center mb-4">{{ evento.descripcion }}</p>
-
-          <!-- Botón "Ver detalles" según si el usuario está logueado -->
           <ng-container *ngIf="usuarioLogueado; else accesoDenegado">
-            <button
-              (click)="verDetallesEvento(evento.id)"
-              class="px-6 py-2 bg-blue-700 text-white font-semibold rounded-lg hover:bg-blue-500 transition duration-300 shadow-md">
-              Ver detalles
-            </button>
+            <button (click)="verDetallesEvento(evento.id)" class="px-6 py-2 bg-blue-700 text-white font-semibold rounded-lg hover:bg-blue-500 transition duration-300 shadow-md">Ver detalles</button>
           </ng-container>
-
           <ng-template #accesoDenegado>
-            <button
-              (click)="mostrarAdvertencia()"
-              class="px-6 py-2 bg-gray-500 text-white font-semibold rounded-lg opacity-60 cursor-not-allowed">
-              Ver detalles
-            </button>
+            <button (click)="mostrarAdvertencia()" class="px-6 py-2 bg-gray-500 text-white font-semibold rounded-lg opacity-60 cursor-not-allowed">Ver detalles</button>
           </ng-template>
-
-
         </div>
       </div>
     </div>
 
-    <!-- Botón centrado debajo del carrusel -->
     <div class="mt-10">
-      <button
-        class="bg-white text-black font-bold text-lg px-8 py-3 rounded-full hover:bg-gray-200 transition duration-300 shadow-lg"
-        [routerLink]="['/busqueda-eventos']">
-        Ver más Eventos
-      </button>
+      <button class="bg-white text-black font-bold text-lg px-8 py-3 rounded-full hover:bg-gray-200 transition duration-300 shadow-lg" [routerLink]="['/busqueda-eventos']">Ver más Eventos</button>
     </div>
   </div>
 </section>
 
-
-  </body>
-
+</body>

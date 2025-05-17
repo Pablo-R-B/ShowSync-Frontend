@@ -12,7 +12,6 @@ import {PromotoresService} from '../../servicios/PromotoresService';
   imports: [
     CommonModule,
     NgForOf,
-
   ],
   providers: [DatePipe],
   templateUrl: './promotores.component.html',

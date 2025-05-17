@@ -1,18 +1,28 @@
 <!-- Font Awesome -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
-<div class="bg-[#7e001b] min-h-screen text-white font-sans pt-[80px] px-[10%]">
+<div class="bg-[#7e001b] min-h-screen text-white font-sans pt-[120px] pb-[100px] px-[10%]">
 
   <!-- Info del Promotor -->
-  <div class="p-4 flex items-center gap-3 ml-[10%]">
+  <div class="p-6 flex items-center gap-5 px-6 sm:ml-[10%] bg-[#4c0012] rounded-lg shadow-lg">
     <img [src]="promotor?.imagenPerfil || logoUrl"
-         [alt]="promotor?.nombrePromotor "
-         class="w-12 h-12 rounded-full" />
+         [alt]="promotor?.nombrePromotor"
+         class="w-24 h-24 rounded-full border-4 border-white shadow-md object-cover" />
     <div>
-      <h1 class="text-2xl font-bold">{{ promotor?.nombrePromotor }}</h1>
-      <p class="text-sm text-gray-300">{{ promotor?.descripcion }}</p>
+      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-wide drop-shadow-lg">{{ promotor?.nombrePromotor }}</h1>
+      <p class="mt-2 max-w-lg text-lg text-gray-300 leading-relaxed">{{ promotor?.descripcion }}</p>
     </div>
   </div>
+
+  <!-- Botón Editar Mi Perfil -->
+  <div class="flex justify-center mt-12 mb-[75px]">
+    <button class="bg-[#e4e4e4] text-black px-10 py-4 text-2xl rounded-2xl shadow-md hover:bg-[#d4d4d4] transition font-semibold"
+            (click)="editarMiPerfil()">
+      EDITAR MI PERFIL <i class="fas fa-user-edit ml-2"></i>
+    </button>
+  </div>
+
+
 
   <!-- Panel de Gestión -->
   <div class="grid md:grid-cols-2 gap-8">
@@ -38,15 +48,16 @@
             <!-- Icono de edición -->
             <button class="text-yellow-400 hover:text-yellow-300 text-xl flex items-center"
                     (click)="editarEvento(evento)">
-              <i class="fas fa-pencil-alt"></i> <!-- Icono de lápiz -->
+              <i class="fas fa-pencil-alt"></i>
             </button>
             <!-- Icono de eliminación -->
             <button class="text-red-500 hover:text-red-400 text-xl flex items-center"
                     (click)="eliminarEvento(evento.id)">
-              <i class="fas fa-trash-alt"></i> <!-- Icono de basura -->
+              <i class="fas fa-trash-alt"></i>
             </button>
           </div>
         </li>
+        <li *ngIf="eventos.length === 0" class="text-gray-400">No hay eventos para mostrar.</li>
       </ul>
     </div>
 
@@ -56,32 +67,56 @@
         <h2 class="text-xl font-semibold flex items-center gap-2">
           <i class="fas fa-headphones-alt text-white"></i> SALAS
         </h2>
-        <button class="bg-green-600 hover:bg-green-700 px-4 py-1 rounded-full text-sm text-white font-semibold"
-                (click)="crearSala()">+ AÑADIR SALA</button>
       </div>
 
       <ul class="space-y-4">
         <li *ngFor="let sala of salas" class="bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center">
           <div class="flex items-center gap-3">
-            <img [src]="sala.logo || defaultSalaLogo" alt="Logo sala" class="w-10 h-10 rounded-full" />
+            <img [src]="sala.logo" alt="Logo sala" class="w-10 h-10 rounded-full" />
             <div>
               <p class="font-semibold">{{ sala.nombre }}</p>
-              <p class="text-sm text-gray-400">{{ sala.ubicacion }}</p>
             </div>
           </div>
-          <button class="px-4 py-1 text-sm rounded-full font-semibold"
-                  [ngClass]="{
-                    'bg-blue-600 hover:bg-blue-700 text-white': !sala.confirmada,
-                    'bg-green-600 text-white': sala.confirmada
-                  }"
-                  (click)="confirmarSala(sala.id)">
-            CONFIRMAR
-            <i class="fas fa-check ml-1" *ngIf="sala.confirmada"></i>
-            <i class="fas fa-caret-down ml-1" *ngIf="!sala.confirmada"></i>
-          </button>
+
+          <!-- Botones de estado -->
+          <div class="flex gap-2 items-center">
+            <!-- En revisión: botón verde -->
+            <button
+              *ngIf="sala.estado === 'en_revision'"
+              class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-full font-semibold"
+              (click)="confirmarSala(sala.id)">
+              En revisión
+            </button>
+
+            <!-- Confirmado: botón azul, deshabilitado -->
+            <button
+              *ngIf="sala.estado === 'confirmada'"
+              class="bg-blue-600 text-white px-3 py-1 rounded-full font-semibold"
+              disabled>
+              Confirmado <i class="fas fa-check ml-1"></i>
+            </button>
+
+            <!-- Rechazado: botón rojo, deshabilitado -->
+            <button
+              *ngIf="sala.estado === 'rechazada'"
+              class="bg-red-600 text-white px-3 py-1 rounded-full font-semibold"
+              disabled>
+              Rechazado <i class="fas fa-times ml-1"></i>
+            </button>
+
+            <!-- Botón para rechazar solo si está en revisión -->
+            <button
+              *ngIf="sala.estado === 'en_revision'"
+              class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-full font-semibold"
+              (click)="rechazarSala(sala.id)">
+              Rechazar
+            </button>
+          </div>
         </li>
+        <li *ngIf="salas.length === 0" class="text-gray-400">No hay salas para mostrar.</li>
       </ul>
     </div>
+
   </div>
 
   <!-- Botón Gestionar Salas -->
@@ -91,4 +126,5 @@
       GESTIONAR SALAS <i class="fas fa-book ml-2"></i>
     </button>
   </div>
+
 </div>

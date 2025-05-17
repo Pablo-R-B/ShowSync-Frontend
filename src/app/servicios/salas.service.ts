@@ -81,4 +81,10 @@ export class SalasService {
   confirmarSala(salaId: number): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/${salaId}/confirmar`, {});
   }
+
+  // rechazar sala
+  rechazarSala(salaId: number): Observable<any> {
+    return this.http.delete(`/api/salas/${salaId}`); // o similar, dependiendo de la API
+  }
+
 }

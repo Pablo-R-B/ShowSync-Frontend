@@ -31,5 +31,9 @@ export class AuthService {
     return !!localStorage.getItem('token');
   }
 
+  getPerfil(): Observable<any> {
+    return this.http.get('http://localhost:8081/auth/perfil');
+  }
+
 
 }

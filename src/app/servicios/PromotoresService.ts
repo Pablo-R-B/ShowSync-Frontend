@@ -65,5 +65,12 @@ export class PromotoresService {
     return this.http.delete<void>(`${this.apiUrl}/promotores/eliminar/${id}`);
   }
 
+  getPerfilUsuario(): Observable<Promotor> {
+    return this.http.get<Promotor>(`${this.apiUrl}/auth/perfil`);
+  }
 
+  // Obtener promotor por ID de usuario
+  getPromotorPorIdUsuario(idUsuario: number): Observable<Promotor> {
+    return this.http.get<Promotor>(`${this.apiUrl}/promotores/usuario/${idUsuario}`);
+  }
 }
