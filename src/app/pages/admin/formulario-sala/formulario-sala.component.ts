@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SalaService } from '../../../servicios/sala.service';
+import { SalasService } from '../../../servicios/salas.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -24,7 +24,7 @@ export class FormularioSalaComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private salaService: SalaService
+    private salaService: SalasService
   ) {}
 
   ngOnInit(): void {

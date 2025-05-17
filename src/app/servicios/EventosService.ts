@@ -1,24 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {Evento} from '../interfaces/Evento';
 
-export interface Evento {
-  artistasAsignados: any;
-  generosMusicales: any;
-  nombrePromotor: string;
-  estado: string;
-  nombreSala: string;
-  genero: string;
-  ubicacion: string;
-  sala_id: string;
-  id: number;
-  nombreEvento: string;
-  descripcion: string;
-  fechaEvento: string;
-  imagenEvento: string;
-  salaNombre: string;
-  seguido?: boolean; // opcional si luego lo usas
-}
 
 @Injectable({
   providedIn: 'root'
@@ -54,7 +38,45 @@ export class EventosService {
     return this.http.get<Evento>(`${this.apiUrl}/eventos/evento/${id}`);
   }
 
+  // Crear un nuevo evento para un promotor
+  crearEvento(promotorId: number, evento: Evento): Observable<Evento> {
+    return this.http.post<Evento>(`${this.apiUrl}/eventos/promotor/${promotorId}`, evento);
+  }
 
+  // Editar un evento de un promotor
+  editarEvento(promotorId: number, eventoId: number, evento: Evento): Observable<Evento> {
+    return this.http.put<Evento>(`${this.apiUrl}/eventos/promotor/${promotorId}/evento/${eventoId}`, evento);
+  }
+
+  // Eliminar un evento de un promotor
+  eliminarEvento(promotorId: number, eventoId: number): Observable<string> {
+    return this.http.delete(`${this.apiUrl}/eventos/promotor/${promotorId}/evento/${eventoId}`, { responseType: 'text' });
+  }
+
+
+
+  // Obtener un evento específico por ID
+  obtenerEventoPorId(eventoId: number): Observable<Evento> {
+    return this.http.get<Evento>(`${this.apiUrl}/evento/evento/${eventoId}`);
+  }
+
+
+  // Obtener todos los géneros musicales disponibles
+  getGeneros(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/eventos/generos`);
+  }
+
+  // Obtener todos los estados posibles de los eventos
+  obtenerEstados(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/eventos/estados`);
+  }
+
+
+
+// Obtener eventos de un promotor específico
+  obtenerEventosDePromotor(promotorId: number): Observable<Evento[]> {
+  return this.http.get<Evento[]>(`${this.apiUrl}/eventos/promotor/${promotorId}`);
+}
 
 
 }

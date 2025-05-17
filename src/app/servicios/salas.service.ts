@@ -1,9 +1,11 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import {Sala} from '../interfaces/Sala';
+
 
 @Injectable({ providedIn: 'root' })
-export class SalaService {
+export class SalasService {
   private apiUrl = '/api/salas';
 
   constructor(private http: HttpClient) {}
@@ -67,4 +69,22 @@ export class SalaService {
       .set('fechaFin', fin);
     return this.http.get<any[]>(`${this.apiUrl}/disponibilidad`, { params, headers: this.getAuthHeaders() });
   }
+
+
+  // Obtener sala
+  obtenerSalas(promotorId: number): Observable<Sala[]> {
+    return this.http.get<Sala[]>(`${this.apiUrl}/salas/promotor/${promotorId}`);
+  }
+
+
+  // confirmar sala
+  confirmarSala(salaId: number): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/${salaId}/confirmar`, {});
+  }
+
+  // rechazar sala
+  rechazarSala(salaId: number): Observable<any> {
+    return this.http.delete(`/api/salas/${salaId}`); // o similar, dependiendo de la API
+  }
+
 }

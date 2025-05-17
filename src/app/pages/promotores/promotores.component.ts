@@ -1,16 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import { EventoDTO, Promotor, PromotoresService } from '../../servicios/PromotoresService';
+
 import { CommonModule, DatePipe, NgForOf } from '@angular/common';
-import { RouterLink } from '@angular/router';
+
+import {Promotor} from '../../interfaces/Promotor';
+import {EventoDTO} from '../../interfaces/EventoDTO';
+import {PromotoresService} from '../../servicios/PromotoresService';
 
 @Component({
   selector: 'app-promotores',
   standalone: true,
   imports: [
     CommonModule,
-    NgForOf,
-    RouterLink
+    NgForOf
   ],
   providers: [DatePipe],
   templateUrl: './promotores.component.html',
@@ -18,14 +20,14 @@ import { RouterLink } from '@angular/router';
 })
 export class PromotoresComponent implements OnInit {
   promotor: Promotor | null = null;
-  logoUrl: string = 'assets/logo.png';
+  logoUrl: string = 'logo_1.png';
 
   eventos: EventoDTO[] = [];
   eventoDestacado?: EventoDTO;
   eventosProximos: Array<{ fecha: string; lugar: string; nombre: string }> = [];
   artistas: Array<{ nombre: string }> = [];
 
-  private idPromotor = 0; // Aquí debes cambiarlo dinámicamente si lo deseas.
+  idPromotor!: number;
 
   constructor(
     private promotoresService: PromotoresService,
@@ -35,13 +37,16 @@ export class PromotoresComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // this.obtenerPromotor();
-    this.route.params.subscribe(params => {
-      this.idPromotor = +params['id'];
+    // ✅ Obtenemos el ID desde la URL
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam) {
+      this.idPromotor = parseInt(idParam, 10);
       this.obtenerPromotor();
-    })
-    this.obtenerEventos();
-    this.obtenerArtistas();
+      this.obtenerEventos();
+      this.obtenerArtistas();
+    } else {
+      console.error('No se encontró ID de promotor en la ruta');
+    }
   }
 
   // Obtener los detalles del promotor
@@ -63,7 +68,7 @@ export class PromotoresComponent implements OnInit {
 
         if (data.length) {
           // Establecer el evento destacado
-          this.eventoDestacado = data[1];
+          this.eventoDestacado = data[0];
         }
 
         // Filtrar los eventos futuros

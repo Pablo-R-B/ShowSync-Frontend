@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Postulacion} from '../interfaces/postulacion';
+import {Postulacion} from '../interfaces/Postulacion';
 
 @Injectable({
   providedIn: 'root'
@@ -19,10 +19,10 @@ export class PostulacionEventoService {
     return this.http.post<void>(`${this.apiUrl}/postulacion/oferta-promotor`, null,
       {params, observe:'response'});
   }
-  //
-  // listarPorArtista(artistaId: number): Observable<Postulacion[]> {
-  //   return this.http.get<Postulacion[]>(`${this.apiUrl}/postulacion/artista/${artistaId}`);
-  // }
+
+  listarPorArtista(artistaId: number): Observable<Postulacion[]> {
+    return this.http.get<Postulacion[]>(`${this.apiUrl}/postulacion/artista/${artistaId}`);
+  }
 
   actualizarEstado(id: number, nuevoEstado: string): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/postulacion/${id}/estado`, { nuevoEstado });

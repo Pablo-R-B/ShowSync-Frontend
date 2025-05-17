@@ -35,7 +35,9 @@ export class LoginComponent {
 
         // Decodificar el token y redirigir según el rol
         const decoded: TokenPayload = jwtDecode(token);
+
         console.log('Rol del usuario:', decoded.rol);
+        localStorage.setItem('rol', decoded.rol);
 
         localStorage.setItem('username', decoded.nombre);
         console.log('Nombre del usuario:', decoded.nombre);
