@@ -2,8 +2,8 @@
   <app-header *ngIf="mostrarHeader"></app-header>
 
   <!-- Este main ocupa el espacio disponible -->
-  <main class="flex-grow">
-  <router-outlet></router-outlet>
+  <main class="flex-grow pt-20"> <!-- pt-20 = 5rem = 80px -->
+    <router-outlet></router-outlet>
   </main>
 
   <app-footer *ngIf="showFooter"></app-footer>
