@@ -79,4 +79,12 @@ export class EventosService {
 }
 
 
+  cancelarEvento(id: number): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/eventos/cancelar/${id}`, {});
+  }
+
+  confirmarEvento(id: number): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/eventos/confirmar/${id}`, {});
+  }
+
 }

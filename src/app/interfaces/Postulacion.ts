@@ -4,9 +4,11 @@ export interface Postulacion{
   artistaId: number;
   artistaNombre: string;
   artistaImagen: string;
-  estado: string;
   eventoNombre: string;
   eventoImagen: string;
   eventoFecha: string;
   eventoSalaNombre: string;
+  estado: 'pendiente' | 'aceptado' | 'rechazado';
+  fechaPostulacion: Date;
+  fechaRespuesta: Date | null;
 }
