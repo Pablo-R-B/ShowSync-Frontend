@@ -106,10 +106,6 @@ export class PerfilPromotoresComponent implements OnInit {
       });
   }
 
-  abrirFormularioCrearEvento(): void {
-    this.router.navigate(['/eventos/crear']);
-  }
-
   editarEvento(evento: EventoDTO): void {
     this.router.navigate(['/eventos/editar', evento.id]);
   }
