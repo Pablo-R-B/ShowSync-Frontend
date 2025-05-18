@@ -105,30 +105,47 @@ export class PerfilArtistaComponent implements OnInit{
   }
 
   enviarOferta() {
-    this.postulacionService.enviarOfertaEventoArtista(this.eventoSeleccionado, this.artistaId)
+    this.postulacionService.nuevaSolicitud(this.eventoSeleccionado, this.artistaId)
       .subscribe({
         next: response =>{
-          if(response.status === 201){
-            this.alertaSolicitud('enviada', 'Solicitud enviada')
-          }else{
-            this.alertaSolicitud('noenviada', 'Respuesta inesperada. No se puedo enviar la solicitud')
-            console.error(`Respuesta inesperada: ${response.status}`)
+          switch (response.status) {
+            case 201:
+              this.alertaSolicitud('enviada', '¡Oferta enviada con éxito! 🎉');
+              break;
+            case 400:
+              this.alertaSolicitud('noenviada', 'Solicitud inválida. Revisa los datos.');
+              break;
+            case 409:
+              this.alertaSolicitud('noenviada', 'Ya existe una oferta/postulación previa.');
+              break;
+            default:
+              this.alertaSolicitud(
+                  'noenviada',
+                  `Respuesta inesperada: ${response.status}`
+              );
+              console.warn(`Status inesperado: ${response.status}`);
           }
         },
-        error: err =>{
-          console.error('Error en la oferta', err)
-          this.alertaSolicitud('noenviada', 'No se pudo enviar la solicicitud')
-        }
-
-      })
+        error: (err) => {
+          // Puede venir un 500, un timeout, o un 0 si no hay conexión
+          console.error('Error al enviar la oferta:', err);
+          // Extrae el código si está disponible
+          const status = err.status ?? 'desconocido';
+          this.alertaSolicitud(
+              'noenviada',
+              `Error en la solicitud (status ${status})`
+          );
+        },
+      });
   }
+
   cargarPostulaciones(): void {
     this.postulacionService.listarPorArtista(this.artistaId)
       .subscribe(data => this.postulaciones = data);
   }
 
-  respuestaArtista(post: Postulacion, estado: 'aceptado' | 'rechazado') {
-    this.postulacionService.actualizarEstado(post.id, estado)
+  respuestaSolicitud(post: Postulacion, estado: 'aceptado' | 'rechazado') {
+    this.postulacionService.actualizarEstadoSolicitud(post.id, estado)
       .subscribe(() => post.estado = estado);
   }
 

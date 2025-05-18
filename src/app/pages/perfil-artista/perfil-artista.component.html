@@ -51,10 +51,10 @@
             <p class="text-sm text-gray-600">Estado: <span [ngClass]="{'text-yellow-500': post.estado === 'pendiente', 'text-green-500': post.estado === 'aceptado', 'text-red-500': post.estado === 'rechazado'}">{{ post.estado }}</span></p>
 
             <div *ngIf="post.estado === 'pendiente'" class="mt-4 flex space-x-2">
-              <button (click)="respuestaArtista(post, 'aceptado')" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition">
+              <button (click)="respuestaSolicitud(post, 'aceptado')" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition">
                 Aceptar
               </button>
-              <button (click)="respuestaArtista(post, 'rechazado')" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition">
+              <button (click)="respuestaSolicitud(post, 'rechazado')" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition">
                 Rechazar
               </button>
             </div>

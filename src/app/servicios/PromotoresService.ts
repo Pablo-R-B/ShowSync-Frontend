@@ -29,6 +29,8 @@ export class PromotoresService {
     return this.http.get<EventoDTO[]>(`${this.apiUrl}/eventos/promotor/usuarioPromotor/${usuarioIdPromotor}`);
   }
 
+  //listarEeventosPorIdPromotor
+
   /** GET  /eventos/catalogo */
   cargarCatalogoEventos(): Observable<EventoDTO[]> {
     return this.http.get<EventoDTO[]>(`${this.apiUrl}/eventos/catalogo`);
@@ -69,8 +71,5 @@ export class PromotoresService {
     return this.http.get<Promotor>(`${this.apiUrl}/auth/perfil`);
   }
 
-  // Obtener promotor por ID de usuario
-  getPromotorPorIdUsuario(idUsuario: number): Observable<Promotor> {
-    return this.http.get<Promotor>(`${this.apiUrl}/promotores/usuario/${idUsuario}`);
-  }
+
 }

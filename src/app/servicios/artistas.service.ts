@@ -56,6 +56,12 @@ export class ArtistasService {
     return this.http.get<Artistas>(`${this.apiUrl}/artista/${id}`);
   }
 
+  getArtistaIdPorUsuario(usuarioId: number): Observable<number> {
+    return this.http.get<number>(
+      `${this.apiUrl}/por-usuario/${usuarioId}`
+    );
+  }
+
   private erroresArtistas(erros:HttpErrorResponse): Observable<never> {
     return throwError(() => new Error('Error al obtener el catálogo de artistas. Inténtelo más tarde'));
   }
