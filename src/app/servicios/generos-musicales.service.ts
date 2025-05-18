@@ -9,7 +9,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 export class GenerosMusicalesService {
   constructor(private http: HttpClient) { }
 
-  private apiUrl:string = `${environment.apiUrl}/genero`;
+  private apiUrl:string = `http://localhost:8081/genero`;
   listarGeneros(): Observable<string[]> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({

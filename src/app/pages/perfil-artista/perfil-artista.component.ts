@@ -1,17 +1,18 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Artistas} from '../../interfaces/artistas';
-import {EventoDTO, PromotoresService} from '../../servicios/PromotoresService';
+import {PromotoresService} from '../../servicios/PromotoresService';
 import {ArtistasService} from '../../servicios/artistas.service';
 import {ActivatedRoute} from '@angular/router';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {AuthService} from '../../servicios/auth.service';
 import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
-import {Postulacion} from '../../interfaces/Postulacion';
+import {Postulacion} from '../../interfaces/postulacion';
+import {EventoDTO} from '../../interfaces/EventoDTO';
 
 
 @Component({
-  selector: 'app-perfil-artista-prueba',
+  selector: 'app-perfil-artista',
   imports: [
     NgIf,
     NgClass,

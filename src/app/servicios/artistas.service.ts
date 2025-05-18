@@ -12,7 +12,8 @@ export class ArtistasService {
 
   constructor(private http: HttpClient) { }
 
-  private apiUrl:string = `${environment.apiUrl}/artistas`;
+  private apiUrl: string = `${environment.apiUrl}/artistas`;
+
   // private apiUrl:string = "http://localhost:8080/artistas/listar-artistas";
 
 

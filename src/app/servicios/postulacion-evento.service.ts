@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Postulacion} from '../interfaces/Postulacion';
+import {Postulacion} from '../interfaces/postulacion';
+;
 
 @Injectable({
   providedIn: 'root'
