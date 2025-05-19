@@ -31,6 +31,7 @@ export const routes: Routes = [
   { path: 'eventos', component: EventosComponent },
   { path: 'perfil-promotores', component: PerfilPromotoresComponent},
   { path: 'busqueda-eventos', component: BusquedaEventosComponent},
+  {path: 'promotor/:id', component: PromotoresComponent},
 
 
   { path: 'salas/:id', component: PerfilSalaComponent },

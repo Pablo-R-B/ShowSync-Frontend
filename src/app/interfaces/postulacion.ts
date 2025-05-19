@@ -2,7 +2,8 @@ export interface Postulacion {
   eventoId: number;
   id: number;
   artistaId: number;
-  artistaNombre: string;
+  artistaNombre?: string;
+  promotorNombre?:string
   artistaImagen: string;
   estado: string;
   eventoNombre: string;

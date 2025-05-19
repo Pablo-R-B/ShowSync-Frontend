@@ -134,7 +134,7 @@
       <div *ngFor="let post of postulaciones" class="bg-white shadow-lg rounded-lg p-6">
         <h3 class="text-xl font-bold text-gray-800">{{ post.eventoNombre }}</h3>
         <p class="text-sm text-gray-600">Estado: <span [ngClass]="{'text-yellow-500': post.estado === 'pendiente', 'text-green-500': post.estado === 'aceptado', 'text-red-500': post.estado === 'rechazado'}">{{ post.estado }}</span></p>
-
+        <p class="text-xl font-bold text-gray-800">{{post.artistaNombre}}</p>
         <div *ngIf="post.estado === 'pendiente'" class="mt-4 flex space-x-2">
           <button (click)="respuestaSolicitud(post, 'aceptado')" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition">
             Aceptar
@@ -148,7 +148,5 @@
 
   <!-- Espaciador final -->
 
-
-
-
+  </div>
 </div>

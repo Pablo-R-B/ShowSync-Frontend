@@ -72,7 +72,6 @@ export class PromotoresComponent implements OnInit {
     })
 
     this.usuarioRol=this.authService.userRole;
-    this.idPromotor = this.authService.userId;
     this.cargarSolicitudes();
 
   }
