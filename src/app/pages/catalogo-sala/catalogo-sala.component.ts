@@ -5,7 +5,7 @@ import { SalasService } from '../../servicios/salas.service';
 import { FormsModule } from '@angular/forms';
 import { debounceTime, Subject } from 'rxjs';
 import { FiltrosSala } from '../../interfaces/filtrosSala';
-
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -38,7 +38,9 @@ export class CatalogoSalaComponent implements OnInit {
   // Para gestionar búsquedas con debounce
   private filtrosSubject = new Subject<void>();
 
-  constructor(private salasService: SalasService) {}
+  constructor(private salasService: SalasService,
+              private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.cargarSalas();
@@ -143,6 +145,14 @@ export class CatalogoSalaComponent implements OnInit {
       capacidadMin: 0
     };
     this.ejecutarFiltrado();
+  }
+
+  /**
+   * Navega a la página de reserva de una sala
+   * @param salaId
+   */
+  irAReservarSala(salaId: number): void {
+    this.router.navigate(['/salas', salaId]);
   }
 
   /**
