@@ -1,8 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import {Sala} from '../interfaces/Sala';
-
+import { Sala } from '../interfaces/sala';
 
 @Injectable({ providedIn: 'root' })
 export class SalasService {
@@ -18,36 +17,36 @@ export class SalasService {
     return new HttpHeaders().set('Authorization', 'Bearer ' + this.obtenerToken());
   }
 
-  crear(sala: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/crear`, sala, { headers: this.getAuthHeaders() });
+  crear(sala: Sala): Observable<Sala> {
+    return this.http.post<Sala>(`${this.apiUrl}/crear`, sala, { headers: this.getAuthHeaders() });
   }
 
-  editar(id: number, sala: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/editar/${id}`, sala, { headers: this.getAuthHeaders() });
+  editar(id: number, sala: Sala): Observable<Sala> {
+    return this.http.put<Sala>(`${this.apiUrl}/editar/${id}`, sala, { headers: this.getAuthHeaders() });
   }
 
   eliminar(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/eliminar/${id}`, { headers: this.getAuthHeaders() });
   }
 
-  obtenerPorId(id: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/${id}`, { headers: this.getAuthHeaders() });
+  obtenerPorId(id: number): Observable<Sala> {
+    return this.http.get<Sala>(`${this.apiUrl}/${id}`, { headers: this.getAuthHeaders() });
   }
 
-  obtenerTodas(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/todas`, { headers: this.getAuthHeaders() });
+  obtenerTodas(): Observable<Sala[]> {
+    return this.http.get<Sala[]>(`${this.apiUrl}/todas`, { headers: this.getAuthHeaders() });
   }
 
-  buscarSalas(filtro: string): Observable<any[]> {
+  buscarSalas(filtro: string): Observable<Sala[]> {
     const params = new HttpParams().set('filtro', filtro);
-    return this.http.get<any[]>(`${this.apiUrl}/buscar`, { params, headers: this.getAuthHeaders() });
+    return this.http.get<Sala[]>(`${this.apiUrl}/buscar`, { params, headers: this.getAuthHeaders() });
   }
 
-  filtrarPorCapacidad(capacidadMin: number, capacidadMax: number): Observable<any[]> {
+  filtrarPorCapacidad(capacidadMin: number, capacidadMax: number): Observable<Sala[]> {
     const params = new HttpParams()
       .set('capacidadMinima', capacidadMin.toString())
       .set('capacidadMaxima', capacidadMax.toString());
-    return this.http.get<any[]>(`${this.apiUrl}/filtrar`, { params, headers: this.getAuthHeaders() });
+    return this.http.get<Sala[]>(`${this.apiUrl}/filtrar`, { params, headers: this.getAuthHeaders() });
   }
 
   consultarDisponibilidad(salaId: number, fechaInicio: string, fechaFin: string): Observable<any[]> {
@@ -58,33 +57,38 @@ export class SalasService {
     return this.http.get<any[]>(`${this.apiUrl}/disponibilidad`, { params, headers: this.getAuthHeaders() });
   }
 
-  getSalaById(id: string) {
-    return this.http.get(`${this.apiUrl}/${id}`, { headers: this.getAuthHeaders() });
+  obtenerSalasPorPromotor(promotorId: number): Observable<Sala[]> {
+    return this.http.get<Sala[]>(`${this.apiUrl}/promotor/${promotorId}`, {
+      headers: this.getAuthHeaders()
+    });
   }
 
-  getDisponibilidad(id: string, inicio: string, fin: string) {
-    const params = new HttpParams()
-      .set('salaId', id)
-      .set('fechaInicio', inicio)
-      .set('fechaFin', fin);
-    return this.http.get<any[]>(`${this.apiUrl}/disponibilidad`, { params, headers: this.getAuthHeaders() });
+  confirmarSala(salaId: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/confirmar/${salaId}`, {}, {
+      headers: this.getAuthHeaders()
+    });
   }
 
-
-  // Obtener sala
-  obtenerSalas(promotorId: number): Observable<Sala[]> {
-    return this.http.get<Sala[]>(`${this.apiUrl}/salas/promotor/${promotorId}`);
-  }
-
-
-  // confirmar sala
-  confirmarSala(salaId: number): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/${salaId}/confirmar`, {});
-  }
-
-  // rechazar sala
   rechazarSala(salaId: number): Observable<any> {
-    return this.http.delete(`/api/salas/${salaId}`); // o similar, dependiendo de la API
+    return this.http.post<any>(`${this.apiUrl}/rechazar/${salaId}`, {}, {
+      headers: this.getAuthHeaders()
+    });
   }
+
+  crearEventoEnRevision(evento: any): Observable<any> {
+    return this.http.post('/api/eventos/en-revision', evento, { headers: this.getAuthHeaders() });
+  }
+
+  buscarSalasPorCiudad(ciudad: string): Observable<Sala[]> {
+    const params = new HttpParams().set('ciudad', ciudad);
+    return this.http.get<Sala[]>(`${this.apiUrl}/buscar-por-ciudad`, { params, headers: this.getAuthHeaders() });
+  }
+
+  buscarSalasPorProvincia (provincia: string): Observable<Sala[]> {
+    const params = new HttpParams().set('provincia', provincia);
+    return this.http.get<Sala[]>(`${this.apiUrl}/buscar-por-provincia`, { params, headers: this.getAuthHeaders() });
+  }
+
+
 
 }

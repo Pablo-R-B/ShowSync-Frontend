@@ -6,7 +6,7 @@ import {EventoDTO} from '../../interfaces/EventoDTO';
 import {Promotor} from '../../interfaces/Promotor';
 import {SalasService} from '../../servicios/salas.service';
 import {EventosService} from '../../servicios/EventosService';
-import {Sala} from '../../interfaces/Sala';
+import {Sala} from '../../interfaces/sala';
 
 @Component({
   selector: 'app-perfil-promotores',
@@ -138,7 +138,7 @@ export class PerfilPromotoresComponent implements OnInit {
   cargarSalas(): void {
     if (!this.promotor?.id) return;
 
-    this.salasService.obtenerSalas(this.promotor.id)
+    this.salasService.obtenerTodas()
       .subscribe({
         next: (data) => {
           this.salas = data;

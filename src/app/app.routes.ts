@@ -13,6 +13,7 @@ import {PerfilPromotoresComponent} from './pages/perfil-promotores/perfil-promot
 import {PerfilArtistaPruebaComponent} from './pages/perfil-artista-prueba/perfil-artista-prueba.component';
 import {PromotoresComponent} from './pages/promotores/promotores.component';
 import {BusquedaPromotoresComponent} from './pages/busqueda-promotores/busqueda-promotores.component';
+import {CatalogoSalaComponent} from './pages/catalogo-sala/catalogo-sala.component';
 
 
 export const routes: Routes = [
@@ -31,6 +32,7 @@ export const routes: Routes = [
   { path: 'eventos', component: EventosComponent },
   { path: 'perfil-promotores', component: PerfilPromotoresComponent},
   { path: 'busqueda-eventos', component: BusquedaEventosComponent},
+  {path: 'catalogo-salas', component: CatalogoSalaComponent, pathMatch: 'full'},
 
 
 

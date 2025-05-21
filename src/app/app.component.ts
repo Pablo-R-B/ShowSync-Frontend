@@ -23,6 +23,7 @@ import {FooterComponent} from './componentes/footer/footer.component';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  title = 'ShowSync-Frontend';
   mostrarHeader = true;
   showFooter = true;
 
