@@ -192,9 +192,9 @@ export class CatalogoSalaComponent implements OnInit {
     if (pagina === 1 || pagina === this.totalPaginas) return true;
 
     // Mostrar páginas cercanas a la actual
-    if (Math.abs(pagina - this.paginaActual) <= 1) return true;
+    return Math.abs(pagina - this.paginaActual) <= 1;
 
-    return false;
+
   }
 
   mostrarPuntosSuspensivos(pagina: number): boolean {
