@@ -31,9 +31,36 @@
   </div>
 
   <!-- Calendario de disponibilidad -->
-  <div class="mb-8">
-    <h2 class="text-2xl font-semibold text-customGrisMedio mb-4 medula-font">Disponibilidad</h2>
-    <div class="bg-customNegro p-4 rounded-lg shadow">
+  <div class="calendario-container">
+    <div class="calendario-header">
+      <h2 class="calendario-titulo">
+        <svg class="calendario-icono" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2z"></path>
+        </svg>
+        Disponibilidad:
+      </h2>
+
+      <div class="leyenda-container">
+        <div class="leyenda-item">
+          <div class="leyenda-color disponible"></div>
+          <span>Disponible</span>
+        </div>
+        <div class="leyenda-item">
+          <div class="leyenda-color ocupado"></div>
+          <span>No disponible</span>
+        </div>
+        <div class="leyenda-item">
+          <div class="leyenda-color revision"></div>
+          <span>En revisión</span>
+        </div>
+        <div class="leyenda-item">
+          <div class="leyenda-color seleccionable"></div>
+          <span>Hoy</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="calendario-wrapper">
       <full-calendar [options]="calendarOptions"></full-calendar>
     </div>
   </div>

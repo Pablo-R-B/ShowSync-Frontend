@@ -1,234 +1,305 @@
-/*!* perfil-sala.component.css *!*/
+.calendario-container {
+  margin-bottom: 2rem;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
 
-/*!* Estilos para el calendario *!*/
-/*.calendar-container {*/
-/*  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;*/
-/*}*/
+.calendario-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
 
-/*!* Encabezado del calendario *!*/
-/*::ng-deep .fc-header-toolbar {*/
-/*  padding: 1rem 0;*/
-/*  border-bottom: 1px solid #e5e7eb;*/
-/*  margin-bottom: 1rem !important;*/
-/*}*/
+.calendario-titulo {
+  font-size: 1.875rem;
+  font-weight: 600;
+  color: #d1d5db;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 
-/*::ng-deep .fc-toolbar-title {*/
-/*  font-size: 1.5rem !important;*/
-/*  font-weight: 600 !important;*/
-/*  color: #374151;*/
-/*}*/
+.calendario-icono {
+  width: 2rem;
+  height: 2rem;
+  color: #BF0D22;
+}
 
-/*::ng-deep .fc-button {*/
-/*  background: #ffffff !important;*/
-/*  border: 1px solid #d1d5db !important;*/
-/*  color: #374151 !important;*/
-/*  padding: 0.5rem 1rem !important;*/
-/*  border-radius: 0.5rem !important;*/
-/*  font-weight: 500 !important;*/
-/*  transition: all 0.2s ease !important;*/
-/*}*/
+.leyenda-container {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
 
-/*::ng-deep .fc-button:hover {*/
-/*  background: #f9fafb !important;*/
-/*  border-color: #9ca3af !important;*/
-/*  color: #111827 !important;*/
-/*}*/
+.leyenda-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #9ca3af;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
 
-/*::ng-deep .fc-button:focus {*/
-/*  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;*/
-/*}*/
+.leyenda-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
 
-/*::ng-deep .fc-button-active {*/
-/*  background: #3b82f6 !important;*/
-/*  border-color: #3b82f6 !important;*/
-/*  color: white !important;*/
-/*}*/
+.leyenda-color {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
 
-/*!* Días de la semana *!*/
-/*::ng-deep .fc-col-header {*/
-/*  background-color: #f8fafc;*/
-/*  border-bottom: 2px solid #e2e8f0;*/
-/*}*/
+.disponible { background: linear-gradient(135deg, #10b981, #34d399); }
+.ocupado { background: linear-gradient(135deg, #BF0D22, #ef4444); }
+.revision { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+.seleccionable { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
 
-/*::ng-deep .fc-col-header-cell {*/
-/*  padding: 1rem 0.5rem;*/
-/*  font-weight: 600;*/
-/*  color: #475569;*/
-/*  text-transform: uppercase;*/
-/*  font-size: 0.75rem;*/
-/*  letter-spacing: 0.05em;*/
-/*}*/
+.calendario-wrapper {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
 
-/*!* Celdas de días *!*/
-/*::ng-deep .fc-daygrid-day {*/
-/*  border: 1px solid #f1f5f9;*/
-/*  transition: background-color 0.2s ease;*/
-/*  min-height: 80px;*/
-/*}*/
+.calendario-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+}
 
-/*::ng-deep .fc-daygrid-day:hover {*/
-/*  background-color: #f8fafc;*/
-/*}*/
+/* Estilos para FullCalendar */
+.fc {
+  font-family: inherit;
+}
 
-/*::ng-deep .fc-daygrid-day.fc-day-today {*/
-/*  background-color: #fef3c7 !important;*/
-/*  border-color: #f59e0b;*/
-/*}*/
+.fc-theme-standard .fc-scrollgrid {
+  border-color: rgba(255, 255, 255, 0.1);
+}
 
-/*::ng-deep .fc-daygrid-day-number {*/
-/*  padding: 0.5rem;*/
-/*  font-weight: 500;*/
-/*  color: #374151;*/
-/*  font-size: 0.875rem;*/
-/*}*/
+.fc-theme-standard td,
+.fc-theme-standard th {
+  border-color: rgba(255, 255, 255, 0.1);
+}
 
-/*::ng-deep .fc-day-today .fc-daygrid-day-number {*/
-/*  color: #92400e;*/
-/*  font-weight: 700;*/
-/*}*/
+.fc-col-header-cell {
+  background: rgba(255, 255, 255, 0.05);
+  font-weight: 600;
+  color: #d1d5db;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 1rem 0.5rem;
+}
 
-/*!* Eventos *!*/
-/*::ng-deep .fc-event {*/
-/*  border: none !important;*/
-/*  padding: 0.25rem 0.5rem !important;*/
-/*  margin: 0.125rem !important;*/
-/*  border-radius: 0.375rem !important;*/
-/*  font-size: 0.75rem !important;*/
-/*  font-weight: 500 !important;*/
-/*  cursor: pointer !important;*/
-/*  transition: all 0.2s ease !important;*/
-/*  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;*/
-/*}*/
+.fc-daygrid-day {
+  position: relative;
+  transition: all 0.2s ease;
+}
 
-/*::ng-deep .fc-event:hover {*/
-/*  transform: translateY(-1px) !important;*/
-/*  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;*/
-/*}*/
+.fc-daygrid-day:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
 
-/*::ng-deep .fc-event-title {*/
-/*  font-weight: 500 !important;*/
-/*}*/
+.fc-daygrid-day-number {
+  color: #d1d5db;
+  font-weight: 500;
+  padding: 0.5rem;
+  transition: all 0.2s ease;
+}
 
-/*!* Indicador de más eventos *!*/
-/*::ng-deep .fc-daygrid-more-link {*/
-/*  color: #6366f1 !important;*/
-/*  font-weight: 500 !important;*/
-/*  padding: 0.25rem !important;*/
-/*  border-radius: 0.25rem !important;*/
-/*  transition: background-color 0.2s ease !important;*/
-/*}*/
+.fc-day-today .fc-daygrid-day-number {
+  background: linear-gradient(135deg, #BF0D22, #dc2626);
+  color: white;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.25rem;
+  font-weight: 700;
+  box-shadow: 0 4px 8px rgba(191, 13, 34, 0.3);
+}
 
-/*::ng-deep .fc-daygrid-more-link:hover {*/
-/*  background-color: #e0e7ff !important;*/
-/*}*/
+.fc-day-past {
+  opacity: 0.4;
+  pointer-events: none;
+}
 
-/*!* Estilos para días pasados *!*/
-/*::ng-deep .fc-day-past {*/
-/*  background-color: #f9fafb;*/
-/*  color: #9ca3af;*/
-/*}*/
+.fc-day-past .fc-daygrid-day-number {
+  color: #6b7280;
+}
 
-/*::ng-deep .fc-day-past .fc-daygrid-day-number {*/
-/*  color: #9ca3af;*/
-/*}*/
+.fc-toolbar {
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
 
-/*!* Responsive *!*/
-/*@media (max-width: 768px) {*/
-/*  ::ng-deep .fc-header-toolbar {*/
-/*    flex-direction: column;*/
-/*    gap: 0.5rem;*/
-/*  }*/
+.fc-toolbar-title {
+  color: #f3f4f6;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
 
-/*  ::ng-deep .fc-toolbar-chunk {*/
-/*    display: flex;*/
-/*    justify-content: center;*/
-/*  }*/
+.fc-button {
+  background: linear-gradient(135deg, #374151, #4b5563);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #f9fafb;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-/*  ::ng-deep .fc-button {*/
-/*    padding: 0.375rem 0.75rem !important;*/
-/*    font-size: 0.875rem !important;*/
-/*  }*/
+.fc-button:hover {
+  background: linear-gradient(135deg, #4b5563, #6b7280);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
 
-/*  ::ng-deep .fc-daygrid-day {*/
-/*    min-height: 60px;*/
-/*  }*/
+.fc-button:active {
+  transform: translateY(0);
+}
 
-/*  ::ng-deep .fc-event {*/
-/*    font-size: 0.625rem !important;*/
-/*    padding: 0.125rem 0.25rem !important;*/
-/*  }*/
-/*}*/
+.fc-button-primary:not(:disabled).fc-button-active {
+  background: linear-gradient(135deg, #BF0D22, #dc2626);
+  border-color: #BF0D22;
+  box-shadow: 0 4px 8px rgba(191, 13, 34, 0.3);
+}
 
-/*!* Tooltip personalizado *!*/
-/*.calendar-tooltip {*/
-/*  z-index: 1000;*/
-/*  pointer-events: none;*/
-/*}*/
+.fc-event {
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
 
-/*.calendar-tooltip > div {*/
-/*  max-width: 200px;*/
-/*  word-wrap: break-word;*/
-/*}*/
+.fc-event:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
 
-/*!* Animaciones para el modal *!*/
-/*@keyframes fadeIn {*/
-/*  from {*/
-/*    opacity: 0;*/
-/*  }*/
-/*  to {*/
-/*    opacity: 1;*/
-/*  }*/
-/*}*/
+/* Indicador de carga */
+.calendario-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #9ca3af;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 
-/*@keyframes slideIn {*/
-/*  from {*/
-/*    opacity: 0;*/
-/*    transform: translateY(-20px) scale(0.95);*/
-/*  }*/
-/*  to {*/
-/*    opacity: 1;*/
-/*    transform: translateY(0) scale(1);*/
-/*  }*/
-/*}*/
+.loading-spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid #BF0D22;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
 
-/*.fixed.inset-0 {*/
-/*  animation: fadeIn 0.2s ease-out;*/
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
-/*}*/
+/* Responsive */
+@media (max-width: 768px) {
+  .calendario-container {
+    padding: 1rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
 
+  .calendario-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
-/*.fixed.inset-0 > div {*/
-/*  animation: slideIn 0.3s ease-out;*/
-/*}*/
+  .leyenda-container {
+    width: 100%;
+    justify-content: center;
+  }
 
-/*!* Mejoras para el formulario *!*/
-/*.form-section {*/
-/*  margin-bottom: 1.5rem;*/
-/*}*/
+  .leyenda-item {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+  }
 
-/*.form-label {*/
-/*  display: block;*/
-/*  font-size: 0.875rem;*/
-/*  font-weight: 500;*/
-/*  color: #374151;*/
-/*  margin-bottom: 0.5rem;*/
-/*}*/
+  .fc-toolbar {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
 
-/*.form-input {*/
-/*  width: 100%;*/
-/*  padding: 0.75rem;*/
-/*  border: 1px solid #d1d5db;*/
-/*  border-radius: 0.5rem;*/
-/*  font-size: 0.875rem;*/
-/*  transition: border-color 0.2s ease, box-shadow 0.2s ease;*/
-/*}*/
+  .fc-button {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+  }
+}
 
-/*.form-input:focus {*/
-/*  outline: none;*/
-/*  border-color: #3b82f6;*/
-/*}*/
+/* Animaciones de entrada */
+.calendario-container {
+  animation: slideInUp 0.6s ease-out;
+}
 
-/*.form-input::placeholder {*/
-/*  color: #9ca3af;*/
-/*  opacity: 1; !* Asegura que el color sea visible en todos los navegadores *!*/
-/*}*/
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.leyenda-item {
+  animation: fadeInScale 0.5s ease-out;
+  animation-fill-mode: both;
+}
+
+.leyenda-item:nth-child(1) { animation-delay: 0.1s; }
+.leyenda-item:nth-child(2) { animation-delay: 0.2s; }
+.leyenda-item:nth-child(3) { animation-delay: 0.3s; }
+.leyenda-item:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

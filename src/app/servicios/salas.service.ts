@@ -69,7 +69,7 @@ export class SalasService {
     }
 
     // Asegúrate de que la URL coincida con el endpoint del backend
-    return this.http.get<any[]>(`salas/disponibilidad`, {
+    return this.http.get<any[]>(`http://localhost:8081/salas/disponibilidad`, {
       params,
       headers: this.getAuthHeaders() // Verifica que esto incluya el token
     }).pipe(
