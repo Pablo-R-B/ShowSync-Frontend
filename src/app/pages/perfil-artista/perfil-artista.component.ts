@@ -1,29 +1,28 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Artistas} from '../../interfaces/artistas';
+import {PromotoresService} from '../../servicios/PromotoresService';
 import {ArtistasService} from '../../servicios/artistas.service';
 import {ActivatedRoute} from '@angular/router';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-
 import {AuthService} from '../../servicios/auth.service';
 import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
-import {Postulacion} from '../../interfaces/Postulacion';
+import {Postulacion} from '../../interfaces/postulacion';
 import {EventoDTO} from '../../interfaces/EventoDTO';
-import {PromotoresService} from '../../servicios/PromotoresService';
 
 
 @Component({
-  selector: 'app-perfil-artista-prueba',
+  selector: 'app-perfil-artista',
   imports: [
     NgIf,
-    FormsModule,
-    NgForOf,
     NgClass,
+    FormsModule,
+    NgForOf
   ],
-  templateUrl: './perfil-artista-prueba.component.html',
-  standalone: true,
+  templateUrl: './perfil-artista.component.html',
+  styleUrl: './perfil-artista.component.css'
 })
-export class PerfilArtistaPruebaComponent implements OnInit{
+export class PerfilArtistaComponent implements OnInit{
   artista:Artistas | undefined;
   @Input() mostrarModal = false;
   eventoSeleccionado!:number
@@ -53,6 +52,16 @@ export class PerfilArtistaPruebaComponent implements OnInit{
     this.IdUsuarioDePromotor = this.authService.userId;
     console.log("Usuario promtor", this.IdUsuarioDePromotor)
     console.log("Artista id", this.artistaId)
+    this.usuarioRol = this.authService.userRole
+    console.log("Rol usuario", this.usuarioRol);
+
+    if(this.usuarioRol === 'PROMOTOR'){
+      this.cargarEventosPromotor();
+    }
+
+    // this.cargarPostulaciones();
+
+    console.log("Artista id", this.artistaId)
     this.usuarioRol = this.authService.userRole;
     console.log("Rol usuario", this.usuarioRol);
 
@@ -65,7 +74,6 @@ export class PerfilArtistaPruebaComponent implements OnInit{
 
 
   }
-
 
 
 
@@ -97,30 +105,47 @@ export class PerfilArtistaPruebaComponent implements OnInit{
   }
 
   enviarOferta() {
-    this.postulacionService.enviarOfertaEventoArtista(this.eventoSeleccionado, this.artistaId)
+    this.postulacionService.nuevaSolicitud(this.eventoSeleccionado, this.artistaId)
       .subscribe({
         next: response =>{
-          if(response.status === 201){
-            this.alertaSolicitud('enviada', 'Solicitud enviada')
-          }else{
-            this.alertaSolicitud('noenviada', 'Respuesta inesperada. No se puedo enviar la solicitud')
-            console.error(`Respuesta inesperada: ${response.status}`)
+          switch (response.status) {
+            case 201:
+              this.alertaSolicitud('enviada', '¡Oferta enviada con éxito! 🎉');
+              break;
+            case 400:
+              this.alertaSolicitud('noenviada', 'Solicitud inválida. Revisa los datos.');
+              break;
+            case 409:
+              this.alertaSolicitud('noenviada', 'Ya existe una oferta/postulación previa.');
+              break;
+            default:
+              this.alertaSolicitud(
+                  'noenviada',
+                  `Respuesta inesperada: ${response.status}`
+              );
+              console.warn(`Status inesperado: ${response.status}`);
           }
         },
-        error: err =>{
-          console.error('Error en la oferta', err)
-          this.alertaSolicitud('noenviada', 'No se pudo enviar la solicicitud')
-        }
-
-      })
+        error: (err) => {
+          // Puede venir un 500, un timeout, o un 0 si no hay conexión
+          console.error('Error al enviar la oferta:', err);
+          // Extrae el código si está disponible
+          const status = err.status ?? 'desconocido';
+          this.alertaSolicitud(
+              'noenviada',
+              `Error en la solicitud (status ${status})`
+          );
+        },
+      });
   }
+
   cargarPostulaciones(): void {
     this.postulacionService.listarPorArtista(this.artistaId)
       .subscribe(data => this.postulaciones = data);
   }
 
-  respuestaArtista(post: Postulacion, estado: 'aceptado' | 'rechazado') {
-    this.postulacionService.actualizarEstado(post.id, estado)
+  respuestaSolicitud(post: Postulacion, estado: 'aceptado' | 'rechazado') {
+    this.postulacionService.actualizarEstadoSolicitud(post.id, estado)
       .subscribe(() => post.estado = estado);
   }
 

@@ -12,7 +12,8 @@ export class ArtistasService {
 
   constructor(private http: HttpClient) { }
 
-  private apiUrl:string = `${environment.apiUrl}/artistas`;
+  private apiUrl: string = `${environment.apiUrl}/artistas`;
+
   // private apiUrl:string = "http://localhost:8080/artistas/listar-artistas";
 
 
@@ -52,7 +53,13 @@ export class ArtistasService {
   }
 
   artistaPorId(id: number): Observable<Artistas> {
-    return this.http.get<Artistas>(`${this.apiUrl}/${id}`);
+    return this.http.get<Artistas>(`${this.apiUrl}/artista/${id}`);
+  }
+
+  getArtistaIdPorUsuario(usuarioId: number): Observable<number> {
+    return this.http.get<number>(
+      `${this.apiUrl}/por-usuario/${usuarioId}`
+    );
   }
 
   private erroresArtistas(erros:HttpErrorResponse): Observable<never> {

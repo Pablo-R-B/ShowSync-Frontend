@@ -43,6 +43,8 @@ export class PerfilPromotoresComponent implements OnInit {
 
   ngOnInit(): void {
     this.obtenerPerfilUsuario();
+    const idUsuario = localStorage.getItem('userId');
+
   }
 
   private obtenerPerfilUsuario(): void {
@@ -51,7 +53,7 @@ export class PerfilPromotoresComponent implements OnInit {
         const idUsuario = perfilUsuario.id;
         console.log('ID del usuario autenticado:', idUsuario);
 
-        this.promotoresService.getPromotorPorIdUsuario(idUsuario).subscribe({
+        this.promotoresService.cargarPromotorPorId(idUsuario).subscribe({
           next: (data: Promotor) => {
             console.log('Promotor recibido:', data);
             this.promotor = data;
