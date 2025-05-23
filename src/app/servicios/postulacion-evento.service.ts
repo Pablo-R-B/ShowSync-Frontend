@@ -27,4 +27,12 @@ export class PostulacionEventoService {
   actualizarEstado(id: number, nuevoEstado: string): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/postulacion/${id}/estado`, { nuevoEstado });
   }
+
+  obtenerPostulacionesPorPromotor(promotorId: number): Observable<Postulacion[]> {
+    return this.http.get<Postulacion[]>(`${this.apiUrl}/promotor/${promotorId}`);
+  }
+
+  obtenerPostulacionesPorEvento(eventoId: number): Observable<Postulacion[]> {
+    return this.http.get<Postulacion[]>(`${this.apiUrl}/postulacion/evento/${eventoId}`);
+  }
 }

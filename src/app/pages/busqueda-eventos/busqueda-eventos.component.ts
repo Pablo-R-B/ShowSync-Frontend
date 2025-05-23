@@ -1,7 +1,7 @@
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { NgClass, NgForOf, NgIf, TitleCasePipe } from '@angular/common';
-import { EventosService } from '../../servicios/EventosService';
+import { EventosService } from '../../servicios/eventos.service';
 import { AuthService } from '../../servicios/auth.service';
 import { FormsModule } from '@angular/forms';
 

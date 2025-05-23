@@ -9,7 +9,7 @@ import {AuthService} from '../../servicios/auth.service';
 import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
 import {Postulacion} from '../../interfaces/Postulacion';
 import {EventoDTO} from '../../interfaces/EventoDTO';
-import {PromotoresService} from '../../servicios/PromotoresService';
+import {PromotoresService} from '../../servicios/promotores.service';
 
 
 @Component({

@@ -17,7 +17,7 @@
   <!-- Botón Editar Mi Perfil -->
   <div class="flex justify-center mt-12 mb-[75px]">
     <button class="bg-[#e4e4e4] text-black px-10 py-4 text-2xl rounded-2xl shadow-md hover:bg-[#d4d4d4] transition font-semibold"
-            (click)="editarMiPerfil()">
+            [routerLink]="['/registro-promotor']">
       EDITAR MI PERFIL <i class="fas fa-user-edit ml-2"></i>
     </button>
   </div>
@@ -25,16 +25,16 @@
 
 
   <!-- Panel de Gestión -->
-  <div class="grid md:grid-cols-2 gap-8">
+  <div class="grid md:grid-cols-1 gap-8 mb-10 pb-6">
 
-    <!-- Gestión de Eventos -->
+
+  <!-- Gestión de Eventos -->
     <div class="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-semibold flex items-center gap-2">
           <i class="fas fa-ticket-alt text-white"></i> EVENTOS
         </h2>
-        <button class="bg-[#2563eb] hover:bg-[#1d4ed8] px-4 py-1 rounded-full text-sm text-white font-semibold"
-                (click)="abrirFormularioCrearEvento()">+ CREAR</button>
+
       </div>
 
       <ul class="space-y-4">
@@ -47,9 +47,10 @@
           <div class="flex gap-3">
             <!-- Icono de edición -->
             <button class="text-yellow-400 hover:text-yellow-300 text-xl flex items-center"
-                    (click)="editarEvento(evento)">
+                    [routerLink]="['/promotores', promotor?.id, 'eventos', evento.id, 'editar']">
               <i class="fas fa-pencil-alt"></i>
             </button>
+
             <!-- Icono de eliminación -->
             <button class="text-red-500 hover:text-red-400 text-xl flex items-center"
                     (click)="eliminarEvento(evento.id)">
@@ -60,12 +61,15 @@
         <li *ngIf="eventos.length === 0" class="text-gray-400">No hay eventos para mostrar.</li>
       </ul>
     </div>
+    </div>
 
-    <!-- Gestión de Salas -->
+  <div class="grid md:grid-cols-2 gap-8">
+
+    <!-- Solicitud de Artista -->
     <div class="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-semibold flex items-center gap-2">
-          <i class="fas fa-headphones-alt text-white"></i> SALAS
+          <i class="fas fa-microphone text-white"></i> SOLICITUDES DE ARTISTA
         </h2>
       </div>
 
@@ -117,13 +121,71 @@
       </ul>
     </div>
 
+    <!-- Solicitud de Promotor -->
+    <div class="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold flex items-center gap-2">
+          <i class="fas fa-user-tie text-white"></i> SOLICITUDES DE PROMOTOR
+        </h2>
+      </div>
+
+      <ul class="space-y-4">
+        <li *ngFor="let sala of salas" class="bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center">
+          <div class="flex items-center gap-3">
+            <img [src]="sala.logo" alt="Logo sala" class="w-10 h-10 rounded-full" />
+            <div>
+              <p class="font-semibold">{{ sala.nombre }}</p>
+            </div>
+          </div>
+
+          <!-- Botones de estado -->
+          <div class="flex gap-2 items-center">
+            <!-- En revisión: botón verde -->
+            <button
+              *ngIf="sala.estado === 'en_revision'"
+              class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-full font-semibold"
+              (click)="confirmarSala(sala.id)">
+              En revisión
+            </button>
+
+            <!-- Confirmado: botón azul, deshabilitado -->
+            <button
+              *ngIf="sala.estado === 'confirmada'"
+              class="bg-blue-600 text-white px-3 py-1 rounded-full font-semibold"
+              disabled>
+              Confirmado <i class="fas fa-check ml-1"></i>
+            </button>
+
+            <!-- Rechazado: botón rojo, deshabilitado -->
+            <button
+              *ngIf="sala.estado === 'rechazada'"
+              class="bg-red-600 text-white px-3 py-1 rounded-full font-semibold"
+              disabled>
+              Rechazado <i class="fas fa-times ml-1"></i>
+            </button>
+
+            <!-- Botón para rechazar solo si está en revisión -->
+            <button
+              *ngIf="sala.estado === 'en_revision'"
+              class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-full font-semibold"
+              (click)="rechazarSala(sala.id)">
+              Rechazar
+            </button>
+          </div>
+        </li>
+        <li *ngIf="salas.length === 0" class="text-gray-400">No hay salas para mostrar.</li>
+      </ul>
+    </div>
+
+
+
   </div>
 
   <!-- Botón Gestionar Salas -->
   <div class="flex justify-center mt-12 mb-[75px]">
     <button class="bg-[#e4e4e4] text-black px-10 py-4 text-2xl rounded-2xl shadow-md hover:bg-[#d4d4d4] transition font-semibold"
             [routerLink]="['/salas']">
-      GESTIONAR SALAS <i class="fas fa-book ml-2"></i>
+      CREAR SALAS<i class="fas fa-book ml-2"></i>
     </button>
   </div>
 

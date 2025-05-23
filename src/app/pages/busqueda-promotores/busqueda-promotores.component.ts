@@ -1,7 +1,7 @@
 import {Component, NgIterable, OnInit} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgForOf} from '@angular/common';
-import {PromotoresService} from '../../servicios/PromotoresService';
+import {PromotoresService} from '../../servicios/promotores.service';
 import {Promotor} from '../../interfaces/Promotor';
 import {RouterLink} from '@angular/router';
 

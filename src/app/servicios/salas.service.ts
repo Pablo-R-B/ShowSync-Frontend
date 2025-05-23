@@ -6,7 +6,7 @@ import {Sala} from '../interfaces/Sala';
 
 @Injectable({ providedIn: 'root' })
 export class SalasService {
-  private apiUrl = '/api/salas';
+  private apiUrl = 'http://localhost:8081/salas';
 
   constructor(private http: HttpClient) {}
 
@@ -73,7 +73,7 @@ export class SalasService {
 
   // Obtener sala
   obtenerSalas(promotorId: number): Observable<Sala[]> {
-    return this.http.get<Sala[]>(`${this.apiUrl}/salas/promotor/${promotorId}`);
+    return this.http.get<Sala[]>(`${this.apiUrl}/promotor/${promotorId}`);
   }
 
 
@@ -84,7 +84,12 @@ export class SalasService {
 
   // rechazar sala
   rechazarSala(salaId: number): Observable<any> {
-    return this.http.delete(`/api/salas/${salaId}`); // o similar, dependiendo de la API
+    return this.http.delete(`${this.apiUrl}/${salaId}`); // o similar, dependiendo de la API
   }
+
+  getSalas(): Observable<{ id: number; nombre: string }[]> {
+    return this.http.get<{ id: number; nombre: string }[]>(`${this.apiUrl}/todas`);
+  }
+
 
 }
