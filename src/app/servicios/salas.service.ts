@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import {catchError, Observable} from 'rxjs';
 import { Sala } from '../interfaces/sala';
 
 @Injectable({ providedIn: 'root' })
@@ -13,8 +13,17 @@ export class SalasService {
     return localStorage.getItem('token') || '';
   }
 
+  //private getAuthHeaders(): HttpHeaders {
+   // return new HttpHeaders().set('Authorization', 'Bearer ' + this.obtenerToken());
+  //}
   private getAuthHeaders(): HttpHeaders {
-    return new HttpHeaders().set('Authorization', 'Bearer ' + this.obtenerToken());
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token no encontrado');
+    }
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
   }
 
   crear(sala: Sala): Observable<Sala> {
@@ -50,14 +59,29 @@ export class SalasService {
   }
 
   consultarDisponibilidad(salaId: number, fechaInicio: string, fechaFin?: string): Observable<any[]> {
-    const params = new HttpParams()
+    // Construye los parámetros correctamente
+    let params = new HttpParams()
       .set('salaId', salaId.toString())
       .set('fechaInicio', fechaInicio);
+
     if (fechaFin) {
-      params.set('fechaFin', fechaFin);
+      params = params.set('fechaFin', fechaFin);
     }
-    return this.http.get<any[]>(`${this.apiUrl}/disponibilidad`, { params, headers: this.getAuthHeaders() });
+
+    // Asegúrate de que la URL coincida con el endpoint del backend
+    return this.http.get<any[]>(`salas/disponibilidad`, {
+      params,
+      headers: this.getAuthHeaders() // Verifica que esto incluya el token
+    }).pipe(
+      catchError(error => {
+        console.error('Error en consultarDisponibilidad:', error);
+        throw error;
+      })
+    );
   }
+
+
+
 
   obtenerSalasPorPromotor(promotorId: number): Observable<Sala[]> {
     return this.http.get<Sala[]>(`${this.apiUrl}/promotor/${promotorId}`, {
