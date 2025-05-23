@@ -5,7 +5,7 @@ import { Sala } from '../interfaces/sala';
 
 @Injectable({ providedIn: 'root' })
 export class SalasService {
-  private apiUrl = '/api/salas';
+  private apiUrl = 'api/salas';
 
   constructor(private http: HttpClient) {}
 
@@ -49,11 +49,13 @@ export class SalasService {
     return this.http.get<Sala[]>(`${this.apiUrl}/filtrar`, { params, headers: this.getAuthHeaders() });
   }
 
-  consultarDisponibilidad(salaId: number, fechaInicio: string, fechaFin: string): Observable<any[]> {
+  consultarDisponibilidad(salaId: number, fechaInicio: string, fechaFin?: string): Observable<any[]> {
     const params = new HttpParams()
       .set('salaId', salaId.toString())
-      .set('fechaInicio', fechaInicio)
-      .set('fechaFin', fechaFin);
+      .set('fechaInicio', fechaInicio);
+    if (fechaFin) {
+      params.set('fechaFin', fechaFin);
+    }
     return this.http.get<any[]>(`${this.apiUrl}/disponibilidad`, { params, headers: this.getAuthHeaders() });
   }
 
@@ -75,9 +77,7 @@ export class SalasService {
     });
   }
 
-  crearEventoEnRevision(evento: any): Observable<any> {
-    return this.http.post('/api/eventos/en-revision', evento, { headers: this.getAuthHeaders() });
-  }
+
 
   buscarSalasPorCiudad(ciudad: string): Observable<Sala[]> {
     const params = new HttpParams().set('ciudad', ciudad);

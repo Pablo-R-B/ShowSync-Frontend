@@ -2,150 +2,150 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SalasService } from '../../servicios/salas.service';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { NgIf } from '@angular/common';
+import { NgIf, NgFor } from '@angular/common';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { CalendarOptions } from '@fullcalendar/core';
-import {FormsModule} from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../servicios/auth.service';
+import { EventosService } from '../../servicios/EventosService';
+import { EventoCreacion } from '../../interfaces/eventoCreacion';
+
 
 @Component({
   selector: 'app-perfil-sala',
   standalone: true,
-  imports: [
-    FullCalendarModule,
-    NgIf,
-    FormsModule
-  ],
-  templateUrl: './perfil-sala.component.html'
+  imports: [FullCalendarModule, NgIf, NgFor, FormsModule],
+  templateUrl: './perfil-sala.component.html',
+  styleUrls: ['./perfil-sala.component.css']
 })
 export class PerfilSalaComponent implements OnInit {
   fechaSeleccionada: string | null = null;
   mostrarFormularioEvento = false;
-
+  idPromotor: number = 0;
   sala: any;
-  calendarOptions: CalendarOptions = {
-    plugins: [dayGridPlugin],
-    initialView: 'dayGridMonth',
-    events: [],
-    dateClick: this.onDateClick.bind(this)
+  generosDisponibles: string[] = [];
+  generosSeleccionados: string[] = [];
+
+  nuevoEvento = {
+    nombre: '',
+    descripcion: ''
   };
 
+  calendarOptions: CalendarOptions = {
+    plugins: [dayGridPlugin, interactionPlugin],
+    initialView: 'dayGridMonth',
+    events: [],
+    dateClick: this.onDateClick.bind(this) // correctamente dentro de calendarOptions
+  };
 
   constructor(
     private route: ActivatedRoute,
-    private salaService: SalasService
+    private salaService: SalasService,
+    private eventosService: EventosService,
+    private authService: AuthService
   ) {}
+
+  ngOnInit() {
+    this.idPromotor = this.authService.userId;
+
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.salaService.obtenerPorId(Number(id)).subscribe(sala => {
+        this.sala = sala;
+        this.cargarDisponibilidad(Number(id));
+      });
+
+      this.eventosService.getGeneros().subscribe({
+        next: generos => this.generosDisponibles = generos,
+        error: err => console.error('Error al cargar géneros musicales', err)
+      });
+    }
+  }
+
+  private getRandomGreenTone(): string {
+    const greenTones = ['#a8e6cf', '#dcedc1', '#b2f2bb', '#c3f9d4', '#d0f4de'];
+    return greenTones[Math.floor(Math.random() * greenTones.length)];
+  }
+
+  cargarDisponibilidad(salaId: number) {
+    const hoy = new Date();
+    const fin = new Date();
+    fin.setDate(hoy.getDate() + 30);
+    const inicioStr = hoy.toISOString().split('T')[0];
+    const fechaInicio = new Date().toISOString().split('T')[0]; // Formato: 'YYYY-MM-DD'
+
+    const finStr = fin.toISOString().split('T')[0];
+
+    this.salaService.consultarDisponibilidad(salaId, fechaInicio, finStr).subscribe(disponibilidad => {
+      const eventos = disponibilidad.map((d: any) => ({
+        title: d.disponibilidad ? 'Disponible' : 'No disponible',
+        date: d.fecha,
+        color: d.disponibilidad ? this.getRandomGreenTone() : 'red',
+        editable: false
+      }));
+
+      this.calendarOptions = {
+        ...this.calendarOptions,
+        events: eventos
+      };
+    });
+  }
 
   onDateClick(arg: any) {
     const fecha = arg.dateStr;
-
-    // Verificar si el día está disponible
     const eventoExistente = (this.calendarOptions.events as any[]).find(e => e.date === fecha && e.color === 'red');
 
     if (!eventoExistente) {
       this.fechaSeleccionada = fecha;
       this.mostrarFormularioEvento = true;
-    }
-  }
-
-
-  ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.salaService.obtenerPorId(Number(id)).subscribe(sala => this.sala = sala);
-
-      const hoy = new Date();
-      const fin = new Date();
-      fin.setDate(hoy.getDate() + 30);
-      const inicioStr = hoy.toISOString().split('T')[0];
-      const finStr = fin.toISOString().split('T')[0];
-
-      this.salaService.consultarDisponibilidad(Number(id), inicioStr, finStr).subscribe(disponibilidad => {
-        const eventos = disponibilidad.map((d: any) => ({
-          title: d.disponibilidad ? 'Disponible' : 'No disponible',
-          date: d.fecha,
-          color: d.disponibilidad ? 'green' : 'red',
-          editable: false
-        }));
-
-        this.calendarOptions = {
-          ...this.calendarOptions,
-          events: eventos
-        };
-      });
-    }
-  }
-
-  handleDateClick(arg: any) {
-    const fechaSeleccionada = arg.dateStr;
-    const eventoEseDia = Array.isArray(this.calendarOptions.events)
-          ? this.calendarOptions.events.find((e: any) => e.date === fechaSeleccionada && e.color === 'red')
-          : null;
-
-    if (eventoEseDia) {
+    } else {
       alert('Este día ya está ocupado o restringido.');
+    }
+  }
+
+  enviarEvento() {
+    if (!this.fechaSeleccionada || !this.sala || this.idPromotor === 0) {
+      alert('Falta información necesaria para crear el evento');
       return;
     }
 
-    // Aquí lanzas tu modal o formulario para ingresar datos del evento
-    const confirmado = confirm(`¿Crear evento el ${fechaSeleccionada}?`);
-
-    if (confirmado && this.sala) {
-      // Simulación: podrías abrir un formulario real en lugar de confirm()
-      const nuevoEvento = {
-        title: 'Evento en revisión',
-        date: fechaSeleccionada,
-        color: 'red'
-      };
-
-      // Aquí deberías llamar a un servicio que cree el evento con estado 'en_revision'
-      // this.eventoService.crearEvento({...})
-
-      // Añadir el evento visualmente al calendario
-      (this.calendarOptions.events as any[]).push(nuevoEvento);
-
-      // Forzar actualización visual del calendario
-      this.calendarOptions = {
-        ...this.calendarOptions,
-        events: [...(this.calendarOptions.events as any[])]
-      };
-    }
-  }
-
-  evento = {
-    nombre: '',
-    descripcion: ''
-  };
-
-  enviarEvento() {
-    if (!this.fechaSeleccionada || !this.sala) return;
-
-    const nuevoEvento = {
-      nombre: this.evento.nombre,
-      descripcion: this.evento.descripcion,
-      fecha: this.fechaSeleccionada,
-      salaId: this.sala.id,
-      estado: 'EN_REVISION'
+    const eventoRequest: EventoCreacion = {
+      nombreEvento: this.nuevoEvento.nombre,
+      descripcion: this.nuevoEvento.descripcion,
+      fechaEvento: this.fechaSeleccionada,
+      idSala: this.sala.id,
+      generosMusicales: this.generosSeleccionados,
+      imagenEvento: ''
     };
 
-    this.salaService.crearEventoEnRevision(nuevoEvento).subscribe(() => {
-      // Actualizar el calendario agregando el evento en rojo
-      (this.calendarOptions.events as any[]).push({
-        title: 'Reservado (en revisión)',
-        date: this.fechaSeleccionada,
-        color: 'red'
-      });
+    this.eventosService.crearEventoEnRevision(eventoRequest).subscribe(
+      () => {
+        const nuevoEvento = {
+          title: `${this.nuevoEvento.nombre} (En revisión)`,
+          date: this.fechaSeleccionada,
+          color: 'orange',
+        };
 
-      this.cancelarEvento();
-    });
+        this.calendarOptions = {
+          ...this.calendarOptions,
+          events: [...(this.calendarOptions.events as any[]), nuevoEvento]
+        };
+
+        alert('Evento enviado para revisión correctamente');
+        this.cancelarEvento();
+        },
+      (error) => {
+        console.error('Error al crear evento:', error);
+        alert(error.error?.message || 'Error al crear el evento');
+      }
+    );
   }
 
   cancelarEvento() {
     this.mostrarFormularioEvento = false;
     this.fechaSeleccionada = null;
-    this.evento = { nombre: '', descripcion: '' };
+    this.nuevoEvento = { nombre: '', descripcion: '' };
+    this.generosSeleccionados = [];
   }
-
-
-
 }
