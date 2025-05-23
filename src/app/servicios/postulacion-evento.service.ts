@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common
 import {Observable} from 'rxjs';
 import {Postulacion} from '../interfaces/postulacion';
 import {AuthService} from './auth.service';
-;
+
 
 @Injectable({
   providedIn: 'root'
