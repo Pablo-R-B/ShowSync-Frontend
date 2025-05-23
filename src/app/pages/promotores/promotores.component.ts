@@ -5,7 +5,7 @@ import { CommonModule, DatePipe, NgForOf } from '@angular/common';
 
 import {Promotor} from '../../interfaces/Promotor';
 import {EventoDTO} from '../../interfaces/EventoDTO';
-import {PromotoresService} from '../../servicios/PromotoresService';
+import {PromotoresService} from '../../servicios/promotores.service';
 
 @Component({
   selector: 'app-promotores',

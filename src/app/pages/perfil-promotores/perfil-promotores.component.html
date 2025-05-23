@@ -17,7 +17,7 @@
   <!-- Botón Editar Mi Perfil -->
   <div class="flex justify-center mt-12 mb-[75px]">
     <button class="bg-[#e4e4e4] text-black px-10 py-4 text-2xl rounded-2xl shadow-md hover:bg-[#d4d4d4] transition font-semibold"
-            (click)="editarMiPerfil()">
+            [routerLink]="['/registro-promotor']">
       EDITAR MI PERFIL <i class="fas fa-user-edit ml-2"></i>
     </button>
   </div>
@@ -47,9 +47,10 @@
           <div class="flex gap-3">
             <!-- Icono de edición -->
             <button class="text-yellow-400 hover:text-yellow-300 text-xl flex items-center"
-                    (click)="editarEvento(evento)">
+                    [routerLink]="['/promotores', promotor?.id, 'eventos', evento.id, 'editar']">
               <i class="fas fa-pencil-alt"></i>
             </button>
+
             <!-- Icono de eliminación -->
             <button class="text-red-500 hover:text-red-400 text-xl flex items-center"
                     (click)="eliminarEvento(evento.id)">
@@ -68,7 +69,7 @@
     <div class="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-semibold flex items-center gap-2">
-          <i class="fas fa-headphones-alt text-white"></i> SALAS
+          <i class="fas fa-microphone text-white"></i> SOLICITUDES DE ARTISTA
         </h2>
       </div>
 
@@ -124,7 +125,7 @@
     <div class="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-semibold flex items-center gap-2">
-          <i class="fas fa-headphones-alt text-white"></i> SALAS
+          <i class="fas fa-user-tie text-white"></i> SOLICITUDES DE PROMOTOR
         </h2>
       </div>
 

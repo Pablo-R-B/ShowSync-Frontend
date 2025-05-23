@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {Evento} from '../interfaces/Evento';
+import {EventoBackendDTO} from '../interfaces/EventoBackendDTO';
 
 
 @Injectable({
@@ -19,7 +20,7 @@ export class EventosService {
   }
 
   // Obtener todos los eventos
-  getEventos(): Observable<Evento[]> {
+  getEventos(eventosId: any): Observable<Evento[]> {
     return this.http.get<Evento[]>(`${this.apiUrl}/eventos/catalogo`);
   }
 
@@ -43,10 +44,15 @@ export class EventosService {
     return this.http.post<Evento>(`${this.apiUrl}/eventos/promotor/${promotorId}`, evento);
   }
 
+  getEventoPorPromotor(idPromotor: number, idEvento: number): Observable<Evento> {
+    return this.http.get<Evento>(`${this.apiUrl}/eventos/promotor/${idPromotor}/evento/${idEvento}`);
+  }
+
   // Editar un evento de un promotor
-  editarEvento(promotorId: number, eventoId: number, evento: Evento): Observable<Evento> {
+  editarEvento(promotorId: number, eventoId: number, evento: EventoBackendDTO): Observable<Evento> {
     return this.http.put<Evento>(`${this.apiUrl}/eventos/promotor/${promotorId}/evento/${eventoId}`, evento);
   }
+
 
   // Eliminar un evento de un promotor
   eliminarEvento(promotorId: number, eventoId: number): Observable<string> {
@@ -86,5 +92,6 @@ export class EventosService {
   confirmarEvento(id: number): Observable<void> {
     return this.http.patch<void>(`${this.apiUrl}/eventos/confirmar/${id}`, {});
   }
+
 
 }

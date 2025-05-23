@@ -1,8 +1,9 @@
 
 export interface Evento {
+  idSala: string;
   nombre: string;
-  artistasAsignados: any;
-  generosMusicales: any;
+  artistasAsignados: string;
+  generosMusicales: string;
   nombrePromotor: string;
   estado: string;
   nombreSala: string;

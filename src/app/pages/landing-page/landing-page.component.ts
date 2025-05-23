@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {Router, RouterLink} from "@angular/router";
 import { Evento } from '../../interfaces/Evento';
-import { EventosService } from '../../servicios/EventosService';
+import { EventosService } from '../../servicios/eventos.service';
 import {  Component, OnInit, } from '@angular/core';
 import {AuthService} from '../../servicios/auth.service';
 
