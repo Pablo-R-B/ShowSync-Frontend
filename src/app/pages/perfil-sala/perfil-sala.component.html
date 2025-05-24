@@ -41,27 +41,21 @@
       </h2>
 
       <div class="leyenda-container">
+
         <div class="leyenda-item">
-          <div class="leyenda-color disponible"></div>
-          <span>Disponible</span>
-        </div>
-        <div class="leyenda-item">
-          <div class="leyenda-color ocupado"></div>
-          <span>No disponible</span>
+          <div class="leyenda-color confirmado"></div>
+          <span>Confirmado</span>
         </div>
         <div class="leyenda-item">
           <div class="leyenda-color revision"></div>
           <span>En revisión</span>
         </div>
-        <div class="leyenda-item">
-          <div class="leyenda-color seleccionable"></div>
-          <span>Hoy</span>
-        </div>
+
       </div>
     </div>
 
     <div class="calendario-wrapper">
-      <full-calendar [options]="calendarOptions"></full-calendar>
+      <full-calendar  #calendar [options]="calendarOptions"></full-calendar>
     </div>
   </div>
 

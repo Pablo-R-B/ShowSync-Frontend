@@ -77,6 +77,8 @@ export class PerfilSalaComponent implements OnInit {
     }
   };
 
+
+
   constructor(
     private route: ActivatedRoute,
     private salaService: SalasService,
@@ -91,6 +93,7 @@ export class PerfilSalaComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.cargarDatosSala(Number(id));
+
     }
   }
 
@@ -148,8 +151,15 @@ export class PerfilSalaComponent implements OnInit {
 
         this.calendarOptions = {
           ...this.calendarOptions,
-          events: eventos
+          events: eventos,
+          eventDataTransform: (eventData: any) => {
+            if (eventData.estado === 'CONFIRMADO' || eventData.disponibilidad) {
+              return eventData;
+            }
+            return null;
+          }
         };
+
       },
       error: err => {
         console.error('Error al cargar disponibilidad', err);
@@ -178,7 +188,7 @@ export class PerfilSalaComponent implements OnInit {
     }
 
     const eventoExistente = (this.calendarOptions.events as EventInput[]).find(e =>
-      e.date === fecha && (e.color === '#BF0D22' || e.color === 'orange')
+      e.date === fecha && e.color === '#BF0D22'
     );
 
     if (!eventoExistente) {
@@ -236,6 +246,7 @@ export class PerfilSalaComponent implements OnInit {
           ...this.calendarOptions,
           events: [...(this.calendarOptions.events as EventInput[]), nuevoEvento]
         };
+
 
         this.messageService.add({
           severity: 'success',

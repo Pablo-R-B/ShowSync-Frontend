@@ -64,10 +64,8 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.disponible { background: linear-gradient(135deg, #10b981, #34d399); }
-.ocupado { background: linear-gradient(135deg, #BF0D22, #ef4444); }
+.confirmado { background: linear-gradient(135deg, #BF0D22, #ef4444); }
 .revision { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
-.seleccionable { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
 
 .calendario-wrapper {
   background: rgba(255, 255, 255, 0.03);
