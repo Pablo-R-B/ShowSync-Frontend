@@ -8,8 +8,8 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { CalendarOptions } from '@fullcalendar/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../servicios/auth.service';
-import { EventosService } from '../../servicios/EventosService';
 import { EventoCreacion } from '../../interfaces/eventoCreacion';
+import {EventosService} from '../../servicios/eventos.service';
 
 
 @Component({

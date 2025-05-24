@@ -6,9 +6,8 @@ import {EventoDTO} from '../../interfaces/EventoDTO';
 import {Promotor} from '../../interfaces/Promotor';
 import {SalasService} from '../../servicios/salas.service';
 import {EventosService} from '../../servicios/eventos.service';
-import {Sala} from '../../interfaces/Sala';
-import {EventosService} from '../../servicios/EventosService';
 import {Sala} from '../../interfaces/sala';
+
 
 @Component({
   selector: 'app-perfil-promotores',

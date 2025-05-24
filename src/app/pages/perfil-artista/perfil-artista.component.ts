@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Artistas} from '../../interfaces/artistas';
-import {PromotoresService} from '../../servicios/PromotoresService';
 import {ArtistasService} from '../../servicios/artistas.service';
 import {ActivatedRoute} from '@angular/router';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
