@@ -2,7 +2,7 @@
   <app-header *ngIf="mostrarHeader"></app-header>
 
   <!-- Este main ocupa el espacio disponible -->
-  <main class="flex-grow pt-20"> <!-- pt-20 = 5rem = 80px -->
+  <main [class.pt-20]="mostrarHeader" class="flex-grow">
     <router-outlet></router-outlet>
   </main>
 
