@@ -1,4 +1,4 @@
-<div class="bg-[#7e001b] min-h-screen text-white font-sans pt-[120px] sm:pt-[140px]">
+<div class="bg-[#7e001b] min-h-screen text-white font-sans pt-[120px] sm:pt-[140px] flex flex-col">
   <div class=" sm:p-12 dark:bg-gray-50 dark:text-gray-800 ">
 
     <div class="p-10">
@@ -23,16 +23,17 @@
       </div>
     </div>
   </div>
-  <!-- Header Promotor -->
-  <div class="p-4 flex items-center gap-3 px-6 sm:ml-[10%]">
+  <!-- Header Promotor mejorado -->
+  <div class="p-6 sm:p-8 flex items-center gap-6 sm:ml-[10%]">
     <img [src]="promotor?.imagenPerfil || logoUrl"
          [alt]="promotor?.nombrePromotor"
-         class="w-12 h-12 rounded-full" />
+         class="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover shadow-lg border-2 border-white" />
     <div>
-      <h1 class="text-xl sm:text-2xl font-bold">{{ promotor?.nombrePromotor }}</h1>
-      <p class="text-sm text-gray-300">{{ promotor?.descripcion }}</p>
+      <h1 class="text-2xl sm:text-4xl font-bold">{{ promotor?.nombrePromotor }}</h1>
+      <p class="text-base sm:text-lg text-gray-300 mt-1">{{ promotor?.descripcion }}</p>
     </div>
   </div>
+
 
   <!-- Evento destacado -->
   <div class="flex justify-center mt-4 px-4 sm:px-0" *ngIf="eventoDestacado">
