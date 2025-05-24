@@ -36,11 +36,19 @@
       <label class="block mb-1">Descripción</label>
       <textarea class="border rounded w-full p-2" [(ngModel)]="sala.descripcion" name="descripcion"></textarea>
     </div>
-
     <div class="mb-4">
-      <label class="block mb-1">URL de imagen</label>
-      <input class="border rounded w-full p-2" [(ngModel)]="sala.imagen" name="imagen" />
+      <label class="block mb-1">Imagen de la sala</label>
+      <p-fileUpload
+        name="imagen"
+        accept="image/*"
+        customUpload="true"
+        (uploadHandler)="subirImagen($event)"
+        chooseLabel="Seleccionar Imagen"
+        auto="true"
+        maxFileSize="1000000">
+      </p-fileUpload>
     </div>
+
 
     <button type="submit" class="bg-customRed hover:bg-customBurbundy text-white px-4 py-2 rounded">
       {{ editando ? 'Actualizar' : 'Crear' }}
