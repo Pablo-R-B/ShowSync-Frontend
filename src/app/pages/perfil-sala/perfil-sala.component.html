@@ -145,13 +145,13 @@
         <div class="mb-4">
           <label class="block text-customBurbundy font-medium mb-2">Imagen del evento</label>
           <p-fileUpload
+            #fileUpload
             mode="basic"
             name="imagenEvento"
             accept="image/*"
             chooseLabel="Seleccionar imagen"
             (onSelect)="onFileSelected($event)"
-            class="w-full"
-          >
+            class="w-full">
           </p-fileUpload>
         </div>
 

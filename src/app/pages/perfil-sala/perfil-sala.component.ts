@@ -91,6 +91,8 @@ export class PerfilSalaComponent implements OnInit {
     private messageService: MessageService
   ) {}
 
+  @ViewChild('fileUpload') fileUpload!: FileUpload;
+
   ngOnInit() {
     this.idPromotor = this.authService.userId;
 
@@ -240,6 +242,12 @@ export class PerfilSalaComponent implements OnInit {
     this.fechaSeleccionada = null;
     this.nuevoEvento = { nombre: '', descripcion: '', imagenEvento: '' };
     this.generosSeleccionados = [];
+
+    // Limpiar el componente FileUpload
+    if (this.fileUpload) {
+      this.fileUpload.clear(); // Método de PrimeNG para limpiar archivos
+      this.fileUpload.files = []; // Limpiar manualmente el array de archivos
+    }
   }
 
   onFileSelected(event: any) {
