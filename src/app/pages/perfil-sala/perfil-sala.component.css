@@ -300,4 +300,26 @@
     opacity: 1;
     transform: scale(1);
   }
+
+
+
+}
+/* perfil-sala.component.css */
+.fc-event-title {
+  font-weight: bold;
+}
+.fc-bg-event {
+  opacity: 0.3 !important;
+}
+
+.calendario-wrapper ::ng-deep .fc {
+  font-size: 0.875rem; /* reduce tamaño fuente */
+}
+
+.calendario-wrapper ::ng-deep .fc-toolbar-title {
+  font-size: 1.25rem; /* tamaño del título */
+}
+
+.calendario-wrapper ::ng-deep .fc-daygrid-day-number {
+  font-weight: 500;
 }

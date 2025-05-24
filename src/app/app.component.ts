@@ -6,6 +6,7 @@ import { NgIf } from '@angular/common';
 import {FullCalendarModule} from '@fullcalendar/angular';
 import {HeaderComponent} from './componentes/header/header.component';
 import {FooterComponent} from './componentes/footer/footer.component';
+import {SharedModule} from 'primeng/api';
 
 
 // @ts-ignore
@@ -17,7 +18,7 @@ import {FooterComponent} from './componentes/footer/footer.component';
     RouterOutlet,
     HeaderComponent,
     FooterComponent,
-    FullCalendarModule,
+    SharedModule, // Importa el módulo compartido
     NgIf],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']

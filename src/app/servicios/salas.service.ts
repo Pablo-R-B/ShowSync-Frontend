@@ -80,6 +80,14 @@ export class SalasService {
     );
   }
 
+  obtenerFechasNoDisponibles(salaId: number): Observable<any[]> {
+    return this.http.get<any[]>(`http://localhost:8081/salas/${salaId}/fechas-no-disponibles`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+
+
 
 
 

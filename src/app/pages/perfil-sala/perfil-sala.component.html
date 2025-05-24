@@ -1,7 +1,7 @@
 <div *ngIf="sala" class="p-6 bg-customNegro rounded-2xl shadow-md mx-4 lg:mx-16">
   <!-- Título y descripción -->
   <div class="flex flex-col items-center justify-center text-center">
-    <h1 class="text-6xl  text-customBurbundy mb-3 font-medula">{{ sala.nombre }}</h1>
+    <h1 class="text-6xl text-customBurbundy mb-3 font-medula">{{ sala.nombre }}</h1>
     <p class="text-customGrisOscuro text-lg mb-6">{{ sala.descripcion }}</p>
 
     <!-- Detalles -->
@@ -31,31 +31,30 @@
   </div>
 
   <!-- Calendario de disponibilidad -->
-  <div class="calendario-container">
-    <div class="calendario-header">
-      <h2 class="calendario-titulo">
-        <svg class="calendario-icono" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2z"></path>
+  <div class="calendario-container max-w-2xl mx-auto p-4 bg-white rounded-lg shadow-lg">
+    <div class="calendario-header flex items-center justify-between mb-4">
+      <h2 class="text-2xl font-bold text-customBurbundy flex items-center">
+        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2z"/>
         </svg>
         Disponibilidad:
       </h2>
 
-      <div class="leyenda-container">
-
-        <div class="leyenda-item">
-          <div class="leyenda-color confirmado"></div>
+      <div class="leyenda-container flex gap-4 text-sm">
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 bg-[#1B998B] rounded"></div>
           <span>Confirmado</span>
         </div>
-        <div class="leyenda-item">
-          <div class="leyenda-color revision"></div>
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 bg-[#BF0D22] rounded"></div>
           <span>En revisión</span>
         </div>
-
       </div>
     </div>
 
     <div class="calendario-wrapper">
-      <full-calendar  #calendar [options]="calendarOptions"></full-calendar>
+      <full-calendar #calendar [options]="calendarOptions"></full-calendar>
     </div>
   </div>
 
@@ -69,7 +68,8 @@
     [modal]="true"
     [draggable]="false"
     header="Crear nuevo evento"
-    (onHide)="cancelarEvento()">
+    (onHide)="cancelarEvento()"
+  >
     <form (ngSubmit)="enviarEvento()" #eventoForm="ngForm" class="p-4">
       <div class="mb-4">
         <label class="block text-customBurbundy font-medium mb-2">Nombre del evento *</label>
@@ -98,7 +98,7 @@
 
       <div class="mb-4 p-3 bg-customGrisClaro rounded-lg">
         <p class="font-medium text-customBurbundy">Fecha seleccionada:</p>
-        <p class="font-semibold">{{ fechaSeleccionada | date:'fullDate':'':'es' }}</p>
+        <p class="font-semibold">{{ fechaSeleccionada | date:'fullDate' }}</p>
       </div>
 
       <div class="mb-4">
@@ -121,7 +121,8 @@
           accept="image/*"
           chooseLabel="Seleccionar imagen"
           (onSelect)="onFileSelected($event)"
-          class="w-full">
+          class="w-full"
+        >
         </p-fileUpload>
       </div>
 
