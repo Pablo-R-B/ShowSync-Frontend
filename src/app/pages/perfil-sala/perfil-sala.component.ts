@@ -149,13 +149,13 @@ export class PerfilSalaComponent implements OnInit {
             else if (f.estadoEvento === 'publicado') color = '#FF6B6B';
             else color = '#BF0D22';
           }
-
           calendarApi.addEvent({
             title: f.disponibilidad ? 'Disponible' : 'Evento reservado',
             date: f.fecha,
             color,
             editable: false,
-            display: 'background'
+            display: 'auto', // Cambiado a auto para permitir estilos
+            className: 'evento-fondo' // Cambiado a className (singular)
           });
         });
       },

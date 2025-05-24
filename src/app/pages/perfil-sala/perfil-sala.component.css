@@ -18,6 +18,24 @@
   min-height: 500px;
 }
 
+.calendario-wrapper ::ng-deep .evento-simple {
+  font-size: 1.2rem !important;
+  background: transparent !important;
+  border: none !important;
+  text-align: center;
+}
+/* Estilo para eventos de fondo */
+.calendario-wrapper ::ng-deep .fc-daygrid-bg-harness .fc-event.evento-fondo {
+  font-size: 1rem !important;
+  opacity: 0.7;
+}
+
+/* Para eventos normales (sin display: background) */
+.calendario-wrapper ::ng-deep .fc-event.evento-fondo:not(.fc-daygrid-bg-harness *) {
+  font-size: 0.9rem;
+  padding: 0.3rem;
+}
+
 /* Estilos para FullCalendar */
 .calendario-wrapper ::ng-deep .fc {
   font-family: inherit;
