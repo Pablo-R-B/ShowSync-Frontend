@@ -173,6 +173,7 @@ export class PerfilSalaComponent implements OnInit {
           if (!f.disponibilidad) {
             if (f.estadoEvento === 'confirmado') color = '#1B998B';
             else if (f.estadoEvento === 'en_revision') color = '#BF0D22';
+            else if (f.estadoEvento === 'publicado') color = '#FF6B6B';
             else color = '#BF0D22';
           }
 
