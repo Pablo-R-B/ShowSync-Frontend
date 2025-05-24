@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {DatePipe,NgIf} from '@angular/common';
-import {EventosService} from '../../servicios/EventosService';
+import {EventosService} from '../../servicios/eventos.service';
 
 
 @Component({

@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common
 import {Observable} from 'rxjs';
 import {Postulacion} from '../interfaces/postulacion';
 import {AuthService} from './auth.service';
-;
+
 
 @Injectable({
   providedIn: 'root'
@@ -46,5 +46,13 @@ export class PostulacionEventoService {
 
   actualizarEstadoSolicitud(id: number, nuevoEstado: string): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/postulacion/${id}/estado`, { nuevoEstado });
+  }
+
+  obtenerPostulacionesPorPromotor(promotorId: number): Observable<Postulacion[]> {
+    return this.http.get<Postulacion[]>(`${this.apiUrl}/promotor/${promotorId}`);
+  }
+
+  obtenerPostulacionesPorEvento(eventoId: number): Observable<Postulacion[]> {
+    return this.http.get<Postulacion[]>(`${this.apiUrl}/postulacion/evento/${eventoId}`);
   }
 }

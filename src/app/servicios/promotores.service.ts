@@ -72,4 +72,8 @@ export class PromotoresService {
   }
 
 
+  getPromotorPorIdUsuario(idUsuario: number) {
+    return this.http.get<Promotor>(`${this.apiUrl}/promotores/usuario/${idUsuario}`);
+
+  }
 }

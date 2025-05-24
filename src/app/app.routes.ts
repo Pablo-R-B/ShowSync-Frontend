@@ -12,6 +12,8 @@ import {BusquedaEventosComponent} from './pages/busqueda-eventos/busqueda-evento
 import {PerfilPromotoresComponent} from './pages/perfil-promotores/perfil-promotores.component';
 import {PromotoresComponent} from './pages/promotores/promotores.component';
 import {BusquedaPromotoresComponent} from './pages/busqueda-promotores/busqueda-promotores.component';
+import {EditarEventosComponent} from './pages/editar-eventos/editar-eventos.component';
+import {RegistroPromotorComponent} from './pages/registro-promotor/registro-promotor.component';
 import {PerfilArtistaComponent} from './pages/perfil-artista/perfil-artista.component';
 import {CatalogoSalaComponent} from './pages/catalogo-sala/catalogo-sala.component';
 
@@ -32,6 +34,9 @@ export const routes: Routes = [
   { path: 'eventos', component: EventosComponent },
   { path: 'perfil-promotores', component: PerfilPromotoresComponent},
   { path: 'busqueda-eventos', component: BusquedaEventosComponent},
+  { path: 'editar-eventos', component: EditarEventosComponent},
+  { path: 'promotores/:idPromotor/eventos/:idEvento/editar', component: EditarEventosComponent },
+  { path: 'registro-promotor', component: RegistroPromotorComponent},
   {path: 'promotor/:id', component: PromotoresComponent},
   {path: 'catalogo-salas', component: CatalogoSalaComponent, pathMatch: 'full'},
 

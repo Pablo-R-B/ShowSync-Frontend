@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
-import {PromotoresService} from '../../servicios/PromotoresService';
+import {PromotoresService} from '../../servicios/promotores.service';
 import {EventoDTO} from '../../interfaces/EventoDTO';
 import {Promotor} from '../../interfaces/Promotor';
 import {SalasService} from '../../servicios/salas.service';
-import {EventosService} from '../../servicios/EventosService';
+import {EventosService} from '../../servicios/eventos.service';
 import {Sala} from '../../interfaces/sala';
+
 
 @Component({
   selector: 'app-perfil-promotores',
@@ -24,7 +25,7 @@ import {Sala} from '../../interfaces/sala';
 export class PerfilPromotoresComponent implements OnInit {
 
   promotor: Promotor | null = null;
-  logoUrl: string = 'logo_1.png';
+  logoUrl: string = '../../../assets/imges/logo_1.png';
   salas: Sala[] = [];
   eventos: EventoDTO[] = [];
   eventoDestacado?: EventoDTO;
@@ -53,7 +54,7 @@ export class PerfilPromotoresComponent implements OnInit {
         const idUsuario = perfilUsuario.id;
         console.log('ID del usuario autenticado:', idUsuario);
 
-        this.promotoresService.cargarPromotorPorId(idUsuario).subscribe({
+        this.promotoresService.getPromotorPorIdUsuario(idUsuario).subscribe({
           next: (data: Promotor) => {
             console.log('Promotor recibido:', data);
             this.promotor = data;
@@ -106,10 +107,6 @@ export class PerfilPromotoresComponent implements OnInit {
         },
         error: (err) => console.error('Error al cargar eventos', err)
       });
-  }
-
-  abrirFormularioCrearEvento(): void {
-    this.router.navigate(['/eventos/crear']);
   }
 
   editarEvento(evento: EventoDTO): void {

@@ -93,6 +93,7 @@ export class PerfilSalaComponent implements OnInit {
 
   ngOnInit() {
     this.idPromotor = this.authService.userId;
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.cargarDatosSala(Number(id));
