@@ -129,35 +129,7 @@ export class PerfilSalaComponent implements OnInit {
     return greenTones[Math.floor(Math.random() * greenTones.length)];
   }
 
-  cargarDisponibilidad(salaId: number) {
-    const hoy = new Date();
-    const inicioStr = `${hoy.getFullYear()}-${(hoy.getMonth() + 1).toString().padStart(2, '0')}-${hoy.getDate().toString().padStart(2, '0')}`;
 
-    this.salaService.consultarDisponibilidad(salaId, inicioStr).subscribe({
-      next: disponibilidad => {
-        this.disponibilidadMap.clear();
-        const calendarApi = this.calendarComponent.getApi();
-        calendarApi.removeAllEvents();
-
-        disponibilidad.forEach((d: any) => {
-          this.disponibilidadMap.set(d.fecha, d.disponibilidad);
-          calendarApi.addEvent({
-            title: d.disponibilidad ? 'Disponible' : 'No disponible',
-            date: d.fecha,
-            color: d.disponibilidad ? this.getRandomGreenTone() : '#800080',
-            editable: false,
-            display: 'background'
-          });
-        });
-
-        //this.cargarEventosNoDisponibles(salaId);
-      },
-      error: err => {
-        console.error('Error al cargar disponibilidad', err);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar disponibilidad' });
-      }
-    });
-  }
 
   cargarFechasNoDisponibles(salaId: number) {
     this.salaService.obtenerFechasNoDisponibles(salaId).subscribe({
@@ -245,10 +217,8 @@ export class PerfilSalaComponent implements OnInit {
           textColor: '#08080C'
         };
 
-        this.calendarOptions = {
-          ...this.calendarOptions,
-          events: [...(this.calendarOptions.events as EventInput[]), nuevoEvento]
-        };
+        // Agrega el evento directamente a FullCalendar
+        this.calendarComponent.getApi().addEvent(nuevoEvento);
 
         this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Evento enviado correctamente' });
         this.cancelarEvento();
@@ -262,6 +232,7 @@ export class PerfilSalaComponent implements OnInit {
       }
     });
   }
+
 
   cancelarEvento() {
     this.mostrarFormularioEvento = false;
