@@ -10,11 +10,12 @@ import {CatalogoArtistasComponent} from './pages/catalogo-artistas/catalogo-arti
 import {EventosComponent} from './pages/eventos/eventos.component';
 import {BusquedaEventosComponent} from './pages/busqueda-eventos/busqueda-eventos.component';
 import {PerfilPromotoresComponent} from './pages/perfil-promotores/perfil-promotores.component';
-import {PerfilArtistaPruebaComponent} from './pages/perfil-artista-prueba/perfil-artista-prueba.component';
 import {PromotoresComponent} from './pages/promotores/promotores.component';
 import {BusquedaPromotoresComponent} from './pages/busqueda-promotores/busqueda-promotores.component';
 import {EditarEventosComponent} from './pages/editar-eventos/editar-eventos.component';
 import {RegistroPromotorComponent} from './pages/registro-promotor/registro-promotor.component';
+import {PerfilArtistaComponent} from './pages/perfil-artista/perfil-artista.component';
+import {CatalogoSalaComponent} from './pages/catalogo-sala/catalogo-sala.component';
 
 
 export const routes: Routes = [
@@ -36,6 +37,8 @@ export const routes: Routes = [
   { path: 'editar-eventos', component: EditarEventosComponent},
   { path: 'promotores/:idPromotor/eventos/:idEvento/editar', component: EditarEventosComponent },
   { path: 'registro-promotor', component: RegistroPromotorComponent},
+  {path: 'promotor/:id', component: PromotoresComponent},
+  {path: 'catalogo-salas', component: CatalogoSalaComponent, pathMatch: 'full'},
 
 
 
@@ -53,5 +56,5 @@ export const routes: Routes = [
   // { path: '', redirectTo: 'auth/registro', pathMatch: 'full' },
   // { path: '**', redirectTo: 'auth/registro' },
   {path: 'catalogo-artistas', component:CatalogoArtistasComponent, pathMatch: 'full'},
-  {path: 'artista/:id', component: PerfilArtistaPruebaComponent, pathMatch: 'full'}
+  {path:'artista/:id', component:PerfilArtistaComponent, pathMatch: 'full'}
 ];

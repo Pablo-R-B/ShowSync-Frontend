@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Postulacion} from '../interfaces/Postulacion';
+import {Postulacion} from '../interfaces/postulacion';
+import {AuthService} from './auth.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -9,22 +11,40 @@ import {Postulacion} from '../interfaces/Postulacion';
 export class PostulacionEventoService {
 
   private apiUrl = 'http://localhost:8081';
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
-  enviarOfertaEventoArtista(eventoId:number, artistaId:number):Observable<HttpResponse<void>>{
-    const params = new HttpParams()
-      .set('eventoId', eventoId)
-      .set('artistaId', artistaId)
+  nuevaSolicitud(eventoId:number, artistaId?:number):Observable<HttpResponse<void>>{
+    const rol = this.authService.userRole;
 
-    return this.http.post<void>(`${this.apiUrl}/postulacion/oferta-promotor`, null,
-      {params, observe:'response'});
+    const headers = new HttpHeaders()
+      .set('Content-Type', 'application/json')
+      .set('X-User-Role', rol);
+
+    const body = artistaId != null ? { artistaId } : {};
+    const url = `${this.apiUrl}/postulacion/${eventoId}/solicitud`;
+
+
+    return this.http.post<void>(
+      url,
+      body,
+      {
+        headers,
+        observe: 'response'
+      }
+    );
   }
 
   listarPorArtista(artistaId: number): Observable<Postulacion[]> {
     return this.http.get<Postulacion[]>(`${this.apiUrl}/postulacion/artista/${artistaId}`);
   }
 
-  actualizarEstado(id: number, nuevoEstado: string): Observable<void> {
+  listarPorPromotor(promotorId: number): Observable<Postulacion[]> {
+    return this.http.get<Postulacion[]>(
+      `${this.apiUrl}/postulacion/promotor/${promotorId}`
+    );
+  }
+
+  actualizarEstadoSolicitud(id: number, nuevoEstado: string): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/postulacion/${id}/estado`, { nuevoEstado });
   }
 

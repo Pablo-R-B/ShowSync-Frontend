@@ -45,6 +45,8 @@ export class LoginComponent {
         localStorage.setItem('userId', String(decoded.id));
         console.log('ID del usuario:', decoded.id);
 
+        localStorage.setItem('rol', decoded.rol);
+
 
         switch (decoded.rol) {
           case 'ADMINISTRADOR':

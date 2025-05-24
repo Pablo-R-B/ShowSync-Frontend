@@ -1,26 +1,86 @@
+<!-- perfil-sala.component.html -->
 <div *ngIf="sala" class="p-6 bg-customGrisClaro2 rounded-2xl shadow-md mx-4 lg:mx-16">
-<div class="mb-6">  <div class="mb-6">
-    <h1 class="text-3xl font-bold text-customBurbundy mb-2">{{ sala.nombre }}</h1>
+  <!-- Título y descripción -->
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-customBurgundy mb-2">{{ sala.nombre }}</h1>
     <p class="text-gray-700 mb-4">{{ sala.descripcion }}</p>
 
-    <div class="flex space-x-4 text-customBurbundy">
+    <!-- Detalles -->
+    <div class="flex flex-col md:flex-row md:space-x-6 space-y-2 md:space-y-0 text-customBurgundy">
       <p><span class="font-semibold">Capacidad:</span> {{ sala.capacidad }} personas</p>
-      <p><span class="font-semibold">Ubicación:</span> {{ sala.direccion}}</p>
-      <p><span class="font-semibold">Ciudad:</span> {{ sala.ciudad}}</p>
+      <p><span class="font-semibold">Ubicación:</span> {{ sala.direccion }}</p>
+      <p><span class="font-semibold">Ciudad:</span> {{ sala.ciudad }}</p>
     </div>
   </div>
 
-  <!-- Imagen destacada (opcional) -->
+  <!-- Imagen destacada -->
   <div *ngIf="sala.imagenUrl" class="mb-6">
-    <img [src]="sala.imagenUrl" alt="Imagen de {{ sala.nombre }}" class="w-full max-h-96 object-cover rounded-lg shadow" />
+    <img
+      [src]="sala.imagenUrl"
+      alt="Imagen de {{ sala.nombre }}"
+      class="w-full max-h-96 object-cover rounded-lg shadow"
+    />
   </div>
 
-  <hr class="my-6 border-gray-300" />
+  <!-- Calendario de disponibilidad -->
+  <full-calendar [options]="calendarOptions"></full-calendar>
 
-  <div>
-    <h2 class="text-2xl font-semibold text-customGrisOscurso mb-4">Disponibilidad</h2>
-    <full-calendar *ngIf="calendarOptions" [options]="calendarOptions" class="text-customGrisOscurso"></full-calendar>
+
+  <!-- Formulario modal para crear evento -->
+  <div *ngIf="mostrarFormularioEvento" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div class="bg-customBurbundy p-6 rounded-lg shadow-lg w-full max-w-md">
+      <h3 class="text-lg font-semibold mb-4">Crear Evento para {{ fechaSeleccionada }}</h3>
+
+      <form (ngSubmit)="enviarEvento()" #eventoForm="ngForm">
+        <label class="block mb-2">
+          Nombre del evento:
+          <input
+            type="text"
+            name="nombre"
+            [(ngModel)]="nuevoEvento.nombre"
+            class="w-full border rounded p-2"
+            required
+          />
+        </label>
+
+        <label class="block mb-2">
+          Descripción:
+          <textarea
+            name="descripcion"
+            [(ngModel)]="nuevoEvento.descripcion"
+            class="w-full border rounded p-2"
+          ></textarea>
+        </label>
+
+        <label class="block mb-2">
+          Géneros musicales:
+          <select
+            multiple
+            [(ngModel)]="generosSeleccionados"
+            name="generos"
+            class="w-full border rounded p-2"
+          >
+            <option *ngFor="let genero of generosDisponibles" [value]="genero">{{ genero }}</option>
+          </select>
+        </label>
+
+        <div class="flex justify-end space-x-2 mt-4">
+          <button
+            type="button"
+            (click)="cancelarEvento()"
+            class="px-4 py-2 bg-gray-400 text-white rounded"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 bg-customBurgundy text-white rounded"
+            [disabled]="!nuevoEvento.nombre || generosSeleccionados.length === 0"
+          >
+            Enviar
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
-</div>
-

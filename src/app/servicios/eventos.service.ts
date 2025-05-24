@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {Evento} from '../interfaces/Evento';
+import {EventoCreacion} from '../interfaces/eventoCreacion';
 import {EventoBackendDTO} from '../interfaces/EventoBackendDTO';
 
 
@@ -13,6 +14,14 @@ export class EventosService {
   private eventoId: any;
 
   constructor(private http: HttpClient) {}
+
+  private obtenerToken(): string {
+    return localStorage.getItem('token') || '';
+  }
+
+  private getAuthHeaders(): HttpHeaders {
+    return new HttpHeaders().set('Authorization', 'Bearer ' + this.obtenerToken());
+  }
 
   // Obtener eventos confirmados
   getEventosConfirmados(): Observable<Evento[]> {
@@ -72,6 +81,10 @@ export class EventosService {
     return this.http.get<string[]>(`${this.apiUrl}/eventos/generos`);
   }
 
+  // Obtener todos los géneros musicales disponibles
+  getGenero(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/genero/listar-generos`);
+  }
   // Obtener todos los estados posibles de los eventos
   obtenerEstados(): Observable<string[]> {
     return this.http.get<string[]>(`${this.apiUrl}/eventos/estados`);
@@ -83,6 +96,15 @@ export class EventosService {
   obtenerEventosDePromotor(promotorId: number): Observable<Evento[]> {
   return this.http.get<Evento[]>(`${this.apiUrl}/eventos/promotor/${promotorId}`);
 }
+
+  crearEventoEnRevision(evento: EventoCreacion) {
+    const token = localStorage.getItem('token'); // o donde lo guardes
+    return this.http.post(`${this.apiUrl}/eventos/reserva/sala`, evento, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
 
 
   cancelarEvento(id: number): Observable<void> {

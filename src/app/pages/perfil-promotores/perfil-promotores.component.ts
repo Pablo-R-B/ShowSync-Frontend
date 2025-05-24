@@ -7,6 +7,8 @@ import {Promotor} from '../../interfaces/Promotor';
 import {SalasService} from '../../servicios/salas.service';
 import {EventosService} from '../../servicios/eventos.service';
 import {Sala} from '../../interfaces/Sala';
+import {EventosService} from '../../servicios/EventosService';
+import {Sala} from '../../interfaces/sala';
 
 @Component({
   selector: 'app-perfil-promotores',
@@ -43,6 +45,8 @@ export class PerfilPromotoresComponent implements OnInit {
 
   ngOnInit(): void {
     this.obtenerPerfilUsuario();
+    const idUsuario = localStorage.getItem('userId');
+
   }
 
   private obtenerPerfilUsuario(): void {
@@ -134,7 +138,7 @@ export class PerfilPromotoresComponent implements OnInit {
   cargarSalas(): void {
     if (!this.promotor?.id) return;
 
-    this.salasService.obtenerSalas(this.promotor.id)
+    this.salasService.obtenerTodas()
       .subscribe({
         next: (data) => {
           this.salas = data;

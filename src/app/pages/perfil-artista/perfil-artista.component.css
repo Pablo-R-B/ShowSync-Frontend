@@ -1,0 +1,83 @@
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  text-align: center;
+  width: 600px; /* Más ancho */
+  height: 400px; /* Más alto */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+h2 {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+p {
+  font-size: 1.5em;
+}
+
+hr {
+  border-style:solid;
+  border-width: 5px;
+  border-color:brown;
+  border-bottom: #f44336;
+  height: 4px; /* Línea más gruesa */
+  background-color: #ccc;
+  margin: 5px 0; /* Espacio reducido */
+}
+
+select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1em;
+}
+
+
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+button {
+  padding: 12px 24px;
+  font-size: 1em;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  color: white; /* Texto en blanco */
+  width: 120px; /* Ancho aumentado */
+  cursor: pointer;
+}
+
+button:first-of-type { /* Botón Cancelar */
+  background-color: #f44336; /* Rojo */
+}
+
+button:last-of-type { /* Botón Aceptar */
+  background-color: #4CAF50; /* Verde */
+}
+
+button:hover {
+  opacity: 0.8; /* Efecto visual al pasar el ratón */
+}
