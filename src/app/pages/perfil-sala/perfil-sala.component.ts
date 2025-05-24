@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SalasService } from '../../servicios/salas.service';
-import { EventosService } from '../../servicios/EventosService';
 import { AuthService } from '../../servicios/auth.service';
 import { MessageService } from 'primeng/api';
 import { EventoCreacion } from '../../interfaces/eventoCreacion';
@@ -20,6 +19,7 @@ import { ButtonDirective } from 'primeng/button';
 import { InputTextarea } from 'primeng/inputtextarea';
 import {FullCalendarComponent} from '@fullcalendar/angular';
 import {SharedModule} from '../../shared/shared.module';
+import {EventosService} from '../../servicios/eventos.service';
 
 @Component({
   selector: 'app-perfil-sala',
@@ -251,5 +251,15 @@ export class PerfilSalaComponent implements OnInit {
       };
       reader.readAsDataURL(file);
     }
+  }
+
+  mostrarModal = false;
+
+  abrirImagen() {
+    this.mostrarModal = true;
+  }
+
+  cerrarModal() {
+    this.mostrarModal = false;
   }
 }

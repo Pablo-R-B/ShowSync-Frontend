@@ -5,7 +5,7 @@
     <p class="text-customGrisOscuro text-lg mb-6">{{ sala.descripcion }}</p>
 
     <!-- Detalles -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
       <div class="bg-customBlanco p-4 rounded-lg shadow">
         <p class="font-bold text-customBurbundy">Capacidad</p>
         <p class="text-customBurbundy">{{ sala.capacidad }} personas</p>
@@ -18,132 +18,163 @@
         <p class="font-bold text-customBurbundy">Ciudad</p>
         <p class="text-customBurbundy">{{ sala.ciudad }}</p>
       </div>
-    </div>
-  </div>
+      <div class="bg-customBlanco p-4 rounded-lg shadow">
+        <p class="font-bold text-customBurbundy mb-2">Fotos</p>
 
-  <!-- Imagen destacada -->
-  <div *ngIf="sala.imagenUrl" class="mb-8">
-    <img
-      [src]="sala.imagenUrl"
-      alt="Imagen de {{ sala.nombre }}"
-      class="w-full h-96 object-cover rounded-lg shadow-lg"
-    />
-  </div>
-
-  <!-- Calendario de disponibilidad -->
-  <div class="calendario-container max-w-2xl mx-auto p-4 bg-white rounded-lg shadow-lg">
-    <div class="calendario-header flex items-center justify-between mb-4">
-      <h2 class="text-2xl font-bold text-customBurbundy flex items-center">
-        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2z"/>
-        </svg>
-        Disponibilidad:
-      </h2>
-
-      <div class="leyenda-container flex gap-4 text-sm">
-        <div class="flex items-center gap-2">
-          <div class="w-4 h-4 bg-[#1B998B] rounded"></div>
-          <span>Confirmado</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <div class="w-4 h-4 bg-[#BF0D22] rounded"></div>
-          <span>En revisión</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="calendario-wrapper">
-      <full-calendar #calendar [options]="calendarOptions"></full-calendar>
-    </div>
-  </div>
-
-  <!-- Toast para mensajes -->
-  <p-toast></p-toast>
-
-  <!-- Dialog para crear evento -->
-  <p-dialog
-    [(visible)]="mostrarFormularioEvento"
-    [style]="{ width: '50vw' }"
-    [modal]="true"
-    [draggable]="false"
-    header="Crear nuevo evento"
-    (onHide)="cancelarEvento()"
-  >
-    <form (ngSubmit)="enviarEvento()" #eventoForm="ngForm" class="p-4">
-      <div class="mb-4">
-        <label class="block text-customBurbundy font-medium mb-2">Nombre del evento *</label>
-        <input
-          type="text"
-          pInputText
-          name="nombre"
-          [(ngModel)]="nuevoEvento.nombre"
-          class="w-full"
-          required
-          placeholder="Nombre del evento"
-        />
-      </div>
-
-      <div class="mb-4">
-        <label class="block text-customBurbundy font-medium mb-2">Descripción</label>
-        <textarea
-          pInputTextarea
-          name="descripcion"
-          [(ngModel)]="nuevoEvento.descripcion"
-          class="w-full"
-          rows="3"
-          placeholder="Descripción del evento"
-        ></textarea>
-      </div>
-
-      <div class="mb-4 p-3 bg-customGrisClaro rounded-lg">
-        <p class="font-medium text-customBurbundy">Fecha seleccionada:</p>
-        <p class="font-semibold">{{ fechaSeleccionada | date:'fullDate' }}</p>
-      </div>
-
-      <div class="mb-4">
-        <label class="block text-customBurbundy font-medium mb-2">Géneros musicales *</label>
-        <p-multiSelect
-          [options]="generosDisponibles"
-          [(ngModel)]="generosSeleccionados"
-          name="generos"
-          [showToggleAll]="false"
-          placeholder="Selecciona géneros"
-          required
-        ></p-multiSelect>
-      </div>
-
-      <div class="mb-4">
-        <label class="block text-customBurbundy font-medium mb-2">Imagen del evento</label>
-        <p-fileUpload
-          mode="basic"
-          name="imagenEvento"
-          accept="image/*"
-          chooseLabel="Seleccionar imagen"
-          (onSelect)="onFileSelected($event)"
-          class="w-full"
+        <button
+          (click)="abrirImagen()"
+          class="text-blue-600 underline hover:text-blue-800 cursor-pointer"
         >
-        </p-fileUpload>
+          Ver imagen de la sala
+        </button>
+      </div>
+      <!-- Modal para mostrar la imagen -->
+      <div
+        *ngIf="mostrarModal"
+        class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
+      >
+        <div class="bg-white rounded-lg p-4 max-w-xl max-h-[90vh] overflow-auto relative">
+          <button
+            (click)="cerrarModal()"
+            class="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-xl"
+            aria-label="Cerrar"
+          >
+            &times;
+          </button>
+          <img
+            [src]="sala.imagen"
+            alt="Imagen de {{ sala.nombre }}"
+            class="max-w-full max-h-[80vh] rounded"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Imagen destacada
+    <div *ngIf="sala.imagen" class="mb-8">
+      <img
+        [src]="sala.imagen"
+        alt="Imagen de {{ sala.nombre }}"
+        class="w-full h-96 object-cover rounded-lg shadow-lg"
+      />
+    </div>
+  -->
+
+    <!-- Calendario de disponibilidad -->
+    <div class="calendario-container max-w-2xl mx-auto p-4 bg-white rounded-lg shadow-lg">
+      <div class="calendario-header flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-bold text-customBurbundy flex items-center">
+          <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2z"/>
+          </svg>
+          Disponibilidad:
+        </h2>
+
+        <div class="leyenda-container">
+          <div class="flex gap-4 text-sm">
+            <div class="w-4 h-4 bg-[#1B998B] rounded"></div>
+            <span>Confirmado</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-4 h-4 bg-[#BF0D22] rounded"></div>
+            <span>En revisión</span>
+          </div>
+        </div>
       </div>
 
-      <div class="flex justify-end gap-2 mt-4">
-        <button
-          pButton
-          type="button"
-          label="Cancelar"
-          icon="pi pi-times"
-          (click)="cancelarEvento()"
-          class="p-button-outlined p-button-secondary"
-        ></button>
-        <button
-          pButton
-          type="submit"
-          label="Enviar para revisión"
-          icon="pi pi-check"
-          [disabled]="!nuevoEvento.nombre || generosSeleccionados.length === 0 || cargando"
-          [loading]="cargando"
-        ></button>
+      <div class="calendario-wrapper">
+        <full-calendar #calendar [options]="calendarOptions"></full-calendar>
       </div>
-    </form>
-  </p-dialog>
+    </div>
+
+    <!-- Toast para mensajes -->
+    <p-toast></p-toast>
+
+    <!-- Dialog para crear evento -->
+    <p-dialog
+      [(visible)]="mostrarFormularioEvento"
+      [style]="{ width: '50vw' }"
+      [modal]="true"
+      [draggable]="false"
+      header="Crear nuevo evento"
+      (onHide)="cancelarEvento()"
+    >
+      <form (ngSubmit)="enviarEvento()" #eventoForm="ngForm" class="p-4">
+        <div class="mb-4">
+          <label class="block text-customBurbundy font-medium mb-2">Nombre del evento *</label>
+          <input
+            type="text"
+            pInputText
+            name="nombre"
+            [(ngModel)]="nuevoEvento.nombre"
+            class="w-full"
+            required
+            placeholder="Nombre del evento"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-customBurbundy font-medium mb-2">Descripción</label>
+          <textarea
+            pInputTextarea
+            name="descripcion"
+            [(ngModel)]="nuevoEvento.descripcion"
+            class="w-full"
+            rows="3"
+            placeholder="Descripción del evento"
+          ></textarea>
+        </div>
+
+        <div class="mb-4 p-3 bg-customGrisClaro rounded-lg">
+          <p class="font-medium text-customBurbundy">Fecha seleccionada:</p>
+          <p class="font-semibold">{{ fechaSeleccionada | date:'fullDate' }}</p>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-customBurbundy font-medium mb-2">Géneros musicales *</label>
+          <p-multiSelect
+            [options]="generosDisponibles"
+            [(ngModel)]="generosSeleccionados"
+            name="generos"
+            [showToggleAll]="false"
+            placeholder="Selecciona géneros"
+            required
+          ></p-multiSelect>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-customBurbundy font-medium mb-2">Imagen del evento</label>
+          <p-fileUpload
+            mode="basic"
+            name="imagenEvento"
+            accept="image/*"
+            chooseLabel="Seleccionar imagen"
+            (onSelect)="onFileSelected($event)"
+            class="w-full"
+          >
+          </p-fileUpload>
+        </div>
+
+        <div class="flex justify-end gap-2 mt-4">
+          <button
+            pButton
+            type="button"
+            label="Cancelar"
+            icon="pi pi-times"
+            (click)="cancelarEvento()"
+            class="p-button-outlined p-button-secondary"
+          ></button>
+          <button
+            pButton
+            type="submit"
+            label="Enviar para revisión"
+            icon="pi pi-check"
+            [disabled]="!nuevoEvento.nombre || generosSeleccionados.length === 0 || cargando"
+            [loading]="cargando"
+          ></button>
+        </div>
+      </form>
+    </p-dialog>
+  </div>
 </div>
