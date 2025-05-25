@@ -1,9 +1,10 @@
 import { Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
+import {Component, NgIterable, OnInit} from '@angular/core';
 import { NgClass, NgForOf, NgIf, TitleCasePipe } from '@angular/common';
 import { EventosService } from '../../servicios/eventos.service';
 import { AuthService } from '../../servicios/auth.service';
 import { FormsModule } from '@angular/forms';
+import {Paginator} from 'primeng/paginator';
 
 @Component({
   selector: 'app-busqueda-eventos',
@@ -15,7 +16,8 @@ import { FormsModule } from '@angular/forms';
     NgForOf,
     NgIf,
     NgClass,
-    FormsModule
+    FormsModule,
+    Paginator
   ]
 })
 export class BusquedaEventosComponent implements OnInit {
@@ -23,16 +25,20 @@ export class BusquedaEventosComponent implements OnInit {
 
   eventos: any[] = [];
   eventosFiltrados: any[] = [];
+  eventosOriginales: any[] = [];
 
   generos: string[] = [];
   estados: string[] = [];
 
-  // Filtros
   generoSeleccionado: string = '';
   estadoSeleccionado: string = '';
   fechaDesde: string = '';
   fechaHasta: string = '';
-  private eventosOriginales: any[] = []; // ✅ Inicializado como array vacío
+
+  pageSize: number = 6;
+  totalItems: number = 0;
+  paginaActual: number = 0;
+  eventosPaginados: any[] = [];
 
   constructor(
     private eventosService: EventosService,
@@ -52,11 +58,10 @@ export class BusquedaEventosComponent implements OnInit {
   cargarEventos(): void {
     this.eventosService.getTodosLosEventos().subscribe({
       next: (data) => {
-        this.eventos = data;
-        this.eventosOriginales = [...data]; // ✅ Guardar copia original
+        this.eventosOriginales = [...data];
         this.eventosFiltrados = [...data];
-
-        // Extrae valores únicos para los filtros
+        this.totalItems = this.eventosFiltrados.length;
+        this.actualizarEventosPaginados();
         this.estados = [...new Set(data.map((e: any) => e.estado))];
       },
       error: (err) => {
@@ -66,65 +71,29 @@ export class BusquedaEventosComponent implements OnInit {
   }
 
   aplicarFiltros(): void {
-    if (!Array.isArray(this.eventosOriginales)) {
-      this.eventosFiltrados = [];
-      return;
-    }
-
-    console.log('Género seleccionado:', this.generoSeleccionado);
-
-    this.eventosFiltrados = this.eventosOriginales.filter((evento: {
-      generosMusicales: string[];
-      fechaEvento: number[]; // Asegurarnos de que la fecha es un arreglo
-      estado: string;
-    }) => {
-      // Verificar si el evento tiene generosMusicales
+    this.eventosFiltrados = this.eventosOriginales.filter((evento) => {
       const generosMusicales = evento.generosMusicales || [];
 
-      // Verificar si el evento tiene el género seleccionado en generosMusicales
       const cumpleGenero =
         this.generoSeleccionado === '' ||
-        generosMusicales.some(genero =>
+        generosMusicales.some((genero: string) =>
           genero.toLowerCase().trim() === this.generoSeleccionado.toLowerCase().trim()
         );
 
-      console.log('Evento generosMusicales:', generosMusicales, 'cumpleGenero:', cumpleGenero);
-
-      // Construir la fecha correctamente a partir del arreglo [año, mes, día]
       let fechaEvento: Date;
-
-      // Verificar si la fecha es un arreglo [año, mes, día]
       if (Array.isArray(evento.fechaEvento)) {
         const [anio, mes, dia] = evento.fechaEvento;
-
-        // Validar que mes esté en el rango 1-12, y que la fecha no sea inválida
-        if (mes >= 1 && mes <= 12 && dia > 0 && dia <= 31) {
-          fechaEvento = new Date(anio, mes - 1, dia); // Mes en JS es 0-indexado
-        } else {
-          fechaEvento = new Date(NaN); // Si el mes o el día no son válidos, asignamos una fecha inválida
-        }
+        fechaEvento = new Date(anio, mes - 1, dia);
       } else {
-        fechaEvento = new Date(evento.fechaEvento); // Si es un string o número, lo intentamos convertir directamente
+        fechaEvento = new Date(evento.fechaEvento);
       }
 
-      console.log('Fecha evento:', fechaEvento);
-
-      // Validar si la fecha es válida
-      if (isNaN(fechaEvento.getTime())) {
-        console.error('Fecha inválida:', evento.fechaEvento);
-        fechaEvento = new Date(NaN); // Asignamos una fecha inválida si no es válida
-      }
-
-      // Validar rango de fechas
       const cumpleFechaDesde =
         !this.fechaDesde || fechaEvento >= new Date(this.fechaDesde);
 
       const cumpleFechaHasta =
         !this.fechaHasta || fechaEvento <= new Date(this.fechaHasta);
 
-      console.log('cumpleFechaDesde:', cumpleFechaDesde, 'cumpleFechaHasta:', cumpleFechaHasta);
-
-      // Validar estado
       const cumpleEstado =
         this.estadoSeleccionado === '' ||
         (evento.estado && evento.estado.toLowerCase().includes(this.estadoSeleccionado.toLowerCase()));
@@ -132,13 +101,27 @@ export class BusquedaEventosComponent implements OnInit {
       return cumpleGenero && cumpleFechaDesde && cumpleFechaHasta && cumpleEstado;
     });
 
-    console.log('Eventos filtrados:', this.eventosFiltrados);
+    this.totalItems = this.eventosFiltrados.length;
+    this.paginaActual = 0;
+    this.actualizarEventosPaginados();
+  }
+
+  actualizarEventosPaginados(): void {
+    const start = this.paginaActual * this.pageSize;
+    const end = start + this.pageSize;
+    this.eventosPaginados = this.eventosFiltrados.slice(start, end);
   }
 
 
+  onPageChange(event: any): void {
+    this.paginaActual = event.page;
+    this.pageSize = event.rows;
+    this.actualizarEventosPaginados();
+  }
+
 
   verInfo(evento: any): void {
-    if (!evento || !evento.id) return;
+    if (!evento?.id) return;
     if (!this.usuarioLogueado) {
       this.mostrarAdvertencia();
       return;
@@ -159,7 +142,7 @@ export class BusquedaEventosComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error al actualizar el seguimiento:', error);
-        evento.seguido = !evento.seguido; // Revertir si falla
+        evento.seguido = !evento.seguido;
       }
     });
   }
