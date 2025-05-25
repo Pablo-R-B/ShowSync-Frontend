@@ -35,13 +35,20 @@ export class HeaderComponent {
     this.estaLogueado = false;
     this.mostrarMenuPerfil = false;
     this.menuAbierto = false;
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/auth/login']).then(() => {
+      this.mostrarMenuPerfil = false;
+      this.menuAbierto = false;
+    });
   }
 
   getRutaPerfil() {
     const rol = localStorage.getItem('rol');
+    this.mostrarMenuPerfil = false;
+    this.menuAbierto = false;
     if (rol === 'PROMOTOR') {
       return '/perfil-promotores';
+    } if (rol === 'ADMINISTRADOR') {
+      return '/admin/salas';
     } else {
       return '/login';
     }

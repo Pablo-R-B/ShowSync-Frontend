@@ -55,12 +55,25 @@ export class PanelSalasComponent implements OnInit {
   }
 
   eliminarSala(id: number): void {
-    if (confirm('¿Estás seguro de eliminar esta sala?')) {
-      this.salaService.eliminar(id).subscribe({
-        next: () => this.obtenerSalas(),
-        error: (err) => console.error('Error al eliminar sala:', err)
+    import('sweetalert2').then(Swal => {
+      Swal.default.fire({
+        title: '¿Estás seguro?',
+        text: 'Esta acción no se puede deshacer.',
+        icon: 'warning',
+        showCancelButton: true,
+        iconColor: '#BF0D22', // Cambia el color del ícono aquí
+        confirmButtonText: 'Sí, eliminar',
+        confirmButtonColor: '#BF0D22', // Cambia el color del botón aquí
+        cancelButtonText: 'Cancelar'
+      }).then(result => {
+        if (result.isConfirmed) {
+          this.salaService.eliminar(id).subscribe({
+            next: () => this.obtenerSalas(),
+            error: (err) => console.error('Error al eliminar sala:', err)
+          });
+        }
       });
-    }
+    });
   }
   verPerfilSala(id: number): void {
     this.router.navigate([`/salas/${id}`]);
