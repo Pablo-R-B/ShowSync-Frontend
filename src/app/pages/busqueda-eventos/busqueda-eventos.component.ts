@@ -71,6 +71,7 @@ export class BusquedaEventosComponent implements OnInit {
   }
 
   aplicarFiltros(): void {
+    // Filtrado
     this.eventosFiltrados = this.eventosOriginales.filter((evento) => {
       const generosMusicales = evento.generosMusicales || [];
 
@@ -98,18 +99,32 @@ export class BusquedaEventosComponent implements OnInit {
         this.estadoSeleccionado === '' ||
         (evento.estado && evento.estado.toLowerCase().includes(this.estadoSeleccionado.toLowerCase()));
 
+      // Guardamos la fecha parseada en una propiedad temporal local
+      (evento as any)._fechaOrdenada = fechaEvento;
+
       return cumpleGenero && cumpleFechaDesde && cumpleFechaHasta && cumpleEstado;
     });
 
+    // Ordenar eventos del más reciente al más antiguo usando la propiedad temporal
+    this.eventosFiltrados.sort((a, b) => {
+      const fechaA = (a as any)._fechaOrdenada;
+      const fechaB = (b as any)._fechaOrdenada;
+      return fechaB.getTime() - fechaA.getTime(); // Más recientes primero
+    });
+
+    // Paginación
     this.totalItems = this.eventosFiltrados.length;
     this.paginaActual = 0;
     this.actualizarEventosPaginados();
+
   }
+
 
   actualizarEventosPaginados(): void {
     const start = this.paginaActual * this.pageSize;
     const end = start + this.pageSize;
     this.eventosPaginados = this.eventosFiltrados.slice(start, end);
+
   }
 
 

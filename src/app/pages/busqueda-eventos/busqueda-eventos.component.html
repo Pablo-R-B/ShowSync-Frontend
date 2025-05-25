@@ -28,6 +28,7 @@
       </label>
       <select id="generoSelect" [(ngModel)]="generoSeleccionado"
               class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              aria-label="Seleccionar género musical"
       >
         <option value="">Todos</option>
         <option *ngFor="let genero of generos" [value]="genero">{{ genero }}</option>
@@ -39,6 +40,7 @@
       </label>
       <input type="date" id="fechaDesde" [(ngModel)]="fechaDesde"
              class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+             aria-label="Fecha desde"
       />
 
       <!-- Fecha hasta -->
@@ -47,6 +49,7 @@
       </label>
       <input type="date" id="fechaHasta" [(ngModel)]="fechaHasta"
              class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+             aria-label="Fecha hasta"
       />
 
       <!-- Estado del evento -->
@@ -55,6 +58,7 @@
       </label>
       <select id="estadoSelect" [(ngModel)]="estadoSeleccionado"
               class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              aria-label="Seleccionar estado del evento"
       >
         <option value="">-- Todos los estados --</option>
         <option *ngFor="let estado of estados" [value]="estado">{{ estado | titlecase }}</option>
@@ -72,6 +76,12 @@
 
     <!-- EVENTOS -->
     <div class="w-full md:w-3/4 flex flex-col space-y-6">
+
+      <!-- Sin resultados -->
+      <div *ngIf="eventosPaginados.length === 0" class="bg-zinc-800 p-6 rounded-xl text-center text-lg text-white border border-zinc-700">
+        No se encontraron eventos con los filtros seleccionados.
+      </div>
+
       <!-- Lista de eventos -->
       <div
         *ngFor="let evento of eventosPaginados"
@@ -80,6 +90,7 @@
         <!-- Imagen del evento -->
         <img
           [src]="evento.imagenEvento"
+          (error)="evento.imagenEvento = 'assets/images/default-evento.jpg'"
           alt="Imagen del evento"
           class="w-full md:w-1/4 h-32 object-cover rounded"
         />
@@ -96,6 +107,7 @@
           <button
             class="bg-slate-500 hover:bg-slate-600 text-white px-3 py-1 rounded"
             (click)="verInfo(evento)"
+            aria-label="Ver más información del evento"
           >
             + info
           </button>
@@ -104,7 +116,7 @@
           <button
             class="bg-gray-600 text-white px-3 py-1 rounded opacity-60 cursor-not-allowed"
             disabled
-            (click)="verInfo(evento)"
+            aria-disabled="true"
           >
             + info
           </button>
@@ -119,13 +131,13 @@
           }"
           (click)="seguirEvento(evento)"
           [disabled]="!usuarioLogueado"
-          title="Seguir evento"
+          aria-label="Seguir evento"
         >
           <i class="fa" [ngClass]="evento.seguido ? 'fa-heart' : 'fa-heart-o'"></i>
         </button>
       </div>
 
-      <!-- Paginador de PrimeNG centrado debajo de los eventos -->
+      <!-- Paginador centrado -->
       <div class="card flex justify-center">
         <p-paginator
           [rows]="pageSize"
@@ -140,8 +152,10 @@
     <div
       *ngIf="mostrarModal"
       class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+      tabindex="-1"
+      (keydown.escape)="cerrarModal()"
     >
-      <div class="bg-white text-black p-6 rounded shadow-lg w-80 text-center">
+      <div class="bg-white text-black p-6 rounded shadow-lg w-80 text-center transition duration-300 ease-in-out transform scale-100">
         <h2 class="text-xl font-semibold mb-4">Acción no permitida</h2>
         <p class="mb-4">Debes iniciar sesión o registrarte para realizar esta acción.</p>
         <button
