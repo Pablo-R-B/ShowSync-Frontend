@@ -16,6 +16,7 @@ import {jwtDecode} from 'jwt-decode';
     NgIf,
     RouterLink
   ],
+  standalone: true,
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
