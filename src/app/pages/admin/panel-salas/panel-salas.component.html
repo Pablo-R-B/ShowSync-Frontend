@@ -1,43 +1,154 @@
 <div class="p-4 bg-customNegro rounded-2xl shadow-md mx-4 lg:mx-16">
-  <h1 class="text-2xl font-bold mb-4">Gestión de Salas</h1>
+  <h1 class="text-2xl font-bold mb-4 text-white">Gestión de Salas</h1>
 
-  <div class="mb-4 flex justify-between items-center">
-    <input
-      type="text"
-      placeholder="Buscar sala..."
-      [(ngModel)]="filtro"
-      (input)="filtrarSalas()"
-      class="border rounded p-2 w-1/3"
-    />
-    <button
-      class="bg-customRed text-white px-4 py-2 rounded hover:bg-customBurbundy"
-      (click)="crearSala()"
-    >
-      + Nueva Sala
-    </button>
+  <div class="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div class="w-full md:w-1/3">
+      <input
+        type="text"
+        placeholder="Buscar sala..."
+        [(ngModel)]="filtro"
+        (input)="filtrarSalas()"
+        class="border border-gray-600 rounded p-2 w-full bg-customNegro text-white"
+      />
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+      <!-- Selector de ordenación -->
+      <div class="relative">
+        <select
+          [(ngModel)]="ordenActual"
+          (change)="cambiarOrden(ordenActual)"
+          class="border border-gray-600 rounded p-2 bg-customNegro text-white appearance-none pr-8">
+          <option value="nombre-asc">Nombre (A-Z)</option>
+          <option value="nombre-desc">Nombre (Z-A)</option>
+          <option value="capacidad-asc">Capacidad (Menor a Mayor)</option>
+          <option value="capacidad-desc">Capacidad (Mayor a Menor)</option>
+        </select>
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+          <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+          </svg>
+        </div>
+      </div>
+
+      <button
+        class="bg-customRed text-white px-4 py-2 rounded hover:bg-customBurbundy transition-colors whitespace-nowrap"
+        (click)="crearSala()"
+      >
+        + Nueva Sala
+      </button>
+    </div>
   </div>
 
-  <table class="table-auto w-full border">
-    <thead class="bg-customGrisOscurso">
+  <div *ngIf="isLoading" class="flex justify-center items-center py-12">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
+  </div>
+
+  <div *ngIf="errorMessage" class="bg-red-900/20 border-l-4 border-red-500 p-4 mb-6">
+    <div class="flex items-center">
+      <svg class="h-5 w-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+      </svg>
+      <span class="text-red-300">{{ errorMessage }}</span>
+    </div>
+  </div>
+
+  <table class="table-auto w-full border border-gray-600 text-center" *ngIf="!isLoading">
+    <thead class="bg-gray-800">
     <tr>
-      <th class="border p-2">Nombre</th>
-      <th class="border p-2">Dirección</th>
-      <th class="border p-2">Capacidad</th>
-      <th class="border p-2">Acciones</th>
+      <th class="border border-gray-600 p-2 text-center">Nombre</th>
+      <th class="border border-gray-600 p-2 text-center">Ubicación</th>
+      <th class="border border-gray-600 p-2 text-center">Capacidad</th>
+      <th class="border border-gray-600 p-2 text-center">Acciones</th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let sala of salasFiltradas" class="hover:bg-gray-500">
-      <td class="border p-2">{{ sala.nombre }}</td>
-      <td class="border p-2">{{ sala.direccion }}</td>
-      <td class="border p-2 text-center">{{ sala.capacidad }}</td>
-      <td class="border p-4 space-x-4 flex justify-center">
-        <button class="bg-yellow-500 px-3 py-1 rounded text-white" (click)="editarSala(sala.id)">Editar</button>
-        <button class="bg-red-600 px-3 py-1 rounded text-white" (click)="eliminarSala(sala.id)">Eliminar</button>
-<!--        <button class="bg-blue-500 px-3 py-1 rounded text-white" (click)="verReservas(sala.id)">Ver Reservas</button>-->
-        <button class="bg-green-500 px-3 py-1 rounded text-white" (click)="verPerfilSala(sala.id)">Ver</button>
+    <tr *ngFor="let sala of salasPaginadas" class="hover:bg-gray-800/50">
+      <td class="border border-gray-600 p-2">{{ sala.nombre }}</td>
+      <td class="border border-gray-600 p-2">
+        {{ sala.direccion }}, {{ sala.ciudad }}
+      </td>
+      <td class="border border-gray-600 p-2">{{ sala.capacidad }}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
+        <div class="flex justify-center space-x-2 border border-gray-600 p-2">
+          <button
+            (click)="verPerfilSala(sala.id)"
+            class="text-green-600 hover:text-green-900 dark:hover:text-green-400 px-2 py-1 rounded hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors duration-200"
+            title="Ver detalles"
+          >
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+            </svg>
+          </button>
+          <button
+            (click)="editarSala(sala.id)"
+            class="text-yellow-600 hover:text-yellow-900 dark:hover:text-yellow-400 px-2 py-1 rounded hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors duration-200"
+            title="Editar"
+          >
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+            </svg>
+          </button>
+          <button
+            (click)="eliminarSala(sala.id)"
+            class="text-red-600 hover:text-red-900 dark:hover:text-red-400 px-2 py-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200"
+            title="Eliminar"
+          >
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+            </svg>
+          </button>
+        </div>
       </td>
     </tr>
     </tbody>
   </table>
+
+  <!-- Paginación -->
+  <div class="flex justify-center mt-8" *ngIf="totalPaginas > 1 && !isLoading">
+    <nav class="flex items-center" aria-label="Paginación">
+      <button
+        (click)="cambiarPagina(paginaActual - 1)"
+        [disabled]="paginaActual === 1"
+        [class.opacity-50]="paginaActual === 1"
+        [class.cursor-not-allowed]="paginaActual === 1"
+        class="px-3 py-1 rounded-l bg-gray-800 hover:bg-gray-700 text-white flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </svg>
+      </button>
+
+      <ng-container *ngFor="let pagina of paginasArray()">
+        <button
+          *ngIf="mostrarNumeroPagina(pagina)"
+          (click)="cambiarPagina(pagina)"
+          [class.bg-customRed]="pagina === paginaActual"
+          [class.bg-gray-800]="pagina !== paginaActual"
+          [class.hover:bg-customBurbundy]="pagina === paginaActual"
+          [class.hover:bg-gray-700]="pagina !== paginaActual"
+          class="px-3 py-1 text-white transition-colors duration-300">
+          {{ pagina }}
+        </button>
+
+        <span *ngIf="mostrarPuntosSuspensivos(pagina)" class="px-2 py-1 text-white">...</span>
+      </ng-container>
+
+      <button
+        (click)="cambiarPagina(paginaActual + 1)"
+        [disabled]="paginaActual === totalPaginas"
+        [class.opacity-50]="paginaActual === totalPaginas"
+        [class.cursor-not-allowed]="paginaActual === totalPaginas"
+        class="px-3 py-1 rounded-r bg-gray-800 hover:bg-gray-700 text-white flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+        </svg>
+      </button>
+    </nav>
+  </div>
+
+  <div *ngIf="!isLoading && salasFiltradas.length === 0"
+       class="text-center py-12 text-gray-400">
+    No se encontraron salas
+  </div>
 </div>

@@ -16,6 +16,8 @@ import {EditarEventosComponent} from './pages/editar-eventos/editar-eventos.comp
 import {RegistroPromotorComponent} from './pages/registro-promotor/registro-promotor.component';
 import {PerfilArtistaComponent} from './pages/perfil-artista/perfil-artista.component';
 import {CatalogoSalaComponent} from './pages/catalogo-sala/catalogo-sala.component';
+import {PanelSalasComponent} from './pages/admin/panel-salas/panel-salas.component';
+import {AdminPanelComponent} from './pages/admin/admin-panel/admin-panel.component';
 
 
 export const routes: Routes = [
@@ -56,5 +58,33 @@ export const routes: Routes = [
   // { path: '', redirectTo: 'auth/registro', pathMatch: 'full' },
   // { path: '**', redirectTo: 'auth/registro' },
   {path: 'catalogo-artistas', component:CatalogoArtistasComponent, pathMatch: 'full'},
-  {path:'artista/:id', component:PerfilArtistaComponent, pathMatch: 'full'}
+  {path:'artista/:id', component:PerfilArtistaComponent, pathMatch: 'full'},
+
+  {
+    path: 'admin',
+    component: AdminPanelComponent,
+    children: [
+      {
+        path: 'salas',
+        component: PanelSalasComponent,
+      },
+     // {
+       // path: 'usuarios',
+       // loadComponent: () => import('./admin/usuarios/panel-usuarios.component').then(m => m.PanelUsuariosComponent),
+      //},
+      // {
+      //   path: 'eventos',
+      //   loadComponent: () => import('./admin/eventos/panel-eventos.component').then(m => m.PanelEventosComponent),
+      // },
+      // {
+      //   path: 'generos',
+      //   loadComponent: () => import('./admin/generos/panel-generos.component').then(m => m.PanelGenerosComponent),
+      // },
+      {
+        path: '',
+        redirectTo: 'salas',
+        pathMatch: 'full',
+      }
+    ]
+  }
 ];
