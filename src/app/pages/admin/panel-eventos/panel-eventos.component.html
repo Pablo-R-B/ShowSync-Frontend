@@ -1,79 +1,67 @@
-<div class="p-4 bg-customNegro rounded-2xl shadow-md mx-4 lg:mx-16 mt-4">
-
-<h1 class="text-2xl font-bold mb-4 text-white">Gestión de Salas</h1>
+<div class="p-4 bg-customNegro rounded-2xl shadow-md mx-4 lg:mx-16">
+  <h1 class="text-2xl font-bold mb-4 text-white">Gestión de Eventos</h1>
 
   <div class="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
     <div class="w-full md:w-1/3">
-      <input
-        type="text"
-        placeholder="Buscar sala..."
-        [(ngModel)]="filtro"
-        (input)="filtrarSalas()"
-        class="border border-gray-600 rounded p-2 w-full bg-customNegro text-white"
-      />
-    </div>
-
-    <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto">
-      <!-- Selector de ordenación -->
-      <div class="relative">
-        <select
-          [(ngModel)]="ordenActual"
-          (change)="cambiarOrden(ordenActual)"
-          class="border border-gray-600 rounded p-2 bg-customNegro text-white appearance-none pr-8">
-          <option value="nombre-asc">Nombre (A-Z)</option>
-          <option value="nombre-desc">Nombre (Z-A)</option>
-          <option value="capacidad-asc">Capacidad (Menor a Mayor)</option>
-          <option value="capacidad-desc">Capacidad (Mayor a Menor)</option>
-        </select>
-        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
-          <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-          </svg>
-        </div>
-      </div>
-
-      <button
-        class="bg-customRed text-white px-4 py-2 rounded hover:bg-customBurbundy transition-colors whitespace-nowrap"
-        (click)="crearSala()"
+      <select
+        id="filtro"
+        [(ngModel)]="filtroEstado"
+        (change)="filtrarEventos()"
+        class="border border-gray-600 rounded p-2 w-full bg-customNegro text-white appearance-none pr-8"
       >
-        + Nueva Sala
-      </button>
+        <option value="TODOS">Todos los estados</option>
+        <option value="en_revision">En revisión</option>
+        <option value="confirmado">Confirmado</option>
+        <option value="cancelado">Cancelado</option>
+      </select>
     </div>
   </div>
 
-  <div *ngIf="isLoading" class="flex justify-center items-center py-12">
+  <div *ngIf="cargando" class="flex justify-center items-center py-12">
     <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
   </div>
 
-  <div *ngIf="errorMessage" class="bg-red-900/20 border-l-4 border-red-500 p-4 mb-6">
+  <div *ngIf="error" class="bg-red-900/20 border-l-4 border-red-500 p-4 mb-6">
     <div class="flex items-center">
       <svg class="h-5 w-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
       </svg>
-      <span class="text-red-300">{{ errorMessage }}</span>
+      <span class="text-red-300">{{ error }}</span>
     </div>
   </div>
 
-  <table class="table-auto w-full border border-gray-600 text-center" *ngIf="!isLoading">
+  <table class="table-auto w-full border border-gray-600 text-center" *ngIf="!cargando && !error">
     <thead class="bg-gray-800">
     <tr>
+      <th class="border border-gray-600 p-2 text-center">ID</th>
       <th class="border border-gray-600 p-2 text-center">Nombre</th>
-      <th class="border border-gray-600 p-2 text-center">Ubicación</th>
-      <th class="border border-gray-600 p-2 text-center">Capacidad</th>
+      <th class="border border-gray-600 p-2 text-center">Fecha</th>
+      <th class="border border-gray-600 p-2 text-center">Sala</th>
+      <th class="border border-gray-600 p-2 text-center">Promotor</th>
+      <th class="border border-gray-600 p-2 text-center">Estado</th>
       <th class="border border-gray-600 p-2 text-center">Acciones</th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let sala of salasPaginadas" class="hover:bg-gray-800/50">
-      <td class="border border-gray-600 p-2">{{ sala.nombre }}</td>
+    <tr *ngFor="let evento of eventosPaginados" class="hover:bg-gray-800/50">
+      <td class="border border-gray-600 p-2">{{ evento.id }}</td>
+      <td class="border border-gray-600 p-2">{{ evento.nombreEvento }}</td>
+      <td class="border border-gray-600 p-2">{{ evento.fechaEvento | date:'dd/MM/yyyy' }}</td>
+      <td class="border border-gray-600 p-2">{{ evento.nombreSala }}</td>
+      <td class="border border-gray-600 p-2">{{ evento.nombrePromotor }}</td>
       <td class="border border-gray-600 p-2">
-        {{ sala.direccion }}, {{ sala.ciudad }}
+          <span [ngClass]="{
+            'text-green-500': evento.estado === 'confirmado',
+            'text-red-500': evento.estado === 'cancelado',
+            'text-yellow-500': evento.estado === 'en_revision'
+          }">
+            {{ evento.estado | titlecase }}
+          </span>
       </td>
-      <td class="border border-gray-600 p-2">{{ sala.capacidad }}</td>
       <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
         <div class="flex justify-center space-x-2 border border-gray-600 p-2">
           <button
-            (click)="verPerfilSala(sala.id)"
+            (click)="verDetallesEvento(evento.id)"
             class="text-green-600 hover:text-green-900 dark:hover:text-green-400 px-2 py-1 rounded hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors duration-200"
             title="Ver detalles"
           >
@@ -83,7 +71,7 @@
             </svg>
           </button>
           <button
-            (click)="editarSala(sala.id)"
+            (click)="editarEvento(evento.id)"
             class="text-yellow-600 hover:text-yellow-900 dark:hover:text-yellow-400 px-2 py-1 rounded hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors duration-200"
             title="Editar"
           >
@@ -92,12 +80,13 @@
             </svg>
           </button>
           <button
-            (click)="eliminarSala(sala.id)"
+            (click)="cancelarEvento(evento.id)"
+            *ngIf="evento.estado !== 'cancelado'"
             class="text-red-600 hover:text-red-900 dark:hover:text-red-400 px-2 py-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200"
-            title="Eliminar"
+            title="Cancelar"
           >
             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
           </button>
         </div>
@@ -107,7 +96,7 @@
   </table>
 
   <!-- Paginación -->
-  <div class="flex justify-center mt-8" *ngIf="totalPaginas > 1 && !isLoading">
+  <div class="flex justify-center mt-8" *ngIf="totalPaginas > 1 && !cargando">
     <nav class="flex items-center" aria-label="Paginación">
       <button
         (click)="cambiarPagina(paginaActual - 1)"
@@ -148,8 +137,7 @@
     </nav>
   </div>
 
-  <div *ngIf="!isLoading && salasFiltradas.length === 0"
-       class="text-center py-12 text-gray-400">
-    No se encontraron salas
+  <div *ngIf="!cargando && eventosFiltrados.length === 0" class="text-center py-12 text-gray-400">
+    No se encontraron eventos
   </div>
 </div>

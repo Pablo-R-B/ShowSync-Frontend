@@ -157,6 +157,6 @@ export class FormularioSalaComponent implements OnInit {
   }
 
   get imagenPreview(): string {
-    return this.sala.logo || 'assets/images/artistas.jpg';
+    return this.sala.logo || 'assets/images/logo_1.png'; // Ruta por defecto si no hay imagen
   }
 }

@@ -1,0 +1,98 @@
+<div class="p-4 bg-customNegro rounded-2xl shadow-md mx-4 lg:mx-16">
+  <h1 class="text-2xl font-bold mb-4 text-white">Gestión de Géneros Musicales</h1>
+
+  <div class="mb-4 flex justify-end">
+    <button
+      class="bg-customRed text-white px-4 py-2 rounded hover:bg-customBurbundy transition-colors whitespace-nowrap"
+      (click)="mostrarModalCrear()"
+    >
+      + Nuevo Género
+    </button>
+  </div>
+
+  <div *ngIf="cargando" class="flex justify-center items-center py-12">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
+  </div>
+
+  <div *ngIf="error" class="bg-red-900/20 border-l-4 border-red-500 p-4 mb-6">
+    <div class="flex items-center">
+      <svg class="h-5 w-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+      </svg>
+      <span class="text-red-300">{{ error }}</span>
+    </div>
+  </div>
+
+  <div *ngIf="!cargando && generos.length === 0" class="text-center py-12 text-gray-400">
+    No se encontraron géneros musicales
+  </div>
+
+  <div *ngIf="!cargando && generos.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div *ngFor="let genero of generos" class="bg-gray-800 p-4 rounded-lg shadow hover:shadow-lg transition-shadow">
+      <div class="flex justify-between items-start">
+        <h3 class="text-lg font-semibold text-white">{{ genero.nombre }}</h3>
+        <div class="flex space-x-2">
+          <button
+            (click)="mostrarModalEditar(genero)"
+            class="text-yellow-500 hover:text-yellow-300"
+            title="Editar"
+          >
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+            </svg>
+          </button>
+          <button
+            (click)="eliminarGenero(genero)"
+            class="text-red-500 hover:text-red-300"
+            title="Eliminar"
+          >
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Crear/Editar -->
+  <div *ngIf="mostrarModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-customNegro rounded-lg p-6 w-full max-w-md">
+      <h2 class="text-xl font-bold mb-4 text-white">{{ generoEditando ? 'Editar Género' : 'Crear Nuevo Género' }}</h2>
+
+      <input
+        type="text"
+        [(ngModel)]="nombreGenero"
+        placeholder="Nombre del género"
+        class="border border-gray-600 rounded p-2 w-full bg-customNegro text-white mb-4"
+      />
+
+      <div class="flex justify-end space-x-4">
+        <button
+          (click)="mostrarModal = false"
+          class="px-4 py-2 rounded border border-gray-600 text-white hover:bg-gray-700 transition-colors"
+        >
+          Cancelar
+        </button>
+        <button
+          (click)="generoEditando ? actualizarGenero() : crearGenero()"
+          class="px-4 py-2 rounded bg-customRed text-white hover:bg-customBurbundy transition-colors"
+        >
+          {{ generoEditando ? 'Actualizar' : 'Crear' }}
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Toast -->
+  <div
+    *ngIf="toastVisible"
+    class="fixed bottom-6 right-6 px-4 py-2 rounded shadow-lg transition-all duration-300 z-50"
+    [ngClass]="{
+    'bg-green-600 text-white': toastColor === 'success',
+    'bg-red-600 text-white': toastColor === 'error'
+  }"
+  >
+    {{ toastMensaje }}
+  </div>
+
+</div>

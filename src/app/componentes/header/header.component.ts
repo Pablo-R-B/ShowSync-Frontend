@@ -48,9 +48,24 @@ export class HeaderComponent {
     if (rol === 'PROMOTOR') {
       return '/perfil-promotores';
     } if (rol === 'ADMINISTRADOR') {
-      return '/admin/salas';
+      return '/admin';
     } else {
       return '/login';
     }
+  }
+
+  // Nuevo método para obtener la imagen según el rol
+  getImagenUsuario(): string {
+    const rol = localStorage.getItem('rol');
+    if (rol === 'ADMINISTRADOR') {
+      return 'assets/images/user_admin.png';
+    }
+    // Para otros roles, mantén el ícono SVG actual (no necesitas una imagen)
+    return '';
+  }
+
+  // Método para verificar si debe mostrar imagen o ícono SVG
+  esAdministrador(): boolean {
+    return localStorage.getItem('rol') === 'ADMINISTRADOR';
   }
 }

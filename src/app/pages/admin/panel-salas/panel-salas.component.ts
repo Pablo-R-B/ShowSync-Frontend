@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CommonModule, NgFor } from '@angular/common';
-import { Router } from '@angular/router';
+import {CommonModule, NgFor, NgForOf, NgIf} from '@angular/common';
+import {Router, RouterModule} from '@angular/router';
 import { SalasService } from '../../../servicios/salas.service';
 import Swal from 'sweetalert2';
 import { Sala } from '../../../interfaces/sala';
@@ -10,12 +10,15 @@ import { Sala } from '../../../interfaces/sala';
   selector: 'app-panel-salas',
   templateUrl: './panel-salas.component.html',
   standalone: true,
+
   imports: [
     FormsModule,
-    NgFor,
-    CommonModule
+    NgIf,
+    NgForOf
   ]
 })
+
+
 export class PanelSalasComponent implements OnInit {
   // Datos principales
   salas: Sala[] = [];

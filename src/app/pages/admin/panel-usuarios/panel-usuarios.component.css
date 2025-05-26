@@ -1,0 +1,24 @@
+.usuarios-container {
+  padding: 1rem;
+}
+
+.error {
+  color: red;
+  margin-bottom: 1rem;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.tabla th, .tabla td {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+}
+
+.tabla th {
+  background-color: #f0f0f0;
+  text-align: left;
+}
