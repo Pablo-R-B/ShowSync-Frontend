@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Sala } from '../../interfaces/sala';
-import { SalasService } from '../../servicios/salas.service';
+import { SalasService, PaginationParams } from '../../servicios/salas.service';
 import { FormsModule } from '@angular/forms';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { FiltrosSala } from '../../interfaces/filtrosSala';
 import { Router } from '@angular/router';
 
@@ -15,15 +15,21 @@ import { Router } from '@angular/router';
   styleUrls: ['./catalogo-sala.component.css']
 })
 export class CatalogoSalaComponent implements OnInit {
+  // Datos principales
   salas: Sala[] = [];
-  salasFiltradas: Sala[] = [];
-  salasPaginadas: Sala[] = [];
-  cargando: boolean = false;
 
-  // Paginación
-  paginaActual: number = 1;
+  // Estado y mensajes
+  cargando: boolean = false;
+  errorMessage: string | null = null;
+
+  // Paginación (usando paginación del backend, base 0)
+  paginaActual: number = 0; // Backend usa base 0
   itemsPorPagina: number = 6;
-  totalPaginas: number = 1;
+  totalSalas: number = 0;
+  totalPaginas: number = 0;
+
+  // AGREGADO: Variable para navegación rápida
+  paginaNavegacion: number = 1;
 
   // Filtros
   filtros: FiltrosSala = {
@@ -46,115 +52,167 @@ export class CatalogoSalaComponent implements OnInit {
     { valor: 'capacidad-desc', texto: 'Capacidad (Mayor)' }
   ];
 
-  private filtrosSubject = new Subject<void>();
+  // Control de tipo de filtro activo
+  tipoFiltroActivo: 'general' | 'capacidad' | 'ciudad' | 'provincia' = 'general';
+
+  // Búsqueda con debounce
+  private searchSubject = new Subject<string>();
 
   constructor(
     private salasService: SalasService,
     private router: Router
-  ) {}
+  ) {
+    // Configurar debounce para búsqueda
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(searchTerm => {
+      this.buscarConDebounce(searchTerm);
+    });
+  }
 
   ngOnInit(): void {
     this.cargarSalas();
-    this.configurarDebounce();
   }
 
+  // Método principal para cargar salas
   cargarSalas(): void {
     this.cargando = true;
-    this.salasService.obtenerTodas().subscribe({
-      next: (salas) => {
-        this.salas = salas;
-        this.aplicarFiltrosYOrden();
-        this.cargando = false;
-      },
-      error: (err) => {
-        console.error('Error al cargar las salas', err);
-        this.cargando = false;
-      }
-    });
-  }
+    this.errorMessage = null;
 
-  configurarDebounce(): void {
-    this.filtrosSubject
-      .pipe(debounceTime(300))
-      .subscribe(() => this.aplicarFiltrosYOrden());
-  }
+    const params: PaginationParams = {
+      page: this.paginaActual,
+      size: this.itemsPorPagina,
+      termino: this.filtros.texto || undefined
+    };
 
-  aplicarFiltrosYOrden(): void {
-    this.aplicarFiltros();
-    this.aplicarOrden();
-    this.paginaActual = 1;
-    this.calcularTotalPaginas();
-    this.actualizarSalasPaginadas();
-  }
-
-  aplicarFiltros(): void {
-    const texto = this.filtros.texto.toLowerCase().trim();
-    const ciudad = this.filtros.ciudad.toLowerCase().trim();
-    const provincia = this.filtros.provincia.toLowerCase().trim();
-    const capacidadMin = this.filtros.capacidadMin;
-
-    this.salasFiltradas = this.salas.filter(sala => {
-      const cumpleTexto = !texto ||
-        sala.nombre?.toLowerCase().includes(texto) ||
-        sala.descripcion?.toLowerCase().includes(texto);
-
-      const cumpleCiudad = !ciudad ||
-        sala.ciudad?.toLowerCase().includes(ciudad);
-
-      const cumpleProvincia = !provincia ||
-        sala.provincia?.toLowerCase().includes(provincia);
-
-      const cumpleCapacidad = sala.capacidad >= capacidadMin;
-
-      return cumpleTexto && cumpleCiudad && cumpleProvincia && cumpleCapacidad;
-    });
-  }
-
-  aplicarOrden(): void {
-    switch(this.ordenActual) {
-      case 'nombre-asc':
-        this.salasFiltradas.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    switch (this.tipoFiltroActivo) {
+      case 'general':
+        this.cargarSalasGenerales(params);
         break;
-      case 'nombre-desc':
-        this.salasFiltradas.sort((a, b) => b.nombre.localeCompare(a.nombre));
+      case 'capacidad':
+        this.cargarSalasPorCapacidad(params);
         break;
-      case 'ciudad-asc':
-        this.salasFiltradas.sort((a, b) => a.ciudad.localeCompare(b.ciudad));
+      case 'ciudad':
+        this.cargarSalasPorCiudad(params);
         break;
-      case 'ciudad-desc':
-        this.salasFiltradas.sort((a, b) => b.ciudad.localeCompare(a.ciudad));
-        break;
-      case 'provincia-asc':
-        this.salasFiltradas.sort((a, b) => a.provincia.localeCompare(b.provincia));
-        break;
-      case 'provincia-desc':
-        this.salasFiltradas.sort((a, b) => b.provincia.localeCompare(a.provincia));
-        break;
-      case 'capacidad-asc':
-        this.salasFiltradas.sort((a, b) => a.capacidad - b.capacidad);
-        break;
-      case 'capacidad-desc':
-        this.salasFiltradas.sort((a, b) => b.capacidad - a.capacidad);
-        break;
-      default:
+      case 'provincia':
+        this.cargarSalasPorProvincia(params);
         break;
     }
   }
 
-  cambiarOrden(nuevoOrden: string): void {
-    this.ordenActual = nuevoOrden;
-    this.aplicarFiltrosYOrden();
+  private cargarSalasGenerales(params: PaginationParams): void {
+    this.salasService.obtenerTodasPaginadas(params).subscribe({
+      next: (data) => {
+        this.salas = data;
+        this.actualizarPaginacionSimulada(data.length);
+        this.aplicarOrdenLocal();
+        this.cargando = false;
+      },
+      error: (err) => {
+        this.manejarError('Error al cargar las salas', err);
+      }
+    });
   }
 
-  // Resto de métodos (filtros, paginación, etc.) se mantienen igual...
-  hayFiltrosActivos(): boolean {
-    return this.filtros.ciudad !== '' ||
-      this.filtros.provincia !== '' ||
-      this.filtros.capacidadMin > 0;
+  private cargarSalasPorCapacidad(params: PaginationParams): void {
+    if (this.filtros.capacidadMin > 0) {
+      this.salasService.filtrarPorCapacidadPaginado(
+        this.filtros.capacidadMin,
+        999999,
+        params
+      ).subscribe({
+        next: (data) => {
+          this.salas = data;
+          this.actualizarPaginacionSimulada(data.length);
+          this.aplicarOrdenLocal();
+          this.cargando = false;
+        },
+        error: (err) => {
+          this.manejarError('Error al filtrar por capacidad', err);
+        }
+      });
+    }
   }
 
+  private cargarSalasPorCiudad(params: PaginationParams): void {
+    if (this.filtros.ciudad.trim()) {
+      this.salasService.buscarSalasPorCiudadPaginadas(this.filtros.ciudad, params).subscribe({
+        next: (response) => {
+          this.salas = response.content;
+          this.totalSalas = response.totalElements;
+          this.totalPaginas = response.totalPages;
+          this.aplicarOrdenLocal();
+          this.cargando = false;
+        },
+        error: (err) => {
+          this.manejarError('Error al buscar por ciudad', err);
+        }
+      });
+    }
+  }
+
+  private cargarSalasPorProvincia(params: PaginationParams): void {
+    if (this.filtros.provincia.trim()) {
+      this.salasService.buscarSalasPorProvinciaPaginadas(this.filtros.provincia, params).subscribe({
+        next: (response) => {
+          this.salas = response.content;
+          this.totalSalas = response.totalElements;
+          this.totalPaginas = response.totalPages;
+          this.aplicarOrdenLocal();
+          this.cargando = false;
+        },
+        error: (err) => {
+          this.manejarError('Error al buscar por provincia', err);
+        }
+      });
+    }
+  }
+
+  private actualizarPaginacionSimulada(cantidadRecibida: number): void {
+    if (cantidadRecibida < this.itemsPorPagina) {
+      this.totalPaginas = this.paginaActual + 1;
+    } else {
+      this.totalPaginas = this.paginaActual + 2;
+    }
+    this.totalSalas = (this.paginaActual * this.itemsPorPagina) + cantidadRecibida;
+  }
+
+  // Métodos de filtrado
   actualizarBusquedaTexto(): void {
-    this.filtrosSubject.next();
+    this.searchSubject.next(this.filtros.texto);
+  }
+
+  private buscarConDebounce(termino: string): void {
+    this.tipoFiltroActivo = 'general';
+    this.paginaActual = 0;
+    this.limpiarFiltrosAvanzados();
+    this.cargarSalas();
+  }
+
+  aplicarFiltroCapacidad(): void {
+    if (this.filtros.capacidadMin > 0) {
+      this.tipoFiltroActivo = 'capacidad';
+      this.paginaActual = 0;
+      this.cargarSalas();
+    }
+  }
+
+  aplicarFiltroCiudad(): void {
+    if (this.filtros.ciudad.trim()) {
+      this.tipoFiltroActivo = 'ciudad';
+      this.paginaActual = 0;
+      this.cargarSalas();
+    }
+  }
+
+  aplicarFiltroProvincia(): void {
+    if (this.filtros.provincia.trim()) {
+      this.tipoFiltroActivo = 'provincia';
+      this.paginaActual = 0;
+      this.cargarSalas();
+    }
   }
 
   limpiarFiltro(filtro: keyof FiltrosSala): void {
@@ -163,7 +221,9 @@ export class CatalogoSalaComponent implements OnInit {
     } else {
       this.filtros[filtro] = '';
     }
-    this.aplicarFiltrosYOrden();
+    this.tipoFiltroActivo = 'general';
+    this.paginaActual = 0;
+    this.cargarSalas();
   }
 
   limpiarTodosFiltros(): void {
@@ -173,48 +233,138 @@ export class CatalogoSalaComponent implements OnInit {
       provincia: '',
       capacidadMin: 0
     };
-    this.aplicarFiltrosYOrden();
+    this.limpiarFiltrosAvanzados();
+    this.tipoFiltroActivo = 'general';
+    this.paginaActual = 0;
+    this.cargarSalas();
   }
 
-  irAReservarSala(salaId: number): void {
-    this.router.navigate(['/salas', salaId]);
+  private limpiarFiltrosAvanzados(): void {
+    this.filtros.capacidadMin = 0;
+    this.filtros.ciudad = '';
+    this.filtros.provincia = '';
   }
 
-  calcularTotalPaginas(): void {
-    this.totalPaginas = Math.ceil(this.salasFiltradas.length / this.itemsPorPagina);
-    if (this.totalPaginas === 0) this.totalPaginas = 1;
+  // Métodos de ordenación
+  cambiarOrden(nuevoOrden: string): void {
+    this.ordenActual = nuevoOrden;
+    this.aplicarOrdenLocal();
   }
 
-  actualizarSalasPaginadas(): void {
-    const inicio = (this.paginaActual - 1) * this.itemsPorPagina;
-    const fin = inicio + this.itemsPorPagina;
-    this.salasPaginadas = this.salasFiltradas.slice(inicio, fin);
+  private aplicarOrdenLocal(): void {
+    switch(this.ordenActual) {
+      case 'nombre-asc':
+        this.salas.sort((a, b) => a.nombre.localeCompare(b.nombre));
+        break;
+      case 'nombre-desc':
+        this.salas.sort((a, b) => b.nombre.localeCompare(a.nombre));
+        break;
+      case 'ciudad-asc':
+        this.salas.sort((a, b) => a.ciudad.localeCompare(b.ciudad));
+        break;
+      case 'ciudad-desc':
+        this.salas.sort((a, b) => b.ciudad.localeCompare(a.ciudad));
+        break;
+      case 'provincia-asc':
+        this.salas.sort((a, b) => a.provincia.localeCompare(b.provincia));
+        break;
+      case 'provincia-desc':
+        this.salas.sort((a, b) => b.provincia.localeCompare(a.provincia));
+        break;
+      case 'capacidad-asc':
+        this.salas.sort((a, b) => a.capacidad - b.capacidad);
+        break;
+      case 'capacidad-desc':
+        this.salas.sort((a, b) => b.capacidad - a.capacidad);
+        break;
+      default:
+        break;
+    }
   }
 
+  // Métodos de paginación
   cambiarPagina(pagina: number): void {
-    if (pagina < 1 || pagina > this.totalPaginas) return;
+    if (pagina < 0 || pagina >= this.totalPaginas) return;
     this.paginaActual = pagina;
-    this.actualizarSalasPaginadas();
+    // Actualizar también la variable de navegación rápida
+    this.paginaNavegacion = pagina + 1;
+    this.cargarSalas();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  paginaAnterior(): void {
+    if (this.paginaActual > 0) {
+      this.cambiarPagina(this.paginaActual - 1);
+    }
+  }
+
+  paginaSiguiente(): void {
+    if (this.paginaActual < this.totalPaginas - 1) {
+      this.cambiarPagina(this.paginaActual + 1);
+    }
+  }
+
   cambiarItemsPorPagina(): void {
-    this.paginaActual = 1;
-    this.calcularTotalPaginas();
-    this.actualizarSalasPaginadas();
+    this.paginaActual = 0;
+    this.paginaNavegacion = 1;
+    this.cargarSalas();
   }
 
-  paginasArray(): number[] {
-    return Array.from({ length: this.totalPaginas }, (_, i) => i + 1);
+  // AGREGADO: Método para navegación rápida
+  irAPagina(): void {
+    if (this.paginaNavegacion && this.paginaNavegacion >= 1 && this.paginaNavegacion <= this.totalPaginas) {
+      this.cambiarPagina(this.paginaNavegacion - 1); // Convertir de base 1 a base 0
+    } else {
+      // Resetear si el valor no es válido
+      this.paginaNavegacion = this.paginaActualDisplay;
+    }
   }
 
-  mostrarNumeroPagina(pagina: number): boolean {
-    if (pagina === 1 || pagina === this.totalPaginas) return true;
-    return Math.abs(pagina - this.paginaActual) <= 1;
+  // Métodos auxiliares para la vista
+  get paginaActualDisplay(): number {
+    return this.paginaActual + 1;
   }
 
-  mostrarPuntosSuspensivos(pagina: number): boolean {
-    if (pagina === this.totalPaginas) return false;
-    return !this.mostrarNumeroPagina(pagina) && this.mostrarNumeroPagina(pagina + 1);
+  get tieneResultados(): boolean {
+    return this.salas.length > 0;
+  }
+
+  get esPrimeraPagina(): boolean {
+    return this.paginaActual === 0;
+  }
+
+  get esUltimaPagina(): boolean {
+    return this.paginaActual >= this.totalPaginas - 1;
+  }
+
+  obtenerRangoPaginas(): number[] {
+    const rango = [];
+    const inicio = Math.max(0, this.paginaActual - 2);
+    const fin = Math.min(this.totalPaginas - 1, this.paginaActual + 2);
+
+    for (let i = inicio; i <= fin; i++) {
+      rango.push(i);
+    }
+    return rango;
+  }
+
+  // Métodos auxiliares de utilidad
+  hayFiltrosActivos(): boolean {
+    return this.filtros.ciudad !== '' ||
+      this.filtros.provincia !== '' ||
+      this.filtros.capacidadMin > 0 ||
+      this.filtros.texto !== '';
+  }
+
+  irAReservarSala(salaId: number): void {
+    // Ruta más específica para reservar sala
+    this.router.navigate(['/reservar-sala', salaId]);
+  }
+
+  // Método auxiliar para manejo de errores
+  private manejarError(mensaje: string, error: any): void {
+    console.error(mensaje, error);
+    this.errorMessage = `${mensaje}. Por favor, intente nuevamente.`;
+    this.cargando = false;
   }
 }
