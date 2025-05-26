@@ -9,7 +9,8 @@ export interface Postulacion {
   eventoImagen: string;
   eventoFecha: string;
   eventoSalaNombre: string;
+  tipoSolicitud: 'postulacion' | 'oferta';
   estado: 'pendiente' | 'aceptado' | 'rechazado';
-  fechaPostulacion: Date;
+  fechaPostulacion: string;
   fechaRespuesta: Date | null;
 }
