@@ -357,8 +357,8 @@ export class CatalogoSalaComponent implements OnInit {
   }
 
   irAReservarSala(salaId: number): void {
-    // Ruta más específica para reservar sala
-    this.router.navigate(['/reservar-sala', salaId]);
+    // Usa la ruta definida en tu configuración de enrutamiento
+    this.router.navigate(['/salas', salaId]);
   }
 
   // Método auxiliar para manejo de errores

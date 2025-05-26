@@ -118,7 +118,7 @@ export class PerfilSalaComponent implements OnInit {
 
 
   cargarGenerosMusicales() {
-    this.eventosService.getGeneros().subscribe({
+    this.eventosService.getGenero().subscribe({
       next: generos => this.generosDisponibles = generos,
       error: err => {
         console.error('Error al cargar géneros', err);
