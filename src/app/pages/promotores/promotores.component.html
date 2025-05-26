@@ -1,4 +1,4 @@
-<div class="bg-[#7e001b] min-h-screen text-white font-sans pt-[120px] sm:pt-[140px] flex flex-col">
+<div class="bg-[#7e001b] min-h-screen text-white font-sans pt-[60px] sm:pt-[70px] flex flex-col">
 
   <!-- Header Promotor mejorado -->
   <div class="p-6 sm:p-8 flex items-center gap-6 sm:ml-[10%]">
@@ -23,9 +23,7 @@
             class="bg-[#7e001b] hover:bg-[#a30027] text-white px-4 py-2 rounded-full border border-white mt-2">
       Más información
     </button>
-    <button (click)="openModal()" class="rounded-md bg-slate-800 py-2 px-4 text-white">
-      Postularse
-    </button>
+
 
     <div *ngIf="isModalOpen && promotor" class="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60">
       <div  class="relative m-4 p-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white shadow-sm">
@@ -70,8 +68,17 @@
   </div>
 
   <!-- Próximos eventos y artistas -->
-  <div class="flex flex-col md:flex-row justify-center gap-6 mt-10 px-4 sm:px-[10%]">
-    <!-- Eventos -->
+  <div class="flex flex-col md:flex-row justify-center gap-6 mt-10 px-4 sm:px-[10%] mb-16">
+    <!-- Artistas -->
+    <div class="bg-gray-800 rounded-xl p-4 w-full md:w-1/2 shadow-lg">
+      <h2 class="text-lg font-semibold mb-4">Artistas 🎤</h2>
+      <ul>
+        <li *ngFor="let artista of artistas" class="mb-2 flex items-center gap-2">
+          <span>{{ artista.nombre }}</span>
+        </li>
+      </ul>
+    </div>
+  <!-- Eventos -->
     <div class="bg-gray-800 rounded-xl p-4 w-full md:w-1/2 shadow-lg">
       <h2 class="text-lg font-semibold mb-4">Eventos 🎫</h2>
       <ul>

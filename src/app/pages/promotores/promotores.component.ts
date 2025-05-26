@@ -23,8 +23,7 @@ import {PostulacionEventoService} from '../../servicios/postulacion-evento.servi
 })
 export class PromotoresComponent implements OnInit {
   promotor: Promotor | null = null;
-  logoUrl: string = 'logo_1.png';
-
+  logoUrl: string = '../../../assets/images/logo_1.png';
   eventos: EventoDTO[] = [];
   eventoDestacado?: EventoDTO;
   eventosProximos: Array<{ fecha: string; lugar: string; nombre: string }> = [];
