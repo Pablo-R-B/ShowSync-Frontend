@@ -1,12 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
-import {DatePipe, NgForOf, NgIf} from '@angular/common';
+import {DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import {PromotoresService} from '../../servicios/promotores.service';
 import {EventoDTO} from '../../interfaces/EventoDTO';
 import {Promotor} from '../../interfaces/Promotor';
 import {SalasService} from '../../servicios/salas.service';
 import {EventosService} from '../../servicios/eventos.service';
 import {Sala} from '../../interfaces/sala';
+import {Postulacion} from '../../interfaces/postulacion';
+import {AuthService} from '../../servicios/auth.service';
+import {ArtistasService} from '../../servicios/artistas.service';
+import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
+import {FormsModule} from '@angular/forms';
 
 
 @Component({
@@ -16,7 +21,9 @@ import {Sala} from '../../interfaces/sala';
     RouterLink,
     NgForOf,
     NgIf,
-    DatePipe
+    DatePipe,
+    NgClass,
+    FormsModule
   ],
   providers: [DatePipe],
   templateUrl: './perfil-promotores.component.html',
@@ -31,12 +38,19 @@ export class PerfilPromotoresComponent implements OnInit {
   eventoDestacado?: EventoDTO;
   eventosProximos: Array<{ fecha: string; lugar: string; nombre: string }> = [];
 
+  idUsuario!: number;
   idPromotor!: number;
+  postulaciones: Postulacion[] = [];
+  ofertas: Postulacion[] = [];
+  usuarioRol!:string | null;
+
 
   constructor(
     private promotoresService: PromotoresService,
     private salasService: SalasService,
     private eventosService: EventosService,
+    private postulacionService: PostulacionEventoService,
+    private authService: AuthService,
     private datePipe: DatePipe,
     private router: Router,
     private route: ActivatedRoute
@@ -44,7 +58,20 @@ export class PerfilPromotoresComponent implements OnInit {
 
   ngOnInit(): void {
     this.obtenerPerfilUsuario();
-    const idUsuario = localStorage.getItem('userId');
+    this.idUsuario = parseInt(localStorage.getItem('userId') ?? '0', 10);
+    this.usuarioRol=this.authService.userRole;
+
+    this.promotoresService.getPromotorPorIdUsuario(this.idUsuario).subscribe({
+      next: (promotor) => {
+        this.idPromotor = promotor.id;
+        this.cargarSolicitudes();
+      },
+      error: (err) => {
+        console.error('Error al obtener el promotor:', err);
+      }
+    });
+
+
 
   }
 
@@ -170,4 +197,27 @@ export class PerfilPromotoresComponent implements OnInit {
         error: (err: any) => console.error('Error al rechazar sala', err)
       });
   }
+
+
+  cargarSolicitudes() {
+    this.postulacionService.listarPorPromotor(this.idPromotor).subscribe({
+      next: (lista) => {
+        console.log("Lista completa:", lista);
+
+        // Separando solicitudes según el tipo
+        this.postulaciones = lista.filter(post => post.tipoSolicitud === 'postulacion');
+        this.ofertas = lista.filter(post => post.tipoSolicitud === 'oferta');
+
+        console.log("Postulaciones:", this.postulaciones);
+        console.log("Ofertas:", this.ofertas);
+      },
+      error: (err) => console.error('Error cargando solicitudes:', err)
+    });
+  }
+
+  respuestaSolicitud(post: Postulacion, estado: 'aceptado' | 'rechazado') {
+    this.postulacionService.actualizarEstadoSolicitud(post.id, estado)
+      .subscribe(() => post.estado = estado);
+  }
+
 }

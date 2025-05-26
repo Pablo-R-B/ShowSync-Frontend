@@ -73,51 +73,79 @@
         </h2>
       </div>
 
-      <ul class="space-y-4">
-        <li *ngFor="let sala of salas" class="bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center">
+      <ul *ngFor="let post of postulaciones" class="space-y-4">
+        <li *ngFor="let sala of salas"  class=" bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center">
           <div class="flex items-center gap-3">
-            <img [src]="sala.logo" alt="Logo sala" class="w-10 h-10 rounded-full" />
+            <img [src]="post.eventoImagen" alt="Logo sala" class="w-10 h-10 rounded-full" />
             <div>
+
+              <p class="font-semibold">{{ post.eventoNombre }}</p>
+              <p class="font-semibold">{{post.artistaNombre}}</p>
               <p class="font-semibold">{{ sala.nombre }}</p>
+              <p class="font-semibold">{{ post.fechaPostulacion | date:'dd/MM/yyyy' }}</p>
+              <p class="text-sm text-gray-600">Estado: <span [ngClass]="{'text-yellow-500': post.estado === 'pendiente', 'text-green-500': post.estado === 'aceptado', 'text-red-500': post.estado === 'rechazado'}">{{ post.estado }}</span></p>
             </div>
           </div>
+
+<!--        <li *ngFor="let sala of salas" class="bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center">-->
+<!--          <div class="flex items-center gap-3">-->
+<!--            <img [src]="sala.logo" alt="Logo sala" class="w-10 h-10 rounded-full" />-->
+<!--            <div>-->
+<!--              <p class="font-semibold">{{ sala.nombre }}</p>-->
+<!--            </div>-->
+<!--          </div>-->
 
           <!-- Botones de estado -->
           <div class="flex gap-2 items-center">
             <!-- En revisión: botón verde -->
+<!--            <button-->
+<!--              *ngIf="sala.estado === 'en_revision'"-->
+<!--              class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-full font-semibold"-->
+<!--              (click)="confirmarSala(sala.id)">-->
+<!--              En revisión-->
+<!--            </button>-->
+
+
+                        <button
+                          *ngIf="post.estado === 'pendiente'"
+                          class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-full font-semibold"
+                          (click)="respuestaSolicitud(post, 'aceptado')">
+                          Aceptar
+                        </button>
             <button
-              *ngIf="sala.estado === 'en_revision'"
-              class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-full font-semibold"
-              (click)="confirmarSala(sala.id)">
-              En revisión
-            </button>
+              *ngIf="post.estado === 'pendiente'"
+                            class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-full font-semibold"
+              (click)="respuestaSolicitud(post, 'rechazado')">
+                            Rechazar
+                          </button>
 
             <!-- Confirmado: botón azul, deshabilitado -->
-            <button
-              *ngIf="sala.estado === 'confirmada'"
-              class="bg-blue-600 text-white px-3 py-1 rounded-full font-semibold"
-              disabled>
-              Confirmado <i class="fas fa-check ml-1"></i>
-            </button>
+<!--            <button-->
+<!--              *ngIf="sala.estado === 'confirmada'"-->
+<!--              class="bg-blue-600 text-white px-3 py-1 rounded-full font-semibold"-->
+<!--              disabled>-->
+<!--              Confirmado <i class="fas fa-check ml-1"></i>-->
+<!--            </button>-->
 
             <!-- Rechazado: botón rojo, deshabilitado -->
-            <button
-              *ngIf="sala.estado === 'rechazada'"
-              class="bg-red-600 text-white px-3 py-1 rounded-full font-semibold"
-              disabled>
-              Rechazado <i class="fas fa-times ml-1"></i>
-            </button>
+<!--            <button-->
+<!--              *ngIf="sala.estado === 'rechazada'"-->
+<!--              class="bg-red-600 text-white px-3 py-1 rounded-full font-semibold"-->
+<!--              disabled>-->
+<!--              Rechazado <i class="fas fa-times ml-1"></i>-->
+<!--            </button>-->
 
             <!-- Botón para rechazar solo si está en revisión -->
-            <button
-              *ngIf="sala.estado === 'en_revision'"
-              class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-full font-semibold"
-              (click)="rechazarSala(sala.id)">
-              Rechazar
-            </button>
+<!--            <button-->
+<!--              *ngIf="sala.estado === 'en_revision'"-->
+<!--              class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-full font-semibold"-->
+<!--              (click)="rechazarSala(sala.id)">-->
+<!--              Rechazar-->
+<!--            </button>-->
           </div>
         </li>
-        <li *ngIf="salas.length === 0" class="text-gray-400">No hay salas para mostrar.</li>
+<!--        <li *ngIf="salas.length === 0" class="text-gray-400">No hay salas para mostrar.</li>-->
+        <li *ngIf="postulaciones.length === 0" class="text-gray-400">No hay postulaciones para mostrar.</li>
       </ul>
     </div>
 
@@ -129,51 +157,66 @@
         </h2>
       </div>
 
-      <ul class="space-y-4">
+      <ul  *ngFor="let oferta of ofertas" class="space-y-4">
         <li *ngFor="let sala of salas" class="bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center">
           <div class="flex items-center gap-3">
-            <img [src]="sala.logo" alt="Logo sala" class="w-10 h-10 rounded-full" />
+            <img [src]="oferta.eventoImagen" alt="Logo sala" class="w-10 h-10 rounded-full" />
             <div>
+
+              <p class="font-semibold">{{ oferta.eventoNombre }}</p>
+              <p class="font-semibold">{{oferta.artistaNombre}}</p>
               <p class="font-semibold">{{ sala.nombre }}</p>
+              <p class="font-semibold">{{ oferta.fechaPostulacion | date:'dd/MM/yyyy' }}</p>
+              <p class="text-sm text-gray-600">Estado: <span [ngClass]="{'text-yellow-500': oferta.estado === 'pendiente', 'text-green-500': oferta.estado === 'aceptado', 'text-red-500': oferta.estado === 'rechazado'}">{{ oferta.estado }}</span></p>
             </div>
           </div>
+<!--        <li *ngFor="let sala of salas" class="bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center">-->
+<!--          <div class="flex items-center gap-3">-->
+<!--            <img [src]="sala.logo" alt="Logo sala" class="w-10 h-10 rounded-full" />-->
+<!--            <div>-->
+<!--              <p class="font-semibold">{{ sala.nombre }}</p>-->
+<!--            </div>-->
+<!--          </div>-->
+
+
 
           <!-- Botones de estado -->
           <div class="flex gap-2 items-center">
             <!-- En revisión: botón verde -->
-            <button
-              *ngIf="sala.estado === 'en_revision'"
-              class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-full font-semibold"
-              (click)="confirmarSala(sala.id)">
-              En revisión
-            </button>
+<!--            <button-->
+<!--              *ngIf="sala.estado === 'en_revision'"-->
+<!--              class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-full font-semibold"-->
+<!--              (click)="confirmarSala(sala.id)">-->
+<!--              En revisión-->
+<!--            </button>-->
 
             <!-- Confirmado: botón azul, deshabilitado -->
-            <button
-              *ngIf="sala.estado === 'confirmada'"
-              class="bg-blue-600 text-white px-3 py-1 rounded-full font-semibold"
-              disabled>
-              Confirmado <i class="fas fa-check ml-1"></i>
-            </button>
+<!--            <button-->
+<!--              *ngIf="sala.estado === 'confirmada'"-->
+<!--              class="bg-blue-600 text-white px-3 py-1 rounded-full font-semibold"-->
+<!--              disabled>-->
+<!--              Confirmado <i class="fas fa-check ml-1"></i>-->
+<!--            </button>-->
 
             <!-- Rechazado: botón rojo, deshabilitado -->
-            <button
-              *ngIf="sala.estado === 'rechazada'"
-              class="bg-red-600 text-white px-3 py-1 rounded-full font-semibold"
-              disabled>
-              Rechazado <i class="fas fa-times ml-1"></i>
-            </button>
+<!--            <button-->
+<!--              *ngIf="sala.estado === 'rechazada'"-->
+<!--              class="bg-red-600 text-white px-3 py-1 rounded-full font-semibold"-->
+<!--              disabled>-->
+<!--              Rechazado <i class="fas fa-times ml-1"></i>-->
+<!--            </button>-->
 
             <!-- Botón para rechazar solo si está en revisión -->
-            <button
-              *ngIf="sala.estado === 'en_revision'"
-              class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-full font-semibold"
-              (click)="rechazarSala(sala.id)">
-              Rechazar
-            </button>
+<!--            <button-->
+<!--              *ngIf="sala.estado === 'en_revision'"-->
+<!--              class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-full font-semibold"-->
+<!--              (click)="rechazarSala(sala.id)">-->
+<!--              Rechazar-->
+<!--            </button>-->
           </div>
         </li>
-        <li *ngIf="salas.length === 0" class="text-gray-400">No hay salas para mostrar.</li>
+<!--        <li *ngIf="salas.length === 0" class="text-gray-400">No hay salas para mostrar.</li>-->
+        <li *ngIf="ofertas.length === 0" class="text-gray-400">No hay ofertas para mostrar.</li>
       </ul>
     </div>
 
@@ -188,5 +231,6 @@
       CREAR SALAS<i class="fas fa-book ml-2"></i>
     </button>
   </div>
-
 </div>
+
+

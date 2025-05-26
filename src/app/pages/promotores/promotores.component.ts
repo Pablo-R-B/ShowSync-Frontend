@@ -4,11 +4,10 @@ import { CommonModule, DatePipe, NgForOf } from '@angular/common';
 import {Promotor} from '../../interfaces/Promotor';
 import {EventoDTO} from '../../interfaces/EventoDTO';
 import {FormsModule} from '@angular/forms';
-import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
+import {PromotoresService} from '../../servicios/promotores.service';
 import {AuthService} from '../../servicios/auth.service';
 import {ArtistasService} from '../../servicios/artistas.service';
-import {Postulacion} from '../../interfaces/postulacion';
-import {PromotoresService} from '../../servicios/promotores.service';
+import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
 
 @Component({
   selector: 'app-promotores',
@@ -29,21 +28,21 @@ export class PromotoresComponent implements OnInit {
   eventos: EventoDTO[] = [];
   eventoDestacado?: EventoDTO;
   eventosProximos: Array<{ fecha: string; lugar: string; nombre: string }> = [];
-  eventoSeleccionado!:number
   artistas: Array<{ nombre: string }> = [];
-  artistaId!: number;
-  usuarioRol!:string | null;
   idPromotor!: number;
-  postulaciones: Postulacion[] = [];
+  isModalOpen = false;
+  eventoSeleccionado!:number
+  artistaId!: number;
+
 
   constructor(
     private promotoresService: PromotoresService,
+    private authService: AuthService,
+    private artistasService: ArtistasService,
+    private postulacionService: PostulacionEventoService,
     private datePipe: DatePipe,
     private router: Router,
-    private route: ActivatedRoute,
-    private postulacionService:PostulacionEventoService,
-    private authService: AuthService,
-    private artistasService: ArtistasService
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -68,9 +67,6 @@ export class PromotoresComponent implements OnInit {
         console.error('Error al obtener artistaId para usuario', usuarioId, err)
       }
     })
-
-    this.usuarioRol=this.authService.userRole;
-    this.cargarSolicitudes();
 
   }
 
@@ -136,8 +132,6 @@ export class PromotoresComponent implements OnInit {
 
   }
 
-  isModalOpen = false;
-
   openModal() {
     this.isModalOpen = true;
   }
@@ -145,6 +139,7 @@ export class PromotoresComponent implements OnInit {
   closeModal() {
     this.isModalOpen = false;
   }
+
 
   alerta = {
     tipo: '' as'enviada' | 'noenviada',
@@ -159,6 +154,7 @@ export class PromotoresComponent implements OnInit {
     }, 5000);
   }
 
+  /**Envia solicitud de contratación a artista desde perfil artista*/
   enviarOferta() {
     this.postulacionService.nuevaSolicitud(this.eventoSeleccionado, this.artistaId)
       .subscribe({
@@ -193,20 +189,5 @@ export class PromotoresComponent implements OnInit {
         },
       });
   }
-
-  cargarSolicitudes() {
-    this.postulacionService
-      .listarPorPromotor(this.idPromotor)
-      .subscribe({
-        next: (lista) => this.postulaciones = lista,
-        error: (err) => console.error('Error cargando solicitudes:', err)
-      });
-  }
-
-  respuestaSolicitud(post: Postulacion, estado: 'aceptado' | 'rechazado') {
-    this.postulacionService.actualizarEstadoSolicitud(post.id, estado)
-      .subscribe(() => post.estado = estado);
-  }
-
 
 }
