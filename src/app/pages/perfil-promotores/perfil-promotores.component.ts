@@ -70,9 +70,6 @@ export class PerfilPromotoresComponent implements OnInit {
         console.error('Error al obtener el promotor:', err);
       }
     });
-
-
-
   }
 
   private obtenerPerfilUsuario(): void {
