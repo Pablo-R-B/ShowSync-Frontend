@@ -5,7 +5,7 @@
 />
 
 <!-- Título principal -->
-<div class="text-center py-8 bg-black text-white" >
+<div class="text-center py-8 bg-black text-white">
   <h2 class="text-xl tracking-widest font-light uppercase">
     ¿En busca de los conciertos y festivales de tus artistas favoritos?
   </h2>
@@ -13,133 +13,158 @@
 
 <!-- CONTENEDOR PRINCIPAL -->
 <div
-  class="min-h-screen bg-black text-white p-6 flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-6"
+  class="min-h-screen bg-black text-white p-6"
   style="background-image: url('../../../assets/images/img_1.png'); background-size: cover; background-position: center;"
 >
+  <div class="flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-6">
 
-  <!-- FILTROS -->
-  <div class="bg-zinc-900 p-6 rounded-xl border border-zinc-700 w-full md:w-1/4">
-    <h2 class="text-xl font-bold mb-4 text-center">FILTROS</h2>
+    <!-- FILTROS -->
+    <div class="bg-zinc-900 p-6 rounded-xl border border-zinc-700 w-full md:w-1/4">
+      <h2 class="text-xl font-bold mb-4 text-center">FILTROS</h2>
 
-    <!-- Género musical -->
-    <label for="generoSelect" class="block mb-2 text-lg font-semibold text-white">
-      <i class="fa fa-music mr-2"></i>Género musical
-    </label>
-    <select id="generoSelect" [(ngModel)]="generoSeleccionado"
-            class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-    >
-      <option value="">Todos</option>
-      <option *ngFor="let genero of generos" [value]="genero">{{ genero }}</option>
-    </select>
+      <!-- Género musical -->
+      <label for="generoSelect" class="block mb-2 text-lg font-semibold text-white">
+        <i class="fa fa-music mr-2"></i>Género musical
+      </label>
+      <select id="generoSelect" [(ngModel)]="generoSeleccionado"
+              class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              aria-label="Seleccionar género musical"
+      >
+        <option value="">Todos</option>
+        <option *ngFor="let genero of generos" [value]="genero">{{ genero }}</option>
+      </select>
 
-    <!-- Fecha desde -->
-    <label for="fechaDesde" class="block mb-2 text-lg font-semibold text-white">
-      <i class="fa fa-calendar mr-2"></i>Fecha (desde)
-    </label>
-    <input type="date" id="fechaDesde" [(ngModel)]="fechaDesde"
-      class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-    />
-
-    <!-- Fecha hasta -->
-    <label for="fechaHasta" class="block mb-2 text-lg font-semibold text-white">
-      <i class="fa fa-calendar-check-o mr-2"></i>Fecha (hasta)
-    </label>
-    <input type="date" id="fechaHasta" [(ngModel)]="fechaHasta"
-      class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-    />
-
-    <!-- Estado del evento -->
-    <label for="estadoSelect" class="block mb-2 text-lg font-semibold text-white">
-      <i class="fa fa-info-circle mr-2"></i>Estado del evento
-    </label>
-    <select id="estadoSelect" [(ngModel)]="estadoSeleccionado"
-      class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-    >
-      <option value="">-- Todos los estados --</option>
-      <option *ngFor="let estado of estados" [value]="estado">{{ estado | titlecase }}</option>
-    </select>
-
-
-
-    <!-- Botón de Aceptar -->
-    <button
-      id="btnAceptar"
-      class="bg-red-600 hover:bg-red-700 text-white w-full p-2 rounded mt-2"
-      (click)="aplicarFiltros()"
-    >
-      Aceptar
-    </button>
-  </div>
-
-  <!-- EVENTOS -->
-  <div class="w-full md:w-3/4 space-y-6">
-    <div
-      *ngFor="let evento of eventosFiltrados"
-      class="bg-zinc-900 rounded-xl border border-zinc-700 flex flex-col md:flex-row items-center p-4 space-y-4 md:space-y-0 md:space-x-4"
-    >
-      <!-- Imagen del evento -->
-      <img
-        [src]="evento.imagenEvento"
-        alt="Imagen del evento"
-        class="w-full md:w-1/4 h-32 object-cover rounded"
+      <!-- Fecha desde -->
+      <label for="fechaDesde" class="block mb-2 text-lg font-semibold text-white">
+        <i class="fa fa-calendar mr-2"></i>Fecha (desde)
+      </label>
+      <input type="date" id="fechaDesde" [(ngModel)]="fechaDesde"
+             class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+             aria-label="Fecha desde"
       />
 
-      <!-- Información del evento -->
-      <div class="flex-1 w-full text-center md:text-left">
-        <h3 class="text-xl font-semibold">{{ evento.nombreEvento }}</h3>
-        <div class="text-sm mt-1">📍 {{ evento.nombreSala }}</div>
-        <div class="text-sm mt-1">📅 {{ formatearFecha(evento.fechaEvento) }}</div>
-      </div>
+      <!-- Fecha hasta -->
+      <label for="fechaHasta" class="block mb-2 text-lg font-semibold text-white">
+        <i class="fa fa-calendar-check-o mr-2"></i>Fecha (hasta)
+      </label>
+      <input type="date" id="fechaHasta" [(ngModel)]="fechaHasta"
+             class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+             aria-label="Fecha hasta"
+      />
 
-      <!-- Botón + info -->
-      <ng-container *ngIf="usuarioLogueado; else accesoDenegado">
-        <button
-          class="bg-slate-500 hover:bg-slate-600 text-white px-3 py-1 rounded"
-          (click)="verInfo(evento)"
-        >
-          + info
-        </button>
-      </ng-container>
-      <ng-template #accesoDenegado>
-        <button
-          class="bg-gray-600 text-white px-3 py-1 rounded opacity-60 cursor-not-allowed"
-          disabled
-          (click)="verInfo(evento)"
-        >
-          + info
-        </button>
-      </ng-template>
-
-      <!-- Corazón de seguir -->
-      <button
-        class="text-3xl transition duration-300 ease-in-out"
-        [ngClass]="{
-          'text-red-500': evento.seguido,
-          'text-gray-400': !evento.seguido
-        }"
-        (click)="seguirEvento(evento)"
-        [disabled]="!usuarioLogueado"
-        title="Seguir evento"
+      <!-- Estado del evento -->
+      <label for="estadoSelect" class="block mb-2 text-lg font-semibold text-white">
+        <i class="fa fa-info-circle mr-2"></i>Estado del evento
+      </label>
+      <select id="estadoSelect" [(ngModel)]="estadoSeleccionado"
+              class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              aria-label="Seleccionar estado del evento"
       >
-        <i class="fa" [ngClass]="evento.seguido ? 'fa-heart' : 'fa-heart-o'"></i>
+        <option value="">-- Todos los estados --</option>
+        <option *ngFor="let estado of estados" [value]="estado">{{ estado | titlecase }}</option>
+      </select>
+
+      <!-- Botón de Aceptar -->
+      <button
+        id="btnAceptar"
+        class="bg-red-600 hover:bg-red-700 text-white w-full p-2 rounded mt-2"
+        (click)="aplicarFiltros()"
+      >
+        Aceptar
       </button>
     </div>
-  </div>
 
-  <!-- MODAL DE ADVERTENCIA -->
-  <div
-    *ngIf="mostrarModal"
-    class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
-  >
-    <div class="bg-white text-black p-6 rounded shadow-lg w-80 text-center">
-      <h2 class="text-xl font-semibold mb-4">Acción no permitida</h2>
-      <p class="mb-4">Debes iniciar sesión o registrarte para realizar esta acción.</p>
-      <button
-        (click)="cerrarModal()"
-        class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+    <!-- EVENTOS -->
+    <div class="w-full md:w-3/4 flex flex-col space-y-6">
+
+      <!-- Sin resultados -->
+      <div *ngIf="eventosPaginados.length === 0" class="bg-zinc-800 p-6 rounded-xl text-center text-lg text-white border border-zinc-700">
+        No se encontraron eventos con los filtros seleccionados.
+      </div>
+
+      <!-- Lista de eventos -->
+      <div
+        *ngFor="let evento of eventosPaginados"
+        class="bg-zinc-900 rounded-xl border border-zinc-700 flex flex-col md:flex-row items-center p-4 space-y-4 md:space-y-0 md:space-x-4"
       >
-        Cerrar
-      </button>
+        <!-- Imagen del evento -->
+        <img
+          [src]="evento.imagenEvento"
+          (error)="evento.imagenEvento = 'assets/images/default-evento.jpg'"
+          alt="Imagen del evento"
+          class="w-full md:w-1/4 h-32 object-cover rounded"
+        />
+
+        <!-- Información del evento -->
+        <div class="flex-1 w-full text-center md:text-left">
+          <h3 class="text-xl font-semibold">{{ evento.nombreEvento }}</h3>
+          <div class="text-sm mt-1">📍 {{ evento.nombreSala }}</div>
+          <div class="text-sm mt-1">📅 {{ formatearFecha(evento.fechaEvento) }}</div>
+        </div>
+
+        <!-- Botón + info -->
+        <ng-container *ngIf="usuarioLogueado; else accesoDenegado">
+          <button
+            class="bg-slate-500 hover:bg-slate-600 text-white px-3 py-1 rounded"
+            (click)="verInfo(evento)"
+            aria-label="Ver más información del evento"
+          >
+            + info
+          </button>
+        </ng-container>
+        <ng-template #accesoDenegado>
+          <button
+            class="bg-gray-600 text-white px-3 py-1 rounded opacity-60 cursor-not-allowed"
+            disabled
+            aria-disabled="true"
+          >
+            + info
+          </button>
+        </ng-template>
+
+        <!-- Corazón de seguir -->
+        <button
+          class="text-3xl transition duration-300 ease-in-out"
+          [ngClass]="{
+            'text-red-500': evento.seguido,
+            'text-gray-400': !evento.seguido
+          }"
+          (click)="seguirEvento(evento)"
+          [disabled]="!usuarioLogueado"
+          aria-label="Seguir evento"
+        >
+          <i class="fa" [ngClass]="evento.seguido ? 'fa-heart' : 'fa-heart-o'"></i>
+        </button>
+      </div>
+
+      <!-- Paginador centrado -->
+      <div class="card flex justify-center">
+        <p-paginator
+          [rows]="pageSize"
+          [totalRecords]="totalItems"
+          [rowsPerPageOptions]="[6, 10, 12]"
+          (onPageChange)="onPageChange($event)">
+        </p-paginator>
+      </div>
+    </div>
+
+    <!-- MODAL DE ADVERTENCIA -->
+    <div
+      *ngIf="mostrarModal"
+      class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+      tabindex="-1"
+      (keydown.escape)="cerrarModal()"
+    >
+      <div class="bg-white text-black p-6 rounded shadow-lg w-80 text-center transition duration-300 ease-in-out transform scale-100">
+        <h2 class="text-xl font-semibold mb-4">Acción no permitida</h2>
+        <p class="mb-4">Debes iniciar sesión o registrarte para realizar esta acción.</p>
+        <button
+          (click)="cerrarModal()"
+          class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+        >
+          Cerrar
+        </button>
+      </div>
     </div>
   </div>
 </div>
