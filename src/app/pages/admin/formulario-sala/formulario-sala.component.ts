@@ -25,8 +25,9 @@ export class FormularioSalaComponent implements OnInit {
     capacidad: 0, // Cambiado de null a 0
     ciudad: '',
     provincia: '',
-    codigo_postal: '', // Cambiado a coincidir con la interfaz del backend
-    descripcion: ''
+    codigoPostal: '', // Cambiado a coincidir con la interfaz del backend
+    descripcion: '',
+
   };
 
   editando = false;

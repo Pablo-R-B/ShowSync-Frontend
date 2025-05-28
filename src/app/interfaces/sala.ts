@@ -6,7 +6,7 @@ export interface Sala{
   direccion: string;
   ciudad: string;
   provincia: string;
-  codigo_postal: string;
+  codigoPostal: string;
   capacidad: number;
   descripcion: string;
   imagen?: string;
