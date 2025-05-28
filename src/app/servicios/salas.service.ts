@@ -209,4 +209,18 @@ export class SalasService {
       headers: this.getAuthHeaders()
     });
   }
+
+  obtenerCantidadReservasPorSala(): Observable<Object[]> {
+    return this.http.get<Object[]>(`${this.apiUrl}/reservas`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  obtenerCantidadReservasPorSalaYEstado(): Observable<Object[]> {
+    return this.http.get<Object[]>(`${this.apiUrl}/reservas-por-estado`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+
 }
