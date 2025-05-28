@@ -140,7 +140,14 @@
       </thead>
       <tbody>
       <tr *ngFor="let sala of salas" class="hover:bg-gray-800/50 text-white">
-        <td class="border border-gray-600 p-2">{{ sala.nombre }}</td>
+        <td class="border border-gray-600 p-2">
+          <a
+            (click)="verPerfilSala(sala.id)"
+            class="text-customBlanco  hover:underline cursor-pointer"
+          >
+            {{ sala.nombre }}
+          </a>
+        </td>
         <td class="border border-gray-600 p-2">
           {{ sala.direccion }}, {{ sala.ciudad }}
         </td>
