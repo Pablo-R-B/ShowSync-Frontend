@@ -1,7 +1,26 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {catchError, Observable} from 'rxjs';
+import { catchError, Observable } from 'rxjs';
 import { Sala } from '../interfaces/sala';
+
+// Interfaces para la paginación
+export interface PageResponse<T> {
+  content: T[];
+  totalPages: number;
+  totalElements: number;
+  size: number;
+  number: number;
+  first: boolean;
+  last: boolean;
+  numberOfElements: number;
+  empty: boolean;
+}
+
+export interface PaginationParams {
+  page?: number;
+  size?: number;
+  termino?: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class SalasService {
@@ -13,9 +32,6 @@ export class SalasService {
     return localStorage.getItem('token') || '';
   }
 
-  //private getAuthHeaders(): HttpHeaders {
-   // return new HttpHeaders().set('Authorization', 'Bearer ' + this.obtenerToken());
-  //}
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -42,15 +58,47 @@ export class SalasService {
     return this.http.get<Sala>(`${this.apiUrl}/${id}`, { headers: this.getAuthHeaders() });
   }
 
+  // Método original sin paginación (para compatibilidad)
   obtenerTodas(): Observable<Sala[]> {
     return this.http.get<Sala[]>(`${this.apiUrl}/todas`, { headers: this.getAuthHeaders() });
   }
 
+  // Nuevo método con paginación
+  obtenerTodasPaginadas(params: PaginationParams = {}): Observable<Sala[]> {
+    let httpParams = new HttpParams()
+      .set('page', (params.page || 0).toString())
+      .set('size', (params.size || 6).toString());
+
+    if (params.termino && params.termino.trim()) {
+      httpParams = httpParams.set('termino', params.termino.trim());
+    }
+
+    return this.http.get<Sala[]>(`${this.apiUrl}/todas`, {
+      params: httpParams,
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // Búsqueda sin paginación (método original)
   buscarSalas(filtro: string): Observable<Sala[]> {
     const params = new HttpParams().set('filtro', filtro);
     return this.http.get<Sala[]>(`${this.apiUrl}/buscar`, { params, headers: this.getAuthHeaders() });
   }
 
+  // Búsqueda con paginación
+  buscarSalasPaginadas(filtro: string, params: PaginationParams = {}): Observable<PageResponse<Sala>> {
+    let httpParams = new HttpParams()
+      .set('filtro', filtro)
+      .set('page', (params.page || 0).toString())
+      .set('size', (params.size || 6).toString());
+
+    return this.http.get<PageResponse<Sala>>(`${this.apiUrl}/buscar-paginado`, {
+      params: httpParams,
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // Filtrado por capacidad sin paginación (método original)
   filtrarPorCapacidad(capacidadMin: number, capacidadMax: number): Observable<Sala[]> {
     const params = new HttpParams()
       .set('capacidadMinima', capacidadMin.toString())
@@ -58,8 +106,67 @@ export class SalasService {
     return this.http.get<Sala[]>(`${this.apiUrl}/filtrar`, { params, headers: this.getAuthHeaders() });
   }
 
+  // Filtrado por capacidad con paginación
+  filtrarPorCapacidadPaginado(
+    capacidadMin: number,
+    capacidadMax: number,
+    params: PaginationParams = {}
+  ): Observable<Sala[]> {
+    let httpParams = new HttpParams()
+      .set('capacidadMinima', capacidadMin.toString())
+      .set('capacidadMaxima', capacidadMax.toString())
+      .set('page', (params.page || 0).toString())
+      .set('size', (params.size || 6).toString());
+
+    if (params.termino && params.termino.trim()) {
+      httpParams = httpParams.set('termino', params.termino.trim());
+    }
+
+    return this.http.get<Sala[]>(`${this.apiUrl}/filtrar`, {
+      params: httpParams,
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // Búsqueda por ciudad sin paginación (método original)
+  buscarSalasPorCiudad(ciudad: string): Observable<Sala[]> {
+    const params = new HttpParams().set('ciudad', ciudad);
+    return this.http.get<Sala[]>(`${this.apiUrl}/buscar-por-ciudad`, { params, headers: this.getAuthHeaders() });
+  }
+
+  // Búsqueda por ciudad con paginación
+  buscarSalasPorCiudadPaginadas(ciudad: string, params: PaginationParams = {}): Observable<PageResponse<Sala>> {
+    let httpParams = new HttpParams()
+      .set('ciudad', ciudad)
+      .set('page', (params.page || 0).toString())
+      .set('size', (params.size || 6).toString());
+
+    return this.http.get<PageResponse<Sala>>(`${this.apiUrl}/buscar-por-ciudad-paginado`, {
+      params: httpParams,
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // Búsqueda por provincia sin paginación (método original)
+  buscarSalasPorProvincia(provincia: string): Observable<Sala[]> {
+    const params = new HttpParams().set('provincia', provincia);
+    return this.http.get<Sala[]>(`${this.apiUrl}/buscar-por-provincia`, { params, headers: this.getAuthHeaders() });
+  }
+
+  // Búsqueda por provincia con paginación
+  buscarSalasPorProvinciaPaginadas(provincia: string, params: PaginationParams = {}): Observable<PageResponse<Sala>> {
+    let httpParams = new HttpParams()
+      .set('provincia', provincia)
+      .set('page', (params.page || 0).toString())
+      .set('size', (params.size || 6).toString());
+
+    return this.http.get<PageResponse<Sala>>(`${this.apiUrl}/buscar-por-provincia-paginado`, {
+      params: httpParams,
+      headers: this.getAuthHeaders()
+    });
+  }
+
   consultarDisponibilidad(salaId: number, fechaInicio: string, fechaFin?: string): Observable<any[]> {
-    // Construye los parámetros correctamente
     let params = new HttpParams()
       .set('salaId', salaId.toString())
       .set('fechaInicio', fechaInicio);
@@ -68,10 +175,9 @@ export class SalasService {
       params = params.set('fechaFin', fechaFin);
     }
 
-    // Asegúrate de que la URL coincida con el endpoint del backend
     return this.http.get<any[]>(`http://localhost:8081/salas/disponibilidad`, {
       params,
-      headers: this.getAuthHeaders() // Verifica que esto incluya el token
+      headers: this.getAuthHeaders()
     }).pipe(
       catchError(error => {
         console.error('Error en consultarDisponibilidad:', error);
@@ -85,11 +191,6 @@ export class SalasService {
       headers: this.getAuthHeaders()
     });
   }
-
-
-
-
-
 
   obtenerSalasPorPromotor(promotorId: number): Observable<Sala[]> {
     return this.http.get<Sala[]>(`${this.apiUrl}/promotor/${promotorId}`, {
@@ -108,22 +209,4 @@ export class SalasService {
       headers: this.getAuthHeaders()
     });
   }
-
-
-
-  buscarSalasPorCiudad(ciudad: string): Observable<Sala[]> {
-    const params = new HttpParams().set('ciudad', ciudad);
-    return this.http.get<Sala[]>(`${this.apiUrl}/buscar-por-ciudad`, { params, headers: this.getAuthHeaders() });
-  }
-
-  buscarSalasPorProvincia (provincia: string): Observable<Sala[]> {
-    const params = new HttpParams().set('provincia', provincia);
-    return this.http.get<Sala[]>(`${this.apiUrl}/buscar-por-provincia`, { params, headers: this.getAuthHeaders() });
-  }
-
-
-
-
-
-
 }

@@ -1,0 +1,60 @@
+<div class="p-4 bg-customNegro rounded-2xl shadow-md mx-4 lg:mx-16">
+  <h1 class="text-2xl font-bold mb-4 text-white">Gestión de Usuarios</h1>
+
+  <div class="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div class="w-full md:w-1/3">
+      <select
+        id="filtro"
+        [(ngModel)]="filtroRol"
+        class="border border-gray-600 rounded p-2 w-full bg-customNegro text-white appearance-none pr-8"
+      >
+        <option value="TODOS">Todos los usuarios</option>
+        <option value="ADMINISTRADOR">Administrador</option>
+        <option value="PROMOTOR">Promotor</option>
+        <option value="ARTISTA">Artista</option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="cargando" class="flex justify-center items-center py-12">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
+  </div>
+
+  <div *ngIf="error" class="bg-red-900/20 border-l-4 border-red-500 p-4 mb-6">
+    <div class="flex items-center">
+      <svg class="h-5 w-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+      </svg>
+      <span class="text-red-300">{{ error }}</span>
+    </div>
+  </div>
+
+  <table class="table-auto w-full border border-gray-600 text-center" *ngIf="!cargando && !error">
+    <thead class="bg-gray-800">
+    <tr>
+      <th class="border border-gray-600 p-2 text-center">ID</th>
+      <th class="border border-gray-600 p-2 text-center">Nombre</th>
+      <th class="border border-gray-600 p-2 text-center">Email</th>
+      <th class="border border-gray-600 p-2 text-center">Rol</th>
+      <th class="border border-gray-600 p-2 text-center">Verificado</th>
+      <th class="border border-gray-600 p-2 text-center">Fecha Registro</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let usuario of usuariosFiltrados" class="hover:bg-gray-800/50">
+      <td class="border border-gray-600 p-2">{{ usuario.id }}</td>
+      <td class="border border-gray-600 p-2">{{ usuario.nombreUsuario }}</td>
+      <td class="border border-gray-600 p-2">{{ usuario.email }}</td>
+      <td class="border border-gray-600 p-2">{{ usuario.rol }}</td>
+      <td class="border border-gray-600 p-2">{{ usuario.verificado ? 'Sí' : 'No' }}</td>
+      <td class="border border-gray-600 p-2">{{ usuario.fechaRegistro | date:'dd/MM/yyyy' }}</td>
+
+    </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!cargando && usuariosFiltrados.length === 0"
+       class="text-center py-12 text-gray-400">
+    No se encontraron usuarios
+  </div>
+</div>
