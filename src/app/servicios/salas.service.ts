@@ -42,9 +42,22 @@ export class SalasService {
     });
   }
 
-  crear(sala: Sala): Observable<Sala> {
-    return this.http.post<Sala>(`${this.apiUrl}/crear`, sala, { headers: this.getAuthHeaders() });
+  crear(sala: Sala, imagen: File): Observable<Sala> {
+    const formData = new FormData();
+
+    // Agregamos los datos como JSON
+    const salaBlob = new Blob([JSON.stringify(sala)], { type: 'application/json' });
+    formData.append('data', salaBlob);
+
+    // Agregamos la imagen
+    formData.append('imagen', imagen);
+
+    // No se agrega manualmente el Content-Type, Angular lo hace por nosotros
+    return this.http.post<Sala>(`${this.apiUrl}/crear`, formData, {
+      headers: this.getAuthHeaders()
+    });
   }
+
 
   editar(id: number, sala: Sala): Observable<Sala> {
     return this.http.put<Sala>(`${this.apiUrl}/editar/${id}`, sala, { headers: this.getAuthHeaders() });

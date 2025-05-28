@@ -34,6 +34,7 @@ export class FormularioSalaComponent implements OnInit {
   isLoading = false;
   imagenCargando = false;
   maxFileSize = 2; // MB
+  imagenArchivo?: File;
 
   constructor(
     private route: ActivatedRoute,
@@ -48,6 +49,57 @@ export class FormularioSalaComponent implements OnInit {
       this.cargarSala(+id);
     }
   }
+  subirImagen(event: any): void {
+    const file: File = event.files[0];
+
+    if (!file) return;
+
+    if (!file.type.match('image.*')) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Solo se permiten archivos de imagen',
+        life: 5000
+      });
+      return;
+    }
+
+    if (file.size > this.maxFileSize * 1024 * 1024) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: `El tamaño máximo permitido es ${this.maxFileSize}MB`,
+        life: 5000
+      });
+      return;
+    }
+
+    this.imagenCargando = true;
+    this.imagenArchivo = file; // <-- Guardamos el archivo
+
+    const lector = new FileReader();
+    lector.onload = () => {
+      this.sala.logo = lector.result as string; // Para mostrar preview
+      this.imagenCargando = false;
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Éxito',
+        detail: 'Imagen cargada correctamente',
+        life: 3000
+      });
+    };
+    lector.onerror = () => {
+      this.imagenCargando = false;
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Error al leer la imagen',
+        life: 5000
+      });
+    };
+    lector.readAsDataURL(file);
+  }
+
 
   cargarSala(id: number): void {
     this.isLoading = true;
@@ -76,9 +128,24 @@ export class FormularioSalaComponent implements OnInit {
 
     this.isLoading = true;
 
-    const operacion = this.editando && this.sala.id
-      ? this.salaService.editar(this.sala.id, this.sala as Sala)
-      : this.salaService.crear(this.sala as Sala);
+    let operacion;
+
+    if (this.editando && this.sala.id) {
+      // Para editar, asumo que la imagen no se cambia o se maneja aparte
+      operacion = this.salaService.editar(this.sala.id, this.sala as Sala);
+    } else {
+      if (!this.imagenArchivo) {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Debe seleccionar una imagen',
+          life: 5000
+        });
+        this.isLoading = false;
+        return;
+      }
+      operacion = this.salaService.crear(this.sala as Sala, this.imagenArchivo);
+    }
 
     operacion.subscribe({
       next: () => {
@@ -103,55 +170,6 @@ export class FormularioSalaComponent implements OnInit {
     });
   }
 
-  subirImagen(event: any): void {
-    const file: File = event.files[0];
-
-    if (!file) return;
-
-    if (!file.type.match('image.*')) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Solo se permiten archivos de imagen',
-        life: 5000
-      });
-      return;
-    }
-
-    if (file.size > this.maxFileSize * 1024 * 1024) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: `El tamaño máximo permitido es ${this.maxFileSize}MB`,
-        life: 5000
-      });
-      return;
-    }
-
-    this.imagenCargando = true;
-
-    const lector = new FileReader();
-    lector.onload = () => {
-      this.sala.logo = lector.result as string;
-      this.imagenCargando = false;
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Éxito',
-        detail: 'Imagen cargada correctamente',
-        life: 3000
-      });
-    };
-    lector.onerror = () => {
-      this.imagenCargando = false;
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Error al leer la imagen',
-        life: 5000
-      });
-    };
-    lector.readAsDataURL(file);
-  }
 
   cancelar(): void {
     this.router.navigate(['/admin/salas']);

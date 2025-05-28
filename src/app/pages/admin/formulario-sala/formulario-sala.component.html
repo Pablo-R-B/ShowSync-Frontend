@@ -49,15 +49,14 @@
             <p-fileUpload
               name="imagen"
               accept="image/*"
-              customUpload="true"
-              (uploadHandler)="subirImagen($event)"
-              chooseLabel="Seleccionar Imagen"
+              maxFileSize="2097152"
+              (onSelect)="subirImagen($event)"
               [auto]="true"
-              [maxFileSize]="maxFileSize * 1024 * 1024"
-              mode="basic"
-              [disabled]="isLoading || imagenCargando"
-              class="w-full">
+              chooseLabel="Seleccionar imagen"
+              mode="basic">
             </p-fileUpload>
+
+            <img [src]="imagenPreview" alt="Imagen Sala" style="max-width: 200px; margin-top: 10px;" />
             <small class="text-gray-400 mt-2">Formatos: JPG, PNG. Máx: {{maxFileSize}}MB</small>
             <div *ngIf="imagenCargando" class="mt-2 text-sm text-gray-400 flex items-center">
               <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
