@@ -1,10 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {Usuario} from '../../../interfaces/usuario';
-import {UsuarioService} from '../../../servicios/usuario.service';
-import {CommonModule, DatePipe, NgForOf, NgIf} from '@angular/common';
-import {FormsModule} from '@angular/forms';
-import {RouterModule} from '@angular/router';
-import {debounceTime, distinctUntilChanged, Subject} from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { Usuario } from '../../../interfaces/usuario';
+import { UsuarioService } from '../../../servicios/usuario.service';
+import { CommonModule, DatePipe, NgForOf, NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { PaginationParams } from '../../../servicios/salas.service';
 
 @Component({
   selector: 'app-panel-usuarios',
@@ -23,10 +24,17 @@ import {debounceTime, distinctUntilChanged, Subject} from 'rxjs';
 export class PanelUsuariosComponent implements OnInit {
   usuarios: Usuario[] = [];
   usuariosFiltrados: Usuario[] = [];
+
   filtroRol: string = 'TODOS';
   filtro: string = '';
   cargando: boolean = true;
   error: string | null = null;
+
+  paginaActual: number = 0;
+  itemsPorPagina: number = 6;
+  totalUsuarios: number = 0;
+  totalPaginas: number = 1;
+  isLoading: boolean = false;
 
   private searchSubject = new Subject<string>();
 
@@ -35,25 +43,37 @@ export class PanelUsuariosComponent implements OnInit {
       debounceTime(300),
       distinctUntilChanged()
     ).subscribe((termino) => {
-      this.buscarConDebounce(termino);
+      this.filtro = termino;
+      this.paginaActual = 0; // Reiniciar a primera página al buscar
+      this.cargarUsuarios();
     });
   }
 
   ngOnInit(): void {
-    this.obtenerUsuarios();
+    this.cargarUsuarios();
   }
 
-  obtenerUsuarios(): void {
+  cargarUsuarios(): void {
     this.cargando = true;
     this.error = null;
 
-    this.usuarioService.obtenerTodosLosUsuarios().subscribe({
+    const params: PaginationParams = {
+      page: this.paginaActual,
+      size: this.itemsPorPagina,
+      termino: this.filtro.trim()
+    };
+
+    this.usuarioService.obtenerTodasPaginadas(params).subscribe({
       next: (usuarios) => {
         this.usuarios = usuarios;
+        this.totalUsuarios = (this.paginaActual * this.itemsPorPagina) + usuarios.length;
+        this.totalPaginas = usuarios.length < this.itemsPorPagina
+          ? this.paginaActual + 1
+          : this.paginaActual + 2;
         this.filtrarUsuarios();
         this.cargando = false;
       },
-      error: (err) => {
+      error: () => {
         this.error = 'Error al cargar usuarios.';
         this.cargando = false;
       }
@@ -67,14 +87,6 @@ export class PanelUsuariosComponent implements OnInit {
       filtrados = filtrados.filter(u => u.rol === this.filtroRol);
     }
 
-    if (this.filtro.trim()) {
-      const filtroLower = this.filtro.toLowerCase();
-      filtrados = filtrados.filter(u =>
-        u.nombreUsuario?.toLowerCase().includes(filtroLower) ||
-        u.email?.toLowerCase().includes(filtroLower)
-      );
-    }
-
     this.usuariosFiltrados = filtrados;
   }
 
@@ -82,12 +94,44 @@ export class PanelUsuariosComponent implements OnInit {
     this.searchSubject.next(this.filtro);
   }
 
-  buscarConDebounce(termino: string): void {
-    this.filtro = termino;
+  onFiltroRolChange(): void {
     this.filtrarUsuarios();
   }
 
-  onFiltroRolChange(): void {
-    this.filtrarUsuarios();
+  get esPrimeraPagina(): boolean {
+    return this.paginaActual === 0;
+  }
+
+  get esUltimaPagina(): boolean {
+    return this.paginaActual + 1 >= this.totalPaginas;
+  }
+
+  paginaAnterior(): void {
+    if (!this.esPrimeraPagina) {
+      this.paginaActual--;
+      this.cargarUsuarios();
+    }
+  }
+
+  paginaSiguiente(): void {
+    if (!this.esUltimaPagina) {
+      this.paginaActual++;
+      this.cargarUsuarios();
+    }
+  }
+
+  cambiarPagina(pagina: number): void {
+    if (pagina !== this.paginaActual) {
+      this.paginaActual = pagina;
+      this.cargarUsuarios();
+    }
+  }
+
+  obtenerRangoPaginas(): number[] {
+    const paginas: number[] = [];
+    for (let i = 0; i < this.totalPaginas; i++) {
+      paginas.push(i);
+    }
+    return paginas;
   }
 }
