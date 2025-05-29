@@ -97,7 +97,7 @@ export class EventosService {
   return this.http.get<Evento[]>(`${this.apiUrl}/eventos/promotor/${promotorId}`);
 }
 
-  crearEventoEnRevision(evento: EventoCreacion) {
+  crearEventoEnRevision(evento: FormData): Observable<any> {
     const token = localStorage.getItem('token'); // o donde lo guardes
     return this.http.post(`${this.apiUrl}/eventos/reserva/sala`, evento, {
       headers: {

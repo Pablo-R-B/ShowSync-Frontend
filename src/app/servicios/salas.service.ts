@@ -42,13 +42,43 @@ export class SalasService {
     });
   }
 
-  crear(sala: Sala): Observable<Sala> {
-    return this.http.post<Sala>(`${this.apiUrl}/crear`, sala, { headers: this.getAuthHeaders() });
+  crear(sala: Sala, imagen: File): Observable<Sala> {
+    const formData = new FormData();
+
+    // Agregamos los datos como JSON
+    const salaBlob = new Blob([JSON.stringify(sala)], { type: 'application/json' });
+    formData.append('data', salaBlob);
+
+    // Agregamos la imagen
+    formData.append('imagen', imagen);
+
+    // No se agrega manualmente el Content-Type, Angular lo hace por nosotros
+    return this.http.post<Sala>(`${this.apiUrl}/crear`, formData, {
+      headers: this.getAuthHeaders()
+    });
   }
 
-  editar(id: number, sala: Sala): Observable<Sala> {
-    return this.http.put<Sala>(`${this.apiUrl}/editar/${id}`, sala, { headers: this.getAuthHeaders() });
+
+  editar(id: number, sala: Sala, imagenArchivo?: File): Observable<Sala> {
+    const formData = new FormData();
+
+    // Convertir el objeto sala a JSON y añadirlo como un Blob
+    const salaBlob = new Blob([JSON.stringify(sala)], { type: 'application/json' });
+    formData.append('sala', salaBlob);
+
+    // Si hay una imagen, adjuntarla
+    if (imagenArchivo) {
+      formData.append('imagenArchivo', imagenArchivo);
+    }
+
+    return this.http.put<Sala>(`${this.apiUrl}/editar/${id}`, formData, {
+      headers: {
+        // ¡No pongas Content-Type a mano! Angular lo gestiona con FormData
+        Authorization: this.getAuthHeaders().get('Authorization') || ''
+      }
+    });
   }
+
 
   eliminar(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/eliminar/${id}`, { headers: this.getAuthHeaders() });
@@ -209,4 +239,18 @@ export class SalasService {
       headers: this.getAuthHeaders()
     });
   }
+
+  obtenerCantidadReservasPorSala(): Observable<Object[]> {
+    return this.http.get<Object[]>(`${this.apiUrl}/reservas`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  obtenerCantidadReservasPorSalaYEstado(): Observable<Object[]> {
+    return this.http.get<Object[]>(`${this.apiUrl}/reservas-por-estado`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+
 }

@@ -135,16 +135,29 @@
         <th class="border border-gray-600 p-2 text-center text-white">Nombre</th>
         <th class="border border-gray-600 p-2 text-center text-white">Ubicación</th>
         <th class="border border-gray-600 p-2 text-center text-white">Capacidad</th>
+        <th class="border border-gray-600 p-2 text-center">Nº reservas</th>
         <th class="border border-gray-600 p-2 text-center text-white">Acciones</th>
+
       </tr>
       </thead>
       <tbody>
       <tr *ngFor="let sala of salas" class="hover:bg-gray-800/50 text-white">
-        <td class="border border-gray-600 p-2">{{ sala.nombre }}</td>
+        <td class="border border-gray-600 p-2">
+          <a
+            (click)="verPerfilSala(sala.id)"
+            class="text-customBlanco  hover:underline cursor-pointer"
+          >
+            {{ sala.nombre }}
+          </a>
+        </td>
         <td class="border border-gray-600 p-2">
           {{ sala.direccion }}, {{ sala.ciudad }}
         </td>
         <td class="border border-gray-600 p-2">{{ sala.capacidad }}</td>
+        <td class="border border-gray-600 p-2 text-center">
+          <span *ngIf="isLoadingReservas" class="inline-block animate-pulse">...</span>
+          <span *ngIf="!isLoadingReservas">{{ getReservasPorSala(sala.nombre) }}</span>
+        </td>
         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
           <div class="flex justify-center space-x-2 border border-gray-600 p-2">
             <!-- Botón Ver -->
@@ -183,6 +196,7 @@
           </div>
         </td>
       </tr>
+
       </tbody>
     </table>
   </div>
@@ -258,5 +272,7 @@
       </p>
     </div>
   </div>
+
+
 
 </div>

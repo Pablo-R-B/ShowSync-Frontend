@@ -15,6 +15,16 @@
         <option value="cancelado">Cancelado</option>
       </select>
     </div>
+
+    <div class="w-full md:w-1/3">
+      <input
+        type="text"
+        placeholder="Buscar evento..."
+        [(ngModel)]="filtro"
+        (input)="onFiltroChange()"
+        class="border border-gray-600 rounded p-2 w-full bg-customNegro text-white"
+      />
+    </div>
   </div>
 
   <div *ngIf="cargando" class="flex justify-center items-center py-12">
@@ -45,8 +55,14 @@
     <tbody>
     <tr *ngFor="let evento of eventosPaginados" class="hover:bg-gray-800/50">
       <td class="border border-gray-600 p-2">{{ evento.id }}</td>
-      <td class="border border-gray-600 p-2">{{ evento.nombreEvento }}</td>
-      <td class="border border-gray-600 p-2">{{ evento.fechaEvento | date:'dd/MM/yyyy' }}</td>
+      <td class="border border-gray-600 p-2">
+        <a
+          (click)="verDetallesEvento(evento.id)"
+          class="text-customBlanco hover:underline cursor-pointer"
+        >
+          {{ evento.nombreEvento }}
+        </a>
+      </td>      <td class="border border-gray-600 p-2">{{ evento.fechaEvento | date:'dd/MM/yyyy' }}</td>
       <td class="border border-gray-600 p-2">{{ evento.nombreSala }}</td>
       <td class="border border-gray-600 p-2">{{ evento.nombrePromotor }}</td>
       <td class="border border-gray-600 p-2">

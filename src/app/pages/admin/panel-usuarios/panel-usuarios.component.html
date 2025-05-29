@@ -6,13 +6,25 @@
       <select
         id="filtro"
         [(ngModel)]="filtroRol"
+        (change)="onFiltroRolChange()"
         class="border border-gray-600 rounded p-2 w-full bg-customNegro text-white appearance-none pr-8"
       >
-        <option value="TODOS">Todos los usuarios</option>
+
+      <option value="TODOS">Todos los usuarios</option>
         <option value="ADMINISTRADOR">Administrador</option>
         <option value="PROMOTOR">Promotor</option>
         <option value="ARTISTA">Artista</option>
       </select>
+    </div>
+
+    <div class="w-full md:w-1/3">
+      <input
+        type="text"
+        placeholder="Buscar usuario..."
+        [(ngModel)]="filtro"
+        (ngModelChange)="onFiltroTextoChange()"
+        class="border border-gray-600 rounded p-2 w-full bg-customNegro text-white"
+      />
     </div>
   </div>
 

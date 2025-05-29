@@ -6,6 +6,7 @@ import { SalasService, PaginationParams } from '../../../servicios/salas.service
 import Swal from 'sweetalert2';
 import { Sala } from '../../../interfaces/sala';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import {ReservasPorSala} from '../../../interfaces/ReservasPorSala';
 
 @Component({
   selector: 'app-panel-salas',
@@ -21,6 +22,9 @@ import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 export class PanelSalasComponent implements OnInit {
   // Datos principales
   salas: Sala[] = [];
+  reservasPorSala: ReservasPorSala[] = [];
+  isLoadingReservas: boolean = false;
+
 
   // Estado y mensajes
   filtro: string = '';
@@ -65,10 +69,14 @@ export class PanelSalasComponent implements OnInit {
     ).subscribe(searchTerm => {
       this.buscarConDebounce(searchTerm);
     });
+
+    // Cargar cantidad de reservas por sala al inicializar
+    this.obtenerCantidadReservas();
   }
 
   ngOnInit(): void {
     this.cargarSalas();
+    this.obtenerCantidadReservas();
   }
 
   // Método principal para cargar salas
@@ -323,5 +331,35 @@ export class PanelSalasComponent implements OnInit {
     console.error(mensaje, error);
     this.errorMessage = `${mensaje}. Por favor, intente nuevamente.`;
     this.isLoading = false;
+  }
+
+
+
+  // Método para obtener la cantidad de reservas por sala
+  private obtenerCantidadReservas(): void {
+    this.isLoadingReservas = true;
+    this.salaService.obtenerCantidadReservasPorSala().subscribe({
+      next: (reservas: Object[]) => {
+        this.reservasPorSala = reservas.map((reserva: any) => ({
+          salaNombre: reserva[0],  // Primer elemento del array: e.sala.nombre
+          cantidadReservas: reserva[1] // Segundo elemento: COUNT(e)
+        }));
+        this.isLoadingReservas = false;
+      },
+      error: (err) => {
+        console.error('Error al obtener cantidad de reservas:', err);
+        this.isLoadingReservas = false;
+        this.errorMessage = 'No se pudieron cargar las estadísticas de reservas';
+      }
+    });
+  }
+
+  getReservasPorSala(salaNombre: string): number {
+    if (!this.reservasPorSala || this.reservasPorSala.length === 0) {
+      return 0;
+    }
+
+    const reserva = this.reservasPorSala.find(r => r.salaNombre === salaNombre);
+    return reserva ? reserva.cantidadReservas : 0;
   }
 }
