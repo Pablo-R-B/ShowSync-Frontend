@@ -7,6 +7,7 @@ import { EventoCreacion } from '../../interfaces/eventoCreacion';
 import { CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import pica from 'pica'; // Importar Pica
 
 import { NgIf, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -43,6 +44,7 @@ import {EventosService} from '../../servicios/eventos.service';
 })
 export class PerfilSalaComponent implements OnInit {
   @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
+  @ViewChild('fileUpload') fileUpload!: FileUpload;
 
   fechaSeleccionada: string | null = null;
   mostrarFormularioEvento = false;
@@ -51,13 +53,16 @@ export class PerfilSalaComponent implements OnInit {
   generosDisponibles: string[] = [];
   generosSeleccionados: string[] = [];
   cargando = false;
+  imagenCargando = false; // Nuevo estado para carga de imagen
+  maxFileSize = 5; // MB
+  imagenArchivo?: File; // Archivo optimizado para envío
 
   disponibilidadMap: Map<string, boolean> = new Map();
 
   nuevoEvento = {
     nombre: '',
     descripcion: '',
-    imagenEvento: ''
+    imagenEvento: '' // Para preview
   };
 
   calendarOptions: CalendarOptions = {
@@ -91,8 +96,6 @@ export class PerfilSalaComponent implements OnInit {
     private messageService: MessageService
   ) {}
 
-  @ViewChild('fileUpload') fileUpload!: FileUpload;
-
   ngOnInit() {
     this.idPromotor = this.authService.userId;
 
@@ -116,7 +119,6 @@ export class PerfilSalaComponent implements OnInit {
     });
   }
 
-
   cargarGenerosMusicales() {
     this.eventosService.getGenero().subscribe({
       next: generos => this.generosDisponibles = generos,
@@ -131,8 +133,6 @@ export class PerfilSalaComponent implements OnInit {
     const greenTones = ['#a8e6cf', '#dcedc1', '#b2f2bb', '#c3f9d4', '#d0f4de'];
     return greenTones[Math.floor(Math.random() * greenTones.length)];
   }
-
-
 
   cargarFechasNoDisponibles(salaId: number) {
     this.salaService.obtenerFechasNoDisponibles(salaId).subscribe({
@@ -156,8 +156,8 @@ export class PerfilSalaComponent implements OnInit {
             date: f.fecha,
             color,
             editable: false,
-            display: 'auto', // Cambiado a auto para permitir estilos
-            className: 'evento-fondo' // Cambiado a className (singular)
+            display: 'auto',
+            className: 'evento-fondo'
           });
         });
       },
@@ -189,6 +189,104 @@ export class PerfilSalaComponent implements OnInit {
     this.mostrarFormularioEvento = true;
   }
 
+  // Método mejorado para subir imagen con redimensionamiento
+  onFileSelected(event: any): void {
+    const file: File = event.files?.[0] || event.target?.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.match('image.*')) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Solo se permiten archivos de imagen',
+        life: 5000
+      });
+      return;
+    }
+
+    const maxFileSizeBytes = this.maxFileSize * 1024 * 1024;
+    if (file.size > maxFileSizeBytes) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Redimensionando',
+        detail: `La imagen es muy grande, se intentará redimensionar automáticamente.`,
+        life: 5000
+      });
+    }
+
+    this.imagenCargando = true;
+
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      img.src = reader.result as string;
+
+      img.onload = async () => {
+        try {
+          const canvas = document.createElement('canvas');
+          const maxWidth = 1024;
+          const maxHeight = 1024;
+
+          // Calcular dimensiones manteniendo proporción
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxWidth || height > maxHeight) {
+            const ratio = Math.min(maxWidth / width, maxHeight / height);
+            width = Math.round(width * ratio);
+            height = Math.round(height * ratio);
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const picaInstance = pica();
+          await picaInstance.resize(img, canvas);
+          const blob = await picaInstance.toBlob(canvas, file.type);
+          const previewReader = new FileReader();
+
+          previewReader.onloadend = () => {
+            this.nuevoEvento.imagenEvento = previewReader.result as string; // Base64 para preview
+            this.imagenArchivo = new File([blob], file.name, { type: file.type }); // Archivo optimizado
+            this.imagenCargando = false;
+
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Imagen redimensionada y cargada correctamente',
+              life: 3000
+            });
+          };
+
+          previewReader.readAsDataURL(blob);
+        } catch (error) {
+          console.error('Error al redimensionar la imagen:', error);
+          this.imagenCargando = false;
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'No se pudo redimensionar la imagen',
+            life: 5000
+          });
+        }
+      };
+
+      img.onerror = () => {
+        this.imagenCargando = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo cargar la imagen',
+          life: 5000
+        });
+      };
+    };
+
+    reader.readAsDataURL(file);
+  }
+
   enviarEvento() {
     if (!this.fechaSeleccionada || !this.sala || this.idPromotor === 0) {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Faltan datos' });
@@ -202,16 +300,26 @@ export class PerfilSalaComponent implements OnInit {
 
     this.cargando = true;
 
-    const eventoRequest: EventoCreacion = {
+    // Construir el DTO con los datos que espera tu backend
+    const eventoDTO = {
       nombreEvento: this.nuevoEvento.nombre,
       descripcion: this.nuevoEvento.descripcion,
       fechaEvento: this.fechaSeleccionada,
       idSala: this.sala.id,
-      generosMusicales: this.generosSeleccionados,
-      imagenEvento: this.nuevoEvento.imagenEvento
+      generosMusicales: this.generosSeleccionados
     };
 
-    this.eventosService.crearEventoEnRevision(eventoRequest).subscribe({
+    const formData = new FormData();
+
+    // Aquí conviertes el DTO a Blob JSON y lo agregas con la clave "dto"
+    formData.append('dto', new Blob([JSON.stringify(eventoDTO)], { type: 'application/json' }));
+
+    // Agregas la imagen con la clave que espera el backend "imagenArchivo"
+    if (this.imagenArchivo) {
+      formData.append('imagenArchivo', this.imagenArchivo);
+    }
+
+    this.eventosService.crearEventoEnRevision(formData).subscribe({
       next: () => {
         const nuevoEvento: EventInput = {
           title: `${this.nuevoEvento.nombre} (En revisión)`,
@@ -220,7 +328,6 @@ export class PerfilSalaComponent implements OnInit {
           textColor: '#08080C'
         };
 
-        // Agrega el evento directamente a FullCalendar
         this.calendarComponent.getApi().addEvent(nuevoEvento);
 
         this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Evento enviado correctamente' });
@@ -242,22 +349,12 @@ export class PerfilSalaComponent implements OnInit {
     this.fechaSeleccionada = null;
     this.nuevoEvento = { nombre: '', descripcion: '', imagenEvento: '' };
     this.generosSeleccionados = [];
+    this.imagenArchivo = undefined; // Limpiar archivo optimizado
 
     // Limpiar el componente FileUpload
     if (this.fileUpload) {
-      this.fileUpload.clear(); // Método de PrimeNG para limpiar archivos
-      this.fileUpload.files = []; // Limpiar manualmente el array de archivos
-    }
-  }
-
-  onFileSelected(event: any) {
-    const file: File = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.nuevoEvento.imagenEvento = reader.result as string;
-      };
-      reader.readAsDataURL(file);
+      this.fileUpload.clear();
+      this.fileUpload.files = [];
     }
   }
 
@@ -270,4 +367,17 @@ export class PerfilSalaComponent implements OnInit {
   cerrarModal() {
     this.mostrarModal = false;
   }
+
+  eliminarImagen(): void {
+    this.nuevoEvento.imagenEvento = '';
+    this.imagenArchivo = undefined;
+
+    // Limpiar el FileUpload
+    if (this.fileUpload) {
+      this.fileUpload.clear();
+      this.fileUpload.files = [];
+    }
+  }
+
+
 }
