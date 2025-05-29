@@ -59,9 +59,26 @@ export class SalasService {
   }
 
 
-  editar(id: number, sala: Sala): Observable<Sala> {
-    return this.http.put<Sala>(`${this.apiUrl}/editar/${id}`, sala, { headers: this.getAuthHeaders() });
+  editar(id: number, sala: Sala, imagenArchivo?: File): Observable<Sala> {
+    const formData = new FormData();
+
+    // Convertir el objeto sala a JSON y añadirlo como un Blob
+    const salaBlob = new Blob([JSON.stringify(sala)], { type: 'application/json' });
+    formData.append('sala', salaBlob);
+
+    // Si hay una imagen, adjuntarla
+    if (imagenArchivo) {
+      formData.append('imagenArchivo', imagenArchivo);
+    }
+
+    return this.http.put<Sala>(`${this.apiUrl}/editar/${id}`, formData, {
+      headers: {
+        // ¡No pongas Content-Type a mano! Angular lo gestiona con FormData
+        Authorization: this.getAuthHeaders().get('Authorization') || ''
+      }
+    });
   }
+
 
   eliminar(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/eliminar/${id}`, { headers: this.getAuthHeaders() });

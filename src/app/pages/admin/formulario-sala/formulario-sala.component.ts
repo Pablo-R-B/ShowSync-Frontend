@@ -6,6 +6,8 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { MessageService } from 'primeng/api';
 import { SalasService } from '../../../servicios/salas.service';
 import { Sala } from '../../../interfaces/sala'; // Importa la interfaz Sala del backend
+import pica from 'pica'; // Importar Pica
+
 
 @Component({
   selector: 'app-formulario-sala',
@@ -33,7 +35,7 @@ export class FormularioSalaComponent implements OnInit {
   editando = false;
   isLoading = false;
   imagenCargando = false;
-  maxFileSize = 2; // MB
+  maxFileSize = 5; // MB
   imagenArchivo?: File;
 
   constructor(
@@ -49,6 +51,7 @@ export class FormularioSalaComponent implements OnInit {
       this.cargarSala(+id);
     }
   }
+
   subirImagen(event: any): void {
     const file: File = event.files[0];
 
@@ -64,41 +67,88 @@ export class FormularioSalaComponent implements OnInit {
       return;
     }
 
-    if (file.size > this.maxFileSize * 1024 * 1024) {
+    const maxFileSizeBytes = this.maxFileSize * 1024 * 1024;
+    if (file.size > maxFileSizeBytes) {
       this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: `El tamaño máximo permitido es ${this.maxFileSize}MB`,
+        severity: 'warn',
+        summary: 'Redimensionando',
+        detail: `La imagen es muy grande, se intentará redimensionar automáticamente.`,
         life: 5000
       });
-      return;
     }
 
     this.imagenCargando = true;
-    this.imagenArchivo = file; // <-- Guardamos el archivo
 
-    const lector = new FileReader();
-    lector.onload = () => {
-      this.sala.logo = lector.result as string; // Para mostrar preview
-      this.imagenCargando = false;
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Éxito',
-        detail: 'Imagen cargada correctamente',
-        life: 3000
-      });
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      img.src = reader.result as string;
+
+      img.onload = async () => {
+        try {
+          const canvas = document.createElement('canvas');
+          const maxWidth = 1024;
+          const maxHeight = 1024;
+
+          // Calcular dimensiones manteniendo proporción
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxWidth || height > maxHeight) {
+            const ratio = Math.min(maxWidth / width, maxHeight / height);
+            width = Math.round(width * ratio);
+            height = Math.round(height * ratio);
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const picaInstance = pica();
+          await picaInstance.resize(img, canvas);
+          const base64 = await picaInstance.toBlob(canvas, file.type);
+          const previewReader = new FileReader();
+
+          previewReader.onloadend = () => {
+            this.sala.logo = previewReader.result as string; // Base64 para preview
+            this.imagenArchivo = new File([base64], file.name, { type: file.type }); // Nuevo archivo optimizado
+            this.imagenCargando = false;
+
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Imagen redimensionada y cargada correctamente',
+              life: 3000
+            });
+          };
+
+          previewReader.readAsDataURL(base64);
+        } catch (error) {
+          console.error('Error al redimensionar la imagen:', error);
+          this.imagenCargando = false;
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'No se pudo redimensionar la imagen',
+            life: 5000
+          });
+        }
+      };
+
+      img.onerror = () => {
+        this.imagenCargando = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo cargar la imagen',
+          life: 5000
+        });
+      };
     };
-    lector.onerror = () => {
-      this.imagenCargando = false;
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Error al leer la imagen',
-        life: 5000
-      });
-    };
-    lector.readAsDataURL(file);
+
+    reader.readAsDataURL(file);
   }
+
 
 
   cargarSala(id: number): void {
@@ -131,9 +181,9 @@ export class FormularioSalaComponent implements OnInit {
     let operacion;
 
     if (this.editando && this.sala.id) {
-      // Para editar, asumo que la imagen no se cambia o se maneja aparte
-      operacion = this.salaService.editar(this.sala.id, this.sala as Sala);
-    } else {
+      operacion = this.salaService.editar(this.sala.id, this.sala as Sala, this.imagenArchivo);
+    }
+    else {
       if (!this.imagenArchivo) {
         this.messageService.add({
           severity: 'error',
