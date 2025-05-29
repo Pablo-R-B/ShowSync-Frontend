@@ -5,8 +5,12 @@ import { Router, RouterModule } from '@angular/router';
 import { SalasService, PaginationParams } from '../../../servicios/salas.service';
 import Swal from 'sweetalert2';
 import { Sala } from '../../../interfaces/sala';
-import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import {debounceTime, distinctUntilChanged, Observable, Subject} from 'rxjs';
 import {ReservasPorSala} from '../../../interfaces/ReservasPorSala';
+import { Chart, registerables } from 'chart.js';
+import {ReservaRaw} from '../../../interfaces/ReservaRaw';
+import {SalaEstadoCantidad} from '../../../interfaces/SalaEstadoCantidad';
+
 
 @Component({
   selector: 'app-panel-salas',
@@ -24,6 +28,8 @@ export class PanelSalasComponent implements OnInit {
   salas: Sala[] = [];
   reservasPorSala: ReservasPorSala[] = [];
   isLoadingReservas: boolean = false;
+  eliminando: boolean = false;
+
 
 
   // Estado y mensajes
@@ -44,6 +50,13 @@ export class PanelSalasComponent implements OnInit {
   filtroProvincia: string = '';
   tipoFiltroActivo: 'general' | 'capacidad' | 'ciudad' | 'provincia' = 'general';
 
+  // Gráfico de reservas por sala
+  public chart: Chart | undefined;
+  public chartData: any;
+  public chartLabels: string[] = [];
+  public chartEstados: string[] = ['en_revision', 'confirmado', 'cancelado'];
+
+
   // Búsqueda con debounce
   private searchSubject = new Subject<string>();
 
@@ -62,6 +75,7 @@ export class PanelSalasComponent implements OnInit {
     private salaService: SalasService,
     private router: Router
   ) {
+    Chart.register(...registerables);
     // Configurar debounce para búsqueda
     this.searchSubject.pipe(
       debounceTime(300),
@@ -76,7 +90,8 @@ export class PanelSalasComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarSalas();
-    this.obtenerCantidadReservas();
+    this.cargarDatosGrafica();
+
   }
 
   // Método principal para cargar salas
@@ -104,6 +119,22 @@ export class PanelSalasComponent implements OnInit {
         this.cargarSalasPorProvincia(params);
         break;
     }
+  }
+
+  private cargarSalasConPaginacionResponse(
+    observable: Observable<{ content: Sala[]; totalElements: number; totalPages: number }>
+  ): void {
+    observable.subscribe({
+      next: (response) => {
+        this.salas = response.content;
+        this.totalSalas = response.totalElements;
+        this.totalPaginas = response.totalPages;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.manejarError('Error al cargar salas con paginación', err);
+      }
+    });
   }
 
   private cargarSalasGenerales(params: PaginationParams): void {
@@ -142,33 +173,13 @@ export class PanelSalasComponent implements OnInit {
 
   private cargarSalasPorCiudad(params: PaginationParams): void {
     if (this.filtroCiudad) {
-      this.salaService.buscarSalasPorCiudadPaginadas(this.filtroCiudad, params).subscribe({
-        next: (response) => {
-          this.salas = response.content;
-          this.totalSalas = response.totalElements;
-          this.totalPaginas = response.totalPages;
-          this.isLoading = false;
-        },
-        error: (err) => {
-          this.manejarError('Error al buscar por ciudad', err);
-        }
-      });
+      this.cargarSalasConPaginacionResponse(this.salaService.buscarSalasPorCiudadPaginadas(this.filtroCiudad, params));
     }
   }
 
   private cargarSalasPorProvincia(params: PaginationParams): void {
     if (this.filtroProvincia) {
-      this.salaService.buscarSalasPorProvinciaPaginadas(this.filtroProvincia, params).subscribe({
-        next: (response) => {
-          this.salas = response.content;
-          this.totalSalas = response.totalElements;
-          this.totalPaginas = response.totalPages;
-          this.isLoading = false;
-        },
-        error: (err) => {
-          this.manejarError('Error al buscar por provincia', err);
-        }
-      });
+      this.cargarSalasConPaginacionResponse(this.salaService.buscarSalasPorProvinciaPaginadas(this.filtroProvincia, params));
     }
   }
 
@@ -190,11 +201,13 @@ export class PanelSalasComponent implements OnInit {
   }
 
   private buscarConDebounce(termino: string): void {
+    this.filtro = termino;
     this.tipoFiltroActivo = 'general';
     this.paginaActual = 0;
     this.limpiarFiltrosAvanzados();
     this.cargarSalas();
   }
+
 
   filtrarPorCapacidad(): void {
     if (this.filtroCapacidadMin !== null && this.filtroCapacidadMax !== null) {
@@ -241,7 +254,7 @@ export class PanelSalasComponent implements OnInit {
 
   // Métodos de paginación
   cambiarPagina(pagina: number): void {
-    if (pagina < 0 || pagina >= this.totalPaginas) return;
+    if (pagina < 0 || pagina >= this.totalPaginas || pagina === this.paginaActual) return;
     this.paginaActual = pagina;
     this.cargarSalas();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -301,6 +314,8 @@ export class PanelSalasComponent implements OnInit {
   }
 
   eliminarSala(id: number): void {
+    if (this.eliminando) return;
+
     Swal.fire({
       title: this.SWAL_CONFIG.deleteTitle,
       text: this.SWAL_CONFIG.deleteText,
@@ -312,12 +327,15 @@ export class PanelSalasComponent implements OnInit {
       cancelButtonText: this.SWAL_CONFIG.cancelButtonText
     }).then((result) => {
       if (result.isConfirmed) {
+        this.eliminando = true;
         this.salaService.eliminar(id).subscribe({
           next: () => {
+            this.eliminando = false;
             Swal.fire('Eliminado', 'La sala ha sido eliminada correctamente', 'success');
-            this.cargarSalas(); // Recargar la página actual
+            this.cargarSalas();
           },
           error: (err) => {
+            this.eliminando = false;
             console.error('Error al eliminar sala:', err);
             Swal.fire('Error', 'No se pudo eliminar la sala', 'error');
           }
@@ -340,17 +358,17 @@ export class PanelSalasComponent implements OnInit {
     this.isLoadingReservas = true;
     this.salaService.obtenerCantidadReservasPorSala().subscribe({
       next: (reservas: Object[]) => {
-        this.reservasPorSala = reservas.map((reserva: any) => ({
-          salaNombre: reserva[0],  // Primer elemento del array: e.sala.nombre
-          cantidadReservas: reserva[1] // Segundo elemento: COUNT(e)
+        this.reservasPorSala = (reservas as ReservaRaw[]).map(reserva => ({
+          salaNombre: reserva[0],
+          cantidadReservas: reserva[1]
         }));
         this.isLoadingReservas = false;
       },
       error: (err) => {
-        console.error('Error al obtener cantidad de reservas:', err);
+        this.manejarError('No se pudieron cargar las estadísticas de reservas', err);
         this.isLoadingReservas = false;
-        this.errorMessage = 'No se pudieron cargar las estadísticas de reservas';
       }
+
     });
   }
 
@@ -362,4 +380,106 @@ export class PanelSalasComponent implements OnInit {
     const reserva = this.reservasPorSala.find(r => r.salaNombre === salaNombre);
     return reserva ? reserva.cantidadReservas : 0;
   }
+
+
+  private cargarDatosGrafica(): void {
+    this.salaService.getDatosGrafica().subscribe({
+      next: (data: SalaEstadoCantidad[]) => {
+        console.log('Datos recibidos para gráfica:', data);
+
+        if (!data || data.length === 0) {
+          console.warn('No se recibieron datos para la gráfica.');
+          return;
+        }
+
+        const salas = Array.from(new Set(data.map(d => d.salaNombre)));
+        this.chartLabels = salas;
+
+        const datasets = this.chartEstados.map(estado => ({
+          label: estado,
+          data: salas.map(sala =>
+            data.find(d => d.salaNombre === sala && d.estado === estado)?.cantidad || 0
+          ),
+          backgroundColor: this.colorPorEstado(estado)
+        }));
+
+        this.chartData = {
+          labels: this.chartLabels,
+          datasets: datasets,
+        };
+
+        this.crearGrafica();
+      },
+      error: (err) => {
+        console.error('Error al cargar datos para gráfica:', err);
+        this.errorMessage = err.error?.error || 'Error al cargar datos para gráfica. Por favor, intente nuevamente.';
+      }
+    });
+  }
+
+
+  private colorPorEstado(estado: string): string {
+    switch (estado) {
+      case 'en_revision': return 'orange';
+      case 'confirmado': return 'green';
+      case 'cancelado': return 'red';
+      default: return 'gray';
+    }
+  }
+
+  private crearGrafica(): void {
+    const canvas = document.getElementById('miGrafica') as HTMLCanvasElement | null;
+
+    if (!canvas) {
+      console.error('No se encontró el elemento canvas con id "miGrafica"');
+      return;
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      console.error('No se pudo obtener el contexto 2D del canvas');
+      return;
+    }
+
+    if (this.chart) {
+      this.chart.destroy(); // Evitar duplicados
+    }
+
+    console.log('Creando gráfica con datos:', this.chartData);
+
+    this.chart = new Chart(ctx, {
+      type: 'bar',
+      data: this.chartData,
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            stacked: false
+          },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'top'
+          },
+          title: {
+            display: true,
+            text: 'Reservas por sala y estado'
+          }
+        }
+      }
+    });
+  }
+
+
+
+
+
+
+
 }

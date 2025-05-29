@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable } from 'rxjs';
 import { Sala } from '../interfaces/sala';
+import {SalaEstadoCantidad} from '../interfaces/SalaEstadoCantidad';
 
 // Interfaces para la paginación
 export interface PageResponse<T> {
@@ -246,11 +247,10 @@ export class SalasService {
     });
   }
 
-  obtenerCantidadReservasPorSalaYEstado(): Observable<Object[]> {
-    return this.http.get<Object[]>(`${this.apiUrl}/reservas-por-estado`, {
-      headers: this.getAuthHeaders()
-    });
+  getDatosGrafica(): Observable<SalaEstadoCantidad[]> {
+    return this.http.get<SalaEstadoCantidad[]>('/api/salas/reservas-estado');
   }
+
 
 
 }

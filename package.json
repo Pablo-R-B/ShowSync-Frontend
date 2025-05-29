@@ -26,6 +26,7 @@
     "@fullcalendar/list": "^6.1.17",
     "@ngneat/tailwind": "^7.0.3",
     "@primeng/themes": "^19.0.10",
+    "chart.js": "^4.4.9",
     "date-fns": "^4.1.0",
     "font-awesome": "^4.7.0",
     "jwt-decode": "^4.0.0",
