@@ -4,7 +4,7 @@
   <form (ngSubmit)="guardarSala()" #formSala="ngForm" class="space-y-6">
     <!-- Sección 1: Información básica -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- Columna izquierda - Información principal -->
+      <!-- Columna izquierda -->
       <div class="space-y-4">
         <div>
           <label class="block mb-2 text-gray-300 font-medium">Nombre *</label>
@@ -13,7 +13,8 @@
             [(ngModel)]="sala.nombre"
             name="nombre"
             required
-            [disabled]="isLoading">
+            [disabled]="isLoading"
+          />
         </div>
 
         <div>
@@ -22,7 +23,8 @@
             class="border border-gray-600 rounded w-full p-3 bg-customNegro text-white h-32 focus:ring-2 focus:ring-customRed focus:border-transparent"
             [(ngModel)]="sala.descripcion"
             name="descripcion"
-            [disabled]="isLoading"></textarea>
+            [disabled]="isLoading"
+          ></textarea>
         </div>
 
         <div>
@@ -30,14 +32,13 @@
           <input
             type="number"
             min="1"
-            class="border border-gray-600 rounded  w-1/4 p-3 bg-customNegro text-white focus:ring-2 focus:ring-customRed focus:border-transparent"
+            class="border border-gray-600 rounded w-1/4 p-3 bg-customNegro text-white focus:ring-2 focus:ring-customRed focus:border-transparent"
             [(ngModel)]="sala.capacidad"
             name="capacidad"
             required
-            [disabled]="isLoading">
+            [disabled]="isLoading"
+          />
         </div>
-
-
       </div>
 
       <!-- Columna derecha - Imagen -->
@@ -45,7 +46,7 @@
         <div class="w-full">
           <label class="block mb-2 text-gray-300 font-medium">Imagen de la sala</label>
           <div class="border-2 border-dashed border-gray-600 rounded-lg p-4 flex flex-col items-center">
-            <img [src]="imagenPreview" alt="Vista previa" class="w-full max-w-xs h-48 object-cover rounded-lg mb-4">
+            <img [src]="imagenPreview" alt="Vista previa" class="w-full max-w-xs h-48 object-cover rounded-lg mb-4" />
             <p-fileUpload
               name="imagen"
               accept="image/*"
@@ -53,15 +54,23 @@
               (onSelect)="subirImagen($event)"
               [auto]="true"
               chooseLabel="Seleccionar imagen"
-              mode="basic">
+              mode="basic"
+            >
             </p-fileUpload>
-
-            <img [src]="imagenPreview" alt="Imagen Sala" style="max-width: 200px; margin-top: 10px;" />
-            <small class="text-gray-400 mt-2">Formatos: JPG, PNG. Máx: {{maxFileSize}}MB</small>
+            <small class="text-gray-400 mt-2">Formatos: JPG, PNG. Máx: {{ maxFileSize }}MB</small>
             <div *ngIf="imagenCargando" class="mt-2 text-sm text-gray-400 flex items-center">
-              <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <svg
+                class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
               Cargando imagen...
             </div>
@@ -81,7 +90,8 @@
             [(ngModel)]="sala.direccion"
             name="direccion"
             required
-            [disabled]="isLoading">
+            [disabled]="isLoading"
+          />
         </div>
 
         <div>
@@ -91,17 +101,25 @@
             [(ngModel)]="sala.ciudad"
             name="ciudad"
             required
-            [disabled]="isLoading">
+            [disabled]="isLoading"
+          />
         </div>
 
         <div>
           <label class="block mb-2 text-gray-300 font-medium">Provincia *</label>
-          <input
+          <select
             class="border border-gray-600 rounded w-full p-3 bg-customNegro text-white focus:ring-2 focus:ring-customRed focus:border-transparent"
             [(ngModel)]="sala.provincia"
             name="provincia"
             required
-            [disabled]="isLoading">
+            [disabled]="isLoading"
+            (change)="onProvinciaChange()"
+          >
+            <option value="">Seleccione una provincia</option>
+            <option *ngFor="let provincia of provincias" [value]="provincia.nombre">
+              {{ provincia.nombre }}
+            </option>
+          </select>
         </div>
 
         <div>
@@ -109,9 +127,12 @@
           <input
             class="border border-gray-600 rounded w-full p-3 bg-customNegro text-white focus:ring-2 focus:ring-customRed focus:border-transparent"
             [(ngModel)]="sala.codigoPostal"
-            name="codigo_postal"
+            name="codigoPostal"
             required
-            [disabled]="isLoading">
+            [disabled]="isLoading"
+            (input)="onCodigoPostalInput()"
+            maxlength="5"
+          />
         </div>
       </div>
     </div>
@@ -122,18 +143,29 @@
         type="button"
         (click)="cancelar()"
         class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition-colors duration-200"
-        [disabled]="isLoading">
+        [disabled]="isLoading"
+      >
         Cancelar
       </button>
       <button
         type="submit"
         class="bg-customRed hover:bg-customBurbundy text-white px-6 py-2 rounded-lg transition-colors duration-200 disabled:opacity-70"
-        [disabled]="formSala.invalid || isLoading">
+        [disabled]="formSala.invalid || isLoading"
+      >
         <span *ngIf="!isLoading">{{ editando ? 'Actualizar Sala' : 'Crear Sala' }}</span>
         <span *ngIf="isLoading" class="flex items-center">
-          <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <svg
+            class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
           </svg>
           Procesando...
         </span>

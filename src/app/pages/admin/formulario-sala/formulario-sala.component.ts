@@ -5,9 +5,9 @@ import { CommonModule } from '@angular/common';
 import { FileUploadModule } from 'primeng/fileupload';
 import { MessageService } from 'primeng/api';
 import { SalasService } from '../../../servicios/salas.service';
-import { Sala } from '../../../interfaces/sala'; // Importa la interfaz Sala del backend
-import pica from 'pica'; // Importar Pica
-
+import { Sala } from '../../../interfaces/sala';
+import pica from 'pica';
+import { PROVINCIAS_ES } from '../../../interfaces/provincias-es';
 
 @Component({
   selector: 'app-formulario-sala',
@@ -24,14 +24,14 @@ export class FormularioSalaComponent implements OnInit {
   sala: Partial<Sala> = {
     nombre: '',
     direccion: '',
-    capacidad: 0, // Cambiado de null a 0
+    capacidad: 0,
     ciudad: '',
     provincia: '',
-    codigoPostal: '', // Cambiado a coincidir con la interfaz del backend
+    codigoPostal: '',
     descripcion: '',
-
   };
 
+  provincias = PROVINCIAS_ES;
   editando = false;
   isLoading = false;
   imagenCargando = false;
@@ -54,7 +54,6 @@ export class FormularioSalaComponent implements OnInit {
 
   subirImagen(event: any): void {
     const file: File = event.files[0];
-
     if (!file) return;
 
     if (!file.type.match('image.*')) {
@@ -91,7 +90,6 @@ export class FormularioSalaComponent implements OnInit {
           const maxWidth = 1024;
           const maxHeight = 1024;
 
-          // Calcular dimensiones manteniendo proporción
           let width = img.width;
           let height = img.height;
 
@@ -110,8 +108,8 @@ export class FormularioSalaComponent implements OnInit {
           const previewReader = new FileReader();
 
           previewReader.onloadend = () => {
-            this.sala.logo = previewReader.result as string; // Base64 para preview
-            this.imagenArchivo = new File([base64], file.name, { type: file.type }); // Nuevo archivo optimizado
+            this.sala.logo = previewReader.result as string;
+            this.imagenArchivo = new File([base64], file.name, { type: file.type });
             this.imagenCargando = false;
 
             this.messageService.add({
@@ -149,8 +147,6 @@ export class FormularioSalaComponent implements OnInit {
     reader.readAsDataURL(file);
   }
 
-
-
   cargarSala(id: number): void {
     this.isLoading = true;
     this.editando = true;
@@ -182,8 +178,7 @@ export class FormularioSalaComponent implements OnInit {
 
     if (this.editando && this.sala.id) {
       operacion = this.salaService.editar(this.sala.id, this.sala as Sala, this.imagenArchivo);
-    }
-    else {
+    } else {
       if (!this.imagenArchivo) {
         this.messageService.add({
           severity: 'error',
@@ -220,12 +215,33 @@ export class FormularioSalaComponent implements OnInit {
     });
   }
 
-
   cancelar(): void {
     this.router.navigate(['/admin/salas']);
   }
 
   get imagenPreview(): string {
-    return this.sala.logo || 'assets/images/logo_1.png'; // Ruta por defecto si no hay imagen
+    return this.sala.logo || 'assets/images/logo_1.png';
+  }
+
+  onProvinciaChange(): void {
+    const prov = this.provincias.find(p => p.nombre === this.sala.provincia);
+    if (prov) {
+      const codigoProv = prov.codigo;
+      if (!this.sala.codigoPostal || !this.sala.codigoPostal.startsWith(codigoProv)) {
+        this.sala.codigoPostal = codigoProv;
+      }
+    } else {
+      this.sala.codigoPostal = '';
+    }
+  }
+
+  onCodigoPostalInput(): void {
+    const prov = this.provincias.find(p => p.nombre === this.sala.provincia);
+    if (prov) {
+      const prefijo = prov.codigo;
+      if (!this.sala.codigoPostal?.startsWith(prefijo)) {
+        this.sala.codigoPostal = prefijo;
+      }
+    }
   }
 }
