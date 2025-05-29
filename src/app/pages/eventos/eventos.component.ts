@@ -41,17 +41,6 @@ export class EventosComponent implements OnInit {
     } else {
       console.error('ID del evento no encontrado');
     }
-
-    const usuarioId = this.authService.userId;
-    this.artistasService.getArtistaIdPorUsuario(usuarioId).subscribe({
-      next: (id: number) => {
-        this.artistaId = id;
-        console.log('Artista ID cargado:', this.artistaId);
-
-      }, error:(err) => {
-        console.error('Error al obtener artistaId para usuario', usuarioId, err)
-      }
-    });
   }
 
   cargarEvento(eventoId: string): void {

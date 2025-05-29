@@ -8,6 +8,7 @@ import {PromotoresService} from '../../servicios/promotores.service';
 import {AuthService} from '../../servicios/auth.service';
 import {ArtistasService} from '../../servicios/artistas.service';
 import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
+import { Artistas } from '../../interfaces/artistas';
 
 @Component({
   selector: 'app-promotores',
@@ -27,7 +28,10 @@ export class PromotoresComponent implements OnInit {
   eventos: EventoDTO[] = [];
   eventoDestacado?: EventoDTO;
   eventosProximos: Array<{ fecha: string; lugar: string; nombre: string }> = [];
-  artistas: Array<{ nombre: string }> = [];
+  artistas: Array<{
+      biografia: string;
+      generosMusicales: string; nombre: string
+  }> = [];
   idPromotor!: number;
   isModalOpen = false;
   eventoSeleccionado!:number
@@ -57,15 +61,10 @@ export class PromotoresComponent implements OnInit {
     }
 
     const usuarioId = this.authService.userId;
-    this.artistasService.getArtistaIdPorUsuario(usuarioId).subscribe({
-      next: (id: number) => {
-        this.artistaId = id;
-        console.log('Artista ID cargado:', this.artistaId);
-
-      }, error:(err) => {
-        console.error('Error al obtener artistaId para usuario', usuarioId, err)
-      }
-    })
+    if (!usuarioId) {
+      console.error('No se encontró un ID de usuario válido');
+      return;
+    }
 
   }
 
@@ -102,10 +101,24 @@ export class PromotoresComponent implements OnInit {
       });
   }
 
-  // Obtener los artistas asociados al promotor
+// Obtener los artistas asociados al promotor y clasificarlos
   private obtenerArtistas() {
-    this.promotoresService.cargarArtistasDePromotor(this.idPromotor)
-      .subscribe(data => this.artistas = data);
+    this.artistasService.artistasPorPromotor(this.idPromotor)
+      .subscribe({
+        next: (data: any) => {
+          console.log('Respuesta del servicio:', data); // Verifica la estructura de los datos
+          const artistasArray = Array.isArray(data.content) ? data.content : []; // Accede a la propiedad `content`
+          this.artistas = artistasArray.map((artista: Artistas) => ({
+            nombre: artista.nombreArtista,
+            generosMusicales: artista.generosMusicales.join(', '),
+            biografia: artista.biografia
+          }));
+          console.log('Artistas procesados:', this.artistas); // Muestra los artistas procesados
+        },
+        error: (err) => {
+          console.error('Error al obtener artistas asociados al promotor:', err);
+        }
+      });
   }
 
   // Método para ver los detalles de un evento
@@ -131,62 +144,5 @@ export class PromotoresComponent implements OnInit {
 
   }
 
-  openModal() {
-    this.isModalOpen = true;
-  }
-
-  closeModal() {
-    this.isModalOpen = false;
-  }
-
-
-  alerta = {
-    tipo: '' as'enviada' | 'noenviada',
-    mensaje:'',
-    visible:false
-  }
-
-  private alertaSolicitud(tipo:'enviada' | 'noenviada', mensaje:string):  void{
-    this.alerta = {tipo, mensaje, visible:true}
-    setTimeout(()=>{
-      this.alerta.visible = false;
-    }, 5000);
-  }
-
-  /**Envia solicitud de contratación a artista desde perfil artista*/
-  enviarOferta() {
-    this.postulacionService.nuevaSolicitud(this.eventoSeleccionado, this.artistaId)
-      .subscribe({
-        next: response =>{
-          switch (response.status) {
-            case 201:
-              this.alertaSolicitud('enviada', '¡Oferta enviada con éxito! 🎉');
-              break;
-            case 400:
-              this.alertaSolicitud('noenviada', 'Solicitud inválida. Revisa los datos.');
-              break;
-            case 409:
-              this.alertaSolicitud('noenviada', 'Ya existe una oferta/postulación previa.');
-              break;
-            default:
-              this.alertaSolicitud(
-                'noenviada',
-                `Respuesta inesperada: ${response.status}`
-              );
-              console.warn(`Status inesperado: ${response.status}`);
-          }
-        },
-        error: (err) => {
-          // Puede venir un 500, un timeout, o un 0 si no hay conexión
-          console.error('Error al enviar la oferta:', err);
-          // Extrae el código si está disponible
-          const status = err.status ?? 'desconocido';
-          this.alertaSolicitud(
-            'noenviada',
-            `Error en la solicitud (status ${status})`
-          );
-        },
-      });
-  }
 
 }

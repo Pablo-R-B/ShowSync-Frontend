@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {Promotor} from '../interfaces/Promotor';
-import {EventoDTO} from '../interfaces/EventoDTO';
+import {EventoDTO} from '../interfaces/EventoDTO'
+
 
 
 
