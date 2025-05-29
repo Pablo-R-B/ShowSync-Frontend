@@ -96,13 +96,20 @@
 
         <div>
           <label class="block mb-2 text-gray-300 font-medium">Provincia *</label>
-          <input
+          <select
             class="border border-gray-600 rounded w-full p-3 bg-customNegro text-white focus:ring-2 focus:ring-customRed focus:border-transparent"
             [(ngModel)]="sala.provincia"
             name="provincia"
             required
-            [disabled]="isLoading">
+            [disabled]="isLoading"
+          >
+            <option value="">Seleccione una provincia</option>
+            <option *ngFor="let provincia of provincias" [value]="provincia">
+              {{ provincia }}
+            </option>
+          </select>
         </div>
+
 
         <div>
           <label class="block mb-2 text-gray-300 font-medium">Código Postal *</label>

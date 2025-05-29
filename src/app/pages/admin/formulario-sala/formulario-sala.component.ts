@@ -7,6 +7,8 @@ import { MessageService } from 'primeng/api';
 import { SalasService } from '../../../servicios/salas.service';
 import { Sala } from '../../../interfaces/sala'; // Importa la interfaz Sala del backend
 import pica from 'pica'; // Importar Pica
+import { PROVINCIAS_ES } from '../../../interfaces/provincias-es'; // Importa las provincias de España
+
 
 
 @Component({
@@ -32,6 +34,7 @@ export class FormularioSalaComponent implements OnInit {
 
   };
 
+  provincias = PROVINCIAS_ES;
   editando = false;
   isLoading = false;
   imagenCargando = false;
