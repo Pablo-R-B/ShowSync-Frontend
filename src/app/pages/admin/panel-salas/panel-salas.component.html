@@ -2,6 +2,41 @@
 
   <h1 class="text-2xl font-bold mb-4 text-white">Gestión de Salas</h1>
 
+  <!-- Botón para mostrar/ocultar gráfica -->
+  <div class="text-center mb-4">
+    <button
+      (click)="toggleGrafica()"
+      class="bg-customRed text-white px-4 py-2 rounded hover:bg-customBurbundy transition-colors whitespace-nowrap"
+    >
+      <svg class="inline-block w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path *ngIf="!mostrarGrafica" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+        <path *ngIf="mostrarGrafica" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L8.464 8.464M12 6.5c1.38 0 2.632.56 3.536 1.464M21 12c-1.274 4.057-5.064 7-9.542 7-.847 0-1.669-.105-2.454-.303m-.546-1.175A10.053 10.053 0 0012 19z"></path>
+      </svg>
+      {{ mostrarGrafica ? 'Ocultar Gráfica' : 'Mostrar Gráfica de Reservas' }}
+    </button>
+  </div>
+
+  <!-- Gráfica de reservas -->
+  <div *ngIf="mostrarGrafica" class="mt-6 bg-gray-800 p-6 rounded-lg shadow-lg">
+    <div class="mb-4">
+      <h3 class="text-white text-lg font-semibold">Estadísticas de Reservas por Sala</h3>
+      <p class="text-gray-400 text-sm">Visualización del estado de las reservas organizadas por sala</p>
+    </div>
+
+    <div class="relative" style="height: 400px;">
+      <canvas id="miGrafica"></canvas>
+    </div>
+
+    <!-- Loading para la gráfica -->
+    <div *ngIf="isLoadingReservas" class="absolute inset-0 bg-gray-800/50 flex items-center justify-center rounded-lg">
+      <div class="flex flex-col items-center">
+        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-2"></div>
+        <span class="text-white text-sm">Cargando datos de la gráfica...</span>
+      </div>
+    </div>
+  </div>
+
+
   <!-- Filtros principales -->
   <div class="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
     <div class="w-full md:w-1/3">
@@ -48,7 +83,7 @@
         </div>
         <button
           (click)="filtrarPorCapacidad()"
-          class="mt-2 bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition-colors"
+          class="mt-2 bg-customGrisClaro text-customBurbundy px-3 py-1 rounded text-sm hover:bg-customGrisMedio transition-colors"
         >
           Filtrar
         </button>
@@ -65,7 +100,7 @@
         />
         <button
           (click)="filtrarPorCiudad()"
-          class="mt-2 bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 transition-colors"
+          class="mt-2 bg-customGrisClaro text-customBurbundy px-3 py-1 rounded text-sm hover:bg-customGrisMedio transition-colors"
         >
           Filtrar
         </button>
@@ -82,7 +117,7 @@
         />
         <button
           (click)="filtrarPorProvincia()"
-          class="mt-2 bg-purple-600 text-white px-3 py-1 rounded text-sm hover:bg-purple-700 transition-colors"
+          class="mt-2 bg-customGrisClaro text-customBurbundy px-3 py-1 rounded text-sm hover:bg-customGrisMedio transition-colors"
         >
           Filtrar
         </button>
@@ -98,6 +133,7 @@
         </button>
       </div>
     </div>
+
 
     <!-- Indicador de filtro activo -->
     <div *ngIf="tipoFiltroActivo !== 'general'" class="mt-3 p-2 bg-blue-900/30 rounded">
@@ -200,6 +236,10 @@
       </tbody>
     </table>
   </div>
+
+
+
+
 
   <!-- Información de paginación -->
   <div *ngIf="!isLoading && tieneResultados" class="flex justify-between items-center mt-4 text-white text-sm">
