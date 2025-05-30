@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RegistroService } from '../../servicios/registro.service';
-import { NgClass, NgIf } from '@angular/common';
+import {NgClass, NgIf, NgStyle} from '@angular/common';
 import {Router, RouterLink} from '@angular/router';
 
 @Component({
@@ -13,6 +13,7 @@ import {Router, RouterLink} from '@angular/router';
     NgClass,
     NgIf,
     RouterLink,
+    NgStyle,
 
   ]
 })
@@ -27,6 +28,7 @@ export class RegistroComponent {
   contador: number = 5;
   timerInterval: any;
   submitted = false;
+  notasMusicales: any;
 
 
   constructor(
@@ -35,7 +37,7 @@ export class RegistroComponent {
     protected router: Router
   ) {
     this.registroForm = this.fb.group({
-      nombreUsuario: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
+      nombreUsuario: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20), Validators.pattern(/^[^\s!¡?¿+*^<>/ªº·#`;:'€~%,=()@¬|]+$/)]],
       email: ['', [Validators.required, Validators.email, Validators.pattern(/^[^@]+@[^@]+\.[a-zA-Z]{2,}$/)]],
       fechaNacimiento: ['', [Validators.required]],
       contrasena: ['', [Validators.required, Validators.minLength(6)]],

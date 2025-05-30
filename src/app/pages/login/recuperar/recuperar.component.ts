@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import {timeout} from 'rxjs';
 
@@ -19,7 +19,9 @@ export class RecuperarComponent {
   loading: boolean = false;
 
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,
+              private router: Router
+  ) {}
 
   onRecuperar() {
     this.loading = true;
@@ -37,5 +39,9 @@ export class RecuperarComponent {
           this.loading = false;
         }
       });
+  }
+
+  irAlLogin() {
+    this.router.navigate(['/auth/login']);
   }
 }

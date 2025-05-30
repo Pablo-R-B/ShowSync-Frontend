@@ -1,29 +1,50 @@
-<div class="min-h-screen bg-cover bg-center flex items-center justify-center" style="background-image: url('../../../assets/images/fondo_2.png');">
-  <div class="bg-black bg-opacity-80 p-8 rounded-3xl max-w-md w-full shadow-lg">
-    <h2 class=" font-medula  text-white text-5xl  mb-6 text-center">Registro, ¿quién eres?</h2>
+<div class="min-h-screen bg-gradient-to-br from-customNegro via-customGrisOscurso to-customBurbundy relative overflow-hidden flex items-center justify-center">  <!-- Fondo animado -->
+  <div class="absolute inset-0 bg-cover bg-center opacity-80 blur-sm" style="background-image: url('assets/images/fondo_2.png')"></div>
+  <div class="absolute inset-0 bg-gradient-to-br from-black via-transparent to-black blur-lg"></div>
+
+  <!-- Notas musicales flotantes  -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div *ngFor="let nota of notasMusicales"
+         [ngStyle]="{ top: nota.top, left: nota.left, right: nota.right, bottom: nota.bottom, width: nota.width, height: nota.height }"
+         [class]="nota.clase"
+         [style.opacity]="nota.opacity"
+         [style.animationDelay]="nota.delay">
+      {{ nota.simbolo }}
+    </div>
+  </div>
+
+  <div class="class= relative z-10 backdrop-blur-xl bg-customNegro/80 border border-customRed/40 text-customBlanco pt-8 pb-12 px-12 rounded-3xl w-full max-w-lg shadow-2xl shadow-customBurbundy/60 transform hover:scale-[1.02] transition-all duration-500">
+    <h2 class="text-5xl text-center font-medula bg-gradient-to-r from-customRed via-customGrisClaro to-customRed bg-clip-text text-transparent tracking-wide  drop-shadow-lg">
+      Registro, ¿quién eres?</h2>
     <hr class="border-gray-600 mb-6">
 
-    <form [formGroup]="registroForm" (ngSubmit)="onSubmit()">
+
+    <form [formGroup]="registroForm" (ngSubmit)="onSubmit() " >
       <!-- Nombre de usuario -->
-      <div class="mb-4">
+      <div class="mb-4 ">
         <input
           type="text"
           placeholder="Nombre de usuario"
-          class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
           formControlName="nombreUsuario"
+          class="w-full pl-8 pr-4 py-4 rounded-2xl bg-customGrisClaro backdrop-blur-sm border border-customGrisClaro/30  text-customNegro   placeholder:text-customGrisOscurso    focus:outline-none focus:ring-2 focus:ring-customRed focus:border-transparent transition-all duration-300 hover:bg-customGrisClaro/80"
+
         />
-        <div *ngIf="registroForm.get('nombreUsuario')?.touched && registroForm.get('nombreUsuario')?.hasError('required')" class="text-red-500 text-sm">
+        <div *ngIf="registroForm.get('nombreUsuario')?.touched && registroForm.get('nombreUsuario')?.hasError('required')" class="text-red-500 text-sm pt-1 ">
           El nombre de usuario es obligatorio.
         </div>
-        <div *ngIf="registroForm.get('nombreUsuario')?.touched && registroForm.get('nombreUsuario')?.hasError('minlength')" class="text-red-500 text-sm">
+        <div *ngIf="registroForm.get('nombreUsuario')?.touched && registroForm.get('nombreUsuario')?.hasError('minlength')" class="text-red-500 text-sm pt-1">
           El nombre de usuario debe tener al menos 3 caracteres.
         </div>
-        <div *ngIf="registroForm.get('nombreUsuario')?.touched && registroForm.get('nombreUsuario')?.hasError('maxlength')" class="text-red-500 text-sm">
+        <div *ngIf="registroForm.get('nombreUsuario')?.touched && registroForm.get('nombreUsuario')?.hasError('maxlength')" class="text-red-500 text-sm pt-1">
           El nombre de usuario no puede tener más de 20 caracteres.
         </div>
-        <div *ngIf="registroForm.get('nombreUsuario')?.touched && registroForm.get('nombreUsuario')?.hasError('usernameTaken')" class="text-red-500 text-sm">
+        <div *ngIf="registroForm.get('nombreUsuario')?.touched && registroForm.get('nombreUsuario')?.hasError('usernameTaken')" class="text-red-500 text-sm pt-1">
           El nombre de usuario ya está en uso.
         </div>
+        <div *ngIf="registroForm.get('nombreUsuario')?.touched && registroForm.get('nombreUsuario')?.hasError('pattern')" class="text-red-500 text-sm pt-1">
+          El nombre de usuario contiene caracteres no permitidos.
+        </div>
+
 
 
 
@@ -34,18 +55,18 @@
         <input
           type="email"
           placeholder="Correo electrónico"
-          class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
+          class="w-full pl-8 pr-4 py-4 rounded-2xl bg-customGrisClaro backdrop-blur-sm border border-customGrisClaro/30  text-customNegro   placeholder:text-customGrisOscurso    focus:outline-none focus:ring-2 focus:ring-customRed focus:border-transparent transition-all duration-300 hover:bg-customGrisClaro/80"
           formControlName="email"
 
         />
-        <div *ngIf="registroForm.get('email')?.touched && registroForm.get('email')?.hasError('required')" class="text-red-500 text-sm">
+        <div *ngIf="registroForm.get('email')?.touched && registroForm.get('email')?.hasError('required')" class="text-red-500 text-sm pt-1">
           El correo electrónico es obligatorio.
         </div>
 
         <div *ngIf="registroForm.get('email')?.touched && (registroForm.get('email')?.hasError('email') || registroForm.get('email')?.hasError('pattern'))" class="text-red-500 text-sm">
           El correo electrónico no es válido.
         </div>
-        <div *ngIf="registroForm.get('email')?.touched && registroForm.get('email')?.hasError('emailTaken')" class="text-red-500 text-sm">
+        <div *ngIf="registroForm.get('email')?.touched && registroForm.get('email')?.hasError('emailTaken')" class="text-red-500 text-sm pt-1">
           El correo electrónico ya está en uso.
         </div>
       </div>
@@ -55,16 +76,16 @@
         <input
           type="date"
           placeholder="Fecha de nacimiento"
-          class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
+          class="w-full pl-8 pr-4 py-4 rounded-2xl bg-customGrisClaro backdrop-blur-sm border border-customGrisClaro/30  text-customNegro   placeholder:text-customGrisOscurso    focus:outline-none focus:ring-2 focus:ring-customRed focus:border-transparent transition-all duration-300 hover:bg-customGrisClaro/80"
           formControlName="fechaNacimiento"
           max="9999-12-31"
 
 
         />
-        <div *ngIf="registroForm.get('fechaNacimiento')?.touched && registroForm.get('fechaNacimiento')?.hasError('required')" class="text-red-500 text-sm">
+        <div *ngIf="registroForm.get('fechaNacimiento')?.touched && registroForm.get('fechaNacimiento')?.hasError('required')" class="text-red-500 text-sm pt-1">
           La fecha de nacimiento es obligatoria.
         </div>
-        <div *ngIf="registroForm.get('fechaNacimiento')?.touched && registroForm.get('fechaNacimiento')?.hasError('minDate')" class="text-red-500 text-sm">
+        <div *ngIf="registroForm.get('fechaNacimiento')?.touched && registroForm.get('fechaNacimiento')?.hasError('minDate')" class="text-red-500 text-sm pt-1">
           Debes ser mayor de edad.
         </div>
 
@@ -75,14 +96,14 @@
         <input
           type="password"
           placeholder="Contraseña"
-          class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
+          class="w-full pl-8 pr-4 py-4 rounded-2xl bg-customGrisClaro backdrop-blur-sm border border-customGrisClaro/30  text-customNegro   placeholder:text-customGrisOscurso    focus:outline-none focus:ring-2 focus:ring-customRed focus:border-transparent transition-all duration-300 hover:bg-customGrisClaro/80"
           formControlName="contrasena"
 
         />
-        <div *ngIf="registroForm.get('contrasena')?.touched && registroForm.get('contrasena')?.hasError('required')" class="text-red-500 text-sm">
+        <div *ngIf="registroForm.get('contrasena')?.touched && registroForm.get('contrasena')?.hasError('required')" class="text-red-500 text-sm pt-1">
           La contraseña es obligatoria.
         </div>
-        <div *ngIf="registroForm.get('contrasena')?.touched && registroForm.get('contrasena')?.hasError('minlength')" class="text-red-500 text-sm">
+        <div *ngIf="registroForm.get('contrasena')?.touched && registroForm.get('contrasena')?.hasError('minlength')" class="text-red-500 text-sm pt-1">
           La contraseña debe tener al menos 6 caracteres, algún número, carácter especial y mayúscula.
         </div>
 
@@ -93,14 +114,14 @@
         <input
           type="password"
           placeholder="Repetir contraseña"
-          class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
+          class="w-full pl-8 pr-4 py-4 rounded-2xl bg-customGrisClaro backdrop-blur-sm border border-customGrisClaro/30  text-customNegro   placeholder:text-customGrisOscurso    focus:outline-none focus:ring-2 focus:ring-customRed focus:border-transparent transition-all duration-300 hover:bg-customGrisClaro/80"
           formControlName="repetirContrasena"
 
         />
-        <div *ngIf="registroForm.get('repetirContrasena')?.touched && registroForm.get('repetirContrasena')?.hasError('required')" class="text-red-500 text-sm">
+        <div *ngIf="registroForm.get('repetirContrasena')?.touched && registroForm.get('repetirContrasena')?.hasError('required')" class="text-red-500 text-sm pt-1">
           Debes repetir la contraseña.
         </div>
-        <div *ngIf="registroForm.get('repetirContrasena')?.touched && registroForm.get('repetirContrasena')?.hasError('mustMatch')" class="text-red-500 text-sm">
+        <div *ngIf="registroForm.get('repetirContrasena')?.touched && registroForm.get('repetirContrasena')?.hasError('mustMatch')" class="text-red-500 text-sm pt-1">
           Las contraseñas no coinciden.
         </div>
       </div>
@@ -108,7 +129,8 @@
       <!-- Selección de rol -->
       <div class="mb-4">
         <select
-          class="bg-gray-200 text-gray-800 rounded-full p-3 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
+
+          class="bg-customGrisClaro text-gray-800 rounded-2xl p-3 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300  focus:border-transparent  hover:bg-customGrisClaro/80"
           formControlName="rol"
 
         >
@@ -116,7 +138,7 @@
           <option value="ARTISTA">Artista</option>
           <option value="PROMOTOR">Promotor</option>
         </select>
-        <div *ngIf="registroForm.get('rol')?.touched && registroForm.get('rol')?.hasError('required')" class="text-red-500 text-sm">
+        <div *ngIf="registroForm.get('rol')?.touched && registroForm.get('rol')?.hasError('required')" class="text-red-500 text-sm pt-1">
           El rol es obligatorio.
         </div>
 
@@ -131,7 +153,7 @@
             formControlName="terminos"
 
           />
-          Acepto los términos y condiciones de uso
+          Acepto todos los términos y condiciones de uso.
         </label>
         <div *ngIf="(registroForm.get('terminos')?.hasError('requiredTrue') && (registroForm.get('terminos')?.touched || submitted))" class="text-red-500 text-sm">          Debes aceptar los términos y condiciones.
         </div>
@@ -140,7 +162,7 @@
       <!-- Botón de registro -->
       <button
         type="submit"
-        class="w-full bg-customGrisOscurso hover:bg-gray-500 text-white py-3 rounded-full text-lg font-semibold transition duration-300"
+        class="w-full relative overflow-hidden bg-gradient-to-r from-customBurbundy to-customRed hover:from-customRed hover:to-customBurbundy text-customBlanco font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-lg shadow-customBurbundy/50 hover:shadow-xl hover:shadow-customRed/60 transform hover:scale-[1.02] hover:-translate-y-1 group"
         [disabled]="loading"
 
       >
@@ -154,10 +176,22 @@
         </svg>
         <span class="ml-2 text-gray-600">Cargando...</span>
       </div>
-      <div class="text-center mt-4">
-        <a routerLink="/auth/login" class="text-gray-300 hover:text-white hover:underline text-sm">
-          ¿Ya tienes cuenta?
+      <div class="flex flex-col space-y-3 text-center pt-6">
+        <a routerLink="/auth/login"
+           class="text-customGrisMedio hover:text-customGrisClaro hover:underline text-sm transition-colors duration-300 transform hover:scale-105">
+
+          ¿Ya tienes cuenta en <strong>ShowSync</strong>?
         </a>
+
+        <!-- Ir a la pagina de inicio sin logueo -->
+       <a routerLink="/"
+          class="text-customGrisMedio hover:text-customGrisClaro hover:underline text-sm transition-colors duration-300 transform hover:scale-105 ml-4 flex items-center justify-end">
+         Ir a la página de inicio
+         <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+         </svg>
+       </a>
+
 
       </div>
 
