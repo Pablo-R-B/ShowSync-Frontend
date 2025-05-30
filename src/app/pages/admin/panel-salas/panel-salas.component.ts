@@ -30,6 +30,8 @@ export class PanelSalasComponent implements OnInit {
   isLoadingReservas: boolean = false;
   eliminando: boolean = false;
 
+// Configuración de la gráfica
+  mostrarGrafica: boolean = false;
 
 
   // Estado y mensajes
@@ -86,11 +88,13 @@ export class PanelSalasComponent implements OnInit {
 
     // Cargar cantidad de reservas por sala al inicializar
     this.obtenerCantidadReservas();
+
+    // REMOVER esta línea:
+    // this.cargarDatosGrafica();
   }
 
   ngOnInit(): void {
     this.cargarSalas();
-    this.cargarDatosGrafica();
 
   }
 
@@ -428,52 +432,72 @@ export class PanelSalasComponent implements OnInit {
   }
 
   private crearGrafica(): void {
-    const canvas = document.getElementById('miGrafica') as HTMLCanvasElement | null;
+    // Esperar a que el DOM se actualice si se acaba de mostrar
+    setTimeout(() => {
+      const canvas = document.getElementById('miGrafica') as HTMLCanvasElement | null;
 
-    if (!canvas) {
-      console.error('No se encontró el elemento canvas con id "miGrafica"');
-      return;
-    }
+      if (!canvas) {
+        console.error('No se encontró el elemento canvas con id "miGrafica"');
+        return;
+      }
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      console.error('No se pudo obtener el contexto 2D del canvas');
-      return;
-    }
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        console.error('No se pudo obtener el contexto 2D del canvas');
+        return;
+      }
 
-    if (this.chart) {
-      this.chart.destroy(); // Evitar duplicados
-    }
+      if (this.chart) {
+        this.chart.destroy(); // Evitar duplicados
+      }
 
-    console.log('Creando gráfica con datos:', this.chartData);
+      console.log('Creando gráfica con datos:', this.chartData);
 
-    this.chart = new Chart(ctx, {
-      type: 'bar',
-      data: this.chartData,
-      options: {
-        responsive: true,
-        scales: {
-          x: {
-            stacked: false
+      this.chart = new Chart(ctx, {
+        type: 'bar',
+        data: this.chartData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false, // Añadir esta opción
+          scales: {
+            x: {
+              stacked: false
+            },
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1
+              }
+            }
           },
-          y: {
-            beginAtZero: true,
-            ticks: {
-              stepSize: 1
+          plugins: {
+            legend: {
+              position: 'top'
+            },
+            title: {
+              display: true,
+              text: 'Reservas por sala y estado'
             }
           }
-        },
-        plugins: {
-          legend: {
-            position: 'top'
-          },
-          title: {
-            display: true,
-            text: 'Reservas por sala y estado'
-          }
         }
+      });
+    }, 100);
+  }
+
+
+  toggleGrafica(): void {
+    this.mostrarGrafica = !this.mostrarGrafica;
+
+    if (this.mostrarGrafica) {
+      // Siempre recargar datos al mostrar (datos actualizados)
+      this.cargarDatosGrafica();
+    } else {
+      // Si se oculta la gráfica, destruir el chart
+      if (this.chart) {
+        this.chart.destroy();
+        this.chart = undefined;
       }
-    });
+    }
   }
 
 
