@@ -48,6 +48,14 @@ export class LoginComponent {
 
         localStorage.setItem('rol', decoded.rol);
 
+        console.log('Perfil completo:', decoded.perfilCompleto);
+
+        if (!decoded.perfilCompleto) {
+          this.router.navigate(['/completar-perfil']);
+          return;
+        }
+
+
 
         switch (decoded.rol) {
           case 'ADMINISTRADOR':
