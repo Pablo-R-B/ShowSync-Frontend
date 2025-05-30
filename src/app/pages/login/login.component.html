@@ -1,51 +1,122 @@
-<div class="min-h-screen bg-cover bg-center flex items-center justify-center"
-     style="background-image: url('assets/images/fondo_2.png')">
-  <div class="bg-black bg-opacity-80 text-white pt-1 pb-10 px-10 rounded-[2rem] w-full max-w-md shadow-2xl"    >
+<div class="min-h-screen bg-gradient-to-br from-customNegro via-customGrisOscurso to-customBurbundy relative overflow-hidden flex items-center justify-center">
+  <!-- Animated background elements -->
+  <div class="absolute inset-0 bg-cover bg-center opacity-80 blur-sm" style="background-image: url('assets/images/fondo_2.png')"></div>
+  <div class="absolute inset-0 bg-gradient-to-br from-black via-transparent to-black"></div>
 
-  <div class="flex justify-center mb-6">
-    <img src="assets/images/logo_1.png" alt="Logo" class="w-80 h-40 md:w-96 md:h-48 lg:w-[28rem] lg:h-56">
+  <!-- Floating musical notes animation -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-1/3 right-1/4 w-50 h-50 text-customRed opacity-70 animate-bounce">♪</div>
+    <div class="absolute top-1/4 left-1/4 w-20 h-20 text-customGrisMedio opacity-50 animate-pulse">♫</div>
+    <div class="absolute bottom-1/3 right-1/3 w-12 h-12 text-customGrisClaro opacity-40 animate-pulse delay-500">♪</div>
+    <div class="absolute bottom-1/4 left-1/3 w-12 h-12 text-customNegro opacity-60 animate-bounce delay-1000">♫</div>
+    <div class="absolute top-10 left-20 w-16 h-16 text-customRed opacity-50 animate-pulse">♪</div>
+    <div class="absolute top-1/2 right-10 w-24 h-24 text-customGrisClaro opacity-60 animate-bounce">♫</div>
+    <div class="absolute bottom-20 left-1/2 w-20 h-20 text-customGrisMedio opacity-40 animate-pulse delay-300">♪</div>
+    <div class="absolute top-5 right-1/3 w-12 h-12 text-customNegro opacity-70 animate-bounce delay-700">♫</div>
+    <div class="absolute bottom-1/4 right-1/4 w-18 h-18 text-customRed opacity-50 animate-pulse delay-500">♪</div>
+    <div class="absolute top-1/3 left-1/5 w-14 h-14 text-customGrisClaro opacity-40 animate-bounce delay-200">♫</div>
+    <div class="absolute bottom-10 left-10 w-22 h-22 text-customGrisMedio opacity-60 animate-pulse delay-800">♪</div>
+    <div class="absolute top-1/4 right-1/6 w-16 h-16 text-customNegro opacity-50 animate-bounce delay-400">♫</div>
   </div>
-    <h2 class="text-5xl font-medula  text-center mb-8 tracking-wide uppercase">Iniciar sesión</h2>
 
-    <form (ngSubmit)="onLogin()" class="space-y-5">
-      <input
-        type="email"
-        [(ngModel)]="email"
-        name="email"
-        placeholder="Correo electrónico"
-        required
-        class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-300"
-      />
+  <!-- Tarjeta -->
+  <div class="relative z-10 backdrop-blur-xl bg-customNegro/80 border border-customRed/40 text-customBlanco pt-8 pb-12 px-12 rounded-3xl w-full max-w-lg shadow-2xl shadow-customBurbundy/60 transform hover:scale-[1.02] transition-all duration-500">
 
-      <input
-        type="password"
-        [(ngModel)]="contrasena"
-        name="contrasena"
-        placeholder="Contraseña"
-        required
-        class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-300"
-      />
+    <!-- Efectos -->
+    <div class="absolute -inset-1 bg-gradient-to-r-l from-customNegro via-customRed to-customBurbundy rounded-3xl blur-sm opacity-40 group-hover:opacity-60 transition duration-1000"></div>
 
-      <div class="text-center mt-4">
-        <a routerLink="/auth/recuperar" class="text-gray-300 hover:text-white hover:underline text-sm">
-          ¿Has olvidado tu contraseña?
-        </a>
-        <a routerLink="/auth/registro" class="text-gray-300 hover:text-white hover:underline text-sm">
-          ¿Quieres registrarse?
-        </a>
-
+    <div class="relative">
+      <div class="flex justify-center mb-8 transform hover:scale-105 transition-transform duration-300">
+        <div class="relative">
+          <img src="assets/images/logo_1.png" alt="Logo" class="w-80 h-40 md:w-96 md:h-48 lg:w-[28rem] lg:h-56 drop-shadow-2xl">
+          <div ></div>
+        </div>
       </div>
 
+      <div class="text-center mb-10">
+        <h2 class="text-4xl font-medula bg-gradient-to-r from-customRed via-customGrisClaro to-customRed bg-clip-text text-transparent tracking-wide uppercase drop-shadow-lg">
+          Iniciar Sesión
+        </h2>
+        <div class="w-24 h-1 bg-gradient-to-r from-customBurbundy to-customRed mx-auto mt-4 rounded-full"></div>
+      </div>
 
+      <!-- Enhanced form -->
+      <form (ngSubmit)="onLogin()" class="space-y-6">
+        <!-- Email input with icon -->
+        <div class="relative group">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <svg class="w-5 h-5 text-customGrisClaro group-focus-within:text-customRed transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
+            </svg>
+          </div>
+          <input
+            type="email"
+            [(ngModel)]="email"
+            name="email"
+            placeholder="Correo electrónico"
+            required
+            class="w-full pl-12 pr-4 py-4 rounded-2xl bg-customGrisOscurso/60 backdrop-blur-sm border border-customGrisClaro/30 text-customBlanco placeholder:text-customGrisMedio focus:outline-none focus:ring-2 focus:ring-customRed focus:border-transparent transition-all duration-300 hover:bg-customGrisOscurso/80"
+          />
+        </div>
 
-      <button
-        type="submit"
-        class="w-full bg-gray-600 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded-full transition duration-300"
-      >
-        Entrar
-      </button>
+        <!-- Password input with icon -->
+        <div class="relative group">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <svg class="w-5 h-5 text-customGrisClaro group-focus-within:text-customRed transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+            </svg>
+          </div>
+          <input
+            type="password"
+            [(ngModel)]="contrasena"
+            name="contrasena"
+            placeholder="Contraseña"
+            required
+            class="w-full pl-12 pr-4 py-4 rounded-2xl bg-customGrisOscurso/60 backdrop-blur-sm border border-customGrisClaro/30 text-customBlanco placeholder:text-customGrisMedio focus:outline-none focus:ring-2 focus:ring-customRed focus:border-transparent transition-all duration-300 hover:bg-customGrisOscurso/80"
+          />
+        </div>
 
-      <p *ngIf="error" class="text-red-400 text-center mt-4">{{ error }}</p>
-    </form>
+        <!-- Links section with better spacing -->
+        <div class="flex flex-col space-y-3 text-center pt-2">
+          <a routerLink="/auth/recuperar"
+             class="text-customGrisMedio hover:text-customRed hover:underline text-sm transition-colors duration-300 transform hover:scale-105">
+            ¿Has olvidado tu contraseña?
+          </a>
+          <a routerLink="/auth/registro"
+             class="text-customGrisMedio hover:text-customGrisClaro hover:underline text-sm transition-colors duration-300 transform hover:scale-105">
+            ¿No tienes cuenta? Regístrate aquí
+          </a>
+        </div>
+
+        <!-- Enhanced submit button -->
+        <button
+          type="submit"
+          class="w-full relative overflow-hidden bg-gradient-to-r from-customBurbundy to-customRed hover:from-customRed hover:to-customBurbundy text-customBlanco font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-lg shadow-customBurbundy/50 hover:shadow-xl hover:shadow-customRed/60 transform hover:scale-[1.02] hover:-translate-y-1 group"
+        >
+          <span class="relative z-10 flex items-center justify-center space-x-2">
+            <span>Entrar</span>
+            <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            </svg>
+          </span>
+          <div class="absolute inset-0 bg-gradient-to-r from-customRed to-customBurbundy opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        </button>
+
+        <!-- Enhanced error message -->
+        <div *ngIf="error" class="text-center mt-6">
+          <div class="inline-flex items-center space-x-2 bg-customBurbundy/30 border border-customRed/50 rounded-lg px-4 py-3 text-customGrisClaro backdrop-blur-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+            <span>{{ error }}</span>
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
+
+  <!-- Background decoration circles -->
+  <div class="absolute top-10 left-10 w-32 h-32 bg-customBurbundy/20 rounded-full blur-3xl animate-pulse"></div>
+  <div class="absolute bottom-10 right-10 w-48 h-48 bg-customRed/15 rounded-full blur-3xl animate-pulse delay-1000"></div>
+  <div class="absolute top-1/2 left-5 w-24 h-24 bg-customGrisOscurso/30 rounded-full blur-2xl animate-bounce"></div>
 </div>

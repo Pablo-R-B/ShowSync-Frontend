@@ -34,16 +34,21 @@ export class AppComponent {
     '/auth/login',
     '/auth/registro',
     '/auth/restablecer',
-    '/auth/recuperar'
+    '/auth/recuperar',
+    '/auth/restablecer'
+
   ];
 
   constructor(private router: Router) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
-      const ocultar = this.hiddenRoutes.includes(event.urlAfterRedirects);
+      const ocultar = this.hiddenRoutes.some(route => event.urlAfterRedirects.startsWith(route));
       this.mostrarHeader = !ocultar;
       this.showFooter = !ocultar;
     });
   }
+
+
+
 }

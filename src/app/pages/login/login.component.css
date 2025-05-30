@@ -1,0 +1,255 @@
+/* Animaciones personalizadas para el componente de login */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(191, 13, 34, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(191, 13, 34, 0.6), 0 0 40px rgba(119, 3, 22, 0.4);
+  }
+}
+
+@keyframes floatMusic {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+  66% {
+    transform: translateY(5px) rotate(-3deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Estilos base del componente */
+.login-container {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+/* Efectos para los iconos musicales */
+.musical-note {
+  animation: floatMusic 3s ease-in-out infinite;
+  font-size: 1.5rem;
+  color: rgba(191, 13, 34, 0.7);
+}
+
+.musical-note:nth-child(2) {
+  animation-delay: 1s;
+  color: rgba(160, 164, 173, 0.6);
+}
+
+.musical-note:nth-child(3) {
+  animation-delay: 2s;
+  color: rgba(191, 13, 34, 0.6);
+}
+
+.musical-note:nth-child(4) {
+  animation-delay: 1.5s;
+  color: rgba(204, 203, 203, 0.5);
+}
+
+/* Efecto de brillo en el logo */
+.logo-container {
+  position: relative;
+  display: inline-block;
+}
+
+.logo-container::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: linear-gradient(45deg, transparent, rgba(191, 13, 34, 0.2), transparent);
+  border-radius: 50%;
+  animation: shimmer 2s linear infinite;
+  z-index: -1;
+}
+
+/* Efectos de hover mejorados para inputs */
+.input-container {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.input-container:hover {
+  transform: translateY(-2px);
+}
+
+.input-container input:focus {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* Efectos para el botón de submit */
+.submit-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.submit-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.submit-button:hover::before {
+  left: 100%;
+}
+
+.submit-button:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(119, 3, 22, 0.5);
+}
+
+/* Animación de loading para el botón */
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Efectos para mensajes de error */
+.error-message {
+  animation: fadeInUp 0.5s ease-out;
+  backdrop-filter: blur(10px);
+}
+
+/* Responsividad mejorada */
+@media (max-width: 640px) {
+  .login-card {
+    margin: 1rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .login-title {
+    font-size: 2.5rem;
+  }
+
+  .logo-image {
+    width: 16rem;
+    height: 8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-title {
+    font-size: 2rem;
+  }
+
+  .logo-image {
+    width: 12rem;
+    height: 6rem;
+  }
+
+  .input-field {
+    padding: 0.75rem 3rem;
+  }
+}
+
+/* Mejoras de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Tema oscuro personalizado */
+@media (prefers-color-scheme: dark) {
+  .login-container {
+    --bg-opacity: 0.7;
+  }
+}
+
+/* Efectos de partículas de fondo */
+.particle {
+  position: absolute;
+  background: rgba(191, 13, 34, 0.15);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: particle-float 6s linear infinite;
+}
+
+@keyframes particle-float {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Efecto de glassmorphism mejorado */
+.glass-effect {
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(8, 8, 12, 0.7);
+  border: 1px solid rgba(204, 203, 203, 0.1);
+}
+
+/* Animación de entrada escalonada para elementos del formulario */
+.form-element {
+  opacity: 0;
+  animation: slideInFromLeft 0.6s ease-out forwards;
+}
+
+.form-element:nth-child(1) { animation-delay: 0.1s; }
+.form-element:nth-child(2) { animation-delay: 0.2s; }
+.form-element:nth-child(3) { animation-delay: 0.3s; }
+.form-element:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
