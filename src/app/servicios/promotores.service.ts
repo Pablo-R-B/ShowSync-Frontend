@@ -77,4 +77,11 @@ export class PromotoresService {
     return this.http.get<Promotor>(`${this.apiUrl}/promotores/usuario/${idUsuario}`);
 
   }
+
+  obtenerPromotorasPaginadas(paginaActual: number, pageSize: number): Observable<any> {
+    const params = new HttpParams()
+      .set('page', paginaActual.toString())
+      .set('size', pageSize.toString());
+    return this.http.get<any>(`${this.apiUrl}/promotores/listar/promotores`, { params });
+  }
 }
