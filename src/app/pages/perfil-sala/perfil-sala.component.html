@@ -127,12 +127,29 @@
             accept="image/*"
             chooseLabel="Seleccionar imagen"
             (onSelect)="onFileSelected($event)"
+            [disabled]="imagenCargando"
             class="w-full"
           ></p-fileUpload>
 
+          <!-- Indicador de carga -->
+          <div *ngIf="imagenCargando" class="mt-2 text-center">
+            <i class="pi pi-spin pi-spinner text-customBurbundy"></i>
+            <span class="ml-2 text-customBurbundy">Cargando imagen...</span>
+          </div>
+
           <!-- Vista previa -->
-          <div *ngIf="nuevoEvento.imagenEvento" class="mt-4">
-            <p class="text-customBurbundy font-semibold mb-1">Vista previa:</p>
+          <div *ngIf="nuevoEvento.imagenEvento && !imagenCargando" class="mt-4">
+            <div class="flex justify-between items-center mb-2">
+              <p class="text-customBurbundy font-semibold">Vista previa:</p>
+              <button
+                type="button"
+                (click)="eliminarImagen()"
+                class="text-red-500 hover:text-red-700 text-sm flex items-center"
+              >
+                <i class="pi pi-times mr-1"></i>
+                Eliminar
+              </button>
+            </div>
             <img [src]="nuevoEvento.imagenEvento" alt="Vista previa" class="max-h-60 rounded shadow" />
           </div>
         </div>

@@ -7,7 +7,6 @@ import { EventoCreacion } from '../../interfaces/eventoCreacion';
 import { CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import pica from 'pica'; // Importar Pica
 
 import { NgIf, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -190,12 +189,14 @@ export class PerfilSalaComponent implements OnInit {
   }
 
   // Método mejorado para subir imagen con redimensionamiento
+  // Método simplificado para subir imagen sin usar pica
   onFileSelected(event: any): void {
-    const file: File = event.files?.[0] || event.target?.files?.[0];
+    const file: File = event.files?.[0];
 
     if (!file) return;
 
-    if (!file.type.match('image.*')) {
+    // Validar que sea una imagen
+    if (!file.type.startsWith('image/')) {
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
@@ -205,83 +206,43 @@ export class PerfilSalaComponent implements OnInit {
       return;
     }
 
+    // Validar tamaño del archivo
     const maxFileSizeBytes = this.maxFileSize * 1024 * 1024;
     if (file.size > maxFileSizeBytes) {
       this.messageService.add({
-        severity: 'warn',
-        summary: 'Redimensionando',
-        detail: `La imagen es muy grande, se intentará redimensionar automáticamente.`,
+        severity: 'error',
+        summary: 'Error',
+        detail: `La imagen es muy grande, máximo ${this.maxFileSize} MB`,
         life: 5000
       });
+      return;
     }
 
     this.imagenCargando = true;
+    this.imagenArchivo = file;
 
-    const img = new Image();
+    // Mostrar preview de la imagen
     const reader = new FileReader();
-
     reader.onload = () => {
-      img.src = reader.result as string;
+      this.nuevoEvento.imagenEvento = reader.result as string;
+      this.imagenCargando = false;
 
-      img.onload = async () => {
-        try {
-          const canvas = document.createElement('canvas');
-          const maxWidth = 1024;
-          const maxHeight = 1024;
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Éxito',
+        detail: 'Imagen cargada correctamente',
+        life: 3000
+      });
+    };
 
-          // Calcular dimensiones manteniendo proporción
-          let width = img.width;
-          let height = img.height;
-
-          if (width > maxWidth || height > maxHeight) {
-            const ratio = Math.min(maxWidth / width, maxHeight / height);
-            width = Math.round(width * ratio);
-            height = Math.round(height * ratio);
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-
-          const picaInstance = pica();
-          await picaInstance.resize(img, canvas);
-          const blob = await picaInstance.toBlob(canvas, file.type);
-          const previewReader = new FileReader();
-
-          previewReader.onloadend = () => {
-            this.nuevoEvento.imagenEvento = previewReader.result as string; // Base64 para preview
-            this.imagenArchivo = new File([blob], file.name, { type: file.type }); // Archivo optimizado
-            this.imagenCargando = false;
-
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Imagen redimensionada y cargada correctamente',
-              life: 3000
-            });
-          };
-
-          previewReader.readAsDataURL(blob);
-        } catch (error) {
-          console.error('Error al redimensionar la imagen:', error);
-          this.imagenCargando = false;
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'No se pudo redimensionar la imagen',
-            life: 5000
-          });
-        }
-      };
-
-      img.onerror = () => {
-        this.imagenCargando = false;
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'No se pudo cargar la imagen',
-          life: 5000
-        });
-      };
+    reader.onerror = () => {
+      this.imagenCargando = false;
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No se pudo cargar la imagen',
+        life: 5000
+      });
     };
 
     reader.readAsDataURL(file);
