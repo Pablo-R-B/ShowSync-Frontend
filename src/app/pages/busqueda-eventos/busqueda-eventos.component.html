@@ -74,7 +74,47 @@
       </button>
     </div>
 
-    <!-- EVENTOS -->
+    <div class="w-full lg:w-3/4 space-y-6">
+      <!-- Buscador por nombre/descripción -->
+      <input type="text"
+             [(ngModel)]="filtro.texto"
+             (input)="actualizarBusquedaTexto()"
+             placeholder="Buscar por nombre o descripción..."
+             class="w-full px-4 py-2 rounded-full bg-customGrisOscurso bg-opacity-50 text-customBlanco shadow-md" />
+
+      <div *ngIf="hayFiltrosActivos()" class="bg-black bg-opacity-40 p-3 rounded-lg">
+        <div class="flex flex-wrap gap-2">
+          <div *ngIf="filtro.texto" class="bg-gray-700 px-2 py-1 rounded-full text-sm flex items-center">
+            Texto: {{ filtro.texto }}
+            <button (click)="limpiarFiltro('filtro.texto')" class="ml-2 text-gray-400 hover:text-white">×</button>
+          </div>
+          <div *ngIf="generoSeleccionado" class="bg-gray-700 px-2 py-1 rounded-full text-sm flex items-center">
+            Género: {{ generoSeleccionado }}
+            <button (click)="limpiarFiltro('generoSeleccionado')" class="ml-2 text-gray-400 hover:text-white">×</button>
+          </div>
+          <div *ngIf="estadoSeleccionado" class="bg-gray-700 px-2 py-1 rounded-full text-sm flex items-center">
+            Estado: {{ estadoSeleccionado }}
+            <button (click)="limpiarFiltro('estadoSeleccionado')" class="ml-2 text-gray-400 hover:text-white">×</button>
+          </div>
+          <div *ngIf="fechaDesde" class="bg-gray-700 px-2 py-1 rounded-full text-sm flex items-center">
+            Desde: {{ fechaDesde }}
+            <button (click)="limpiarFiltro('fechaDesde')" class="ml-2 text-gray-400 hover:text-white">×</button>
+          </div>
+          <div *ngIf="fechaHasta" class="bg-gray-700 px-2 py-1 rounded-full text-sm flex items-center">
+            Hasta: {{ fechaHasta }}
+            <button (click)="limpiarFiltro('fechaHasta')" class="ml-2 text-gray-400 hover:text-white">×</button>
+          </div>
+          <button
+            *ngIf="hayFiltrosActivos()"
+            (click)="limpiarTodosFiltros()"
+            class="bg-red-600 hover:bg-red-700 px-2 py-1 rounded-full text-sm ml-auto">
+            Limpiar filtros
+          </button>
+        </div>
+      </div>
+
+
+      <!-- EVENTOS -->
     <div class="w-full md:w-3/4 flex flex-col space-y-6">
 
       <!-- Sin resultados -->
@@ -146,6 +186,8 @@
           (onPageChange)="onPageChange($event)">
         </p-paginator>
       </div>
+    </div>
+
     </div>
 
     <!-- MODAL DE ADVERTENCIA -->
