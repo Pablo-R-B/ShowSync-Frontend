@@ -13,7 +13,6 @@ import {PerfilPromotoresComponent} from './pages/perfil-promotores/perfil-promot
 import {PromotoresComponent} from './pages/promotores/promotores.component';
 import {BusquedaPromotoresComponent} from './pages/busqueda-promotores/busqueda-promotores.component';
 import {EditarEventosComponent} from './pages/editar-eventos/editar-eventos.component';
-import {RegistroPromotorComponent} from './pages/registro-promotor/registro-promotor.component';
 import {PerfilArtistaComponent} from './pages/perfil-artista/perfil-artista.component';
 import {CatalogoSalaComponent} from './pages/catalogo-sala/catalogo-sala.component';
 import {AdminPanelComponent} from './pages/admin/admin-panel/admin-panel.component';
@@ -35,7 +34,7 @@ export const routes: Routes = [
   { path: 'promotor/:id', component: PromotoresComponent },
   { path: 'busqueda-promotores', component: BusquedaPromotoresComponent },
   { path: 'perfil-promotores', component: PerfilPromotoresComponent },
-  { path: 'registro-promotor', component: RegistroPromotorComponent },
+
 
   // Rutas de eventos
   { path: 'eventos', component: EventosComponent },

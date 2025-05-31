@@ -41,6 +41,20 @@ export class EventosComponent implements OnInit {
     } else {
       console.error('ID del evento no encontrado');
     }
+
+    const usuarioId = localStorage.getItem('userId');
+
+    if (usuarioId) {
+      this.artistasService.getArtistaIdPorUsuario(Number(usuarioId)).subscribe(
+        (artistaId) => {
+          console.log('ID del artista:', artistaId);
+          this.artistaId = artistaId; // Guardarlo para usarlo más adelante
+        },
+        (error) => {
+          console.error('Error al obtener el ID del artista:', error);
+        }
+      );
+    }
   }
 
   cargarEvento(eventoId: string): void {
