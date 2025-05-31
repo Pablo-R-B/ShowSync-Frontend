@@ -1,52 +1,227 @@
-<div class="p-4 max-w-xl mx-auto">
-  <h2 class="text-2xl font-bold mb-4">{{ editando ? 'Editar Sala' : 'Crear Sala' }}</h2>
+<div class="p-4 bg-customNegro rounded-2xl shadow-md mx-4 lg:mx-16">
+  <h1 class="text-2xl font-bold mb-6 text-white">{{ editando ? 'Editar Sala' : 'Crear Sala' }}</h1>
 
-  <form (ngSubmit)="guardarSala()" #formSala="ngForm">
-    <div class="mb-4">
-      <label class="block mb-1">Nombre</label>
-      <input class="border rounded w-full p-2" [(ngModel)]="sala.nombre" name="nombre" required />
+  <!-- Toast Personalizado -->
+  <div
+    *ngIf="toastVisible"
+    class="fixed top-4 right-4 z-50 max-w-sm w-full transform transition-all duration-300 ease-in-out"
+    [class.translate-x-0]="toastVisible"
+    [class.translate-x-full]="!toastVisible"
+  >
+    <div
+      class="rounded-lg px-4 py-3 shadow-lg border-l-4 flex items-center space-x-3"
+      [ngClass]="{
+        'bg-green-800 border-green-500 text-green-100': toastColor === 'success',
+        'bg-red-800 border-red-500 text-red-100': toastColor === 'error'
+      }"
+    >
+      <!-- Icono -->
+      <div class="flex-shrink-0">
+        <svg
+          *ngIf="toastColor === 'success'"
+          class="w-5 h-5 text-green-400"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+        </svg>
+        <svg
+          *ngIf="toastColor === 'error'"
+          class="w-5 h-5 text-red-400"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+        </svg>
+      </div>
+
+      <!-- Mensaje -->
+      <div class="flex-1 text-sm font-medium">
+        {{ toastMensaje }}
+      </div>
+
+      <!-- Botón cerrar -->
+      <button
+        type="button"
+        class="flex-shrink-0 ml-auto"
+        (click)="toastVisible = false"
+      >
+        <svg class="w-4 h-4 opacity-70 hover:opacity-100" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <form (ngSubmit)="guardarSala()" #formSala="ngForm" class="space-y-6">
+    <!-- Sección 1: Información básica -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Columna izquierda -->
+      <div class="space-y-4">
+        <div>
+          <label class="block mb-2 text-gray-300 font-medium">Nombre *</label>
+          <input
+            class="border border-gray-600 rounded w-full p-3 bg-customNegro text-white focus:ring-2 focus:ring-customRed focus:border-transparent"
+            [(ngModel)]="sala.nombre"
+            name="nombre"
+            required
+            [disabled]="isLoading"
+          />
+        </div>
+
+        <div>
+          <label class="block mb-2 text-gray-300 font-medium">Descripción</label>
+          <textarea
+            class="border border-gray-600 rounded w-full p-3 bg-customNegro text-white h-32 focus:ring-2 focus:ring-customRed focus:border-transparent"
+            [(ngModel)]="sala.descripcion"
+            name="descripcion"
+            [disabled]="isLoading"
+          ></textarea>
+        </div>
+
+        <div>
+          <label class="block mb-2 text-gray-300 font-medium">Capacidad *</label>
+          <input
+            type="number"
+            min="1"
+            class="border border-gray-600 rounded w-1/4 p-3 bg-customNegro text-white focus:ring-2 focus:ring-customRed focus:border-transparent"
+            [(ngModel)]="sala.capacidad"
+            name="capacidad"
+            required
+            [disabled]="isLoading"
+          />
+        </div>
+      </div>
+
+      <!-- Columna derecha - Imagen -->
+      <div class="flex flex-col items-center space-y-4">
+        <div class="w-full">
+          <label class="block mb-2 text-gray-300 font-medium">Imagen de la sala</label>
+          <div class="border-2 border-dashed border-gray-600 rounded-lg p-4 flex flex-col items-center">
+            <img [src]="imagenPreview" alt="Vista previa" class="w-full max-w-xs h-48 object-cover rounded-lg mb-4" />
+            <p-fileUpload
+              name="imagen"
+              accept="image/*"
+              maxFileSize="5242880"
+              (onSelect)="subirImagen($event)"
+              [auto]="true"
+              chooseLabel="Seleccionar imagen"
+              mode="basic"
+            >
+            </p-fileUpload>
+            <small class="text-gray-400 mt-2">Formatos: JPG, PNG. Máx: {{ maxFileSize }}MB</small>
+            <div *ngIf="imagenCargando" class="mt-2 text-sm text-gray-400 flex items-center">
+              <svg
+                class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Cargando imagen...
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="mb-4">
-      <label class="block mb-1">Dirección</label>
-      <input class="border rounded w-full p-2" [(ngModel)]="sala.direccion" name="direccion" required />
+    <!-- Sección 2: Ubicación -->
+    <div class="bg-gray-800/50 rounded-lg p-6">
+      <h2 class="text-xl font-semibold mb-4 text-white">Ubicación</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block mb-2 text-gray-300 font-medium">Dirección *</label>
+          <input
+            class="border border-gray-600 rounded w-full p-3 bg-customNegro text-white focus:ring-2 focus:ring-customRed focus:border-transparent"
+            [(ngModel)]="sala.direccion"
+            name="direccion"
+            required
+            [disabled]="isLoading"
+          />
+        </div>
+
+        <div>
+          <label class="block mb-2 text-gray-300 font-medium">Ciudad *</label>
+          <input
+            class="border border-gray-600 rounded w-full p-3 bg-customNegro text-white focus:ring-2 focus:ring-customRed focus:border-transparent"
+            [(ngModel)]="sala.ciudad"
+            name="ciudad"
+            required
+            [disabled]="isLoading"
+          />
+        </div>
+
+        <div>
+          <label class="block mb-2 text-gray-300 font-medium">Provincia *</label>
+          <select
+            class="border border-gray-600 rounded w-full p-3 bg-customNegro text-white focus:ring-2 focus:ring-customRed focus:border-transparent"
+            [(ngModel)]="sala.provincia"
+            name="provincia"
+            required
+            [disabled]="isLoading"
+            (change)="onProvinciaChange()"
+          >
+            <option value="">Seleccione una provincia</option>
+            <option *ngFor="let provincia of provincias" [value]="provincia.nombre">
+              {{ provincia.nombre }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block mb-2 text-gray-300 font-medium">Código Postal *</label>
+          <input
+            class="border border-gray-600 rounded w-full p-3 bg-customNegro text-white focus:ring-2 focus:ring-customRed focus:border-transparent"
+            [(ngModel)]="sala.codigoPostal"
+            name="codigoPostal"
+            required
+            [disabled]="isLoading"
+            (input)="onCodigoPostalInput()"
+            maxlength="5"
+          />
+        </div>
+      </div>
     </div>
 
-    <div class="mb-4">
-      <label class="block mb-1">Capacidad</label>
-      <input type="number" class="border rounded w-full p-2" [(ngModel)]="sala.capacidad" name="capacidad" required />
+    <!-- Acciones -->
+    <div class="flex justify-end space-x-3 pt-4">
+      <button
+        type="button"
+        (click)="cancelar()"
+        class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition-colors duration-200"
+        [disabled]="isLoading"
+      >
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        class="bg-customRed hover:bg-customBurbundy text-white px-6 py-2 rounded-lg transition-colors duration-200 disabled:opacity-70"
+        [disabled]="formSala.invalid || isLoading"
+      >
+        <span *ngIf="!isLoading">{{ editando ? 'Actualizar Sala' : 'Crear Sala' }}</span>
+        <span *ngIf="isLoading" class="flex items-center">
+          <svg
+            class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          Procesando...
+        </span>
+      </button>
     </div>
-
-    <div class="mb-4">
-      <label class="block mb-1">Ciudad</label>
-      <input class="border rounded w-full p-2" [(ngModel)]="sala.ciudad" name="ciudad" required />
-    </div>
-
-    <div class="mb-4">
-      <label class="block mb-1">Provincia</label>
-      <input class="border rounded w-full p-2" [(ngModel)]="sala.provincia" name="provincia" required />
-    </div>
-
-    <div class="mb-4">
-      <label class="block mb-1">Código Postal</label>
-      <input class="border rounded w-full p-2" [(ngModel)]="sala.codigoPostal" name="codigoPostal" required />
-    </div>
-
-    <div class="mb-4">
-      <label class="block mb-1">Descripción</label>
-      <textarea class="border rounded w-full p-2" [(ngModel)]="sala.descripcion" name="descripcion"></textarea>
-    </div>
-
-    <div class="mb-4">
-      <label class="block mb-1">URL de imagen</label>
-      <input class="border rounded w-full p-2" [(ngModel)]="sala.imagen" name="imagen" />
-    </div>
-
-    <button type="submit" class="bg-customRed hover:bg-customBurbundy text-white px-4 py-2 rounded">
-      {{ editando ? 'Actualizar' : 'Crear' }}
-    </button>
-    <button type="button" class="bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded ml-2" (click)="cancelar()">
-      Cancelar
-    </button>
   </form>
 </div>

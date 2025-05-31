@@ -1,49 +1,99 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SalasService } from '../../servicios/salas.service';
-import { FullCalendarModule } from '@fullcalendar/angular';
-import { NgIf, NgFor } from '@angular/common';
+import { AuthService } from '../../servicios/auth.service';
+import { MessageService } from 'primeng/api';
+import { EventoCreacion } from '../../interfaces/eventoCreacion';
+import { CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { CalendarOptions } from '@fullcalendar/core';
-import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../servicios/auth.service';
-import { EventoCreacion } from '../../interfaces/eventoCreacion';
-import {EventosService} from '../../servicios/eventos.service';
+import pica from 'pica'; // Importar Pica
 
+import { NgIf, CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { ToastModule } from 'primeng/toast';
+import { DialogModule } from 'primeng/dialog';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { InputText } from 'primeng/inputtext';
+import { FileUpload } from 'primeng/fileupload';
+import { ButtonDirective } from 'primeng/button';
+import { InputTextarea } from 'primeng/inputtextarea';
+import {FullCalendarComponent} from '@fullcalendar/angular';
+import {SharedModule} from '../../shared/shared.module';
+import {EventosService} from '../../servicios/eventos.service';
 
 @Component({
   selector: 'app-perfil-sala',
   standalone: true,
-  imports: [FullCalendarModule, NgIf, NgFor, FormsModule],
+  imports: [
+    NgIf,
+    CommonModule,
+    FormsModule,
+    ToastModule,
+    DialogModule,
+    MultiSelectModule,
+    InputText,
+    FileUpload,
+    ButtonDirective,
+    InputTextarea,
+    SharedModule
+  ],
   templateUrl: './perfil-sala.component.html',
-  styleUrls: ['./perfil-sala.component.css']
+  styleUrls: ['./perfil-sala.component.css'],
+  providers: [MessageService]
 })
 export class PerfilSalaComponent implements OnInit {
+  @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
+  @ViewChild('fileUpload') fileUpload!: FileUpload;
+
   fechaSeleccionada: string | null = null;
   mostrarFormularioEvento = false;
   idPromotor: number = 0;
   sala: any;
   generosDisponibles: string[] = [];
   generosSeleccionados: string[] = [];
+  cargando = false;
+  imagenCargando = false; // Nuevo estado para carga de imagen
+  maxFileSize = 5; // MB
+  imagenArchivo?: File; // Archivo optimizado para envío
+
+  disponibilidadMap: Map<string, boolean> = new Map();
 
   nuevoEvento = {
     nombre: '',
-    descripcion: ''
+    descripcion: '',
+    imagenEvento: '' // Para preview
   };
 
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, interactionPlugin],
     initialView: 'dayGridMonth',
     events: [],
-    dateClick: this.onDateClick.bind(this) // correctamente dentro de calendarOptions
+    dateClick: this.onDateClick.bind(this),
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,dayGridWeek'
+    },
+    eventTimeFormat: {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    },
+    locale: 'es',
+    buttonText: {
+      today: 'Hoy',
+      month: 'Mes',
+      week: 'Semana'
+    }
   };
 
   constructor(
     private route: ActivatedRoute,
     private salaService: SalasService,
     private eventosService: EventosService,
-    private authService: AuthService
+    private authService: AuthService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit() {
@@ -51,16 +101,32 @@ export class PerfilSalaComponent implements OnInit {
 
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.salaService.obtenerPorId(Number(id)).subscribe(sala => {
-        this.sala = sala;
-        this.cargarDisponibilidad(Number(id));
-      });
-
-      this.eventosService.getGeneros().subscribe({
-        next: generos => this.generosDisponibles = generos,
-        error: err => console.error('Error al cargar géneros musicales', err)
-      });
+      this.cargarDatosSala(Number(id));
     }
+  }
+
+  cargarDatosSala(id: number) {
+    this.salaService.obtenerPorId(id).subscribe({
+      next: sala => {
+        this.sala = sala;
+        this.cargarFechasNoDisponibles(id);
+        this.cargarGenerosMusicales();
+      },
+      error: err => {
+        console.error('Error al cargar datos de la sala', err);
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar la sala' });
+      }
+    });
+  }
+
+  cargarGenerosMusicales() {
+    this.eventosService.getGenero().subscribe({
+      next: generos => this.generosDisponibles = generos,
+      error: err => {
+        console.error('Error al cargar géneros', err);
+        this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Error al cargar géneros' });
+      }
+    });
   }
 
   private getRandomGreenTone(): string {
@@ -68,84 +134,250 @@ export class PerfilSalaComponent implements OnInit {
     return greenTones[Math.floor(Math.random() * greenTones.length)];
   }
 
-  cargarDisponibilidad(salaId: number) {
-    const hoy = new Date();
-    const fin = new Date();
-    fin.setDate(hoy.getDate() + 30);
-    const inicioStr = hoy.toISOString().split('T')[0];
-    const fechaInicio = new Date().toISOString().split('T')[0]; // Formato: 'YYYY-MM-DD'
+  cargarFechasNoDisponibles(salaId: number) {
+    this.salaService.obtenerFechasNoDisponibles(salaId).subscribe({
+      next: (fechas) => {
+        this.disponibilidadMap.clear();
+        const calendarApi = this.calendarComponent.getApi();
+        calendarApi.removeAllEvents();
 
-    const finStr = fin.toISOString().split('T')[0];
+        fechas.forEach((f: any) => {
+          this.disponibilidadMap.set(f.fecha, f.disponibilidad);
 
-    this.salaService.consultarDisponibilidad(salaId, fechaInicio, finStr).subscribe(disponibilidad => {
-      const eventos = disponibilidad.map((d: any) => ({
-        title: d.disponibilidad ? 'Disponible' : 'No disponible',
-        date: d.fecha,
-        color: d.disponibilidad ? this.getRandomGreenTone() : 'red',
-        editable: false
-      }));
-
-      this.calendarOptions = {
-        ...this.calendarOptions,
-        events: eventos
-      };
+          let color = f.disponibilidad ? this.getRandomGreenTone() : '#BF0D22';
+          if (!f.disponibilidad) {
+            if (f.estadoEvento === 'confirmado') color = '#1B998B';
+            else if (f.estadoEvento === 'en_revision') color = '#BF0D22';
+            else if (f.estadoEvento === 'publicado') color = '#FF6B6B';
+            else color = '#BF0D22';
+          }
+          calendarApi.addEvent({
+            title: f.disponibilidad ? 'Disponible' : 'Evento reservado',
+            date: f.fecha,
+            color,
+            editable: false,
+            display: 'auto',
+            className: 'evento-fondo'
+          });
+        });
+      },
+      error: (err) => {
+        console.error('Error al cargar fechas no disponibles', err);
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar fechas' });
+      }
     });
   }
 
   onDateClick(arg: any) {
     const fecha = arg.dateStr;
-    const eventoExistente = (this.calendarOptions.events as any[]).find(e => e.date === fecha && e.color === 'red');
+    const fechaSeleccionada = new Date(fecha);
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
 
-    if (!eventoExistente) {
-      this.fechaSeleccionada = fecha;
-      this.mostrarFormularioEvento = true;
-    } else {
-      alert('Este día ya está ocupado o restringido.');
+    if (fechaSeleccionada < hoy) {
+      this.messageService.add({ severity: 'warn', summary: 'Fecha no válida', detail: 'No es posible crear un evento en el pasado.' });
+      return;
     }
+
+    const estaDisponible = this.disponibilidadMap.get(fecha);
+    if (estaDisponible === false) {
+      this.messageService.add({ severity: 'warn', summary: 'Fecha no disponible', detail: 'No disponible' });
+      return;
+    }
+
+    this.fechaSeleccionada = fecha;
+    this.mostrarFormularioEvento = true;
+  }
+
+  // Método mejorado para subir imagen con redimensionamiento
+  onFileSelected(event: any): void {
+    const file: File = event.files?.[0] || event.target?.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.match('image.*')) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Solo se permiten archivos de imagen',
+        life: 5000
+      });
+      return;
+    }
+
+    const maxFileSizeBytes = this.maxFileSize * 1024 * 1024;
+    if (file.size > maxFileSizeBytes) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Redimensionando',
+        detail: `La imagen es muy grande, se intentará redimensionar automáticamente.`,
+        life: 5000
+      });
+    }
+
+    this.imagenCargando = true;
+
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      img.src = reader.result as string;
+
+      img.onload = async () => {
+        try {
+          const canvas = document.createElement('canvas');
+          const maxWidth = 1024;
+          const maxHeight = 1024;
+
+          // Calcular dimensiones manteniendo proporción
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxWidth || height > maxHeight) {
+            const ratio = Math.min(maxWidth / width, maxHeight / height);
+            width = Math.round(width * ratio);
+            height = Math.round(height * ratio);
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const picaInstance = pica();
+          await picaInstance.resize(img, canvas);
+          const blob = await picaInstance.toBlob(canvas, file.type);
+          const previewReader = new FileReader();
+
+          previewReader.onloadend = () => {
+            this.nuevoEvento.imagenEvento = previewReader.result as string; // Base64 para preview
+            this.imagenArchivo = new File([blob], file.name, { type: file.type }); // Archivo optimizado
+            this.imagenCargando = false;
+
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Imagen redimensionada y cargada correctamente',
+              life: 3000
+            });
+          };
+
+          previewReader.readAsDataURL(blob);
+        } catch (error) {
+          console.error('Error al redimensionar la imagen:', error);
+          this.imagenCargando = false;
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'No se pudo redimensionar la imagen',
+            life: 5000
+          });
+        }
+      };
+
+      img.onerror = () => {
+        this.imagenCargando = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo cargar la imagen',
+          life: 5000
+        });
+      };
+    };
+
+    reader.readAsDataURL(file);
   }
 
   enviarEvento() {
     if (!this.fechaSeleccionada || !this.sala || this.idPromotor === 0) {
-      alert('Falta información necesaria para crear el evento');
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Faltan datos' });
       return;
     }
 
-    const eventoRequest: EventoCreacion = {
+    if (!this.nuevoEvento.nombre || this.generosSeleccionados.length === 0) {
+      this.messageService.add({ severity: 'warn', summary: 'Campos requeridos', detail: 'Nombre y géneros requeridos' });
+      return;
+    }
+
+    this.cargando = true;
+
+    // Construir el DTO con los datos que espera tu backend
+    const eventoDTO = {
       nombreEvento: this.nuevoEvento.nombre,
       descripcion: this.nuevoEvento.descripcion,
       fechaEvento: this.fechaSeleccionada,
       idSala: this.sala.id,
-      generosMusicales: this.generosSeleccionados,
-      imagenEvento: ''
+      generosMusicales: this.generosSeleccionados
     };
 
-    this.eventosService.crearEventoEnRevision(eventoRequest).subscribe(
-      () => {
-        const nuevoEvento = {
+    const formData = new FormData();
+
+    // Aquí conviertes el DTO a Blob JSON y lo agregas con la clave "dto"
+    formData.append('dto', new Blob([JSON.stringify(eventoDTO)], { type: 'application/json' }));
+
+    // Agregas la imagen con la clave que espera el backend "imagenArchivo"
+    if (this.imagenArchivo) {
+      formData.append('imagenArchivo', this.imagenArchivo);
+    }
+
+    this.eventosService.crearEventoEnRevision(formData).subscribe({
+      next: () => {
+        const nuevoEvento: EventInput = {
           title: `${this.nuevoEvento.nombre} (En revisión)`,
-          date: this.fechaSeleccionada,
+          date: this.fechaSeleccionada!,
           color: 'orange',
+          textColor: '#08080C'
         };
 
-        this.calendarOptions = {
-          ...this.calendarOptions,
-          events: [...(this.calendarOptions.events as any[]), nuevoEvento]
-        };
+        this.calendarComponent.getApi().addEvent(nuevoEvento);
 
-        alert('Evento enviado para revisión correctamente');
+        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Evento enviado correctamente' });
         this.cancelarEvento();
-        },
-      (error) => {
+      },
+      error: (error) => {
         console.error('Error al crear evento:', error);
-        alert(error.error?.message || 'Error al crear el evento');
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: error.error?.message || 'Error al crear evento' });
+      },
+      complete: () => {
+        this.cargando = false;
       }
-    );
+    });
   }
+
 
   cancelarEvento() {
     this.mostrarFormularioEvento = false;
     this.fechaSeleccionada = null;
-    this.nuevoEvento = { nombre: '', descripcion: '' };
+    this.nuevoEvento = { nombre: '', descripcion: '', imagenEvento: '' };
     this.generosSeleccionados = [];
+    this.imagenArchivo = undefined; // Limpiar archivo optimizado
+
+    // Limpiar el componente FileUpload
+    if (this.fileUpload) {
+      this.fileUpload.clear();
+      this.fileUpload.files = [];
+    }
   }
+
+  mostrarModal = false;
+
+  abrirImagen() {
+    this.mostrarModal = true;
+  }
+
+  cerrarModal() {
+    this.mostrarModal = false;
+  }
+
+  eliminarImagen(): void {
+    this.nuevoEvento.imagenEvento = '';
+    this.imagenArchivo = undefined;
+
+    // Limpiar el FileUpload
+    if (this.fileUpload) {
+      this.fileUpload.clear();
+      this.fileUpload.files = [];
+    }
+  }
+
+
 }

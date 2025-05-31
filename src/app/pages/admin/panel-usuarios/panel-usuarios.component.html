@@ -1,0 +1,141 @@
+<div class="p-4 bg-customNegro rounded-2xl shadow-md mx-4 lg:mx-16">
+  <h1 class="text-2xl font-bold mb-4 text-white">Gestión de Usuarios</h1>
+
+  <div class="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div class="w-full md:w-1/3">
+      <select
+        id="filtro"
+        [(ngModel)]="filtroRol"
+        (change)="onFiltroRolChange()"
+        class="border border-gray-600 rounded p-2 w-full bg-customNegro text-white appearance-none pr-8"
+      >
+
+      <option value="TODOS">Todos los usuarios</option>
+        <option value="ADMINISTRADOR">Administrador</option>
+        <option value="PROMOTOR">Promotor</option>
+        <option value="ARTISTA">Artista</option>
+      </select>
+    </div>
+
+    <div class="w-full md:w-1/3">
+      <input
+        type="text"
+        placeholder="Buscar usuario..."
+        [(ngModel)]="filtro"
+        (ngModelChange)="onFiltroTextoChange()"
+        class="border border-gray-600 rounded p-2 w-full bg-customNegro text-white"
+      />
+    </div>
+  </div>
+
+  <div *ngIf="cargando" class="flex justify-center items-center py-12">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
+  </div>
+
+  <div *ngIf="error" class="bg-red-900/20 border-l-4 border-red-500 p-4 mb-6">
+    <div class="flex items-center">
+      <svg class="h-5 w-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+      </svg>
+      <span class="text-red-300">{{ error }}</span>
+    </div>
+  </div>
+
+  <table class="table-auto w-full border border-gray-600 text-center text-white" *ngIf="!cargando && !error">
+    <thead class="bg-gray-800">
+    <tr>
+      <th class="border border-gray-600 p-2 text-center">ID</th>
+      <th class="border border-gray-600 p-2 text-center">Nombre</th>
+      <th class="border border-gray-600 p-2 text-center">Email</th>
+      <th class="border border-gray-600 p-2 text-center">Rol</th>
+      <th class="border border-gray-600 p-2 text-center">Verificado</th>
+      <th class="border border-gray-600 p-2 text-center">Fecha Registro</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let usuario of usuariosFiltrados" class="hover:bg-gray-800/50">
+      <td class="border border-gray-600 p-2">{{ usuario.id }}</td>
+      <td class="border border-gray-600 p-2">{{ usuario.nombreUsuario }}</td>
+      <td class="border border-gray-600 p-2">{{ usuario.email }}</td>
+      <td class="border border-gray-600 p-2">{{ usuario.rol }}</td>
+      <td class="border border-gray-600 p-2">{{ usuario.verificado ? 'Sí' : 'No' }}</td>
+      <td class="border border-gray-600 p-2">{{ usuario.fechaRegistro | date:'dd/MM/yyyy' }}</td>
+
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Información de paginación -->
+  <div *ngIf="!isLoading && usuariosFiltrados.length > 0" class="flex justify-between items-center mt-4 text-white text-sm">
+  <span>
+    Página {{ paginaActual + 1 }} de {{ totalPaginas }}
+    ({{ totalUsuarios }} usuarios en total)
+  </span>
+    <span>
+    Mostrando {{ usuariosFiltrados.length }} usuarios
+  </span>
+  </div>
+
+  <!-- Paginación -->
+  <div class="flex justify-center mt-6" *ngIf="totalPaginas > 1 && !isLoading">
+    <nav class="flex items-center space-x-1" aria-label="Paginación">
+      <!-- Botón Anterior -->
+      <button
+        (click)="paginaAnterior()"
+        [disabled]="esPrimeraPagina"
+        [class.opacity-50]="esPrimeraPagina"
+        [class.cursor-not-allowed]="esPrimeraPagina"
+        class="px-3 py-2 rounded-l bg-gray-800 hover:bg-gray-700 text-white flex items-center transition-colors"
+        title="Página anterior"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </svg>
+      </button>
+
+      <!-- Botones de páginas -->
+      <button
+        *ngFor="let pagina of obtenerRangoPaginas()"
+        (click)="cambiarPagina(pagina)"
+        [class.bg-customRed]="pagina === paginaActual"
+        [class.text-white]="pagina === paginaActual"
+        [class.bg-gray-800]="pagina !== paginaActual"
+        [class.text-gray-300]="pagina !== paginaActual"
+        [class.hover:bg-customBurbundy]="pagina === paginaActual"
+        [class.hover:bg-gray-700]="pagina !== paginaActual"
+        class="px-3 py-2 transition-colors duration-200 font-medium"
+      >
+        {{ pagina + 1 }}
+      </button>
+
+      <!-- Botón Siguiente -->
+      <button
+        (click)="paginaSiguiente()"
+        [disabled]="esUltimaPagina"
+        [class.opacity-50]="esUltimaPagina"
+        [class.cursor-not-allowed]="esUltimaPagina"
+        class="px-3 py-2 rounded-r bg-gray-800 hover:bg-gray-700 text-white flex items-center transition-colors"
+        title="Página siguiente"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+        </svg>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Mensaje cuando no hay resultados -->
+  <div *ngIf="!isLoading && usuariosFiltrados.length === 0" class="text-center py-12 text-gray-400">
+    <div class="flex flex-col items-center">
+      <svg class="h-16 w-16 text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+      </svg>
+      <h3 class="text-lg font-medium text-gray-300 mb-2">No se encontraron usuarios</h3>
+      <p class="text-gray-500">
+        Intenta ajustar los filtros aplicados
+      </p>
+    </div>
+  </div>
+
+
+</div>

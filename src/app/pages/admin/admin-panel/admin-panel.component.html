@@ -1,0 +1,14 @@
+<div class="admin-container flex flex-col min-h-screen">
+  <h1 class="admin-title">Panel de Administración</h1>
+
+  <div class="admin-tabs">
+    <button (click)="navigateTo('salas')">Salas</button>
+    <button (click)="navigateTo('usuarios')">Usuarios</button>
+    <button (click)="navigateTo('eventos')">Eventos</button>
+    <button (click)="navigateTo('generos')">Géneros</button>
+  </div>
+
+  <div class="admin-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

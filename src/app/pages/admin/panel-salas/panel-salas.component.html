@@ -1,43 +1,318 @@
-<div class="p-4">
-  <h1 class="text-2xl font-bold mb-4">Gestión de Salas</h1>
+<div class="p-4 bg-customNegro rounded-2xl shadow-md mx-4 lg:mx-16 mt-4">
 
-  <div class="mb-4 flex justify-between items-center">
-    <input
-      type="text"
-      placeholder="Buscar sala..."
-      [(ngModel)]="filtro"
-      (input)="filtrarSalas()"
-      class="border rounded p-2 w-1/3"
-    />
+  <h1 class="text-2xl font-bold mb-4 text-white">Gestión de Salas</h1>
+
+  <!-- Botón para mostrar/ocultar gráfica -->
+  <div class="text-center mb-4">
     <button
-      class="bg-customRed text-white px-4 py-2 rounded hover:bg-customBurbundy"
-      (click)="crearSala()"
+      (click)="toggleGrafica()"
+      class="bg-customRed text-white px-4 py-2 rounded hover:bg-customBurbundy transition-colors whitespace-nowrap"
     >
-      + Nueva Sala
+      <svg class="inline-block w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path *ngIf="!mostrarGrafica" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+        <path *ngIf="mostrarGrafica" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L8.464 8.464M12 6.5c1.38 0 2.632.56 3.536 1.464M21 12c-1.274 4.057-5.064 7-9.542 7-.847 0-1.669-.105-2.454-.303m-.546-1.175A10.053 10.053 0 0012 19z"></path>
+      </svg>
+      {{ mostrarGrafica ? 'Ocultar Gráfica' : 'Mostrar Gráfica de Reservas' }}
     </button>
   </div>
 
-  <table class="table-auto w-full border">
-    <thead class="bg-customGrisOscurso">
-    <tr>
-      <th class="border p-2">Nombre</th>
-      <th class="border p-2">Dirección</th>
-      <th class="border p-2">Capacidad</th>
-      <th class="border p-2">Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let sala of salasFiltradas" class="hover:bg-gray-500">
-      <td class="border p-2">{{ sala.nombre }}</td>
-      <td class="border p-2">{{ sala.direccion }}</td>
-      <td class="border p-2">{{ sala.capacidad }}</td>
-      <td class="border p-2 space-x-2">
-        <button class="bg-yellow-500 px-3 py-1 rounded text-white" (click)="editarSala(sala.id)">Editar</button>
-        <button class="bg-red-600 px-3 py-1 rounded text-white" (click)="eliminarSala(sala.id)">Eliminar</button>
-<!--        <button class="bg-blue-500 px-3 py-1 rounded text-white" (click)="verReservas(sala.id)">Ver Reservas</button>-->
-        <button class="bg-green-500 px-3 py-1 rounded text-white" (click)="verPerfilSala(sala.id)">Ver</button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+  <!-- Gráfica de reservas -->
+  <div *ngIf="mostrarGrafica" class="mt-6 bg-gray-800 p-6 rounded-lg shadow-lg">
+    <div class="mb-4">
+      <h3 class="text-white text-lg font-semibold">Estadísticas de Reservas por Sala</h3>
+      <p class="text-gray-400 text-sm">Visualización del estado de las reservas organizadas por sala</p>
+    </div>
+
+    <div class="relative" style="height: 400px;">
+      <canvas id="miGrafica"></canvas>
+    </div>
+
+    <!-- Loading para la gráfica -->
+    <div *ngIf="isLoadingReservas" class="absolute inset-0 bg-gray-800/50 flex items-center justify-center rounded-lg">
+      <div class="flex flex-col items-center">
+        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-2"></div>
+        <span class="text-white text-sm">Cargando datos de la gráfica...</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Filtros principales -->
+  <div class="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div class="w-full md:w-1/3">
+      <input
+        type="text"
+        placeholder="Buscar sala..."
+        [(ngModel)]="filtro"
+        (input)="onFiltroChange()"
+        class="border border-gray-600 rounded p-2 w-full bg-customNegro text-white"
+      />
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+      <button
+        class="bg-customRed text-white px-4 py-2 rounded hover:bg-customBurbundy transition-colors whitespace-nowrap"
+        (click)="crearSala()"
+      >
+        + Nueva Sala
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtros avanzados -->
+  <div class="mb-4 bg-gray-800 p-4 rounded-lg">
+    <h3 class="text-white text-lg mb-3">Filtros Avanzados</h3>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Filtro por capacidad -->
+      <div class="flex flex-col">
+        <label class="text-white text-sm mb-1">Capacidad</label>
+        <div class="flex gap-2">
+          <input
+            type="number"
+            placeholder="Min"
+            [(ngModel)]="filtroCapacidadMin"
+            class="border border-gray-600 rounded p-2 w-full bg-customNegro text-white text-sm"
+          />
+          <input
+            type="number"
+            placeholder="Max"
+            [(ngModel)]="filtroCapacidadMax"
+            class="border border-gray-600 rounded p-2 w-full bg-customNegro text-white text-sm"
+          />
+        </div>
+        <button
+          (click)="filtrarPorCapacidad()"
+          class="mt-2 bg-customGrisClaro text-customBurbundy px-3 py-1 rounded text-sm hover:bg-customGrisMedio transition-colors"
+        >
+          Filtrar
+        </button>
+      </div>
+
+      <!-- Filtro por ciudad -->
+      <div class="flex flex-col">
+        <label class="text-white text-sm mb-1">Ciudad</label>
+        <input
+          type="text"
+          placeholder="Ingrese ciudad..."
+          [(ngModel)]="filtroCiudad"
+          class="border border-gray-600 rounded p-2 w-full bg-customNegro text-white text-sm"
+        />
+        <button
+          (click)="filtrarPorCiudad()"
+          class="mt-2 bg-customGrisClaro text-customBurbundy px-3 py-1 rounded text-sm hover:bg-customGrisMedio transition-colors"
+        >
+          Filtrar
+        </button>
+      </div>
+
+      <!-- Filtro por provincia -->
+      <div class="flex flex-col">
+        <label class="text-white text-sm mb-1">Provincia</label>
+        <input
+          type="text"
+          placeholder="Ingrese provincia..."
+          [(ngModel)]="filtroProvincia"
+          class="border border-gray-600 rounded p-2 w-full bg-customNegro text-white text-sm"
+        />
+        <button
+          (click)="filtrarPorProvincia()"
+          class="mt-2 bg-customGrisClaro text-customBurbundy px-3 py-1 rounded text-sm hover:bg-customGrisMedio transition-colors"
+        >
+          Filtrar
+        </button>
+      </div>
+
+      <!-- Limpiar filtros -->
+      <div class="flex flex-col justify-end">
+        <button
+          (click)="limpiarFiltros()"
+          class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition-colors"
+        >
+          Limpiar Filtros
+        </button>
+      </div>
+    </div>
+
+
+    <!-- Indicador de filtro activo -->
+    <div *ngIf="tipoFiltroActivo !== 'general'" class="mt-3 p-2 bg-blue-900/30 rounded">
+      <span class="text-blue-300 text-sm">
+        Filtro activo:
+        <span class="font-semibold">
+          {{tipoFiltroActivo === 'capacidad' ? 'Capacidad' :
+          tipoFiltroActivo === 'ciudad' ? 'Ciudad' :
+            tipoFiltroActivo === 'provincia' ? 'Provincia' : 'General'}}
+        </span>
+      </span>
+    </div>
+  </div>
+
+  <!-- Loading spinner -->
+  <div *ngIf="isLoading" class="flex justify-center items-center py-12">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
+  </div>
+
+  <!-- Error message -->
+  <div *ngIf="errorMessage" class="bg-red-900/20 border-l-4 border-red-500 p-4 mb-6">
+    <div class="flex items-center">
+      <svg class="h-5 w-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+      </svg>
+      <span class="text-red-300">{{ errorMessage }}</span>
+    </div>
+  </div>
+
+  <!-- Tabla de salas -->
+  <div *ngIf="!isLoading && tieneResultados" class="overflow-x-auto">
+    <table class="table-auto w-full border border-gray-600 text-center">
+      <thead class="bg-gray-800">
+      <tr>
+        <th class="border border-gray-600 p-2 text-center text-white">Nombre</th>
+        <th class="border border-gray-600 p-2 text-center text-white">Ubicación</th>
+        <th class="border border-gray-600 p-2 text-center text-white">Capacidad</th>
+        <th class="border border-gray-600 p-2 text-center text-white">Nº reservas</th>
+        <th class="border border-gray-600 p-2 text-center text-white">Acciones</th>
+
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let sala of salas" class="hover:bg-gray-800/50 text-white">
+        <td class="border border-gray-600 p-2">
+          <a
+            (click)="verPerfilSala(sala.id)"
+            class="text-customBlanco  hover:underline cursor-pointer"
+          >
+            {{ sala.nombre }}
+          </a>
+        </td>
+        <td class="border border-gray-600 p-2">
+          {{ sala.direccion }}, {{ sala.ciudad }}
+        </td>
+        <td class="border border-gray-600 p-2">{{ sala.capacidad }}</td>
+        <td class="border border-gray-600 p-2 text-center">
+          <span *ngIf="isLoadingReservas" class="inline-block animate-pulse">...</span>
+          <span *ngIf="!isLoadingReservas">{{ getReservasPorSala(sala.nombre) }}</span>
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
+          <div class="flex justify-center space-x-2 border border-gray-600 p-2">
+            <!-- Botón Ver -->
+            <button
+              (click)="verPerfilSala(sala.id)"
+              class="text-green-600 hover:text-green-900 dark:hover:text-green-400 px-2 py-1 rounded hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors duration-200"
+              title="Ver detalles"
+            >
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+              </svg>
+            </button>
+
+            <!-- Botón Editar -->
+            <button
+              (click)="editarSala(sala.id)"
+              class="text-yellow-600 hover:text-yellow-900 dark:hover:text-yellow-400 px-2 py-1 rounded hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors duration-200"
+              title="Editar"
+            >
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+              </svg>
+            </button>
+
+            <!-- Botón Eliminar -->
+            <button
+              (click)="eliminarSala(sala.id)"
+              class="text-red-600 hover:text-red-900 dark:hover:text-red-400 px-2 py-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200"
+              title="Eliminar"
+            >
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+              </svg>
+            </button>
+          </div>
+        </td>
+      </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+
+
+
+
+  <!-- Información de paginación -->
+  <div *ngIf="!isLoading && tieneResultados" class="flex justify-between items-center mt-4 text-white text-sm">
+    <span>
+      Página {{ paginaActualDisplay }} de {{ totalPaginas }}
+      ({{ totalSalas }} salas en total)
+    </span>
+    <span>
+      Mostrando {{ salas.length }} salas
+    </span>
+  </div>
+
+  <!-- Paginación -->
+  <div class="flex justify-center mt-6" *ngIf="totalPaginas > 1 && !isLoading">
+    <nav class="flex items-center space-x-1" aria-label="Paginación">
+      <!-- Botón Anterior -->
+      <button
+        (click)="paginaAnterior()"
+        [disabled]="esPrimeraPagina"
+        [class.opacity-50]="esPrimeraPagina"
+        [class.cursor-not-allowed]="esPrimeraPagina"
+        class="px-3 py-2 rounded-l bg-gray-800 hover:bg-gray-700 text-white flex items-center transition-colors"
+        title="Página anterior"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </svg>
+      </button>
+
+      <!-- Botones de páginas -->
+      <button
+        *ngFor="let pagina of obtenerRangoPaginas()"
+        (click)="cambiarPagina(pagina)"
+        [class.bg-customRed]="pagina === paginaActual"
+        [class.text-white]="pagina === paginaActual"
+        [class.bg-gray-800]="pagina !== paginaActual"
+        [class.text-gray-300]="pagina !== paginaActual"
+        [class.hover:bg-customBurbundy]="pagina === paginaActual"
+        [class.hover:bg-gray-700]="pagina !== paginaActual"
+        class="px-3 py-2 transition-colors duration-200 font-medium"
+      >
+        {{ pagina + 1 }}
+      </button>
+
+      <!-- Botón Siguiente -->
+      <button
+        (click)="paginaSiguiente()"
+        [disabled]="esUltimaPagina"
+        [class.opacity-50]="esUltimaPagina"
+        [class.cursor-not-allowed]="esUltimaPagina"
+        class="px-3 py-2 rounded-r bg-gray-800 hover:bg-gray-700 text-white flex items-center transition-colors"
+        title="Página siguiente"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+        </svg>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Mensaje cuando no hay resultados -->
+  <div *ngIf="!isLoading && !tieneResultados" class="text-center py-12 text-gray-400">
+    <div class="flex flex-col items-center">
+      <svg class="h-16 w-16 text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+      </svg>
+      <h3 class="text-lg font-medium text-gray-300 mb-2">No se encontraron salas</h3>
+      <p class="text-gray-500">
+        {{ tipoFiltroActivo !== 'general' ? 'Intenta ajustar los filtros aplicados' : 'Comienza creando una nueva sala' }}
+      </p>
+    </div>
+  </div>
+
+
+
 </div>

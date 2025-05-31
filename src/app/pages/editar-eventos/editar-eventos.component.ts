@@ -64,9 +64,9 @@ export class EditarEventosComponent implements OnInit{
     }
 
     // Cargar salas para el select
-    this.salasService.getSalas().subscribe({
-      next: (data) => this.salas = data,
-      error: (err) => console.error('Error al cargar salas:', err)
+    this.salasService.obtenerTodas().subscribe({
+      next: (data: { id: number; nombre: string; }[]) => this.salas = data,
+      error: (err: any) => console.error('Error al cargar salas:', err)
     });
   }
 

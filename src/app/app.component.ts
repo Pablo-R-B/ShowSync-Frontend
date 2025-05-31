@@ -2,11 +2,12 @@ import {Component} from '@angular/core';
 import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
 import {filter} from 'rxjs';
 import {ButtonModule} from 'primeng/button';
-import { NgIf } from '@angular/common';
-import {FullCalendarModule} from '@fullcalendar/angular';
+import {NgIf, registerLocaleData} from '@angular/common';
 import {HeaderComponent} from './componentes/header/header.component';
 import {FooterComponent} from './componentes/footer/footer.component';
-
+import {SharedModule} from 'primeng/api';
+import localeEs from '@angular/common/locales/es';
+registerLocaleData(localeEs, 'es');
 
 // @ts-ignore
 @Component({
@@ -17,7 +18,7 @@ import {FooterComponent} from './componentes/footer/footer.component';
     RouterOutlet,
     HeaderComponent,
     FooterComponent,
-    FullCalendarModule,
+    SharedModule, // Importa el módulo compartido
     NgIf],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
@@ -33,16 +34,21 @@ export class AppComponent {
     '/auth/login',
     '/auth/registro',
     '/auth/restablecer',
-    '/auth/recuperar'
+    '/auth/recuperar',
+    '/auth/restablecer'
+
   ];
 
   constructor(private router: Router) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
-      const ocultar = this.hiddenRoutes.includes(event.urlAfterRedirects);
+      const ocultar = this.hiddenRoutes.some(route => event.urlAfterRedirects.startsWith(route));
       this.mostrarHeader = !ocultar;
       this.showFooter = !ocultar;
     });
   }
+
+
+
 }

@@ -1,23 +1,56 @@
-<div class="min-h-screen bg-cover bg-center flex items-center justify-center"
-     style="background-image: url('assets/images/fondo_2.png')">
-  <div class="bg-black bg-opacity-70 p-8 rounded-2xl shadow-lg w-full max-w-md">
-    <h2 class="text-white text-5xl  mb-6 text-center font-medula">Restablecer contraseña</h2>
+<div class="min-h-screen bg-gradient-to-br from-customNegro via-customGrisOscurso to-customBurbundy relative overflow-hidden flex items-center justify-center">
+  <!-- Animated background elements -->
+  <div class="absolute inset-0 bg-cover bg-center opacity-80 blur-sm" style="background-image: url('assets/images/fondo_2.png')"></div>
+  <div class="absolute inset-0 bg-gradient-to-br from-black via-transparent to-black"></div>
 
-    <div *ngIf="error" class="text-red-400 mb-4">{{ error }}</div>
+  <div class="relative z-10 backdrop-blur-xl bg-customNegro/80 border border-customRed/40 text-customBlanco pt-8 pb-12 px-12 rounded-3xl w-full max-w-lg shadow-2xl shadow-customBurbundy/60 transform hover:scale-[1.02] transition-all duration-500">
+    <h2 class="text-white text-5xl mb-6 text-center font-medula">Restablecer contraseña</h2>
 
-    <label class="block text-white mb-2">Nueva contraseña</label>
-    <input type="password" [(ngModel)]="nuevaContrasena" class="w-full p-2 rounded bg-customGrisClaro text-white mb-6" placeholder="Introduce tu nueva contraseña">
+    <div *ngIf="error" class="text-red-400 mb-4 text-center">{{ error }}</div>
 
-    <button (click)="onRestablecer()" class="bg-customGrisOscurso hover:bg-customGrisMedio text-white w-full py-2 rounded">
-      Restablecer
-    </button>
-    <div *ngIf="mensaje" class="text-green-400 mb-4 text-center">
-      {{ mensaje }}
-      <br />
-      <button (click)="irAlLogin()" class="mt-4 bg-customGrisOscurso hover:bg-customGrisClaro text-white py-2 px-4 rounded">
-        Ir al login
+    <!-- Mostrar formulario solo si no se ha enviado -->
+    <div *ngIf="!contrasenaEnviada">
+      <label class="block text-white mb-2">Nueva contraseña</label>
+      <input type="password"
+             [(ngModel)]="nuevaContrasena"
+             [disabled]="enviando"
+             class="w-full p-2 rounded-2xl bg-customGrisClaro text-white mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
+             placeholder="Introduce tu nueva contraseña"
+      >
+
+      <button (click)="onRestablecer()"
+              [disabled]="enviando || !nuevaContrasena.trim()"
+              class="w-full font-bold py-3 px-6 transition duration-300 rounded-2xl
+                     disabled:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50
+                     enabled:bg-gray-600 enabled:hover:bg-gray-500 text-white"
+      >
+        <span *ngIf="!enviando">Restablecer</span>
+        <span *ngIf="enviando">Enviando...</span>
       </button>
     </div>
 
+    <!-- Mostrar mensaje de éxito con información adicional -->
+    <div *ngIf="contrasenaEnviada" class="text-center">
+      <div class="text-green-400 mb-4 text-center">
+        <div class="text-6xl mb-4">✓</div>
+        <div class="text-xl mb-2">¡Contraseña restablecida exitosamente!</div>
+        <div class="text-sm text-gray-300">Serás redirigido al login en unos segundos...</div>
+      </div>
+
+      <button (click)="router.navigate(['/auth/login'])"
+              class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 transition duration-300 rounded-2xl mt-4"
+      >
+        Ir al Login Ahora
+      </button>
+    </div>
+
+    <!-- Mostrar mensaje normal si no se ha enviado -->
+    <div *ngIf="mensaje && !contrasenaEnviada" class="text-green-400 mb-4 text-center pt-1">
+      {{ mensaje }}
+    </div>
+
+    <div class="text-center mt-4" *ngIf="!contrasenaEnviada">
+      <a routerLink="/auth/login" class="text-gray-300 hover:text-white hover:underline text-sm">Volver al login</a>
+    </div>
   </div>
 </div>
