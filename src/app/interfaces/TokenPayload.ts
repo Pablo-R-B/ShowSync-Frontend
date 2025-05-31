@@ -4,4 +4,5 @@ export interface TokenPayload {
   exp: number;
   nombre: string;
   id:number;
+  perfilCompleto: boolean;
 }
