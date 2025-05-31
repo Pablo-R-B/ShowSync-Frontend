@@ -14,6 +14,10 @@ export class PromotoresService {
 
   constructor(private http: HttpClient) {}
 
+  /** GET  /promotores */
+  listarPromotores(): Observable<Promotor[]> {
+    return this.http.get<Promotor[]>(`${this.apiUrl}/promotores`);
+  }
 
 
   /** GET  /promotores/{id} */
