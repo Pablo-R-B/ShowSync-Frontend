@@ -34,5 +34,16 @@ export class AuthService {
     return this.http.get('http://localhost:8081/auth/perfil');
   }
 
+  getToken(): string | null {
+    return localStorage.getItem('token'); //
+  }
+
+  getPerfilCompletoFromToken(): boolean {
+    const token = localStorage.getItem('token');
+    if (!token) return false;
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.perfilCompleto === true;
+  }
+
 
 }

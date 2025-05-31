@@ -16,6 +16,9 @@ import {EditarEventosComponent} from './pages/editar-eventos/editar-eventos.comp
 import {PerfilArtistaComponent} from './pages/perfil-artista/perfil-artista.component';
 import {CatalogoSalaComponent} from './pages/catalogo-sala/catalogo-sala.component';
 import {AdminPanelComponent} from './pages/admin/admin-panel/admin-panel.component';
+import {PerfilCompletoGuard} from './guards/PerfilCompletoGuard';
+import {RegistroPromotorComponent} from './pages/registro-promotor/registro-promotor.component';
+import {RegistroArtistaComponent} from './pages/registro-artista/registro-artista.component';
 
 export const routes: Routes = [
   // Rutas de autenticación
@@ -23,33 +26,30 @@ export const routes: Routes = [
   { path: 'auth/login', component: LoginComponent },
   { path: 'auth/recuperar', component: RecuperarComponent },
   { path: 'auth/restablecer', component: RestablecerComponent },
+  { path: 'datos-promotor', component: RegistroPromotorComponent },
+  { path:'datos-artista', component:RegistroArtistaComponent},
 
-  // Rutas principales
-  { path: '', redirectTo: 'landing-page', pathMatch: 'full' },
-  { path: 'landing-page', component: LandingPageComponent },
-
-  // Rutas de promotores
-  { path: 'promotores', component: PromotoresComponent },
-  { path: 'promotores/:id', component: PromotoresComponent },
-  { path: 'promotor/:id', component: PromotoresComponent },
-  { path: 'busqueda-promotores', component: BusquedaPromotoresComponent },
-  { path: 'perfil-promotores', component: PerfilPromotoresComponent },
-
-
-  // Rutas de eventos
-  { path: 'eventos', component: EventosComponent },
-  { path: 'eventos/:id', component: EventosComponent },
-  { path: 'busqueda-eventos', component: BusquedaEventosComponent },
-  { path: 'editar-eventos', component: EditarEventosComponent },
-  { path: 'promotores/:idPromotor/eventos/:idEvento/editar', component: EditarEventosComponent },
-
-  // Rutas de salas (públicas)
-  { path: 'catalogo-salas', component: CatalogoSalaComponent, pathMatch: 'full' },
-  { path: 'salas/:id', component: PerfilSalaComponent },
-
-  // Rutas de artistas
-  { path: 'catalogo-artistas', component: CatalogoArtistasComponent, pathMatch: 'full' },
-  { path: 'artista/:id', component: PerfilArtistaComponent, pathMatch: 'full' },
+  {
+    path: '',
+    canActivateChild: [PerfilCompletoGuard],
+    children: [
+      { path: 'landing-page', component: LandingPageComponent },
+      { path: 'promotores', component: PromotoresComponent },
+      { path: 'promotores/:id', component: PromotoresComponent },
+      { path: 'busqueda-promotores', component: BusquedaPromotoresComponent },
+      { path: 'eventos/:id', component: EventosComponent },
+      { path: 'eventos', component: EventosComponent },
+      { path: 'perfil-promotores', component: PerfilPromotoresComponent },
+      { path: 'busqueda-eventos', component: BusquedaEventosComponent },
+      { path: 'editar-eventos', component: EditarEventosComponent },
+      { path: 'promotores/:idPromotor/eventos/:idEvento/editar', component: EditarEventosComponent },
+      { path: 'promotor/:id', component: PromotoresComponent },
+      { path: 'catalogo-salas', component: CatalogoSalaComponent },
+      { path: 'salas/:id', component: PerfilSalaComponent },
+      { path: 'catalogo-artistas', component: CatalogoArtistasComponent },
+      { path: 'artista/:id', component: PerfilArtistaComponent },
+    ],
+  },
 
   // ✅ PANEL DE ADMINISTRACIÓN - Configuración correcta
   {
