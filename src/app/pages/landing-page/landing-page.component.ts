@@ -22,6 +22,11 @@ export class LandingPageComponent implements OnInit {
   @ViewChild('heroVideo') heroVideo!: ElementRef<HTMLVideoElement>;
   eventos: Evento[] = [];
   usuarioLogueado: boolean = false;
+  sala: any;
+  artista: any;
+  promotor: any;
+
+
 
   constructor(
     private eventosService: EventosService,

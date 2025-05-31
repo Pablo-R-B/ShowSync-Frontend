@@ -20,19 +20,20 @@
   <button class="mt-6 bg-gray-200 text-black font-bold px-6 py-2 rounded hover:bg-gray-300" [routerLink]="['/auth/registro']">Regístrate</button>
 </div>
 
+
 <!-- CATEGORÍAS -->
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6 pb-8">
   <div class="text-center">
-    <img src="/assets/images/salas.png" alt="Salas" class="w-full h-48 object-contain rounded mb-2">
-    <p>Salas</p>
+    <img [src]="sala?.imagen" alt="Sala {{ sala?.nombre }}" class="w-full h-48 object-contain rounded mb-2">
+    <p>{{ sala?.nombre }}</p>
   </div>
   <div class="text-center">
-    <img src="/assets/images/artistas.jpg" alt="Artistas" class="w-full h-48 object-contain rounded mb-2">
-    <p>Artistas</p>
+    <img [src]="artista?.imagen" alt="Artista {{ artista?.nombre }}" class="w-full h-48 object-contain rounded mb-2">
+    <p>{{ artista?.nombre }}</p>
   </div>
   <div class="text-center">
-    <img src="/assets/images/promotores.png" alt="Promotores" class="w-full h-48 object-contain rounded mb-2">
-    <p>Promotores</p>
+    <img [src]="promotor?.imagen" alt="Promotor {{ promotor?.nombre }}" class="w-full h-48 object-contain rounded mb-2">
+    <p>{{ promotor?.nombre }}</p>
   </div>
 </div>
 
@@ -43,7 +44,7 @@
 
     <div #carousel class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-4 max-w-7xl mx-auto justify-items-center">
 
-    <div *ngFor="let evento of eventos"
+    <div *ngFor="let evento of eventos.slice(0,3)"
            class="min-w-[280px] sm:min-w-[300px] w-[280px] h-[400px] flex-shrink-0 relative group transition-transform duration-300 hover:scale-105">
         <img [src]="evento.imagenEvento" alt="Evento {{ evento.nombreEvento }}" class="w-full h-full object-cover rounded-xl shadow-lg">
 
@@ -51,7 +52,7 @@
           <h3 class="text-white text-xl md:text-2xl font-bold text-center mb-2">{{ evento.nombreEvento }}</h3>
           <p class="text-white text-sm text-center mb-4">{{ evento.descripcion }}</p>
           <ng-container *ngIf="usuarioLogueado; else accesoDenegado">
-            <button (click)="verDetallesEvento(evento.id)" class="px-6 py-2 bg-blue-700 text-white font-semibold rounded-lg hover:bg-blue-500 transition duration-300 shadow-md">Ver detalles</button>
+            <button (click)="verDetallesEvento(evento.id)" class="px-6 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-500 transition duration-300 shadow-md">Ver detalles</button>
           </ng-container>
           <ng-template #accesoDenegado>
             <button (click)="mostrarAdvertencia()" class="px-6 py-2 bg-gray-500 text-white font-semibold rounded-lg opacity-60 cursor-not-allowed">Ver detalles</button>
