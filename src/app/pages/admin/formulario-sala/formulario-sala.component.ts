@@ -204,12 +204,22 @@ export class FormularioSalaComponent implements OnInit {
       },
       error: (err) => {
         console.error(`Error al ${this.editando ? 'actualizar' : 'crear'} sala:`, err);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: `No se pudo ${this.editando ? 'actualizar' : 'crear'} la sala`,
-          life: 5000
-        });
+        const mensajeError = err?.error?.message || '';
+        if (mensajeError.includes('Ya existe una sala con el mismo nombre y dirección')) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Ya existe una sala con el mismo nombre y dirección',
+            life: 5000
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: `No se pudo ${this.editando ? 'actualizar' : 'crear'} la sala`,
+            life: 5000
+          });
+        }
         this.isLoading = false;
       }
     });
