@@ -124,12 +124,14 @@ export class LoginComponent implements OnInit {
       'ARTISTA': '/landing-page'
     };
 
-        console.log('Perfil completo:', decoded.perfilCompleto);
+    const decoded: TokenPayload = jwtDecode(localStorage.getItem('token') || '');
+    console.log('Perfil completo:', decoded.perfilCompleto);
 
-        if (!decoded.perfilCompleto) {
-          this.router.navigate(['/completar-perfil']);
-          return;
-        }
+    if (!decoded.perfilCompleto) {
+      this.router.navigate(['/completar-perfil']);
+      return;
+    }
+
 
 
     const route = routes[rol as keyof typeof routes] || '/landing-page';
