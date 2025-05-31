@@ -5,7 +5,7 @@ import { CommonModule, DatePipe, NgForOf, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
-import { PaginationParams } from '../../../servicios/salas.service';
+import {PaginationParams} from '../../../interfaces/PaginationParams';
 
 @Component({
   selector: 'app-panel-usuarios',

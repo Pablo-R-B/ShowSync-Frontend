@@ -4,4 +4,7 @@ export interface RespuestaPaginada<T> {
   currentPage: number;
   totalItems: number;
   pageSize: number;
+
+  hasNext: boolean;
+  hasPrevious: boolean;
 }

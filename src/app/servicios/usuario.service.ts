@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import { Usuario } from '../interfaces/usuario';
-import {PaginationParams} from './salas.service';
+import {PaginationParams} from '../interfaces/PaginationParams';
 
 
 @Injectable({ providedIn: 'root' })

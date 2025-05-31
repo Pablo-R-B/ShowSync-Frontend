@@ -148,9 +148,25 @@
     </div>
   </div>
 
-  <!-- Loading spinner -->
-  <div *ngIf="isLoading" class="flex justify-center items-center py-12">
-    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
+  <!-- El loading spinner para que ocupe el espacio de la tabla -->
+  <div *ngIf="isLoading" class="overflow-x-auto">
+    <table class="table-auto w-full border border-gray-600 text-center">
+      <thead class="bg-gray-800">
+      <tr>
+        <th *ngFor="let header of ['Nombre', 'Ubicación', 'Capacidad', 'Nº reservas', 'Acciones']"
+            class="border border-gray-600 p-2 text-center text-white">
+          {{header}}
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let i of [1,2,3,4,5,6]">
+        <td *ngFor="let j of [1,2,3,4,5]" class="border border-gray-600 p-2">
+          <div class="h-6 bg-gray-700 rounded animate-pulse"></div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
   </div>
 
   <!-- Error message -->
@@ -248,12 +264,34 @@
       ({{ totalSalas }} salas en total)
     </span>
     <span>
-      Mostrando {{ salas.length }} salas
+  Mostrando {{ (paginaActual * itemsPorPagina) + 1 }}-{{ (paginaActual * itemsPorPagina) + salas.length }}
+      de {{ totalSalas }} salas
     </span>
   </div>
 
+
+
   <!-- Paginación -->
+
   <div class="flex justify-center mt-6" *ngIf="totalPaginas > 1 && !isLoading">
+    <div class="flex flex-col items-center gap-4 mt-6" *ngIf="totalPaginas > 1 && !isLoading">
+      <div class="flex items-center gap-2 text-sm text-white">
+        <span>Ir a página:</span>
+        <input
+          type="number"
+          [min]="1"
+          [max]="totalPaginas"
+          [(ngModel)]="paginaNavegacion"
+          (keydown.enter)="irAPagina()"
+          class="w-16 px-2 py-1 bg-gray-800 border border-gray-600 text-white rounded text-center text-sm"
+        />
+        <button
+          (click)="irAPagina()"
+          class="px-3 py-1 bg-customRed hover:bg-customBurbundy text-white rounded text-sm"
+        >
+          Ir
+        </button>
+      </div>
     <nav class="flex items-center space-x-1" aria-label="Paginación">
       <!-- Botón Anterior -->
       <button
@@ -301,7 +339,7 @@
   </div>
 
   <!-- Mensaje cuando no hay resultados -->
-  <div *ngIf="!isLoading && !tieneResultados" class="text-center py-12 text-gray-400">
+  <div *ngIf="!isLoading && totalSalas === 0" class="text-center py-12 text-gray-400">
     <div class="flex flex-col items-center">
       <svg class="h-16 w-16 text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>

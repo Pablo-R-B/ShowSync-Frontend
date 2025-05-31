@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Sala } from '../../interfaces/sala';
-import { SalasService, PaginationParams } from '../../servicios/salas.service';
 import { FormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { FiltrosSala } from '../../interfaces/filtrosSala';
 import { Router } from '@angular/router';
+import {SalasService} from '../../servicios/salas.service';
+import {PaginationParams} from '../../interfaces/PaginationParams';
+import {RespuestaPaginada} from '../../interfaces/respuesta-paginada';
 
 @Component({
   selector: 'app-catalogo-sala',
@@ -23,12 +25,12 @@ export class CatalogoSalaComponent implements OnInit {
   errorMessage: string | null = null;
 
   // Paginación (usando paginación del backend, base 0)
-  paginaActual: number = 0; // Backend usa base 0
+  paginaActual: number = 0;
   itemsPorPagina: number = 6;
   totalSalas: number = 0;
   totalPaginas: number = 0;
 
-  // AGREGADO: Variable para navegación rápida
+  // Variable para navegación rápida
   paginaNavegacion: number = 1;
 
   // Filtros
@@ -62,7 +64,6 @@ export class CatalogoSalaComponent implements OnInit {
     private salasService: SalasService,
     private router: Router
   ) {
-    // Configurar debounce para búsqueda
     this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -80,9 +81,13 @@ export class CatalogoSalaComponent implements OnInit {
     this.cargando = true;
     this.errorMessage = null;
 
+    const [sortField, sortDirection] = this.ordenActual.split('-');
+
     const params: PaginationParams = {
       page: this.paginaActual,
       size: this.itemsPorPagina,
+      sortField: sortField,
+      sortDirection: sortDirection.toUpperCase(),
       termino: this.filtros.texto || undefined
     };
 
@@ -104,10 +109,8 @@ export class CatalogoSalaComponent implements OnInit {
 
   private cargarSalasGenerales(params: PaginationParams): void {
     this.salasService.obtenerTodasPaginadas(params).subscribe({
-      next: (data) => {
-        this.salas = data;
-        this.actualizarPaginacionSimulada(data.length);
-        this.aplicarOrdenLocal();
+      next: (respuesta) => {
+        this.actualizarDatosPaginacion(respuesta);
         this.cargando = false;
       },
       error: (err) => {
@@ -120,13 +123,11 @@ export class CatalogoSalaComponent implements OnInit {
     if (this.filtros.capacidadMin > 0) {
       this.salasService.filtrarPorCapacidadPaginado(
         this.filtros.capacidadMin,
-        999999,
+        999999, // Capacidad máxima muy alta para incluir todas las salas mayores al mínimo
         params
       ).subscribe({
-        next: (data) => {
-          this.salas = data;
-          this.actualizarPaginacionSimulada(data.length);
-          this.aplicarOrdenLocal();
+        next: (respuesta) => {
+          this.actualizarDatosPaginacion(respuesta);
           this.cargando = false;
         },
         error: (err) => {
@@ -139,11 +140,8 @@ export class CatalogoSalaComponent implements OnInit {
   private cargarSalasPorCiudad(params: PaginationParams): void {
     if (this.filtros.ciudad.trim()) {
       this.salasService.buscarSalasPorCiudadPaginadas(this.filtros.ciudad, params).subscribe({
-        next: (response) => {
-          this.salas = response.content;
-          this.totalSalas = response.totalElements;
-          this.totalPaginas = response.totalPages;
-          this.aplicarOrdenLocal();
+        next: (respuesta) => {
+          this.actualizarDatosPaginacion(respuesta);
           this.cargando = false;
         },
         error: (err) => {
@@ -156,11 +154,8 @@ export class CatalogoSalaComponent implements OnInit {
   private cargarSalasPorProvincia(params: PaginationParams): void {
     if (this.filtros.provincia.trim()) {
       this.salasService.buscarSalasPorProvinciaPaginadas(this.filtros.provincia, params).subscribe({
-        next: (response) => {
-          this.salas = response.content;
-          this.totalSalas = response.totalElements;
-          this.totalPaginas = response.totalPages;
-          this.aplicarOrdenLocal();
+        next: (respuesta) => {
+          this.actualizarDatosPaginacion(respuesta);
           this.cargando = false;
         },
         error: (err) => {
@@ -170,13 +165,11 @@ export class CatalogoSalaComponent implements OnInit {
     }
   }
 
-  private actualizarPaginacionSimulada(cantidadRecibida: number): void {
-    if (cantidadRecibida < this.itemsPorPagina) {
-      this.totalPaginas = this.paginaActual + 1;
-    } else {
-      this.totalPaginas = this.paginaActual + 2;
-    }
-    this.totalSalas = (this.paginaActual * this.itemsPorPagina) + cantidadRecibida;
+  private actualizarDatosPaginacion(respuesta: RespuestaPaginada<Sala>): void {
+    this.salas = respuesta.items;
+    this.totalSalas = respuesta.totalItems;
+    this.totalPaginas = respuesta.totalPages;
+    this.paginaNavegacion = respuesta.currentPage + 1; // Actualizar navegación rápida
   }
 
   // Métodos de filtrado
@@ -248,45 +241,14 @@ export class CatalogoSalaComponent implements OnInit {
   // Métodos de ordenación
   cambiarOrden(nuevoOrden: string): void {
     this.ordenActual = nuevoOrden;
-    this.aplicarOrdenLocal();
-  }
-
-  private aplicarOrdenLocal(): void {
-    switch(this.ordenActual) {
-      case 'nombre-asc':
-        this.salas.sort((a, b) => a.nombre.localeCompare(b.nombre));
-        break;
-      case 'nombre-desc':
-        this.salas.sort((a, b) => b.nombre.localeCompare(a.nombre));
-        break;
-      case 'ciudad-asc':
-        this.salas.sort((a, b) => a.ciudad.localeCompare(b.ciudad));
-        break;
-      case 'ciudad-desc':
-        this.salas.sort((a, b) => b.ciudad.localeCompare(a.ciudad));
-        break;
-      case 'provincia-asc':
-        this.salas.sort((a, b) => a.provincia.localeCompare(b.provincia));
-        break;
-      case 'provincia-desc':
-        this.salas.sort((a, b) => b.provincia.localeCompare(a.provincia));
-        break;
-      case 'capacidad-asc':
-        this.salas.sort((a, b) => a.capacidad - b.capacidad);
-        break;
-      case 'capacidad-desc':
-        this.salas.sort((a, b) => b.capacidad - a.capacidad);
-        break;
-      default:
-        break;
-    }
+    this.paginaActual = 0; // Resetear a primera página al cambiar orden
+    this.cargarSalas();
   }
 
   // Métodos de paginación
   cambiarPagina(pagina: number): void {
     if (pagina < 0 || pagina >= this.totalPaginas) return;
     this.paginaActual = pagina;
-    // Actualizar también la variable de navegación rápida
     this.paginaNavegacion = pagina + 1;
     this.cargarSalas();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -310,13 +272,11 @@ export class CatalogoSalaComponent implements OnInit {
     this.cargarSalas();
   }
 
-  // AGREGADO: Método para navegación rápida
   irAPagina(): void {
     if (this.paginaNavegacion && this.paginaNavegacion >= 1 && this.paginaNavegacion <= this.totalPaginas) {
-      this.cambiarPagina(this.paginaNavegacion - 1); // Convertir de base 1 a base 0
+      this.cambiarPagina(this.paginaNavegacion - 1);
     } else {
-      // Resetear si el valor no es válido
-      this.paginaNavegacion = this.paginaActualDisplay;
+      this.paginaNavegacion = this.paginaActual + 1;
     }
   }
 
@@ -348,7 +308,6 @@ export class CatalogoSalaComponent implements OnInit {
     return rango;
   }
 
-  // Métodos auxiliares de utilidad
   hayFiltrosActivos(): boolean {
     return this.filtros.ciudad !== '' ||
       this.filtros.provincia !== '' ||
@@ -357,11 +316,9 @@ export class CatalogoSalaComponent implements OnInit {
   }
 
   irAReservarSala(salaId: number): void {
-    // Usa la ruta definida en tu configuración de enrutamiento
     this.router.navigate(['/salas', salaId]);
   }
 
-  // Método auxiliar para manejo de errores
   private manejarError(mensaje: string, error: any): void {
     console.error(mensaje, error);
     this.errorMessage = `${mensaje}. Por favor, intente nuevamente.`;
