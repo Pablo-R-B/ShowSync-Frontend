@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {RespuestaPaginada} from '../interfaces/respuesta-paginada';
-import {Artistas} from '../interfaces/artistas';
+import { Artistas } from '../interfaces/artistas';
 import {Observable, throwError} from 'rxjs';
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {environment} from '../../environments/environment';
@@ -62,7 +62,11 @@ export class ArtistasService {
     );
   }
 
-  private erroresArtistas(erros:HttpErrorResponse): Observable<never> {
-    return throwError(() => new Error('Error al obtener el catálogo de artistas. Inténtelo más tarde'));
+  //private erroresArtistas(erros:HttpErrorResponse): Observable<never> {
+  //  return throwError(() => new Error('Error al obtener el catálogo de artistas. Inténtelo más tarde'));
+  //}
+
+  artistasPorPromotor(promotorId: number): Observable<Artistas[]> {
+    return this.http.get<Artistas[]>(`${this.apiUrl}/promotor/${promotorId}`);
   }
 }

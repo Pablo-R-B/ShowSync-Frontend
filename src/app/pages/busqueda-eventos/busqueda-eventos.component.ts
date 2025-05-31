@@ -5,6 +5,9 @@ import { EventosService } from '../../servicios/eventos.service';
 import { AuthService } from '../../servicios/auth.service';
 import { FormsModule } from '@angular/forms';
 import {Paginator} from 'primeng/paginator';
+import {filtroEvento} from '../../interfaces/filtroEvento';
+import { Subject } from 'rxjs';
+
 
 @Component({
   selector: 'app-busqueda-eventos',
@@ -40,6 +43,16 @@ export class BusquedaEventosComponent implements OnInit {
   paginaActual: number = 0;
   eventosPaginados: any[] = [];
 
+
+  filtro: filtroEvento = {
+    texto: '',
+    nombre: '',
+    generosMusicales: '',
+    estado: '',
+
+  };
+  private filtrosSubject = new Subject<void>(); // Inicialización correcta
+
   constructor(
     private eventosService: EventosService,
     private authService: AuthService,
@@ -71,13 +84,15 @@ export class BusquedaEventosComponent implements OnInit {
   }
 
   aplicarFiltros(): void {
-    // Filtrado
     this.eventosFiltrados = this.eventosOriginales.filter((evento) => {
-      const generosMusicales = evento.generosMusicales || [];
+      const cumpleTexto =
+        !this.filtro.texto ||
+        evento.nombreEvento?.toLowerCase().includes(this.filtro.texto.toLowerCase()) ||
+        evento.descripcion?.toLowerCase().includes(this.filtro.texto.toLowerCase());
 
       const cumpleGenero =
         this.generoSeleccionado === '' ||
-        generosMusicales.some((genero: string) =>
+        (evento.generosMusicales || []).some((genero: string) =>
           genero.toLowerCase().trim() === this.generoSeleccionado.toLowerCase().trim()
         );
 
@@ -99,25 +114,14 @@ export class BusquedaEventosComponent implements OnInit {
         this.estadoSeleccionado === '' ||
         (evento.estado && evento.estado.toLowerCase().includes(this.estadoSeleccionado.toLowerCase()));
 
-      // Guardamos la fecha parseada en una propiedad temporal local
-      (evento as any)._fechaOrdenada = fechaEvento;
-
-      return cumpleGenero && cumpleFechaDesde && cumpleFechaHasta && cumpleEstado;
+      return cumpleTexto && cumpleGenero && cumpleFechaDesde && cumpleFechaHasta && cumpleEstado;
     });
 
-    // Ordenar eventos del más reciente al más antiguo usando la propiedad temporal
-    this.eventosFiltrados.sort((a, b) => {
-      const fechaA = (a as any)._fechaOrdenada;
-      const fechaB = (b as any)._fechaOrdenada;
-      return fechaB.getTime() - fechaA.getTime(); // Más recientes primero
-    });
-
-    // Paginación
     this.totalItems = this.eventosFiltrados.length;
     this.paginaActual = 0;
     this.actualizarEventosPaginados();
-
   }
+
 
 
   actualizarEventosPaginados(): void {
@@ -125,6 +129,31 @@ export class BusquedaEventosComponent implements OnInit {
     const end = start + this.pageSize;
     this.eventosPaginados = this.eventosFiltrados.slice(start, end);
 
+  }
+
+  hayFiltrosActivos(): boolean {
+
+    return (
+      !!this.filtro.texto ||
+      !!this.generoSeleccionado ||
+      !!this.estadoSeleccionado ||
+      !!this.fechaDesde ||
+      !!this.fechaHasta
+    );
+  }
+
+  limpiarFiltro(campo: string): void {
+    (this as any)[campo] = '';
+    this.aplicarFiltros();
+  }
+
+  limpiarTodosFiltros(): void {
+    this.filtro.texto = '';
+    this.generoSeleccionado = '';
+    this.estadoSeleccionado = '';
+    this.fechaDesde = '';
+    this.fechaHasta = '';
+    this.aplicarFiltros();
   }
 
 
@@ -182,5 +211,9 @@ export class BusquedaEventosComponent implements OnInit {
       next: (data) => this.generos = data,
       error: (err) => console.error('Error al cargar los géneros', err)
     });
+  }
+
+  actualizarBusquedaTexto(): void {
+    this.filtrosSubject.next();
   }
 }

@@ -115,8 +115,9 @@ export class EventosService {
     return this.http.patch<void>(`${this.apiUrl}/eventos/confirmar/${id}`, {});
   }
 
-  getEventosPaginado(pagina: number, tamaño: number): Observable<Evento[]> {
-    return this.http.get<Evento[]>(`${this.apiUrl}/eventos/paginado?page=${pagina}&size=${tamaño}`);
+  // Obtener eventos paginados
+  getEventosPaginado(pagina: number, tamano: number): Observable<Evento[]> {
+    return this.http.get<Evento[]>(`${this.apiUrl}/eventos/paginado?page=${pagina}&size=${tamano}`);
   }
 
 

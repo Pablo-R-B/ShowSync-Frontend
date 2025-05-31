@@ -32,7 +32,7 @@ import {FormsModule} from '@angular/forms';
 export class PerfilPromotoresComponent implements OnInit {
 
   promotor: Promotor | null = null;
-  logoUrl: string = '../../../assets/imges/logo_1.png';
+  logoUrl: string = '../../../assets/images/logo_1.png';
   salas: Sala[] = [];
   eventos: EventoDTO[] = [];
   eventoDestacado?: EventoDTO;

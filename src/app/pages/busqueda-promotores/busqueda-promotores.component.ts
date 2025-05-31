@@ -4,6 +4,7 @@ import {NgForOf} from '@angular/common';
 import {PromotoresService} from '../../servicios/promotores.service';
 import {Promotor} from '../../interfaces/Promotor';
 import {RouterLink} from '@angular/router';
+import {Paginator} from 'primeng/paginator';
 
 
 
@@ -13,16 +14,21 @@ import {RouterLink} from '@angular/router';
   imports: [
     FormsModule,
     NgForOf,
-    RouterLink
+    RouterLink,
+    Paginator
   ],
   templateUrl: './busqueda-promotores.component.html',
   styleUrl: './busqueda-promotores.component.css'
 })
 export class BusquedaPromotoresComponent implements OnInit {
   promotoras: Promotor[] = [];
-  promotorSeleccionado: Promotor | null = null;
   nombrePromotoraSeleccionada: string = '';
-  promotorasFiltradas: Promotor[] = [];
+  promotorasFiltradas: Promotor[] = []
+
+  pageSize: number = 6;
+  totalItems: number = 0;
+  paginaActual: number = 0;
+  eventosPaginados: any[] = [];
 
   constructor(private promotoresService: PromotoresService) {}
 
@@ -31,9 +37,10 @@ export class BusquedaPromotoresComponent implements OnInit {
   }
 
   cargarPromotoras(): void {
-    this.promotoresService.obtenerPromotoras().subscribe(data => {
-      this.promotoras = data;
-      this.promotorasFiltradas = data;
+    this.promotoresService.obtenerPromotorasPaginadas(this.paginaActual, this.pageSize).subscribe(data => {
+      this.promotoras = data.content;
+      this.totalItems = data.totalElements;
+      this.promotorasFiltradas = [...this.promotoras];
     });
   }
 
@@ -44,35 +51,12 @@ export class BusquedaPromotoresComponent implements OnInit {
     );
   }
 
-  verInfoPromotora(id?: number): void {
-    if (id) { // Comprobamos que 'id' no sea undefined
-      this.promotoresService.cargarPromotorPorId(id).subscribe(data => {
-        this.promotorSeleccionado = data;
-      });
-    }
+  onPageChange(event: any): void {
+    this.paginaActual = event.page;
+    this.pageSize = event.rows;
+    this.cargarPromotoras(); // Recargar datos desde el backend
   }
 
-  crearPromotor(promotorNuevo: Promotor): void {
-    this.promotoresService.crearPromotor(promotorNuevo).subscribe(data => {
-      this.promotoras.push(data);
-      this.promotorasFiltradas.push(data);
-    });
-  }
 
-  editarPromotor(id: number, promotorEditado: Promotor): void {
-    this.promotoresService.editarPromotor(id, promotorEditado).subscribe(data => {
-      const index = this.promotoras.findIndex(p => p.id === id);
-      if (index !== -1) {
-        this.promotoras[index] = data;
-        this.aplicarFiltros();  // Para actualizar la lista filtrada
-      }
-    });
-  }
 
-  eliminarPromotor(id: number): void {
-    this.promotoresService.eliminarPromotor(id).subscribe(() => {
-      this.promotoras = this.promotoras.filter(p => p.id !== id);
-      this.promotorasFiltradas = this.promotorasFiltradas.filter(p => p.id !== id);
-    });
-  }
 }

@@ -5,12 +5,12 @@
 />
 
 <!-- TÍTULO PRINCIPAL -->
-<div class="pt-32 text-center px-4">
-<header class="w-full bg-gradient-to-r from-purple-700 to-indigo-700 py-10 px-4 text-center">
-  <h2 class="text-2xl md:text-4xl font-semibold text-white leading-tight">
-    ¿En busca de las promotoras que organizan tus conciertos favoritos?
-  </h2>
-</header>
+<div class="pt-6 text-center px-4">
+  <header class="w-full bg-gradient-to-r from-purple-700 to-indigo-700 py-10 px-4 text-center">
+    <h2 class="text-2xl md:text-4xl font-semibold text-white leading-tight">
+      ¿En busca de las promotoras que organizan tus conciertos favoritos?
+    </h2>
+  </header>
 </div>
 
 <!-- CONTENEDOR PRINCIPAL -->
@@ -46,9 +46,7 @@
 
 
   <!-- PROMOTORES -->
-  <!-- Contenedor con altura aumentada y más ancho -->
-  <div class="max-h-[750px] overflow-y-auto px-6">
-
+  <div class="flex-1 px-6">
     <section class="w-full max-w-screen-2xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       <div
         *ngFor="let promotor of promotorasFiltradas"
@@ -76,8 +74,15 @@
       </div>
     </section>
 
+    <!-- Paginador centrado con margen superior -->
+    <div class="card flex justify-center mt-40">
+      <p-paginator
+        [rows]="pageSize"
+        [totalRecords]="totalItems"
+        [rowsPerPageOptions]="[6, 9, 12]"
+        (onPageChange)="onPageChange($event)">
+      </p-paginator>
+    </div>
   </div>
-
-
 
 </main>

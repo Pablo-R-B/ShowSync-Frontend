@@ -1,5 +1,6 @@
 
 export interface Evento {
+  texto: string;
   idSala: string;
   nombre: string;
   artistasAsignados: string;
