@@ -69,4 +69,8 @@ export class ArtistasService {
   artistasPorPromotor(promotorId: number): Observable<Artistas[]> {
     return this.http.get<Artistas[]>(`${this.apiUrl}/promotor/${promotorId}`);
   }
+
+  obtenerImagenesDeTodosLosArtistas(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/imagenes`);
+  }
 }

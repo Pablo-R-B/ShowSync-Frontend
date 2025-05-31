@@ -5,6 +5,11 @@ import { Evento } from '../../interfaces/Evento';
 import { EventosService } from '../../servicios/eventos.service';
 import {Component, ElementRef, OnInit, ViewChild,} from '@angular/core';
 import {AuthService} from '../../servicios/auth.service';
+import { ArtistasService } from '../../servicios/artistas.service';
+import { SalasService } from '../../servicios/salas.service';
+import { PromotoresService } from '../../servicios/promotores.service';
+
+
 
 @Component({
   selector: 'app-landing-page',
@@ -31,7 +36,11 @@ export class LandingPageComponent implements OnInit {
   constructor(
     private eventosService: EventosService,
     private authService: AuthService, // Inyección del servicio AuthService
-    private router: Router
+    private router: Router,
+    private artistasService: ArtistasService,
+    private salasService: SalasService,
+    private promotoresService: PromotoresService
+
 
 ) {}
 
@@ -43,6 +52,26 @@ export class LandingPageComponent implements OnInit {
     this.eventosService.getEventosConfirmados().subscribe(data => {
       this.eventos = data;
     });
+
+    // Cargar datos de sala
+    this.salasService.obtenerTodas().subscribe((data: any[]) => {
+      this.sala = data[0]; // Asignar la primera sala
+    });
+
+    // Cargar datos de artista
+    this.artistasService.obtenerImagenesDeTodosLosArtistas().subscribe((data: string[]) => {
+      if (data && data.length > 0) {
+        this.artista = { imagenPerfil: data[0], nombreArtista: 'Nombre del Artista' }; // Asignar la primera imagen y un nombre
+      } else {
+        console.warn('No se encontraron imágenes de artistas.');
+      }
+    });
+
+    // Cargar datos de promotor
+    this.promotoresService.listarPromotores().subscribe((data: any[]) => {
+      this.promotor = data[0]; // Asignar el primer promotor
+    });
+
 
     // Ajusta el volumen del video
     setTimeout(() => {
