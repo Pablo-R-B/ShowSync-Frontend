@@ -6,7 +6,6 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { MessageService } from 'primeng/api';
 import { SalasService } from '../../../servicios/salas.service';
 import { Sala } from '../../../interfaces/sala';
-import pica from 'pica';
 import { PROVINCIAS_ES } from '../../../interfaces/provincias-es';
 
 @Component({
@@ -29,12 +28,12 @@ export class FormularioSalaComponent implements OnInit {
     provincia: '',
     codigoPostal: '',
     descripcion: '',
+    logo: '' // Asegurar que logo está definido para preview
   };
 
   provincias = PROVINCIAS_ES;
   editando = false;
   isLoading = false;
-  imagenCargando = false;
   maxFileSize = 5; // MB
   imagenArchivo?: File;
 
@@ -42,6 +41,7 @@ export class FormularioSalaComponent implements OnInit {
   toastVisible = false;
   toastMensaje = '';
   toastColor: 'success' | 'error' = 'success';
+  imagenCargando: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -67,79 +67,30 @@ export class FormularioSalaComponent implements OnInit {
   }
 
   subirImagen(event: any): void {
-    const file: File = event.files[0];
+    const file: File = event.files?.[0];
     if (!file) return;
 
-    if (!file.type.match('image.*')) {
+    if (!file.type.startsWith('image/')) {
       this.mostrarToast('Solo se permiten archivos de imagen', 'error');
       return;
     }
 
     const maxFileSizeBytes = this.maxFileSize * 1024 * 1024;
     if (file.size > maxFileSizeBytes) {
-      this.mostrarToast('La imagen es muy grande, se intentará redimensionar automáticamente.');
+      this.mostrarToast(`La imagen es muy grande, máximo ${this.maxFileSize} MB`, 'error');
+      return;
     }
 
-    this.imagenCargando = true;
-    this.mostrarToast('Procesando imagen...');
+    this.imagenArchivo = file;
 
-    const img = new Image();
+    // Mostrar preview de imagen
     const reader = new FileReader();
-
     reader.onload = () => {
-      img.src = reader.result as string;
-
-      img.onload = async () => {
-        try {
-          const canvas = document.createElement('canvas');
-          const maxWidth = 1024;
-          const maxHeight = 1024;
-
-          let width = img.width;
-          let height = img.height;
-
-          if (width > maxWidth || height > maxHeight) {
-            const ratio = Math.min(maxWidth / width, maxHeight / height);
-            width = Math.round(width * ratio);
-            height = Math.round(height * ratio);
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-
-          const picaInstance = pica();
-          await picaInstance.resize(img, canvas);
-          const base64 = await picaInstance.toBlob(canvas, file.type);
-          const previewReader = new FileReader();
-
-          previewReader.onloadend = () => {
-            this.sala.logo = previewReader.result as string;
-            this.imagenArchivo = new File([base64], file.name, { type: file.type });
-            this.imagenCargando = false;
-
-            this.mostrarToast('Imagen cargada y redimensionada correctamente');
-          };
-
-          previewReader.readAsDataURL(base64);
-        } catch (error) {
-          console.error('Error al redimensionar la imagen:', error);
-          this.imagenCargando = false;
-          this.mostrarToast('No se pudo redimensionar la imagen', 'error');
-        }
-      };
-
-      img.onerror = () => {
-        this.imagenCargando = false;
-        this.mostrarToast('No se pudo cargar la imagen', 'error');
-      };
+      this.sala.logo = reader.result as string;
     };
-
-    reader.onerror = () => {
-      this.imagenCargando = false;
-      this.mostrarToast('Error al leer el archivo de imagen', 'error');
-    };
-
     reader.readAsDataURL(file);
+
+    this.mostrarToast('Imagen cargada correctamente');
   }
 
   cargarSala(id: number): void {
@@ -197,7 +148,7 @@ export class FormularioSalaComponent implements OnInit {
         if (mensajeError.includes('Ya existe una sala con el mismo nombre y dirección')) {
           this.mostrarToast('Ya existe una sala con el mismo nombre y dirección', 'error');
         } else {
-          this.mostrarToast(`No se pudo ${this.editando ? 'actualizar' : 'crear'} la sala porque ya existe.`, 'error');
+          this.mostrarToast(`No se pudo ${this.editando ? 'actualizar' : 'crear'} la sala.`, 'error');
         }
         this.isLoading = false;
       }
@@ -207,7 +158,6 @@ export class FormularioSalaComponent implements OnInit {
   cancelar(): void {
     this.mostrarToast('Operación cancelada');
 
-    // Pequeño delay para que el usuario vea el mensaje antes de navegar
     setTimeout(() => {
       this.router.navigate(['/admin/salas']);
     }, 1000);
@@ -243,10 +193,9 @@ export class FormularioSalaComponent implements OnInit {
 
   private validarFormulario(): boolean {
     if (!this.sala.nombre?.trim() || this.sala.nombre.length < 3 || this.sala.nombre.length > 50) {
-      this.mostrarToast('El nombre es obligatorio', 'error');
+      this.mostrarToast('El nombre debe tener entre 3 y 50 caracteres', 'error');
       return false;
     }
-
 
     if (!this.sala.direccion?.trim()) {
       this.mostrarToast('La dirección es obligatoria', 'error');
@@ -278,17 +227,16 @@ export class FormularioSalaComponent implements OnInit {
       return false;
     }
 
-    if (!this.imagenArchivo) {
+    if (!this.imagenArchivo && !this.sala.logo) {
+      // En edición, si ya hay logo no se obliga a cargar imagen nueva
       this.mostrarToast('Debe seleccionar una imagen', 'error');
       return false;
     }
 
-    if (this.imagenArchivo.size > this.maxFileSize * 1024 * 1024) {
+    if (this.imagenArchivo && this.imagenArchivo.size > this.maxFileSize * 1024 * 1024) {
       this.mostrarToast(`La imagen no debe superar los ${this.maxFileSize} MB`, 'error');
       return false;
     }
-
-
 
     return true;
   }

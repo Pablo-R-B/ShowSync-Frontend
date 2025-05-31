@@ -23,7 +23,11 @@
           fill="currentColor"
           viewBox="0 0 20 20"
         >
-          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+          <path
+            fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+            clip-rule="evenodd"
+          ></path>
         </svg>
         <svg
           *ngIf="toastColor === 'error'"
@@ -31,7 +35,11 @@
           fill="currentColor"
           viewBox="0 0 20 20"
         >
-          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+          <path
+            fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+            clip-rule="evenodd"
+          ></path>
         </svg>
       </div>
 
@@ -45,33 +53,49 @@
         type="button"
         class="flex-shrink-0 ml-auto"
         (click)="toastVisible = false"
+        aria-label="Cerrar mensaje"
       >
-        <svg class="w-4 h-4 opacity-70 hover:opacity-100" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+        <svg
+          class="w-4 h-4 opacity-70 hover:opacity-100"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+            clip-rule="evenodd"
+          ></path>
         </svg>
       </button>
     </div>
   </div>
 
-  <form (ngSubmit)="guardarSala()" #formSala="ngForm" class="space-y-6">
+  <form (ngSubmit)="guardarSala()" #formSala="ngForm" class="space-y-6" novalidate>
     <!-- Sección 1: Información básica -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <!-- Columna izquierda -->
       <div class="space-y-4">
         <div>
-          <label class="block mb-2 text-gray-300 font-medium">Nombre *</label>
+          <label class="block mb-2 text-gray-300 font-medium" for="nombre">Nombre *</label>
           <input
+            id="nombre"
             class="border border-gray-600 rounded w-full p-3 bg-customNegro text-white focus:ring-2 focus:ring-customRed focus:border-transparent"
             [(ngModel)]="sala.nombre"
             name="nombre"
             required
             [disabled]="isLoading"
+            #nombre="ngModel"
+            aria-required="true"
           />
+          <div *ngIf="nombre.invalid && nombre.touched" class="text-red-400 text-sm mt-1">
+            El nombre es obligatorio.
+          </div>
         </div>
 
         <div>
-          <label class="block mb-2 text-gray-300 font-medium">Descripción</label>
+          <label class="block mb-2 text-gray-300 font-medium" for="descripcion">Descripción</label>
           <textarea
+            id="descripcion"
             class="border border-gray-600 rounded w-full p-3 bg-customNegro text-white h-32 focus:ring-2 focus:ring-customRed focus:border-transparent"
             [(ngModel)]="sala.descripcion"
             name="descripcion"
@@ -80,8 +104,9 @@
         </div>
 
         <div>
-          <label class="block mb-2 text-gray-300 font-medium">Capacidad *</label>
+          <label class="block mb-2 text-gray-300 font-medium" for="capacidad">Capacidad *</label>
           <input
+            id="capacidad"
             type="number"
             min="1"
             class="border border-gray-600 rounded w-1/4 p-3 bg-customNegro text-white focus:ring-2 focus:ring-customRed focus:border-transparent"
@@ -89,7 +114,12 @@
             name="capacidad"
             required
             [disabled]="isLoading"
+            #capacidad="ngModel"
+            aria-required="true"
           />
+          <div *ngIf="capacidad.invalid && capacidad.touched" class="text-red-400 text-sm mt-1">
+            La capacidad debe ser al menos 1.
+          </div>
         </div>
       </div>
 
@@ -98,7 +128,12 @@
         <div class="w-full">
           <label class="block mb-2 text-gray-300 font-medium">Imagen de la sala</label>
           <div class="border-2 border-dashed border-gray-600 rounded-lg p-4 flex flex-col items-center">
-            <img [src]="imagenPreview" alt="Vista previa" class="w-full max-w-xs h-48 object-cover rounded-lg mb-4" />
+            <img
+              [src]="imagenPreview"
+              alt="Vista previa"
+              class="w-full max-w-xs h-48 object-cover rounded-lg mb-4"
+              *ngIf="imagenPreview"
+            />
             <p-fileUpload
               name="imagen"
               accept="image/*"
@@ -107,6 +142,7 @@
               [auto]="true"
               chooseLabel="Seleccionar imagen"
               mode="basic"
+              [disabled]="isLoading"
             >
             </p-fileUpload>
             <small class="text-gray-400 mt-2">Formatos: JPG, PNG. Máx: {{ maxFileSize }}MB</small>
@@ -136,55 +172,79 @@
       <h2 class="text-xl font-semibold mb-4 text-white">Ubicación</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label class="block mb-2 text-gray-300 font-medium">Dirección *</label>
+          <label class="block mb-2 text-gray-300 font-medium" for="direccion">Dirección *</label>
           <input
+            id="direccion"
             class="border border-gray-600 rounded w-full p-3 bg-customNegro text-white focus:ring-2 focus:ring-customRed focus:border-transparent"
             [(ngModel)]="sala.direccion"
             name="direccion"
             required
             [disabled]="isLoading"
+            #direccion="ngModel"
+            aria-required="true"
           />
+          <div *ngIf="direccion.invalid && direccion.touched" class="text-red-400 text-sm mt-1">
+            La dirección es obligatoria.
+          </div>
         </div>
 
         <div>
-          <label class="block mb-2 text-gray-300 font-medium">Ciudad *</label>
+          <label class="block mb-2 text-gray-300 font-medium" for="ciudad">Ciudad *</label>
           <input
+            id="ciudad"
             class="border border-gray-600 rounded w-full p-3 bg-customNegro text-white focus:ring-2 focus:ring-customRed focus:border-transparent"
             [(ngModel)]="sala.ciudad"
             name="ciudad"
             required
             [disabled]="isLoading"
+            #ciudad="ngModel"
+            aria-required="true"
           />
+          <div *ngIf="ciudad.invalid && ciudad.touched" class="text-red-400 text-sm mt-1">
+            La ciudad es obligatoria.
+          </div>
         </div>
 
         <div>
-          <label class="block mb-2 text-gray-300 font-medium">Provincia *</label>
+          <label class="block mb-2 text-gray-300 font-medium" for="provincia">Provincia *</label>
           <select
+            id="provincia"
             class="border border-gray-600 rounded w-full p-3 bg-customNegro text-white focus:ring-2 focus:ring-customRed focus:border-transparent"
             [(ngModel)]="sala.provincia"
             name="provincia"
             required
             [disabled]="isLoading"
             (change)="onProvinciaChange()"
+            #provincia="ngModel"
+            aria-required="true"
           >
-            <option value="">Seleccione una provincia</option>
+            <option value="" disabled selected>Seleccione una provincia</option>
             <option *ngFor="let provincia of provincias" [value]="provincia.nombre">
               {{ provincia.nombre }}
             </option>
           </select>
+          <div *ngIf="provincia.invalid && provincia.touched" class="text-red-400 text-sm mt-1">
+            La provincia es obligatoria.
+          </div>
         </div>
 
         <div>
-          <label class="block mb-2 text-gray-300 font-medium">Código Postal *</label>
+          <label class="block mb-2 text-gray-300 font-medium" for="codigoPostal">Código Postal *</label>
           <input
+            id="codigoPostal"
             class="border border-gray-600 rounded w-full p-3 bg-customNegro text-white focus:ring-2 focus:ring-customRed focus:border-transparent"
             [(ngModel)]="sala.codigoPostal"
             name="codigoPostal"
             required
+            maxlength="5"
             [disabled]="isLoading"
             (input)="onCodigoPostalInput()"
-            maxlength="5"
+            #codigoPostal="ngModel"
+            aria-required="true"
           />
+          <div *ngIf="codigoPostal.invalid && codigoPostal.touched" class="text-red-400 text-sm mt-1">
+            El código postal es obligatorio y debe tener máximo 5 caracteres.
+          </div>
         </div>
       </div>
     </div>
@@ -212,14 +272,21 @@
             fill="none"
             viewBox="0 0 24 24"
           >
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
             <path
               class="opacity-75"
               fill="currentColor"
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
             ></path>
           </svg>
-          Procesando...
+          Guardando...
         </span>
       </button>
     </div>
