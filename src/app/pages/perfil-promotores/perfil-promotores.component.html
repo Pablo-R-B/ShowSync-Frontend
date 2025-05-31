@@ -74,14 +74,14 @@
       </div>
 
       <ul *ngFor="let post of postulaciones" class="space-y-4">
-        <li *ngFor="let sala of salas"  class=" bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center">
+        <li class=" bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center">
           <div class="flex items-center gap-3">
             <img [src]="post.eventoImagen" alt="Logo sala" class="w-10 h-10 rounded-full" />
             <div>
 
               <p class="font-semibold">{{ post.eventoNombre }}</p>
               <p class="font-semibold">{{post.artistaNombre}}</p>
-              <p class="font-semibold">{{ sala.nombre }}</p>
+              <p class="font-semibold">{{ post.salaNombre }}</p>
               <p class="font-semibold">{{ post.fechaPostulacion | date:'dd/MM/yyyy' }}</p>
               <p class="text-sm text-gray-600">Estado: <span [ngClass]="{'text-yellow-500': post.estado === 'pendiente', 'text-green-500': post.estado === 'aceptado', 'text-red-500': post.estado === 'rechazado'}">{{ post.estado }}</span></p>
             </div>
