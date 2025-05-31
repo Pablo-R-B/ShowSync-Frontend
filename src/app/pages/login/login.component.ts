@@ -127,12 +127,6 @@ export class LoginComponent implements OnInit {
     const decoded: TokenPayload = jwtDecode(localStorage.getItem('token') || '');
     console.log('Perfil completo:', decoded.perfilCompleto);
 
-    if (!decoded.perfilCompleto) {
-      this.router.navigate(['/completar-perfil']);
-      return;
-    }
-
-
 
     const route = routes[rol as keyof typeof routes] || '/landing-page';
     this.router.navigate([route]);
