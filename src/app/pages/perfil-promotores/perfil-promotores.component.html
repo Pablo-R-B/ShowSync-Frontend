@@ -28,40 +28,7 @@
   <div class="grid md:grid-cols-1 gap-8 mb-10 pb-6">
 
 
-  <!-- Gestión de Eventos -->
-    <div class="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-semibold flex items-center gap-2">
-          <i class="fas fa-ticket-alt text-white"></i> EVENTOS
-        </h2>
 
-      </div>
-
-      <ul class="space-y-4">
-        <li *ngFor="let evento of eventos" class="bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center">
-          <div>
-            <h3 class="font-semibold text-lg">{{ evento.nombreEvento }}</h3>
-            <p class="text-sm text-gray-400">{{ evento.fechaEvento | date:'dd/MM/yyyy' }}</p>
-            <p class="text-sm text-gray-400">{{ evento.nombreSala }}</p>
-          </div>
-          <div class="flex gap-3">
-            <!-- Icono de edición -->
-            <button class="text-yellow-400 hover:text-yellow-300 text-xl flex items-center"
-                    [routerLink]="['/promotores', promotor?.id, 'eventos', evento.id, 'editar']">
-              <i class="fas fa-pencil-alt"></i>
-            </button>
-
-            <!-- Icono de eliminación -->
-            <button class="text-red-500 hover:text-red-400 text-xl flex items-center"
-                    (click)="eliminarEvento(evento.id)">
-              <i class="fas fa-trash-alt"></i>
-            </button>
-          </div>
-        </li>
-        <li *ngIf="eventos.length === 0" class="text-gray-400">No hay eventos para mostrar.</li>
-      </ul>
-    </div>
-    </div>
 
   <div class="grid md:grid-cols-2 gap-8">
 
@@ -74,14 +41,14 @@
       </div>
 
       <ul *ngFor="let post of postulaciones" class="space-y-4">
-        <li *ngFor="let sala of salas"  class=" bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center">
+        <li class=" bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center">
           <div class="flex items-center gap-3">
             <img [src]="post.eventoImagen" alt="Logo sala" class="w-10 h-10 rounded-full" />
             <div>
 
               <p class="font-semibold">{{ post.eventoNombre }}</p>
               <p class="font-semibold">{{post.artistaNombre}}</p>
-              <p class="font-semibold">{{ sala.nombre }}</p>
+              <p class="font-semibold">{{ post.salaNombre }}</p>
               <p class="font-semibold">{{ post.fechaPostulacion | date:'dd/MM/yyyy' }}</p>
               <p class="text-sm text-gray-600">Estado: <span [ngClass]="{'text-yellow-500': post.estado === 'pendiente', 'text-green-500': post.estado === 'aceptado', 'text-red-500': post.estado === 'rechazado'}">{{ post.estado }}</span></p>
             </div>
@@ -151,6 +118,42 @@
 
 
 
+  </div>
+
+
+    <!-- Gestión de Eventos -->
+    <div class="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold flex items-center gap-2">
+          <i class="fas fa-ticket-alt text-white"></i> EVENTOS
+        </h2>
+
+      </div>
+
+      <ul class="space-y-4">
+        <li *ngFor="let evento of eventos" class="bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center">
+          <div>
+            <h3 class="font-semibold text-lg">{{ evento.nombreEvento }}</h3>
+            <p class="text-sm text-gray-400">{{ evento.fechaEvento | date:'dd/MM/yyyy' }}</p>
+            <p class="text-sm text-gray-400">{{ evento.nombreSala }}</p>
+          </div>
+          <div class="flex gap-3">
+            <!-- Icono de edición -->
+            <button class="text-yellow-400 hover:text-yellow-300 text-xl flex items-center"
+                    [routerLink]="['/promotores', promotor?.id, 'eventos', evento.id, 'editar']">
+              <i class="fas fa-pencil-alt"></i>
+            </button>
+
+            <!-- Icono de eliminación -->
+            <button class="text-red-500 hover:text-red-400 text-xl flex items-center"
+                    (click)="eliminarEvento(evento.id)">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </li>
+        <li *ngIf="eventos.length === 0" class="text-gray-400">No hay eventos para mostrar.</li>
+      </ul>
+    </div>
   </div>
 
   <!-- Botón Gestionar Salas -->
