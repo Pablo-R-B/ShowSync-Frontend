@@ -2,16 +2,12 @@
 <body class="bg-black text-white font-sans">
 
 <!-- HERO con video -->
-<div class="relative w-full h-[400px] md:h-[650px] z-10 overflow-hidden">
+
+<div class="relative w-full h-[200px] md:h-[750px] z-10 overflow-hidden ">
   <video #heroVideo autoplay loop playsinline preload="auto" class="w-full h-full object-contain">
     <source src="/assets/videos/ShowSync (3).mp4" type="video/mp4" />
   </video>
-  <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black"></div>
-  <div class="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4">
-    <h1 class="text-3xl md:text-6xl font-extrabold mb-4">Bienvenido a ShowSync</h1>
-    <p class="text-lg md:text-2xl font-medium mb-6">Promociona tu música, encuentra talento y conecta con tus artistas favoritos.</p>
     <button class="bg-yellow-400 text-black font-bold px-8 py-3 rounded-full hover:bg-yellow-500 transition duration-300 shadow-lg" [routerLink]="['/auth/registro']">Regístrate Ahora</button>
-  </div>
 </div>
 <!-- INFO -->
 <div class="text-center py-12 px-6 bg-gradient-to-b from-black to-gray-900">
