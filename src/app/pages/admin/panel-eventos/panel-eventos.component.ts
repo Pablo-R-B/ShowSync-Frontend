@@ -4,7 +4,7 @@ import {DatePipe, NgClass, NgForOf, NgIf, TitleCasePipe} from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EventoDTO } from '../../../interfaces/EventoDTO';
 import {debounceTime, distinctUntilChanged, Subject} from 'rxjs';
-import {Router, RouterLink} from '@angular/router';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-panel-eventos',
@@ -16,7 +16,6 @@ import {Router, RouterLink} from '@angular/router';
     NgIf,
     NgClass,
     TitleCasePipe,
-    RouterLink
   ],
   templateUrl: './panel-eventos.component.html',
   styleUrls: ['./panel-eventos.component.css']
