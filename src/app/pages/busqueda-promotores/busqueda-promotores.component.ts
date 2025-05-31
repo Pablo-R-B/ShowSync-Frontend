@@ -25,7 +25,7 @@ export class BusquedaPromotoresComponent implements OnInit {
   nombrePromotoraSeleccionada: string = '';
   promotorasFiltradas: Promotor[] = []
 
-  pageSize: number = 1;
+  pageSize: number = 6;
   totalItems: number = 0;
   paginaActual: number = 0;
   eventosPaginados: any[] = [];
