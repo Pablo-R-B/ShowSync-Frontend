@@ -6,7 +6,6 @@ import {GenerosMusicalesService} from '../../servicios/generos-musicales.service
 import {Artistas} from '../../interfaces/artistas';
 import {ArtistasService} from '../../servicios/artistas.service';
 import {RespuestaPaginada} from '../../interfaces/respuesta-paginada';
-import {HeroComponent} from '../../componentes/hero/hero.component';
 import {Router, RouterLink} from '@angular/router';
 
 @Component({
@@ -16,7 +15,6 @@ import {Router, RouterLink} from '@angular/router';
     NgForOf,
     NgIf,
     FormsModule,
-    HeroComponent,
     RouterLink
   ],
   templateUrl: './catalogo-artistas.component.html',
