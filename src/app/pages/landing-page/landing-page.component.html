@@ -1,14 +1,16 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
 <body class="bg-black text-white font-sans">
 
-<!-- HERO con video -->
-
-<div class="relative w-full h-[200px] md:h-[750px] z-10 overflow-hidden ">
+<<!-- HERO con video -->
+<div class="relative w-full h-[200px] md:h-[850px] z-10 overflow-hidden">
   <video #heroVideo autoplay loop playsinline preload="auto" class="w-full h-full object-contain">
     <source src="/assets/videos/ShowSync (3).mp4" type="video/mp4" />
   </video>
-    <button class="bg-yellow-400 text-black font-bold px-8 py-3 rounded-full hover:bg-yellow-500 transition duration-300 shadow-lg" [routerLink]="['/auth/registro']">Regístrate Ahora</button>
+  <button class="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-customNegro text-white font-bold px-8 py-3 rounded-full hover:bg-customNegro transition duration-300 shadow-lg z-20" [routerLink]="['/auth/registro']">
+    Regístrate Ahora
+  </button>
 </div>
+
 <!-- INFO -->
 <div class="text-center py-12 px-6 bg-gradient-to-b from-black to-gray-900">
   <div class="space-y-6">
@@ -24,15 +26,15 @@
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
     <div class="text-center">
       <img [src]="sala?.imagen" alt="Sala {{ sala?.nombre }}" class="w-full h-56 object-contain rounded-lg shadow-lg mb-4">
-      <p class="text-xl md:text-2xl font-bold">{{ sala?.nombre }}</p>
+      <h1 class="text-2xl">Espacios listos para vibrar con música en vivo </h1>
     </div>
     <div class="text-center">
       <img *ngIf="artista?.imagenPerfil" [src]="artista.imagenPerfil" alt="Artista {{ artista?.nombreArtista }}" class="w-full h-56 object-contain rounded-lg shadow-lg mb-4">
-      <p class="text-xl md:text-2xl font-bold">{{ artista?.nombreArtista }}</p>
+      <h1 class="text-2xl">Sube al escenario que te mereces. ¡Haz crecer tu carrera musica!</h1>
     </div>
     <div class="text-center">
       <img [src]="promotor?.imagenPerfil" alt="Promotor {{ promotor?.nombrePromotor }}" class="w-full h-56 object-contain rounded-lg shadow-lg mb-4">
-      <p class="text-xl md:text-2xl font-bold">{{ promotor?.nombrePromotor }}</p>
+      <h1 class="text-2xl">Organiza eventos con talento garantizado. Crea experiencias unicas en salas disponibles</h1>
     </div>
   </div>
 </div>
@@ -57,7 +59,9 @@
       </div>
     </div>
     <div class="mt-10">
-      <button class="bg-yellow-400 text-black font-bold text-lg px-8 py-3 rounded-full hover:bg-yellow-500 transition duration-300 shadow-lg" [routerLink]="['/busqueda-eventos']">Ver más Eventos</button>
+      <button class="bg-customNegro text-white font-bold text-lg px-8 py-3 rounded-full hover:bg-customNegro transition duration-300 shadow-lg" [routerLink]="['/busqueda-eventos']">
+        Ver más Eventos
+      </button>
     </div>
   </div>
 </section>
