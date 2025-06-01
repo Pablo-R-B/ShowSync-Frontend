@@ -5,7 +5,6 @@ import { CommonModule, DatePipe, NgForOf, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
-import {PaginationParams} from '../../../interfaces/PaginationParams';
 
 @Component({
   selector: 'app-panel-usuarios',
@@ -23,13 +22,11 @@ import {PaginationParams} from '../../../interfaces/PaginationParams';
 })
 export class PanelUsuariosComponent implements OnInit {
   usuarios: Usuario[] = [];
-  usuariosFiltrados: Usuario[] = [];
-
-  filtroRol: string = 'TODOS';
-  filtro: string = '';
   cargando: boolean = true;
   error: string | null = null;
 
+  filtroRol: string = 'TODOS';
+  filtro: string = '';
   paginaNavegacion: number = 1;
   paginaActual: number = 0;
   itemsPorPagina: number = 10;
@@ -44,8 +41,7 @@ export class PanelUsuariosComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe((termino) => {
       this.filtro = termino;
-      this.paginaActual = 0;
-      this.paginaNavegacion = 1;
+      this.resetearPaginacion();
       this.cargarUsuarios();
     });
   }
@@ -54,55 +50,56 @@ export class PanelUsuariosComponent implements OnInit {
     this.cargarUsuarios();
   }
 
+  private resetearPaginacion(): void {
+    this.paginaActual = 0;
+    this.paginaNavegacion = 1;
+  }
+
   cargarUsuarios(): void {
     this.cargando = true;
     this.error = null;
 
-    const params: PaginationParams = {
+    const params = {
       page: this.paginaActual,
-      size: this.itemsPorPagina
+      size: this.itemsPorPagina,
+      termino: this.filtro?.trim() || undefined,
+      rol: this.filtroRol !== 'TODOS' ? this.filtroRol : undefined
     };
 
-    if (this.filtro && this.filtro.trim() !== '') {
-      params.termino = this.filtro.trim();
-    }
-
-    if (this.filtroRol !== 'TODOS') {
-      params.rol = this.filtroRol.trim();
-    }
-
-
-    console.log('Params enviados al backend:', params);
+    console.log('Enviando parámetros:', params);
 
     this.usuarioService.obtenerTodasPaginadas(params).subscribe({
       next: (response) => {
-        this.usuarios = response.items;
-        this.totalUsuarios = response.totalItems;
-        this.totalPaginas = response.totalPages;
-        this.usuariosFiltrados = [...this.usuarios]; // Ya vienen filtrados
-        this.cargando = false;
-        // Debug
-        console.log('Usuarios cargados:', this.usuarios.length);
-        console.log('Usuarios filtrados:', this.usuariosFiltrados.length);
-        console.log('Total usuarios:', this.totalUsuarios);
-        console.log('Total páginas:', this.totalPaginas);
+        console.log('Respuesta del servidor:', response);
+
+        // Manejar tanto respuesta paginada como array simple
+        if (response && (response.items || Array.isArray(response))) {
+          this.usuarios = response.items || response;
+          this.totalUsuarios = response.totalItems || response.length;
+          this.totalPaginas = response.totalPages || Math.ceil(this.totalUsuarios / this.itemsPorPagina);
+        } else {
+          this.usuarios = [];
+          this.totalUsuarios = 0;
+          this.totalPaginas = 1;
+        }
+
+        console.log('Datos asignados:', {
+          usuarios: this.usuarios.length,
+          total: this.totalUsuarios,
+          paginas: this.totalPaginas
+        });
       },
       error: (err) => {
-        console.error('Error al cargar usuarios:', err);
-        this.error = err.message || 'Error al cargar usuarios.';
+        console.error('Error:', err);
         this.usuarios = [];
-        this.usuariosFiltrados = [];
+        this.totalUsuarios = 0;
+        this.totalPaginas = 1;
+      },
+      complete: () => {
         this.cargando = false;
+        console.log('Carga completada');
       }
     });
-  }
-
-  filtrarUsuarios(): void {
-    let filtrados = this.usuarios;
-    if (this.filtroRol !== 'TODOS') {
-      filtrados = filtrados.filter(u => u.rol === this.filtroRol);
-    }
-    this.usuariosFiltrados = filtrados;
   }
 
   onFiltroTextoChange(): void {
@@ -110,17 +107,20 @@ export class PanelUsuariosComponent implements OnInit {
   }
 
   onFiltroRolChange(): void {
-    this.paginaActual = 0;
-    this.paginaNavegacion = 1;
+    this.resetearPaginacion();
     this.cargarUsuarios();
   }
 
   cambiarPagina(pagina: number): void {
-    if (pagina !== this.paginaActual && pagina >= 0 && pagina < this.totalPaginas) {
+    console.log('Intentando cambiar a página:', pagina);
+    if (pagina >= 0 && pagina < this.totalPaginas && pagina !== this.paginaActual) {
       this.paginaActual = pagina;
       this.paginaNavegacion = pagina + 1;
+      console.log('Cargando página:', this.paginaActual);
       this.cargarUsuarios();
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      console.warn('Cambio de página no permitido');
     }
   }
 
@@ -170,5 +170,9 @@ export class PanelUsuariosComponent implements OnInit {
 
   get isLoading(): boolean {
     return this.cargando;
+  }
+
+  private obtenerMensajeError(err: any) {
+    return undefined;
   }
 }

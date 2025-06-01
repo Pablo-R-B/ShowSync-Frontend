@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {Observable, tap} from 'rxjs';
 import { Usuario } from '../interfaces/usuario';
 import { PaginationParams } from '../interfaces/PaginationParams';
 import {RespuestaPaginada} from '../interfaces/respuesta-paginada';
@@ -18,26 +18,30 @@ export class UsuarioService {
       .set('page', (params.page ?? 0).toString())
       .set('size', (params.size ?? 10).toString());
 
-    if (typeof params.termino === 'string' && params.termino.trim()) {
-      httpParams = httpParams.set('termino', params.termino.trim());
+    if (params.termino) {
+      httpParams = httpParams.set('termino', params.termino);
     }
 
-    if (typeof params.sortField === 'string') {
+    if (params.sortField) {
       httpParams = httpParams.set('sortField', params.sortField);
     }
 
-    if (typeof params.sortDirection === 'string') {
+    if (params.sortDirection) {
       httpParams = httpParams.set('direction', params.sortDirection);
     }
 
-    if (typeof params.rol === 'string' && params.rol.trim()) {
-      httpParams = httpParams.set('rol', params.rol.trim());
+    if (params.rol) {
+      httpParams = httpParams.set('rol', params.rol);
     }
+
+    console.log('Parámetros enviados:', httpParams.toString()); // Para depuración
 
     return this.http.get<RespuestaPaginada<Usuario>>(this.apiUrl, {
       params: httpParams,
       headers: this.getAuthHeaders()
-    });
+    }).pipe(
+      tap(response => console.log('Respuesta recibida:', response)) // Para depuración
+    );
   }
 
   private getAuthHeaders(): HttpHeaders {
