@@ -54,6 +54,15 @@ export class UsuarioService {
     });
   }
 
+
+  // Método para obtener el numero total de usuarios totales y por rol
+  contarUsuariosPorRol(): Observable<Map<string, number>> {
+    const url = `${this.apiUrl}/contar-usuarios-por-rol`;
+    return this.http.get<Map<string, number>>(url, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   // Métodos adicionales
   obtenerUsuarioPorId(id: number): Observable<Usuario> {
     return this.http.get<Usuario>(`${this.apiUrl}/${id}`);

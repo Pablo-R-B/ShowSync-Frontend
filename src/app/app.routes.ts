@@ -68,6 +68,11 @@ export const routes: Routes = [
         path: 'eventos',
         loadComponent: () => import('./pages/admin/panel-eventos/panel-eventos.component').then(m => m.PanelEventosComponent),
       },
+
+      {
+        path:'resumen',
+        loadComponent: () => import('./pages/admin/resumen/resumen.component').then(m => m.ResumenComponent),
+      },
       {
         path: 'generos',
         loadComponent: () => import('./pages/admin/panel-generos/panel-generos.component').then(m => m.PanelGenerosComponent),
