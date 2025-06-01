@@ -73,7 +73,6 @@
             required
             class="w-full pl-12 pr-12 py-4 rounded-2xl bg-customGrisOscurso/60 backdrop-blur-sm border border-customGrisClaro/30 text-customBlanco placeholder:text-customGrisMedio focus:outline-none focus:ring-2 focus:ring-customRed focus:border-transparent transition-all duration-300 hover:bg-customGrisOscurso/80"
           />
-          <!-- Eye toggle button -->
           <button
             type="button"
             (click)="togglePasswordVisibility()"
@@ -89,6 +88,37 @@
           </button>
         </div>
 
+        <!-- Checkbox para mantener sesión -->
+        <div class="flex items-center space-x-3 pt-2">
+          <div class="relative">
+            <input
+              type="checkbox"
+              id="keepSession"
+              [(ngModel)]="keepSession"
+              name="keepSession"
+              (change)="onKeepSessionChange()"
+              class="sr-only"
+            />
+            <label
+              for="keepSession"
+              class="flex items-center cursor-pointer select-none"
+            >
+              <div class="relative">
+                <div class="w-5 h-5 rounded border-2 border-customGrisClaro/50 bg-customGrisOscurso/60 backdrop-blur-sm transition-all duration-200 hover:border-customRed/70"
+                     [class.bg-customRed]="keepSession"
+                     [class.border-customRed]="keepSession">
+                  <svg *ngIf="keepSession" class="w-3 h-3 text-white absolute top-0.5 left-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </div>
+              </div>
+              <span class="ml-3 text-customGrisClaro hover:text-customBlanco transition-colors duration-200 text-sm">
+                Mantener sesión iniciada
+              </span>
+            </label>
+          </div>
+        </div>
+
         <div class="flex flex-col space-y-3 text-center pt-2">
           <a routerLink="/auth/recuperar"
              class="text-customGrisMedio hover:text-customRed hover:underline text-sm transition-colors duration-300 transform hover:scale-105">
@@ -102,12 +132,17 @@
 
         <button
           type="submit"
-          class="w-full relative overflow-hidden bg-gradient-to-r from-customBurbundy to-customRed hover:from-customRed hover:to-customBurbundy text-customBlanco font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-lg shadow-customBurbundy/50 hover:shadow-xl hover:shadow-customRed/60 transform hover:scale-[1.02] hover:-translate-y-1 group"
+          [disabled]="isLoading"
+          class="w-full relative overflow-hidden bg-gradient-to-r from-customBurbundy to-customRed hover:from-customRed hover:to-customBurbundy text-customBlanco font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-lg shadow-customBurbundy/50 hover:shadow-xl hover:shadow-customRed/60 transform hover:scale-[1.02] hover:-translate-y-1 group disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
         >
           <span class="relative z-10 flex items-center justify-center space-x-2">
-            <span>Entrar</span>
-            <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span *ngIf="!isLoading">Entrar</span>
+            <span *ngIf="isLoading">Iniciando...</span>
+            <svg *ngIf="!isLoading" class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            </svg>
+            <svg *ngIf="isLoading" class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
             </svg>
           </span>
           <div class="absolute inset-0 bg-gradient-to-r from-customRed to-customBurbundy opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

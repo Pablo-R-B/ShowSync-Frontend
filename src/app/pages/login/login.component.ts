@@ -25,13 +25,15 @@ export class LoginComponent implements OnInit {
   showPassword: boolean = false;
   keepSession: boolean = false;
 
-
   constructor(
     private authService: AuthService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
+    // Cargar datos guardados si existen
+    this.loadSavedCredentials();
+
     // Verificar si ya hay un token válido
     const existingToken = localStorage.getItem('token');
     if (existingToken) {
@@ -63,6 +65,13 @@ export class LoginComponent implements OnInit {
 
     this.isLoading = true;
     this.error = '';
+
+    // Guardar credenciales si el usuario marcó "Mantener sesión"
+    if (this.keepSession) {
+      this.saveCredentials();
+    } else {
+      this.clearSavedCredentials();
+    }
 
     this.authService.login(this.email, this.contrasena).subscribe({
       next: (token) => {
@@ -130,9 +139,35 @@ export class LoginComponent implements OnInit {
     const decoded: TokenPayload = jwtDecode(localStorage.getItem('token') || '');
     console.log('Perfil completo:', decoded.perfilCompleto);
 
-
     const route = routes[rol as keyof typeof routes] || '/landing-page';
     this.router.navigate([route]);
+  }
+
+  // Método para guardar credenciales
+  private saveCredentials(): void {
+    localStorage.setItem('savedEmail', this.email);
+    localStorage.setItem('savedPassword', this.contrasena);
+    localStorage.setItem('keepSessionEnabled', 'true');
+  }
+
+  // Método para cargar credenciales guardadas
+  private loadSavedCredentials(): void {
+    const savedEmail = localStorage.getItem('savedEmail');
+    const savedPassword = localStorage.getItem('savedPassword');
+    const keepSessionEnabled = localStorage.getItem('keepSessionEnabled');
+
+    if (keepSessionEnabled === 'true' && savedEmail && savedPassword) {
+      this.email = savedEmail;
+      this.contrasena = savedPassword;
+      this.keepSession = true;
+    }
+  }
+
+  // Método para limpiar credenciales guardadas
+  private clearSavedCredentials(): void {
+    localStorage.removeItem('savedEmail');
+    localStorage.removeItem('savedPassword');
+    localStorage.removeItem('keepSessionEnabled');
   }
 
   // Método para limpiar el formulario
@@ -141,6 +176,8 @@ export class LoginComponent implements OnInit {
     this.contrasena = '';
     this.error = '';
     this.showPassword = false;
+    this.keepSession = false;
+    this.clearSavedCredentials();
   }
 
   // Método para mostrar/ocultar contraseña
@@ -148,5 +185,11 @@ export class LoginComponent implements OnInit {
     this.showPassword = !this.showPassword;
   }
 
-
+  // Método que se ejecuta cuando cambia el estado del checkbox
+  onKeepSessionChange(): void {
+    if (!this.keepSession) {
+      // Si desmarca la opción, limpiar credenciales guardadas
+      this.clearSavedCredentials();
+    }
+  }
 }
