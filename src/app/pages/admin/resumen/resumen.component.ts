@@ -112,8 +112,7 @@ export class ResumenComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.salasService.getDatosGraficaSalas().subscribe({
         next: (data: SalaEstadoCantidad[]) => {
-          this.datosSalas = data;
-          this.calcularTotalesPorEstado();
+          this.datosSalas = data.sort((a, b) => a.salaNombre.localeCompare(b.salaNombre));          this.calcularTotalesPorEstado();
           this.loadingSalas = false;
           resolve();
         },
@@ -167,6 +166,8 @@ export class ResumenComponent implements OnInit {
 
     console.log('Total de salas reservadas:', this.totalSalasReservadas);
   }
+
+
   calcularMetricasAdicionales(): void {
     // Calcular porcentaje de eventos futuros que se hayan 'confirmado' únicamente
     if (this.totalEventos > 0) {
@@ -184,22 +185,8 @@ export class ResumenComponent implements OnInit {
     return item.salaNombre + item.estado;
   }
 
-  // Métodos auxiliares para el template
-  get totalSalas(): number {
-    return this.datosSalas.length;
-  }
 
-  get porcentajeConfirmadas(): number {
-    return this.totalSalas > 0 ? (this.salasConfirmadas / this.totalSalas) * 100 : 0;
-  }
 
-  get porcentajeEnRevision(): number {
-    return this.totalSalas > 0 ? (this.salasEnRevision / this.totalSalas) * 100 : 0;
-  }
-
-  get porcentajeRechazadas(): number {
-    return this.totalSalas > 0 ? (this.salasRechazadas / this.totalSalas) * 100 : 0;
-  }
 
   // Método para obtener el color del estado
   getEstadoColor(estado: string): string {
