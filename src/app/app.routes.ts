@@ -88,7 +88,7 @@ export const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'usuarios',
+        redirectTo: 'resumen',
         pathMatch: 'full',
       }
     ]
