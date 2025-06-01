@@ -59,7 +59,6 @@
           />
         </div>
 
-        <!-- Password input with icon -->
         <div class="relative group">
           <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
             <svg class="w-5 h-5 text-customGrisClaro group-focus-within:text-customRed transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,16 +66,29 @@
             </svg>
           </div>
           <input
-            type="password"
+            [type]="showPassword ? 'text' : 'password'"
             [(ngModel)]="contrasena"
             name="contrasena"
             placeholder="Contraseña"
             required
-            class="w-full pl-12 pr-4 py-4 rounded-2xl bg-customGrisOscurso/60 backdrop-blur-sm border border-customGrisClaro/30 text-customBlanco placeholder:text-customGrisMedio focus:outline-none focus:ring-2 focus:ring-customRed focus:border-transparent transition-all duration-300 hover:bg-customGrisOscurso/80"
+            class="w-full pl-12 pr-12 py-4 rounded-2xl bg-customGrisOscurso/60 backdrop-blur-sm border border-customGrisClaro/30 text-customBlanco placeholder:text-customGrisMedio focus:outline-none focus:ring-2 focus:ring-customRed focus:border-transparent transition-all duration-300 hover:bg-customGrisOscurso/80"
           />
+          <!-- Eye toggle button -->
+          <button
+            type="button"
+            (click)="togglePasswordVisibility()"
+            class="absolute inset-y-0 right-0 pr-4 flex items-center text-customGrisClaro hover:text-customRed transition-colors duration-200 focus:outline-none"
+          >
+            <svg *ngIf="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+            </svg>
+            <svg *ngIf="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+            </svg>
+          </button>
         </div>
 
-        <!-- Links section with better spacing -->
         <div class="flex flex-col space-y-3 text-center pt-2">
           <a routerLink="/auth/recuperar"
              class="text-customGrisMedio hover:text-customRed hover:underline text-sm transition-colors duration-300 transform hover:scale-105">
@@ -88,7 +100,6 @@
           </a>
         </div>
 
-        <!-- Enhanced submit button -->
         <button
           type="submit"
           class="w-full relative overflow-hidden bg-gradient-to-r from-customBurbundy to-customRed hover:from-customRed hover:to-customBurbundy text-customBlanco font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-lg shadow-customBurbundy/50 hover:shadow-xl hover:shadow-customRed/60 transform hover:scale-[1.02] hover:-translate-y-1 group"
@@ -102,7 +113,6 @@
           <div class="absolute inset-0 bg-gradient-to-r from-customRed to-customBurbundy opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </button>
 
-        <!-- Enhanced error message -->
         <div *ngIf="error" class="text-center mt-6">
           <div class="inline-flex items-center space-x-2 bg-customBurbundy/30 border border-customRed/50 rounded-lg px-4 py-3 text-customGrisClaro backdrop-blur-sm">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,7 +125,6 @@
     </div>
   </div>
 
-  <!-- Background decoration circles -->
   <div class="absolute top-10 left-10 w-32 h-32 bg-customBurbundy/20 rounded-full blur-3xl animate-pulse"></div>
   <div class="absolute bottom-10 right-10 w-48 h-48 bg-customRed/15 rounded-full blur-3xl animate-pulse delay-1000"></div>
   <div class="absolute top-1/2 left-5 w-24 h-24 bg-customGrisOscurso/30 rounded-full blur-2xl animate-bounce"></div>

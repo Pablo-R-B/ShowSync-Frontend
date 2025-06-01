@@ -22,6 +22,9 @@ export class LoginComponent implements OnInit {
   contrasena: string = '';
   error: string = '';
   isLoading: boolean = false;
+  showPassword: boolean = false;
+  keepSession: boolean = false;
+
 
   constructor(
     private authService: AuthService,
@@ -137,13 +140,13 @@ export class LoginComponent implements OnInit {
     this.email = '';
     this.contrasena = '';
     this.error = '';
+    this.showPassword = false;
   }
 
-  // Método para mostrar/ocultar contraseña (opcional)
+  // Método para mostrar/ocultar contraseña
   togglePasswordVisibility(): void {
-    const passwordInput = document.querySelector('input[type="password"]') as HTMLInputElement;
-    if (passwordInput) {
-      passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
-    }
+    this.showPassword = !this.showPassword;
   }
+
+
 }
