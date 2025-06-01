@@ -1,0 +1,81 @@
+<section class="max-w-4xl mx-auto p-6 text-gray-800">
+  <h1 class="text-3xl font-bold mb-4 text-center">¿Cómo funciona?</h1>
+  <p class="text-lg mb-8 text-center text-gray-600">
+    Nuestra plataforma conecta artistas con promotores a través de eventos musicales únicos. Aquí te explicamos cómo usarla según tu rol.
+  </p>
+
+  <div class="grid md:grid-cols-2 gap-8">
+    <!-- Artistas -->
+    <div class="bg-white shadow-lg rounded-2xl p-6 border">
+      <h2 class="text-xl font-semibold mb-4">🎤 Soy Artista</h2>
+      <ul class="space-y-3 list-disc list-inside text-gray-700">
+        <li>Explora los eventos disponibles en el catálogo.</li>
+        <li>Postúlate a los eventos que encajen con tu estilo y disponibilidad.</li>
+        <li>Recibe notificaciones si eres seleccionado por un promotor.</li>
+        <li>Prepara tu mejor show y haz crecer tu carrera.</li>
+      </ul>
+    </div>
+
+    <!-- Promotores -->
+    <div class="bg-white shadow-lg rounded-2xl p-6 border">
+      <h2 class="text-xl font-semibold mb-4">🎟️ Soy Promotor</h2>
+      <ul class="space-y-3 list-disc list-inside text-gray-700">
+        <li>Consulta las salas disponibles y crea tu evento fácilmente.</li>
+        <li>Publica el evento aunque aún no tengas artistas asignados.</li>
+        <li>Recibe postulaciones o busca artistas directamente.</li>
+        <li>Asigna a los artistas ideales y confirma tu evento.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Formulario de contacto -->
+  <div class="mt-16 bg-gray-100 rounded-2xl p-6 shadow-inner">
+    <h3 class="text-2xl font-semibold mb-4 text-center">📩 Envíanos tus dudas</h3>
+    <form
+      (ngSubmit)="enviarFormulario()"
+      #formContacto="ngForm"
+      class="grid gap-4 max-w-xl mx-auto"
+    >
+      <input
+        type="text"
+        name="nombre"
+        [(ngModel)]="form.nombre"
+        required
+        placeholder="Tu nombre"
+        class="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring w-full"
+      />
+      <input
+        type="email"
+        name="email"
+        [(ngModel)]="form.email"
+        required
+        placeholder="Tu correo electrónico"
+        class="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring w-full"
+      />
+      <textarea
+        name="mensaje"
+        [(ngModel)]="form.mensaje"
+        required
+        rows="5"
+        placeholder="Escribe tu mensaje..."
+        class="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring w-full"
+      ></textarea>
+
+      <button
+        type="submit"
+        [disabled]="formContacto.invalid || cargando"
+        class="bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
+      >
+        {{ cargando ? 'Enviando...' : 'Enviar mensaje' }}
+      </button>
+
+      <p *ngIf="enviado" class="text-green-600 mt-2 text-center">
+        ¡Tu mensaje ha sido enviado correctamente!
+      </p>
+      <p *ngIf="error" class="text-red-600 mt-2 text-center">
+        Ocurrió un error al enviar el mensaje. Intenta más tarde.
+      </p>
+    </form>
+  </div>
+
+</section>

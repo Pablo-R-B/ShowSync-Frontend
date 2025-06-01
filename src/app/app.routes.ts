@@ -51,6 +51,11 @@ export const routes: Routes = [
   { path: 'catalogo-artistas', component: CatalogoArtistasComponent, pathMatch: 'full' },
   { path: 'artista/:id', component: PerfilArtistaComponent, pathMatch: 'full' },
 
+  //Ruta de instrucciones
+   {path: 'instrucciones', loadComponent: () => import('./pages/intrucciones-uso/intrucciones-uso.component').then(m => m.InstruccionesUsoComponent)},
+
+
+
   // ✅ PANEL DE ADMINISTRACIÓN - Configuración correcta
   {
     path: 'admin',
