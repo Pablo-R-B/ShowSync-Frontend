@@ -1,12 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {Paginator} from 'primeng/paginator';
+import {Paginator, PaginatorState} from 'primeng/paginator';
 import {NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {GenerosMusicalesService} from '../../servicios/generos-musicales.service';
 import {Artistas} from '../../interfaces/artistas';
 import {ArtistasService} from '../../servicios/artistas.service';
 import {RespuestaPaginada} from '../../interfaces/respuesta-paginada';
-import {HeroComponent} from '../../componentes/hero/hero.component';
 import {Router, RouterLink} from '@angular/router';
 
 @Component({
@@ -16,7 +15,6 @@ import {Router, RouterLink} from '@angular/router';
     NgForOf,
     NgIf,
     FormsModule,
-    HeroComponent,
     RouterLink
   ],
   templateUrl: './catalogo-artistas.component.html',
@@ -47,31 +45,41 @@ export class CatalogoArtistasComponent implements OnInit {
 
 
   listarArtistas(): void {
+    // Limpiar error anterior al iniciar nueva búsqueda
+    this.errorMsj = '';
+
     if (this.generoSeleccionado && this.generoSeleccionado.trim() !== "") {
       this.artistasService.artistasPorGenero(this.generoSeleccionado, this.paginaActual, this.pageSize, this.busqueda).subscribe({
         next: (resultado: RespuestaPaginada<Artistas>) => {
           this.artistasLista = resultado.items;
           this.totalItems = resultado.totalItems;
-          console.log("Artistas filtrados por género y búsqueda:", this.artistasLista); // Cambia a console.log
+
+          // Mensaje informativo si no hay resultados, pero no es un error
+          if (resultado.items.length === 0) {
+            console.log("No se encontraron artistas para el género seleccionado");
+          }
+
+          console.log("Artistas filtrados por género y búsqueda:", this.artistasLista);
         },
         error: (err) => {
           this.errorMsj = "Error al filtrar artistas: " + err.message;
+          this.artistasLista = []; // Limpiar lista en caso de error
           console.error("Error en listarArtistas:", err);
         }
       });
     } else {
       this.artistasService.listarArtistasConGeneros(this.paginaActual, this.pageSize, this.busqueda).subscribe({
-        next: (results:RespuestaPaginada<Artistas>) => {
+        next: (results: RespuestaPaginada<Artistas>) => {
           this.artistasLista = results.items;
           this.totalItems = results.totalItems;
         },
         error: (error) => {
-          this.errorMsj = error.message;
+          this.errorMsj = "Error al cargar artistas: " + error.message;
+          this.artistasLista = []; // Limpiar lista en caso de error
         }
       });
     }
   }
-
 
   buscar():void{
     this.listarArtistas();
@@ -87,31 +95,33 @@ export class CatalogoArtistasComponent implements OnInit {
     });
   }
 
+
+
   onGeneroSeleccionado(genero: string) {
     this.generoSeleccionado = genero;
+    this.errorMsj = ''; // Limpiar mensaje de error anterior
+    this.paginaActual = 0; // Resetear a primera página
     console.log('Género seleccionado:', this.generoSeleccionado);
     this.listarArtistas();
   }
 
   onBuscarPorNombre(busqueda: string) {
     this.busqueda = busqueda;
+    this.errorMsj = ''; // Limpiar mensaje de error anterior
+    this.paginaActual = 0; // Resetear a primera página
     console.log('Buscado:', this.busqueda);
     this.buscar();
   }
 
-  limpiarBusqueda(): void {
-    this.busqueda = ''; // Limpia la búsqueda
-    this.artistasLista = [];
-    this.listarArtistas();// Limpia la lista de artistas
-  }
+  limpiarBusqueda():  void {
+    this.busqueda = '';
+    this.generoSeleccionado = '';
+    this.errorMsj = '';
+    this.paginaActual = 0;
 
-  onPageChange(event: any): void {
-    this.paginaActual = event.page; // Índice de la página (empezando en 0)
-    this.pageSize = event.rows; // Tamaño de página seleccionado (6, 10 o 15)
-    if (this.pageSize !== event.rows) {
-      this.paginaActual = 0;
-    }
-    this.listarArtistas(); // Vuelve a cargar los datos con los nuevos parámetros
+
+    // Cargar todos los artistas sin filtros
+    this.listarArtistas();
   }
 
   async verDetallesArtista(idArtista: number) {
@@ -126,6 +136,13 @@ export class CatalogoArtistasComponent implements OnInit {
       console.error("Error en navegación:", error);
     }
   }
+
+
+  onPageChange($event: PaginatorState) {
+
+  }
+
+
 
 
 }

@@ -2,15 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, NgFor, NgForOf, NgIf } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { SalasService, PaginationParams } from '../../../servicios/salas.service';
 import Swal from 'sweetalert2';
 import { Sala } from '../../../interfaces/sala';
-import {debounceTime, distinctUntilChanged, Observable, Subject} from 'rxjs';
-import {ReservasPorSala} from '../../../interfaces/ReservasPorSala';
+import { debounceTime, distinctUntilChanged, Observable, Subject } from 'rxjs';
+import { ReservasPorSala } from '../../../interfaces/ReservasPorSala';
 import { Chart, registerables } from 'chart.js';
-import {ReservaRaw} from '../../../interfaces/ReservaRaw';
-import {SalaEstadoCantidad} from '../../../interfaces/SalaEstadoCantidad';
-
+import { ReservaRaw } from '../../../interfaces/ReservaRaw';
+import { SalaEstadoCantidad } from '../../../interfaces/SalaEstadoCantidad';
+import {SalasService} from '../../../servicios/salas.service';
+import {PaginationParams} from '../../../interfaces/PaginationParams';
+import {RespuestaPaginada} from '../../../interfaces/respuesta-paginada';
 
 @Component({
   selector: 'app-panel-salas',
@@ -29,18 +30,15 @@ export class PanelSalasComponent implements OnInit {
   reservasPorSala: ReservasPorSala[] = [];
   isLoadingReservas: boolean = false;
   eliminando: boolean = false;
-
-// Configuración de la gráfica
   mostrarGrafica: boolean = false;
-
 
   // Estado y mensajes
   filtro: string = '';
   isLoading: boolean = true;
   errorMessage: string | null = null;
 
-  // Paginación (usando paginación del backend)
-  paginaActual: number = 0; // Backend usa base 0
+  // Paginación
+  paginaActual: number = 0;
   itemsPorPagina: number = 6;
   totalSalas: number = 0;
   totalPaginas: number = 0;
@@ -52,12 +50,14 @@ export class PanelSalasComponent implements OnInit {
   filtroProvincia: string = '';
   tipoFiltroActivo: 'general' | 'capacidad' | 'ciudad' | 'provincia' = 'general';
 
-  // Gráfico de reservas por sala
+  // Gráfico
   public chart: Chart | undefined;
   public chartData: any;
   public chartLabels: string[] = [];
   public chartEstados: string[] = ['en_revision', 'confirmado', 'cancelado'];
 
+  // Variable para navegación rápida
+  paginaNavegacion: number = 1;
 
   // Búsqueda con debounce
   private searchSubject = new Subject<string>();
@@ -78,24 +78,17 @@ export class PanelSalasComponent implements OnInit {
     private router: Router
   ) {
     Chart.register(...registerables);
-    // Configurar debounce para búsqueda
     this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged()
     ).subscribe(searchTerm => {
       this.buscarConDebounce(searchTerm);
     });
-
-    // Cargar cantidad de reservas por sala al inicializar
-    this.obtenerCantidadReservas();
-
-    // REMOVER esta línea:
-    // this.cargarDatosGrafica();
   }
 
   ngOnInit(): void {
     this.cargarSalas();
-
+    this.obtenerCantidadReservas();
   }
 
   // Método principal para cargar salas
@@ -125,29 +118,10 @@ export class PanelSalasComponent implements OnInit {
     }
   }
 
-  private cargarSalasConPaginacionResponse(
-    observable: Observable<{ content: Sala[]; totalElements: number; totalPages: number }>
-  ): void {
-    observable.subscribe({
-      next: (response) => {
-        this.salas = response.content;
-        this.totalSalas = response.totalElements;
-        this.totalPaginas = response.totalPages;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.manejarError('Error al cargar salas con paginación', err);
-      }
-    });
-  }
-
   private cargarSalasGenerales(params: PaginationParams): void {
     this.salaService.obtenerTodasPaginadas(params).subscribe({
-      next: (data) => {
-        this.salas = data;
-        // Nota: Como el backend actual devuelve Sala[] en lugar de PageResponse,
-        // simulamos la información de paginación
-        this.actualizarPaginacionSimulada(data.length);
+      next: (respuesta) => {
+        this.actualizarDatosPaginacion(respuesta);
         this.isLoading = false;
       },
       error: (err) => {
@@ -163,9 +137,8 @@ export class PanelSalasComponent implements OnInit {
         this.filtroCapacidadMax,
         params
       ).subscribe({
-        next: (data) => {
-          this.salas = data;
-          this.actualizarPaginacionSimulada(data.length);
+        next: (respuesta) => {
+          this.actualizarDatosPaginacion(respuesta);
           this.isLoading = false;
         },
         error: (err) => {
@@ -176,27 +149,37 @@ export class PanelSalasComponent implements OnInit {
   }
 
   private cargarSalasPorCiudad(params: PaginationParams): void {
-    if (this.filtroCiudad) {
-      this.cargarSalasConPaginacionResponse(this.salaService.buscarSalasPorCiudadPaginadas(this.filtroCiudad, params));
+    if (this.filtroCiudad.trim()) {
+      this.salaService.buscarSalasPorCiudadPaginadas(this.filtroCiudad, params).subscribe({
+        next: (respuesta) => {
+          this.actualizarDatosPaginacion(respuesta);
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.manejarError('Error al buscar por ciudad', err);
+        }
+      });
     }
   }
 
   private cargarSalasPorProvincia(params: PaginationParams): void {
-    if (this.filtroProvincia) {
-      this.cargarSalasConPaginacionResponse(this.salaService.buscarSalasPorProvinciaPaginadas(this.filtroProvincia, params));
+    if (this.filtroProvincia.trim()) {
+      this.salaService.buscarSalasPorProvinciaPaginadas(this.filtroProvincia, params).subscribe({
+        next: (respuesta) => {
+          this.actualizarDatosPaginacion(respuesta);
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.manejarError('Error al buscar por provincia', err);
+        }
+      });
     }
   }
 
-  // Método auxiliar para simular paginación cuando el backend no devuelve PageResponse
-  private actualizarPaginacionSimulada(cantidadRecibida: number): void {
-    // Si recibimos menos elementos que el tamaño solicitado, probablemente es la última página
-    if (cantidadRecibida < this.itemsPorPagina) {
-      this.totalPaginas = this.paginaActual + 1;
-    } else {
-      // Estimamos que hay al menos una página más
-      this.totalPaginas = this.paginaActual + 2;
-    }
-    this.totalSalas = (this.paginaActual * this.itemsPorPagina) + cantidadRecibida;
+  private actualizarDatosPaginacion(respuesta: RespuestaPaginada<Sala>): void {
+    this.salas = respuesta.items;
+    this.totalSalas = respuesta.totalItems;
+    this.totalPaginas = respuesta.totalPages;
   }
 
   // Métodos de filtrado
@@ -211,7 +194,6 @@ export class PanelSalasComponent implements OnInit {
     this.limpiarFiltrosAvanzados();
     this.cargarSalas();
   }
-
 
   filtrarPorCapacidad(): void {
     if (this.filtroCapacidadMin !== null && this.filtroCapacidadMax !== null) {
@@ -278,7 +260,7 @@ export class PanelSalasComponent implements OnInit {
 
   // Métodos auxiliares para la vista
   get paginaActualDisplay(): number {
-    return this.paginaActual + 1; // Para mostrar base 1 en la UI
+    return this.paginaActual + 1;
   }
 
   get tieneResultados(): boolean {
@@ -355,9 +337,7 @@ export class PanelSalasComponent implements OnInit {
     this.isLoading = false;
   }
 
-
-
-  // Método para obtener la cantidad de reservas por sala
+  // Métodos para estadísticas y gráficas
   private obtenerCantidadReservas(): void {
     this.isLoadingReservas = true;
     this.salaService.obtenerCantidadReservasPorSala().subscribe({
@@ -372,7 +352,6 @@ export class PanelSalasComponent implements OnInit {
         this.manejarError('No se pudieron cargar las estadísticas de reservas', err);
         this.isLoadingReservas = false;
       }
-
     });
   }
 
@@ -380,17 +359,13 @@ export class PanelSalasComponent implements OnInit {
     if (!this.reservasPorSala || this.reservasPorSala.length === 0) {
       return 0;
     }
-
     const reserva = this.reservasPorSala.find(r => r.salaNombre === salaNombre);
     return reserva ? reserva.cantidadReservas : 0;
   }
 
-
   private cargarDatosGrafica(): void {
     this.salaService.getDatosGrafica().subscribe({
       next: (data: SalaEstadoCantidad[]) => {
-        console.log('Datos recibidos para gráfica:', data);
-
         if (!data || data.length === 0) {
           console.warn('No se recibieron datos para la gráfica.');
           return;
@@ -421,7 +396,6 @@ export class PanelSalasComponent implements OnInit {
     });
   }
 
-
   private colorPorEstado(estado: string): string {
     switch (estado) {
       case 'en_revision': return 'orange';
@@ -432,10 +406,8 @@ export class PanelSalasComponent implements OnInit {
   }
 
   private crearGrafica(): void {
-    // Esperar a que el DOM se actualice si se acaba de mostrar
     setTimeout(() => {
       const canvas = document.getElementById('miGrafica') as HTMLCanvasElement | null;
-
       if (!canvas) {
         console.error('No se encontró el elemento canvas con id "miGrafica"');
         return;
@@ -448,32 +420,24 @@ export class PanelSalasComponent implements OnInit {
       }
 
       if (this.chart) {
-        this.chart.destroy(); // Evitar duplicados
+        this.chart.destroy();
       }
-
-      console.log('Creando gráfica con datos:', this.chartData);
 
       this.chart = new Chart(ctx, {
         type: 'bar',
         data: this.chartData,
         options: {
           responsive: true,
-          maintainAspectRatio: false, // Añadir esta opción
+          maintainAspectRatio: false,
           scales: {
-            x: {
-              stacked: false
-            },
+            x: { stacked: false },
             y: {
               beginAtZero: true,
-              ticks: {
-                stepSize: 1
-              }
+              ticks: { stepSize: 1 }
             }
           },
           plugins: {
-            legend: {
-              position: 'top'
-            },
+            legend: { position: 'top' },
             title: {
               display: true,
               text: 'Reservas por sala y estado'
@@ -484,26 +448,21 @@ export class PanelSalasComponent implements OnInit {
     }, 100);
   }
 
-
   toggleGrafica(): void {
     this.mostrarGrafica = !this.mostrarGrafica;
-
     if (this.mostrarGrafica) {
-      // Siempre recargar datos al mostrar (datos actualizados)
       this.cargarDatosGrafica();
-    } else {
-      // Si se oculta la gráfica, destruir el chart
-      if (this.chart) {
-        this.chart.destroy();
-        this.chart = undefined;
-      }
+    } else if (this.chart) {
+      this.chart.destroy();
+      this.chart = undefined;
     }
   }
 
-
-
-
-
-
-
+  irAPagina(): void {
+    if (this.paginaNavegacion && this.paginaNavegacion >= 1 && this.paginaNavegacion <= this.totalPaginas) {
+      this.cambiarPagina(this.paginaNavegacion - 1);
+    } else {
+      this.paginaNavegacion = this.paginaActual + 1;
+    }
+  }
 }

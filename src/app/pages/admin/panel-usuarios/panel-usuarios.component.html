@@ -53,7 +53,8 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let usuario of usuariosFiltrados" class="hover:bg-gray-800/50">
+
+    <tr *ngFor="let usuario of usuarios" class="hover:bg-gray-800/50">
       <td class="border border-gray-600 p-2">{{ usuario.id }}</td>
       <td class="border border-gray-600 p-2">{{ usuario.nombreUsuario }}</td>
       <td class="border border-gray-600 p-2">{{ usuario.email }}</td>
@@ -66,13 +67,13 @@
   </table>
 
   <!-- Información de paginación -->
-  <div *ngIf="!isLoading && usuariosFiltrados.length > 0" class="flex justify-between items-center mt-4 text-white text-sm">
+  <div *ngIf="!isLoading && usuarios.length === 0" class="text-center py-12 text-gray-400">
   <span>
     Página {{ paginaActual + 1 }} de {{ totalPaginas }}
     ({{ totalUsuarios }} usuarios en total)
   </span>
     <span>
-    Mostrando {{ usuariosFiltrados.length }} usuarios
+  Mostrando {{ usuarios.length }} de {{ totalUsuarios }} usuarios
   </span>
   </div>
 
@@ -125,7 +126,7 @@
   </div>
 
   <!-- Mensaje cuando no hay resultados -->
-  <div *ngIf="!isLoading && usuariosFiltrados.length === 0" class="text-center py-12 text-gray-400">
+  <div *ngIf="!isLoading && usuarios.length === 0" class="text-center py-12 text-gray-400">
     <div class="flex flex-col items-center">
       <svg class="h-16 w-16 text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>

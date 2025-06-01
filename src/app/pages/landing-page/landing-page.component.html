@@ -1,57 +1,56 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
 <body class="bg-black text-white font-sans">
 
-<!-- HERO con video con márgenes laterales de 2cm -->
-<div class="relative w-full h-[200px] md:h-[750px] z-10 overflow-hidden ">
-    <video #heroVideo autoplay loop playsinline preload="auto" class="w-full h-full object-contain">
-      <source src="/assets/videos/ShowSync (3).mp4" type="video/mp4" />
-    </video>
-
+<<!-- HERO con video -->
+<div class="relative w-full h-[200px] md:h-[850px] z-10 overflow-hidden">
+  <video #heroVideo autoplay loop playsinline preload="auto" class="w-full h-full object-contain">
+    <source src="/assets/videos/ShowSync (3).mp4" type="video/mp4" />
+  </video>
+  <button class="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-customNegro text-white font-bold px-8 py-3 rounded-full hover:bg-customNegro transition duration-300 shadow-lg z-20" [routerLink]="['/auth/registro']">
+    Regístrate Ahora
+  </button>
 </div>
 
-
 <!-- INFO -->
-<div class="text-center py-8 px-4">
-  <div class="space-y-4">
-    <p class="font-bold"><i class="fa-solid fa-bolt fa-spin text-yellow-400 text-2xl"></i> Regístrate y promociona tu música.</p>
-    <p class="font-bold"><i class="fa-solid fa-bolt fa-spin text-yellow-400 text-2xl"></i> Encuentra talento para tus eventos.</p>
-    <p class="font-bold"><i class="fa-solid fa-bolt fa-spin text-yellow-400 text-2xl"></i> Descubre y sigue a tus artistas favoritos.</p>
+<div class="text-center py-12 px-6 bg-gradient-to-b from-black to-gray-900">
+  <div class="space-y-6">
+    <p class="text-2xl md:text-3xl font-bold"><i class="fa-solid fa-bolt fa-spin text-yellow-400"></i> Regístrate y promociona tu música.</p>
+    <p class="text-2xl md:text-3xl font-bold"><i class="fa-solid fa-bolt fa-spin text-yellow-400"></i> Encuentra talento para tus eventos.</p>
+    <p class="text-2xl md:text-3xl font-bold"><i class="fa-solid fa-bolt fa-spin text-yellow-400"></i> Descubre y sigue a tus artistas favoritos.</p>
   </div>
-  <button class="mt-6 bg-gray-200 text-black font-bold px-6 py-2 rounded hover:bg-gray-300" [routerLink]="['/auth/registro']">Regístrate</button>
 </div>
 
 <!-- CATEGORÍAS -->
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6 pb-8">
-  <div class="text-center">
-    <img src="/assets/images/salas.png" alt="Salas" class="w-full h-48 object-contain rounded mb-2">
-    <p>Salas</p>
-  </div>
-  <div class="text-center">
-    <img src="/assets/images/artistas.jpg" alt="Artistas" class="w-full h-48 object-contain rounded mb-2">
-    <p>Artistas</p>
-  </div>
-  <div class="text-center">
-    <img src="/assets/images/promotores.png" alt="Promotores" class="w-full h-48 object-contain rounded mb-2">
-    <p>Promotores</p>
+<div class="py-12 px-6 bg-black">
+  <h2 class="text-center text-3xl md:text-4xl font-extrabold mb-8">Categorías</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+    <div class="text-center">
+      <img [src]="sala?.imagen" alt="Sala {{ sala?.nombre }}" class="w-full h-56 object-contain rounded-lg shadow-lg mb-4">
+      <h1 class="text-2xl">Espacios listos para vibrar con música en vivo </h1>
+    </div>
+    <div class="text-center">
+      <img *ngIf="artista?.imagenPerfil" [src]="artista.imagenPerfil" alt="Artista {{ artista?.nombreArtista }}" class="w-full h-56 object-contain rounded-lg shadow-lg mb-4">
+      <h1 class="text-2xl">Sube al escenario que te mereces. ¡Haz crecer tu carrera musica!</h1>
+    </div>
+    <div class="text-center">
+      <img [src]="promotor?.imagenPerfil" alt="Promotor {{ promotor?.nombrePromotor }}" class="w-full h-56 object-contain rounded-lg shadow-lg mb-4">
+      <h1 class="text-2xl">Organiza eventos con talento garantizado. Crea experiencias unicas en salas disponibles</h1>
+    </div>
   </div>
 </div>
 
-<!--  EVENTOS -->
-<section class="py-16 bg-black">
-  <div class="container mx-auto text-center px-4">
-    <h2 class="text-2xl md:text-4xl font-extrabold mb-8">Próximos Eventos</h2>
-
-    <div #carousel class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-4 max-w-7xl mx-auto justify-items-center">
-
-    <div *ngFor="let evento of eventos"
-           class="min-w-[280px] sm:min-w-[300px] w-[280px] h-[400px] flex-shrink-0 relative group transition-transform duration-300 hover:scale-105">
-        <img [src]="evento.imagenEvento" alt="Evento {{ evento.nombreEvento }}" class="w-full h-full object-cover rounded-xl shadow-lg">
-
-        <div class="absolute inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl px-4">
-          <h3 class="text-white text-xl md:text-2xl font-bold text-center mb-2">{{ evento.nombreEvento }}</h3>
-          <p class="text-white text-sm text-center mb-4">{{ evento.descripcion }}</p>
+<!-- EVENTOS -->
+<section class="py-16 bg-gradient-to-b from-gray-900 to-black">
+  <div class="container mx-auto text-center px-6">
+    <h2 class="text-3xl md:text-4xl font-extrabold mb-8 text-white">Próximos Eventos</h2>
+    <div #carousel class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-7xl mx-auto justify-items-center">
+      <div *ngFor="let evento of eventos.slice(0,3)" class="w-[300px] h-[400px] relative group transition-transform duration-300 hover:scale-105">
+        <img [src]="evento.imagenEvento" alt="Evento {{ evento.nombreEvento }}" class="w-full h-full object-cover rounded-lg shadow-lg">
+        <div class="absolute inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg px-4">
+          <h3 class="text-white text-xl md:text-2xl font-bold mb-2">{{ evento.nombreEvento }}</h3>
+          <p class="text-white text-sm mb-4">{{ evento.descripcion }}</p>
           <ng-container *ngIf="usuarioLogueado; else accesoDenegado">
-            <button (click)="verDetallesEvento(evento.id)" class="px-6 py-2 bg-blue-700 text-white font-semibold rounded-lg hover:bg-blue-500 transition duration-300 shadow-md">Ver detalles</button>
+            <button (click)="verDetallesEvento(evento.id)" class="px-6 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-500 transition duration-300 shadow-md">Ver detalles</button>
           </ng-container>
           <ng-template #accesoDenegado>
             <button (click)="mostrarAdvertencia()" class="px-6 py-2 bg-gray-500 text-white font-semibold rounded-lg opacity-60 cursor-not-allowed">Ver detalles</button>
@@ -59,9 +58,10 @@
         </div>
       </div>
     </div>
-
     <div class="mt-10">
-      <button class="bg-white text-black font-bold text-lg px-8 py-3 rounded-full hover:bg-gray-200 transition duration-300 shadow-lg" [routerLink]="['/busqueda-eventos']">Ver más Eventos</button>
+      <button class="bg-customNegro text-white font-bold text-lg px-8 py-3 rounded-full hover:bg-customNegro transition duration-300 shadow-lg" [routerLink]="['/busqueda-eventos']">
+        Ver más Eventos
+      </button>
     </div>
   </div>
 </section>

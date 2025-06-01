@@ -1,85 +1,326 @@
-<app-hero [texto]="'Encuentra al artista de tu mundo sonoro'"></app-hero>
+<div class="min-h-screen bg-cover bg-center relative" style="background-image: url('assets/images/fondo_3.jpg');">
+  <!-- Overlay con gradiente más sutil -->
+  <div class="absolute inset-0 bg-gradient-to-br from-black/80 via-black/70 to-purple-900/40"></div>
 
-
-
-
-
-<div class="fondo flex flex-col items-center" style="background-image: url('assets/images/fondo_2.png')">
-  <div class="max-w-md w-full">
-    <div class="flex space-x-4">
-      <div class="flex rounded-full border-2 border-blue-500 overflow-hidden max-w-md mx-auto">
-        <input [(ngModel)]="busqueda" type="text" placeholder="Search Something..."
-               class="w-full outline-none bg-white text-sm px-5 py-3" />
-        <button (click)="onBuscarPorNombre(busqueda)" type='button' class="flex items-center justify-center bg-blue-500 hover:bg-blue-600 px-6">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192.904 192.904" width="18px" class="fill-white">
-            <path
-              d="m190.707 180.101-47.078-47.077c11.702-14.072 18.752-32.142 18.752-51.831C162.381 36.423 125.959 0 81.191 0 36.422 0 0 36.423 0 81.193c0 44.767 36.422 81.187 81.191 81.187 19.688 0 37.759-7.049 51.831-18.751l47.079 47.078a7.474 7.474 0 0 0 5.303 2.197 7.498 7.498 0 0 0 5.303-12.803zM15 81.193C15 44.694 44.693 15 81.191 15c36.497 0 66.189 29.694 66.189 66.193 0 36.496-29.692 66.187-66.189 66.187C44.693 147.38 15 117.689 15 81.193z">
-            </path>
-          </svg>
-        </button>
-      </div>
-      <button class="bg-white px-6 text-lg font-semibold py-4 rounded-md" (click)="limpiarBusqueda()">Clear</button>
-    </div>
-  </div>
-  <div class="flex mx-4 mt-4 "><!-- Añadido margen horizontal -->
-    <!-- Contenedor izquierdo (25% de ancho) -->
-    <div class="bg-black text-white w-1/4 h-64 p-4 rounded-lg shadow-lg flex flex-col border-4 border-white">
-      <!-- Fila 1 -->
-      <div class="flex-1 flex flex-col justify-between">
-        <!-- Título con margen superior -->
-        <h2 class="text-2xl font-bold mb-4 mt-2">Filtros</h2>
-
-        <!-- Etiqueta sobre el menú desplegable -->
-        <label  class="block mb-2 text-sm font-medium">Género musical</label>
-
-        <!-- Menú desplegable con margen inferior -->
-        <select [(ngModel)]="generoSeleccionado"  class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mb-4">
-          <option selected></option>
-          <option *ngFor="let genero of generos" [value]="genero">{{genero}}</option>
-        </select>
-      </div>
-
-      <!-- Fila 2 -->
-      <div class="flex-1 flex items-end">
-        <!-- Botón centrado con margen inferior -->
-        <button (click)="onGeneroSeleccionado(generoSeleccionado)" class="bg-[#770316] text-white text-sm font-medium py-2 px-4 rounded-lg hover:bg-red-800 focus:ring-2 focus:ring-red-600 mb-2">
-          Aceptar
-        </button>
-      </div>
+  <div class="relative pt-8 pb-10 px-4 md:px-20 text-white">
+    <!-- Hero Section con animación mejorada -->
+    <div class="text-center mb-20 relative">
+      <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-32 h-32 bg-red-500/20 rounded-full blur-3xl animate-pulse"></div>
+      <h2 class="text-4xl md:text-6xl font-medula inline-block relative tracking-wide">
+          Encuentra al
+          <span class="relative inline-block group">
+            artista
+            <span class="absolute left-0 bottom-0 h-1 w-full bg-red-500 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500"></span>
+          </span>
+          de tu mundo sonoro
+      </h2>
+      <p class="text-lg md:text-xl text-gray-300 max-w-4xl mx-auto mt-6 leading-relaxed">
+        Conecta con músicos excepcionales para tus mejores eventos, conciertos y colaboraciones. Explora un catálogo exclusivo de talentos emergentes y consolidados, todos listos para llevar tu experiencia musical al siguiente nivel.
+      </p>
     </div>
 
-    <!-- Contenedor derecho (75% de ancho) -->
-    <div class="w-3/4 p-4">
-      <div *ngIf="errorMsj" class="alert alert-danger">
-        {{ errorMsj }}
-      </div>
 
-      <div *ngIf="artistasLista.length > 0" class="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <!-- Primera tarjeta -->
-        <a *ngFor="let artista of artistasLista" [routerLink]="['/artista', artista.id]" class="flex flex-col items-center bg-[#08080c] border-4 border-white rounded-lg shadow-sm text-white hover:text-black hover:bg-gray-100 dark:hover:bg-gray-700 md:flex-row">
-          <div *ngIf="artistasLista.length === 0 && !errorMsj" class="alert alert-info">
-            No hay artistas disponibles para este género.
+    <!-- Contenedor de ondas de sonido -->
+
+    <div class="wave-container" id="waveContainer">
+           <!--  <div class="wave-glow"></div> -->
+      <!-- <div class="wave-line" id="waveLine"></div> -->
+            <!-- Partículas de sonido -->
+          <!-- <div class="sound-particle"></div>
+          <div class="sound-particle"></div>
+          <div class="sound-particle"></div>
+          <div class="sound-particle"></div> -->
+
+      <!-- Barras de frecuencia -->
+      <div class="frequency-bars">
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+      </div>
+    </div>
+
+    <div class="flex flex-col xl:flex-row gap-8">
+      <!-- Panel de Filtros Mejorado -->
+<div class="bg-gradient-to-br from-black/60 to-gray-900/40 backdrop-blur-sm p-6 rounded-2xl w-full xl:w-1/4 border border-white/10 shadow-2xl">        <div class="flex items-center mb-6">
+          <div class="w-8 h-8 bg-gradient-to-r from-red-500 to-customGrisOscurso rounded-lg mr-3 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
           </div>
-          <img class="object-cover w-full md:w-1/2 h-4/5 m-8 rounded-t-lg md:h-auto md:rounded-none" [src]="artista?.imagenPerfil" alt="" style="width: 300px; height: 200px;">
+          <h3 class="text-white text-4xl  font-medula">Filtros avanzados</h3>
+        </div>
 
-          <div class="flex flex-col justify-between p-4 w-full md:w-1/2 leading-normal m-8">
-            <h5 class="mb-2 text-2xl font-bold tracking-tight">{{artista?.nombreArtista}}</h5>
-            <div class="flex items-center">
-              <img src="assets/images/flat-color-icons_music.png" class="w-8 mr-2" alt="" height="61" width="61">
-              <p class="font-normal">{{artista?.generosMusicales}}</p>
+        <!-- Buscador elegante -->
+        <div class="mb-8">
+          <label class="block text-sm mb-3 font-semibold text-gray-200 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            Buscar Artista
+          </label>
+          <div class="relative group">
+            <input [(ngModel)]="busqueda"
+                   type="text"
+                   placeholder="Escribe el nombre del artista..."
+                   class="w-full p-4 pr-14 rounded-xl border border-gray-600/50 bg-black/30 text-white placeholder-gray-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all duration-300 backdrop-blur-sm" />
+            <button (click)="onBuscarPorNombre(busqueda)"
+                    class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 p-2.5 rounded-lg transition-all duration-300 shadow-lg hover:shadow-red-500/25">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192.904 192.904" width="16px" class="fill-white">
+                <path d="m190.707 180.101-47.078-47.077c11.702-14.072 18.752-32.142 18.752-51.831C162.381 36.423 125.959 0 81.191 0 36.422 0 0 36.423 0 81.193c0 44.767 36.422 81.187 81.191 81.187 19.688 0 37.759-7.049 51.831-18.751l47.079 47.078a7.474 7.474 0 0 0 5.303 2.197 7.498 7.498 0 0 0 5.303-12.803zM15 81.193C15 44.694 44.693 15 81.191 15c36.497 0 66.189 29.694 66.189 66.193 0 36.496-29.692 66.187-66.189 66.187C44.693 147.38 15 117.689 15 81.193z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Selector de género premium -->
+        <div class="mb-8">
+          <label class="block text-sm mb-3 font-semibold text-gray-200 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+            </svg>
+            Género Musical
+          </label>
+          <select [(ngModel)]="generoSeleccionado"
+                  class="w-full p-4 rounded-xl border border-gray-600/50 bg-black/30 text-white focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all duration-300 backdrop-blur-sm appearance-none cursor-pointer">
+            <option value="">🎵 Todos los géneros</option>
+            <option *ngFor="let genero of generos" [value]="genero">🎶 {{genero}}</option>
+          </select>
+        </div>
+
+        <!-- Botones con diseño premium -->
+        <div class="space-y-3">
+          <button (click)="onGeneroSeleccionado(generoSeleccionado)"
+                  class="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white py-4 rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-red-500/25 transform hover:scale-105 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            Buscar Artistas
+          </button>
+          <button (click)="limpiarBusqueda()"
+                  class="w-full bg-gray-700/50 hover:bg-gray-600/60 text-white py-3 rounded-xl transition-all duration-300 backdrop-blur-sm border border-gray-600/30 hover:border-gray-500/50">
+            Limpiar Filtros
+          </button>
+        </div>
+
+        <!-- Estadísticas rápidas -->
+        <div class="mt-6 p-4 bg-gradient-to-r from-purple-900/30 to-red-900/30 rounded-xl border border-purple-500/20">
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-gray-300">Artistas disponibles</span>
+            <span class="text-white font-bold">{{ totalItems || 0 }}</span>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Contenido Principal -->
+      <div class="w-full xl:w-2/3 space-y-8">
+        <!-- Mensaje de error premium -->
+        <div *ngIf="errorMsj" class="bg-gradient-to-r from-red-900/40 to-red-800/40 backdrop-blur-sm border border-red-500/50 text-red-200 px-6 py-4 rounded-xl shadow-lg">
+          <div class="flex items-center">
+            <div class="w-10 h-10 bg-red-500/20 rounded-full flex items-center justify-center mr-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+              </svg>
             </div>
-<!--            [disabled]="!artista.id || artista.id <= 0"-->
-            <button class="mt-3 px-4 py-2 text-white bg-[#444E5F] rounded-lg hover:bg-[#3a4150]"
-
-                    (click)="verDetallesArtista(artista.id); $event.stopPropagation()">+info</button>
+            <div>
+              <h4 class="font-semibold">Error en la búsqueda</h4>
+              <p class="text-sm opacity-90">{{ errorMsj }}</p>
+            </div>
           </div>
-        </a>
-      </div>
-      <div class="card flex justify-center">
-        <p-paginator (onPageChange)="onPageChange($event)" [first]="paginaActual * pageSize" [rows]="pageSize"
-                     [totalRecords]="totalItems" [rowsPerPageOptions]="[6, 10,15]" />
+        </div>
+
+        <!-- Grid de artistas premium -->
+          <!-- Lista de artistas -->
+          <ng-container *ngIf="artistasLista.length > 0; else sinResultados">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <a *ngFor="let artista of artistasLista"
+                 [routerLink]="['/artista', artista.id]"
+                 class="bg-black bg-opacity-60 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-opacity-100 group block">
+
+                <div class="md:flex">
+                  <!-- Imagen del artista -->
+                  <div class="md:w-2/5 relative overflow-hidden">
+                    <img [src]="artista?.imagenPerfil"
+                         [alt]="artista?.nombreArtista"
+                         class="w-full h-48 md:h-full object-cover transform group-hover:scale-105 transition-transform duration-300" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                  </div>
+
+                  <!-- Información del artista -->
+                  <div class="md:w-3/5 p-6 flex flex-col justify-between">
+                    <div>
+                      <h3 class="text-xl font-bold mb-3 text-white group-hover:text-red-400 transition-colors duration-300">
+                        {{ artista?.nombreArtista }}
+                      </h3>
+
+                      <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM15.657 6.343a1 1 0 011.414 0A9.972 9.972 0 0119 12a9.972 9.972 0 01-1.929 5.657 1 1 0 11-1.414-1.414A7.971 7.971 0 0017 12c0-1.087-.218-2.135-.614-3.086l-.025-.057-.007-.014-.003-.006.002.003a1 1 0 00-.296-.748z" clip-rule="evenodd" />
+                          </svg>
+                        </div>
+                        <p class="text-gray-300 text-sm">{{ artista?.generosMusicales }}</p>
+                      </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                      <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition-colors duration-300 flex items-center text-sm font-medium"
+                              (click)="verDetallesArtista(artista.id); $event.stopPropagation()">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Más info
+                      </button>
+
+                      <div class="text-gray-400 text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        Ver perfil →
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+          <!-- Paginación elegante -->
+          <div class="flex justify-center mt-12" *ngIf="totalItems > pageSize">
+            <div class="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+              <p-paginator (onPageChange)="onPageChange($event)"
+                           [first]="paginaActual * pageSize"
+                           [rows]="pageSize"
+                           [totalRecords]="totalItems"
+                           [rowsPerPageOptions]="[6, 10, 15]"
+                           styleClass="custom-paginator-premium" />
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Estado sin resultados mejorado -->
+        <ng-template #sinResultados>
+          <div class="text-center py-20 bg-gradient-to-br from-black/40 to-gray-900/30 backdrop-blur-sm rounded-2xl border border-white/10">
+            <div class="w-24 h-24 bg-gradient-to-r from-red-500/20 to-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+              </svg>
+            </div>
+
+            <h3 class="text-2xl font-bold text-white mb-3">No se encontraron artistas</h3>
+            <p class="text-gray-400 mb-8 max-w-md mx-auto leading-relaxed">
+              <span *ngIf="busqueda || generoSeleccionado">
+                No pudimos encontrar artistas que coincidan con tu búsqueda. Intenta con diferentes criterios.
+              </span>
+              <span *ngIf="!busqueda && !generoSeleccionado">
+                Parece que no hay artistas disponibles en este momento. ¡Vuelve pronto!
+              </span>
+            </p>
+
+            <button *ngIf="busqueda || generoSeleccionado"
+                    (click)="limpiarBusqueda()"
+                    class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-8 py-3 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-red-500/25 transform hover:scale-105">
+              Explorar Todos los Artistas
+            </button>
+
+            <!-- Sugerencias -->
+            <div class="mt-8 flex flex-wrap justify-center gap-4" *ngIf="generos && generos.length > 0">
+              <span class="text-gray-500 text-sm mr-2">Prueba con:</span>
+              <button *ngFor="let genero of generos.slice(0, 3)"
+                      (click)="generoSeleccionado = genero; onGeneroSeleccionado(genero)"
+                      class="bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 px-3 py-1 rounded-full text-xs transition-colors duration-300 border border-purple-500/30">
+                {{ genero }}
+              </button>
+            </div>
+          </div>
+        </ng-template>
       </div>
     </div>
   </div>
-</div>
 
+  <script>
+    let animationPaused = false;
+    let currentSpeed = 1;
+
+    function toggleAnimation() {
+      const waveContainer = document.getElementById('waveContainer');
+      animationPaused = !animationPaused;
+
+      if (animationPaused) {
+        waveContainer.style.animationPlayState = 'paused';
+        waveContainer.querySelectorAll('*').forEach(el => {
+          el.style.animationPlayState = 'paused';
+        });
+      } else {
+        waveContainer.style.animationPlayState = 'running';
+        waveContainer.querySelectorAll('*').forEach(el => {
+          el.style.animationPlayState = 'running';
+        });
+      }
+    }
+
+    function changeSpeed() {
+      const speeds = [0.5, 1, 1.5, 2];
+      const currentIndex = speeds.indexOf(currentSpeed);
+      currentSpeed = speeds[(currentIndex + 1) % speeds.length];
+
+      const waveContainer = document.getElementById('waveContainer');
+      waveContainer.style.animationDuration = `${3 / currentSpeed}s`;
+
+      // Actualizar velocidad de todos los elementos animados
+      const animatedElements = waveContainer.querySelectorAll('*');
+      animatedElements.forEach(el => {
+        const computedStyle = window.getComputedStyle(el);
+        const duration = computedStyle.animationDuration;
+        if (duration && duration !== 'none') {
+          const numericDuration = parseFloat(duration);
+          el.style.animationDuration = `${numericDuration / currentSpeed}s`;
+        }
+      });
+    }
+
+    // Efecto de mouseover para interactividad
+    document.getElementById('waveContainer').addEventListener('mouseenter', function() {
+      this.style.transform = 'scale(1.02)';
+      this.style.transition = 'transform 0.3s ease';
+    });
+
+    document.getElementById('waveContainer').addEventListener('mouseleave', function() {
+      this.style.transform = 'scale(1)';
+    });
+  </script>
+</div>
