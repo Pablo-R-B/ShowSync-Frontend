@@ -79,6 +79,25 @@
 
   <!-- Paginación -->
   <div class="flex justify-center mt-6" *ngIf="totalPaginas > 1 && !isLoading">
+    <div class="flex flex-col items-center gap-4 mt-6" *ngIf="totalPaginas > 1 && !isLoading">
+
+    <div class="flex items-center gap-2 text-sm text-white">
+      <span>Ir a página:</span>
+      <input
+        type="number"
+        [min]="1"
+        [max]="totalPaginas"
+        [(ngModel)]="paginaNavegacion"
+        (keydown.enter)="irAPagina()"
+        class="w-16 px-2 py-1 bg-gray-800 border border-gray-600 text-white rounded text-center text-sm"
+      />
+      <button
+        (click)="irAPagina()"
+        class="px-3 py-1 bg-customRed hover:bg-customBurbundy text-white rounded text-sm"
+      >
+        Ir
+      </button>
+    </div>
     <nav class="flex items-center space-x-1" aria-label="Paginación">
       <!-- Botón Anterior -->
       <button
