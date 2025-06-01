@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {SalaEstadoCantidad} from '../../../interfaces/SalaEstadoCantidad';
-import {UsuarioService} from '../../../servicios/usuario.service';
-import {SalasService} from '../../../servicios/salas.service';
-import {NgForOf, TitleCasePipe} from '@angular/common';
-
+import { SalaEstadoCantidad } from '../../../interfaces/SalaEstadoCantidad';
+import { UsuarioService } from '../../../servicios/usuario.service';
+import { SalasService } from '../../../servicios/salas.service';
+import { EventosService } from '../../../servicios/eventos.service'; // Nuevo servicio
+import { NgForOf, TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-resumen',
@@ -15,31 +15,33 @@ import {NgForOf, TitleCasePipe} from '@angular/common';
   styleUrls: ['./resumen.component.css']
 })
 export class ResumenComponent implements OnInit {
-  // Datos existentes
+  // Datos de usuarios
   totalUsuarios: number = 0;
-  totalEventos: number = 0;
-  totalSalas: number = 0;
   totalArtistas: number = 0;
   totalPromotores: number = 0;
   totalAdministradores: number = 0;
 
-  // Nuevos datos para salas por estado
+  // Datos de salas
   datosSalas: SalaEstadoCantidad[] = [];
   salasEnRevision: number = 0;
   salasConfirmadas: number = 0;
   salasRechazadas: number = 0;
 
-  constructor(private usuarioService: UsuarioService, private salasService: SalasService) {}
+  // Datos de eventos
+  totalEventos: number = 0;
+  eventosFuturos: number = 0;
+  eventosPasados: number = 0;
+
+  constructor(
+    private usuarioService: UsuarioService,
+    private salasService: SalasService,
+    private eventosService: EventosService // Nuevo servicio
+  ) {}
+
   ngOnInit(): void {
-    this.cargarEstadisticas();
     this.cargarUsuariosPorRol();
     this.cargarDatosSalas();
-  }
-
-  cargarEstadisticas(): void {
-    // Simulación de otros datos
-    this.totalEventos = 45;
-    this.totalSalas = 10;
+    this.cargarDatosEventos(); // Nueva función
   }
 
   cargarUsuariosPorRol(): void {
@@ -50,7 +52,7 @@ export class ResumenComponent implements OnInit {
         this.totalPromotores = data.Promotores || 0;
         this.totalAdministradores = data.Administrador || 0;
       },
-      error: (err: any) => console.error('Error usuarios:', err)
+      error: (err) => console.error('Error usuarios:', err)
     });
   }
 
@@ -60,7 +62,18 @@ export class ResumenComponent implements OnInit {
         this.datosSalas = data;
         this.calcularTotalesPorEstado();
       },
-      error: (err: any) => console.error('Error salas:', err)
+      error: (err) => console.error('Error salas:', err)
+    });
+  }
+
+  cargarDatosEventos(): void {
+    this.eventosService.obtenerTotalEventos().subscribe({
+      next: (data: any) => {
+        this.totalEventos = data.total || 0;
+        this.eventosFuturos = data.futuros || 0;
+        this.eventosPasados = data.pasados || 0;
+      },
+      error: (err) => console.error('Error eventos:', err)
     });
   }
 
@@ -74,7 +87,7 @@ export class ResumenComponent implements OnInit {
       .reduce((sum, item) => sum + item.cantidad, 0);
 
     this.salasRechazadas = this.datosSalas
-      .filter(item => item.estado === 'cancelado') // Añade si existe este estado
+      .filter(item => item.estado === 'cancelado')
       .reduce((sum, item) => sum + item.cantidad, 0);
   }
 }

@@ -8,12 +8,12 @@
       <p class="text-4xl font-bold">{{ totalUsuarios }}</p>
     </div>
     <div class="bg-gray-700 p-4 rounded-lg shadow">
-      <h2 class="text-lg font-semibold">Eventos</h2>
+      <h2 class="text-lg font-semibold">Eventos Totales</h2>
       <p class="text-4xl font-bold">{{ totalEventos }}</p>
     </div>
     <div class="bg-gray-700 p-4 rounded-lg shadow">
       <h2 class="text-lg font-semibold">Salas</h2>
-      <p class="text-4xl font-bold">{{ totalSalas }}</p>
+      <p class="text-4xl font-bold">{{ datosSalas.length }}</p>
     </div>
   </div>
 
@@ -33,7 +33,26 @@
     </div>
   </div>
 
-  <!-- Sección 3: Salas por estado -->
+  <!-- Sección 3: Eventos por estado -->
+  <div class="bg-gray-700 p-4 rounded-lg shadow mb-4">
+    <h2 class="text-lg font-semibold mb-2">Estados de Eventos</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-gray-600 p-3 rounded-lg">
+        <h3 class="font-medium">Total</h3>
+        <p class="text-2xl font-bold">{{ totalEventos }}</p>
+      </div>
+      <div class="bg-gray-600 p-3 rounded-lg">
+        <h3 class="font-medium">Futuros</h3>
+        <p class="text-2xl font-bold">{{ eventosFuturos }}</p>
+      </div>
+      <div class="bg-gray-600 p-3 rounded-lg">
+        <h3 class="font-medium">Pasados</h3>
+        <p class="text-2xl font-bold">{{ eventosPasados }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección 4: Salas por estado -->
   <div class="bg-gray-700 p-4 rounded-lg shadow mb-4">
     <h2 class="text-lg font-semibold mb-2">Estados de Salas</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -46,13 +65,13 @@
         <p class="text-2xl font-bold">{{ salasConfirmadas }}</p>
       </div>
       <div class="bg-gray-600 p-3 rounded-lg">
-        <h3 class="font-medium">Rechazadas</h3>
+        <h3 class="font-medium">Canceladas</h3>
         <p class="text-2xl font-bold">{{ salasRechazadas }}</p>
       </div>
     </div>
   </div>
 
-  <!-- Sección 4: Detalle por sala (opcional) -->
+  <!-- Sección 5: Detalle por sala -->
   <div class="bg-gray-700 p-4 rounded-lg shadow">
     <h2 class="text-lg font-semibold mb-2">Detalle por Sala</h2>
     <div class="overflow-x-auto">
