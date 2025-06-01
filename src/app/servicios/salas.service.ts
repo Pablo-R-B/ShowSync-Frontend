@@ -78,7 +78,7 @@ export class SalasService {
       httpParams = httpParams.set('termino', params.termino);
     }
 
-    return this.http.get<RespuestaPaginada<Sala>>(`${this.apiUrl}/todas`, {
+    return this.http.get<RespuestaPaginada<Sala>>(`${this.apiUrl}/todas-paginadas`, {
       params: httpParams,
       headers: this.getAuthHeaders()
     });
@@ -154,8 +154,7 @@ export class SalasService {
 
   // Método original sin paginación (para compatibilidad)
   obtenerTodas(): Observable<Sala[]> {
-    return this.http.get<Sala[]>(`${this.apiUrl}/todas`, {
-      headers: this.getAuthHeaders()
+    return this.http.get<Sala[]>(`${this.apiUrl}/todas`, {headers: this.getAuthHeaders()
     });
   }
 
