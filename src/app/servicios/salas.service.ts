@@ -255,6 +255,10 @@ export class SalasService {
     return this.http.get<SalaEstadoCantidad[]>('/api/salas/reservas-estado');
   }
 
+  obtenerTotalSalas(): Observable<number> {
+    return this.http.get<number>(`api/salas/total`);
+  }
+
 
 
 }

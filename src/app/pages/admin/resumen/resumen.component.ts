@@ -5,6 +5,7 @@ import { SalasService } from '../../../servicios/salas.service';
 import { EventosService } from '../../../servicios/eventos.service';
 import { NgForOf, TitleCasePipe, NgClass, DecimalPipe } from '@angular/common';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-resumen',
@@ -43,6 +44,7 @@ export class ResumenComponent implements OnInit {
   salasEnRevision: number = 0;
   salasConfirmadas: number = 0;
   salasRechazadas: number = 0;
+  totalSalasExistentes: number = 0;
 
   // Datos de eventos
   totalEventos: number = 0;
@@ -68,6 +70,8 @@ export class ResumenComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarTodosLosDatos();
+    this.salasExistentes(); // Llamada al método
+
 
   }
 
@@ -213,4 +217,17 @@ export class ResumenComponent implements OnInit {
     this.loadingEventos = true;
     this.cargarTodosLosDatos();
   }
+
+
+  // Método para obtener el total de salas existentes
+    salasExistentes(): void {
+      this.salasService.obtenerTotalSalas().subscribe({
+        next: (total: number) => {
+          this.totalSalasExistentes = total;
+        },
+        error: (err) => {
+          console.error('Error al obtener el total de salas existentes:', err);
+        }
+      });
+    }
 }
