@@ -1,96 +1,307 @@
-<div class="p-4 bg-gray-800 rounded-2xl shadow-md mx-4 lg:mx-16 text-white">
-  <h1 class="text-2xl font-bold mb-4">Resumen General</h1>
+<div class="min-h-screen  lg:p-8">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header con animación -->
+    <div class="mb-8 text-center">
+      <h1 class="text-4xl lg:text-5xl font-bold text-white mb-2 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+        Panel de Control
+      </h1>
+      <p class="text-slate-400 text-lg">Resumen ejecutivo de la plataforma</p>
+    </div>
 
-  <!-- Sección 1: Totales principales -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-    <div class="bg-gray-700 p-4 rounded-lg shadow">
-      <h2 class="text-lg font-semibold">Usuarios Totales</h2>
-      <p class="text-4xl font-bold">{{ totalUsuarios }}</p>
-    </div>
-    <div class="bg-gray-700 p-4 rounded-lg shadow">
-      <h2 class="text-lg font-semibold">Eventos Totales</h2>
-      <p class="text-4xl font-bold">{{ totalEventos }}</p>
-    </div>
-    <div class="bg-gray-700 p-4 rounded-lg shadow">
-      <h2 class="text-lg font-semibold">Salas</h2>
-      <p class="text-4xl font-bold">{{ datosSalas.length }}</p>
-    </div>
-  </div>
+    <!-- KPI Cards principales con gradientes y iconos -->
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+      <!-- Usuarios Totales -->
+      <div class="group relative overflow-hidden bg-gradient-to-br from-blue-600/20 to-blue-800/20 backdrop-blur-xl border border-blue-500/20 rounded-2xl p-6 hover:scale-105 transition-all duration-300">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div class="relative z-10">
+          <div class="flex items-center justify-between mb-4">
+            <div class="p-3 bg-blue-500/20 rounded-xl">
+              <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+              </svg>
+            </div>
+            <span class="text-xs font-medium text-blue-400 bg-blue-500/20 px-2 py-1 rounded-full">TOTAL</span>
+          </div>
+          <h3 class="text-sm font-medium text-slate-300 mb-1">Usuarios Totales</h3>
+          <p class="text-3xl font-bold text-white">{{ totalUsuarios }}</p>
+          <div class="mt-2 flex items-center text-xs text-green-400">
+            <span class="text-green-400">↗</span>
+            <span>Activos</span>
+          </div>
+        </div>
+      </div>
 
-  <!-- Sección 2: Usuarios por rol -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-    <div class="bg-gray-700 p-4 rounded-lg shadow">
-      <h2 class="text-lg font-semibold">Artistas</h2>
-      <p class="text-4xl font-bold">{{ totalArtistas }}</p>
-    </div>
-    <div class="bg-gray-700 p-4 rounded-lg shadow">
-      <h2 class="text-lg font-semibold">Promotores</h2>
-      <p class="text-4xl font-bold">{{ totalPromotores }}</p>
-    </div>
-    <div class="bg-gray-700 p-4 rounded-lg shadow">
-      <h2 class="text-lg font-semibold">Administradores</h2>
-      <p class="text-4xl font-bold">{{ totalAdministradores }}</p>
-    </div>
-  </div>
+      <!-- Eventos Totales -->
+      <div class="group relative overflow-hidden bg-gradient-to-br from-purple-600/20 to-purple-800/20 backdrop-blur-xl border border-purple-500/20 rounded-2xl p-6 hover:scale-105 transition-all duration-300">
+        <div class="absolute inset-0 bg-gradient-to-br from-purple-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div class="relative z-10">
+          <div class="flex items-center justify-between mb-4">
+            <div class="p-3 bg-purple-500/20 rounded-xl">
+              <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+            <span class="text-xs font-medium text-purple-400 bg-purple-500/20 px-2 py-1 rounded-full">EVENTOS</span>
+          </div>
+          <h3 class="text-sm font-medium text-slate-300 mb-1">Eventos Creados</h3>
+          <p class="text-3xl font-bold text-white">{{ totalEventos }}</p>
+          <div class="mt-2 flex items-center text-xs text-green-400">
+            <span class="text-green-400">↗</span>
+            <span>En crecimiento</span>
+          </div>
+        </div>
+      </div>
 
-  <!-- Sección 3: Eventos por estado -->
-  <div class="bg-gray-700 p-4 rounded-lg shadow mb-4">
-    <h2 class="text-lg font-semibold mb-2">Estados de Eventos</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="bg-gray-600 p-3 rounded-lg">
-        <h3 class="font-medium">Total</h3>
-        <p class="text-2xl font-bold">{{ totalEventos }}</p>
+      <!-- Salas -->
+      <div class="group relative overflow-hidden bg-gradient-to-br from-emerald-600/20 to-emerald-800/20 backdrop-blur-xl border border-emerald-500/20 rounded-2xl p-6 hover:scale-105 transition-all duration-300">
+        <div class="absolute inset-0 bg-gradient-to-br from-emerald-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div class="relative z-10">
+          <div class="flex items-center justify-between mb-4">
+            <div class="p-3 bg-emerald-500/20 rounded-xl">
+              <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+              </svg>
+            </div>
+            <span class="text-xs font-medium text-emerald-400 bg-emerald-500/20 px-2 py-1 rounded-full">SALAS</span>
+          </div>
+          <h3 class="text-sm font-medium text-slate-300 mb-1">Salas con Reservas</h3>
+          <p class="text-3xl font-bold text-white">{{ totalSalasReservadas }}</p>
+          <div class="mt-2 flex items-center text-xs text-blue-400">
+            <span class="text-blue-400">→</span>
+            <span>Disponibles</span>
+          </div>
+        </div>
       </div>
-      <div class="bg-gray-600 p-3 rounded-lg">
-        <h3 class="font-medium">Futuros</h3>
-        <p class="text-2xl font-bold">{{ eventosFuturos }}</p>
-      </div>
-      <div class="bg-gray-600 p-3 rounded-lg">
-        <h3 class="font-medium">Pasados</h3>
-        <p class="text-2xl font-bold">{{ eventosPasados }}</p>
+
+      <!-- Ingresos (ejemplo) -->
+      <div class="group relative overflow-hidden bg-gradient-to-br from-orange-600/20 to-orange-800/20 backdrop-blur-xl border border-orange-500/20 rounded-2xl p-6 hover:scale-105 transition-all duration-300">
+        <div class="absolute inset-0 bg-gradient-to-br from-orange-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div class="relative z-10">
+          <div class="flex items-center justify-between mb-4">
+            <div class="p-3 bg-orange-500/20 rounded-xl">
+              <svg class="w-6 h-6 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <span class="text-xs font-medium text-orange-400 bg-orange-500/20 px-2 py-1 rounded-full">ACTIVOS</span>
+          </div>
+          <h3 class="text-sm font-medium text-slate-300 mb-1">Eventos Activos</h3>
+          <p class="text-3xl font-bold text-white">{{ eventosFuturos }}</p>
+          <div class="mt-2 flex items-center text-xs text-green-400">
+            <span class="text-green-400">↗</span>
+            <span>Próximos</span>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Sección 4: Salas por estado -->
-  <div class="bg-gray-700 p-4 rounded-lg shadow mb-4">
-    <h2 class="text-lg font-semibold mb-2">Estados de Salas</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="bg-gray-600 p-3 rounded-lg">
-        <h3 class="font-medium">En Revisión</h3>
-        <p class="text-2xl font-bold">{{ salasEnRevision }}</p>
+    <!-- Sección de usuarios por rol -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <!-- Usuarios por rol -->
+      <div class="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-bold text-white">Usuarios por Rol</h2>
+          <div class="p-2 bg-slate-700/50 rounded-lg">
+            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div class="flex items-center justify-between p-4 bg-gradient-to-r from-blue-600/10 to-blue-600/5 rounded-xl border border-blue-500/20">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-semibold text-white">Artistas</h3>
+                <p class="text-sm text-slate-400">Músicos participantes. </p>
+              </div>
+            </div>
+            <span class="text-2xl font-bold text-white">{{ totalArtistas }}</span>
+          </div>
+
+          <div class="flex items-center justify-between p-4 bg-gradient-to-r from-purple-600/10 to-purple-600/5 rounded-xl border border-purple-500/20">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-semibold text-white">Promotores</h3>
+                <p class="text-sm text-slate-400">Organizadores de eventos.</p>
+              </div>
+            </div>
+            <span class="text-2xl font-bold text-white">{{ totalPromotores }}</span>
+          </div>
+
+          <div class="flex items-center justify-between p-4 bg-gradient-to-r from-emerald-600/10 to-emerald-600/5 rounded-xl border border-emerald-500/20">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-semibold text-white">Administradores</h3>
+                <p class="text-sm text-slate-400">Gestión del sistema.</p>
+              </div>
+            </div>
+            <span class="text-2xl font-bold text-white">{{ totalAdministradores }}</span>
+          </div>
+        </div>
       </div>
-      <div class="bg-gray-600 p-3 rounded-lg">
-        <h3 class="font-medium">Confirmadas</h3>
-        <p class="text-2xl font-bold">{{ salasConfirmadas }}</p>
-      </div>
-      <div class="bg-gray-600 p-3 rounded-lg">
-        <h3 class="font-medium">Canceladas</h3>
-        <p class="text-2xl font-bold">{{ salasRechazadas }}</p>
+
+      <!-- Estados de eventos -->
+      <div class="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-bold text-white">Estado de Eventos</h2>
+          <div class="p-2 bg-slate-700/50 rounded-lg">
+            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <!-- Circular progress para eventos futuros -->
+          <div class="relative">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-medium text-slate-300">Eventos Futuros</span>
+              <span class="text-lg font-bold text-emerald-400">{{ eventosFuturos }}</span>
+            </div>
+            <div class="w-full bg-slate-700 rounded-full h-2">
+              <div class="bg-gradient-to-r from-emerald-500 to-emerald-400 h-2 rounded-full"
+                   [style.width]="(eventosFuturos / totalEventos * 100) + '%'"></div>
+            </div>
+          </div>
+
+          <div class="relative">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-medium text-slate-300">Eventos Pasados</span>
+              <span class="text-lg font-bold text-slate-400">{{ eventosPasados }}</span>
+            </div>
+            <div class="w-full bg-slate-700 rounded-full h-2">
+              <div class="bg-gradient-to-r from-slate-500 to-slate-400 h-2 rounded-full"
+                   [style.width]="(eventosPasados / totalEventos * 100) + '%'"></div>
+            </div>
+          </div>
+
+          <!-- Estadísticas adicionales -->
+          <div class="grid grid-cols-2 gap-4 mt-6">
+            <div class="text-center p-4 bg-slate-700/30 rounded-xl">
+              <div class="text-2xl font-bold text-red-400">{{ ((eventosPasados / totalEventos) * 100) | number:'1.0-1' }}%</div>
+              <div class="text-xs text-slate-400">Total</div>
+            </div>
+            <div class="text-center p-4 bg-slate-700/30 rounded-xl">
+              <div class="text-2xl font-bold text-emerald-400">{{ ((eventosFuturos / totalEventos) * 100) | number:'1.0-1' }}%</div>
+              <div class="text-xs text-slate-400">Próximos</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Sección 5: Detalle por sala -->
-  <div class="bg-gray-700 p-4 rounded-lg shadow">
-    <h2 class="text-lg font-semibold mb-2">Detalle por Sala</h2>
-    <div class="overflow-x-auto">
-      <table class="min-w-full bg-gray-600 rounded-lg">
-        <thead>
-        <tr>
-          <th class="px-4 py-2 text-left">Sala</th>
-          <th class="px-4 py-2 text-left">Estado</th>
-          <th class="px-4 py-2 text-left">Cantidad</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let item of datosSalas" class="border-t border-gray-500">
-          <td class="px-4 py-2">{{ item.salaNombre }}</td>
-          <td class="px-4 py-2">{{ item.estado | titlecase }}</td>
-          <td class="px-4 py-2 font-bold">{{ item.cantidad }}</td>
-        </tr>
-        </tbody>
-      </table>
+    <!-- Sección de salas -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+      <!-- Estados de salas -->
+      <div class="lg:col-span-1">
+        <div class="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6">
+          <h2 class="text-xl font-bold text-white mb-6">Estados de Salas</h2>
+
+          <div class="space-y-4">
+            <div class="flex items-center justify-between p-3 bg-yellow-600/10 rounded-lg border border-yellow-500/20">
+              <div class="flex items-center space-x-3">
+                <div class="w-3 h-3 bg-yellow-400 rounded-full animate-pulse"></div>
+                <span class="text-sm font-medium text-white">En Revisión</span>
+              </div>
+              <span class="font-bold text-yellow-400">{{ salasEnRevision }}</span>
+            </div>
+
+            <div class="flex items-center justify-between p-3 bg-emerald-600/10 rounded-lg border border-emerald-500/20">
+              <div class="flex items-center space-x-3">
+                <div class="w-3 h-3 bg-emerald-400 rounded-full"></div>
+                <span class="text-sm font-medium text-white">Confirmadas</span>
+              </div>
+              <span class="font-bold text-emerald-400">{{ salasConfirmadas }}</span>
+            </div>
+
+            <div class="flex items-center justify-between p-3 bg-red-600/10 rounded-lg border border-red-500/20">
+              <div class="flex items-center space-x-3">
+                <div class="w-3 h-3 bg-red-400 rounded-full"></div>
+                <span class="text-sm font-medium text-white">Canceladas</span>
+              </div>
+              <span class="font-bold text-red-400">{{ salasRechazadas }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detalle por sala -->
+      <div class="lg:col-span-2 overflow-y-auto max-h-96">
+        <div class="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold text-white">Infomación sobre los estados de la sala</h2>
+            <div class="flex space-x-2">
+              <button class="p-2 bg-slate-700/50 hover:bg-slate-600/50 rounded-lg transition-colors">
+                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"></path>
+                </svg>
+              </button>
+              <button class="p-2 bg-slate-700/50 hover:bg-slate-600/50 rounded-lg transition-colors">
+                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-hidden rounded-xl border border-slate-700/50">
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead class="bg-slate-700/30">
+                <tr>
+                  <th class="px-6 py-4 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Sala</th>
+                  <th class="px-6 py-4 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Estado</th>
+                  <th class="px-6 py-4 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Cantidad</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-700/30">
+                <tr *ngFor="let item of datosSalas; trackBy: trackBySala"
+                    class="hover:bg-slate-700/20 transition-colors">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-white font-bold text-sm">{{ item.salaNombre.charAt(0) }}</span>
+                      </div>
+                      <div class="text-sm font-medium text-white">{{ item.salaNombre }}</div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                            [ngClass]="{
+                              'bg-yellow-100 text-yellow-800': item.estado === 'en_revision',
+                              'bg-green-100 text-green-800': item.estado === 'confirmado',
+                              'bg-red-100 text-red-800': item.estado === 'cancelado'
+                            }">
+                        {{ item.estado | titlecase }}
+                      </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-white">
+                    {{ item.cantidad }}
+                  </td>
+
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
