@@ -8,19 +8,19 @@
       <div class="mb-4">
         <input
           type="text"
-          placeholder="Nombre del Promotor"
+          placeholder="Nombre del Artista"
           class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
           formControlName="nombreArtista"
         />
         <div *ngIf="hasError('nombreArtista', 'required')" class="text-red-500 text-sm">
-          El nombre del promotor es obligatorio.
+          El nombre del artista es obligatorio.
         </div>
       </div>
 
       <!-- Descripción -->
       <div class="mb-4">
         <textarea
-          placeholder="Descripción"
+          placeholder="Biografía"
           class="w-full p-3 rounded-lg bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
           formControlName="biografia"
         ></textarea>
@@ -33,6 +33,15 @@
           placeholder="URL de la Imagen de Perfil"
           class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
           formControlName="imagenPerfil"
+        />
+      </div>
+
+      <div class="mb-4">
+        <input
+          type="text"
+          placeholder="URL streaming"
+          class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
+          formControlName="musicUrl"
         />
       </div>
 

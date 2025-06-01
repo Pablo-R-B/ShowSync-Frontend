@@ -91,10 +91,10 @@ export class LoginComponent implements OnInit {
             // Redirigir a completar perfil si no es admin y el perfil no está completo
             switch (decoded.rol) {
               case 'ARTISTA':
-                this.router.navigate(['/datos/artista']);
+                this.router.navigate(['/datos-artista']);
                 break;
               case 'PROMOTOR':
-                this.router.navigate(['/datos/promotor']);
+                this.router.navigate(['/datos-promotor']);
                 break;
             }
             return;

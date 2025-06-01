@@ -5,6 +5,7 @@ import {TokenPayload} from '../../interfaces/TokenPayload';
 import {jwtDecode} from 'jwt-decode';
 import {AuthService} from '../../servicios/auth.service';
 import {PromotoresService} from '../../servicios/promotores.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-registro-promotor',
@@ -23,10 +24,11 @@ export class RegistroPromotorComponent implements OnInit{
   registroPromotorForm: FormGroup;
   loading: boolean = false;
   perfilCompleto: boolean = false;
+  successMessage: string = '';
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private promotorService: PromotoresService) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private promotorService: PromotoresService,
+              private router: Router,) {
     this.registroPromotorForm = this.fb.group({
-      id: [''],
       nombrePromotor: ['', [Validators.required, Validators.maxLength(100)]],
       descripcion: [''],
       imagenPerfil: ['']
@@ -68,7 +70,9 @@ export class RegistroPromotorComponent implements OnInit{
       this.promotorService.guardarPerfilPromotor(usuarioId, formData).subscribe({
         next: (response: any) => {
           console.log('Perfil enviado correctamente:', response);
+          this.successMessage = response.mensaje;
           this.loading = false;
+          this.router.navigate(['/landing-page']);
         },
         error: (error) => {
           console.error('Error al enviar perfil:', error);

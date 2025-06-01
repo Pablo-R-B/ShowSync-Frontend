@@ -5,6 +5,7 @@ import {ArtistasService} from '../../servicios/artistas.service';
 import {AuthService} from '../../servicios/auth.service';
 import {TokenPayload} from '../../interfaces/TokenPayload';
 import {jwtDecode} from 'jwt-decode';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-registro-artista',
@@ -22,42 +23,33 @@ export class RegistroArtistaComponent implements OnInit{
   registroArtistaForm: FormGroup;
   loading: boolean = false;
   perfilCompleto: boolean = false;
+  successMessage: string = '';
 
-  constructor(private fb: FormBuilder, private artistaService:ArtistasService, private authService:AuthService) {
+  constructor(private fb: FormBuilder, private artistaService:ArtistasService, private authService:AuthService,
+              private router:Router) {
     this.registroArtistaForm = this.fb.group({
       nombreArtista: ['', [Validators.required, Validators.maxLength(100)]],
       biografia: [''],
       music_url: [''],
-      imagenPerfil: ['']
+      imagenPerfil: [''],
+      musicUrl:['']
     });
   }
 
   ngOnInit(){
     const token = this.authService.getToken();
-    if (token){
+    if (token) {
       const decoded: TokenPayload = jwtDecode(token);
       this.perfilCompleto = decoded?.perfilCompleto || false;
     }
 
-    const idUsuario=Number(localStorage.getItem('userId'));
+    const idUsuario = Number(localStorage.getItem('userId'));
 
     if (this.perfilCompleto) {
-      this.artistaService.artistaPorId(idUsuario).subscribe(data => {
-        this.registroArtistaForm.patchValue(data); // o registroPromotorForm
+      this.artistaService.artistaPorId(idUsuario).subscribe(artista => {
+        this.registroArtistaForm.patchValue(artista);
       });
     }
-    this.artistaService.getArtistaIdPorUsuario(idUsuario).subscribe(artistaId => {
-      if (artistaId) {
-        localStorage.setItem('artistaId', artistaId.toString()); // Guarda el ID en localStorage
-
-        const formData = this.registroArtistaForm.value;
-        this.artistaService.actualizarPerfilArtista({ id: artistaId, ...formData }).subscribe(response => {
-          console.log('Perfil actualizado:', response);
-        });
-      } else {
-        console.warn('No se encontró un artista asociado al usuarioId:', idUsuario);
-      }
-    });
   }
 
   hasError(controlName: string, errorCode: string): boolean {
@@ -69,16 +61,14 @@ export class RegistroArtistaComponent implements OnInit{
     if (this.registroArtistaForm.valid) {
       this.loading = true;
       const formData = this.registroArtistaForm.value;
-      const perfilCompleto = this.authService.getPerfilCompletoFromToken();
+      const usuarioId = Number(localStorage.getItem('userId'));
 
-      const request$ = perfilCompleto
-        ? this.artistaService.actualizarPerfilArtista(formData)
-        : this.artistaService.completarPerfilArtista(formData);
-
-      request$.subscribe({
-        next:(response)=>{
+      this.artistaService.guardarPerfilArtista(usuarioId, formData).subscribe({
+        next: (response: any) => {
           console.log('Perfil enviado correctamente:', response);
+          this.successMessage = response.mensaje;
           this.loading = false;
+          this.router.navigate(['/landing-page']);
         },
         error: (error) => {
           console.error('Error al enviar perfil:', error);
