@@ -1,0 +1,351 @@
+/* Animaciones */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(191, 13, 34, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(191, 13, 34, 0.6), 0 0 40px rgba(119, 3, 22, 0.4);
+  }
+}
+
+@keyframes floatMusic {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+  66% {
+    transform: translateY(5px) rotate(-3deg);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes particle-float {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Fondo principal */
+.main-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a1f 25%, #2a1a1f 50%, #3a1a2f 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.background-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, transparent 50%, rgba(0,0,0,0.8) 100%);
+  backdrop-filter: blur(20px);
+}
+
+/* Notas musicales flotantes */
+.floating-notes {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.musical-note {
+  position: absolute;
+  font-size: 1.5rem;
+  animation: floatMusic 4s ease-in-out infinite;
+  color: rgba(191, 13, 34, 0.4);
+  user-select: none;
+}
+
+.musical-note:nth-child(2n) {
+  color: rgba(204, 203, 203, 0.3);
+  animation-delay: 1s;
+}
+
+.musical-note:nth-child(3n) {
+  color: rgba(191, 13, 34, 0.6);
+  animation-delay: 2s;
+}
+
+.musical-note:nth-child(4n) {
+  color: rgba(160, 164, 173, 0.4);
+  animation-delay: 1.5s;
+}
+
+/* Partículas de fondo */
+.particles-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.particle {
+  position: absolute;
+  background: rgba(191, 13, 34, 0.15);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: particle-float 8s linear infinite;
+}
+
+/* Contenedor principal */
+.instrucciones-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 1.5rem;
+  animation: fadeInUp 0.8s ease-out;
+  position: relative;
+  z-index: 10;
+}
+
+.glass-card {
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(8, 8, 12, 0.8);
+  border: 1px solid rgba(191, 13, 34, 0.4);
+  border-radius: 1.5rem;
+  padding: 3rem;
+  width: 100%;
+  max-width: 64rem;
+  box-shadow: 0 25px 50px -12px rgba(119, 3, 22, 0.6);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  transform: scale(1.01);
+  box-shadow: 0 35px 70px -12px rgba(119, 3, 22, 0.8);
+}
+
+.main-title {
+  font-size: 4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-align: center;
+  background: linear-gradient(to right, #bf0d22, #cccbcb, #bf0d22);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.05em;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+  position: relative;
+}
+
+.main-title::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #6b7280, transparent);
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #a0a4ad;
+  line-height: 1.6;
+}
+
+.grid-container {
+  display: grid;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.card {
+  background: rgba(204, 203, 203, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(204, 203, 203, 0.3);
+  border-radius: 1rem;
+  padding: 2rem;
+  color: #cccbcb;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(191, 13, 34, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.card:hover::before {
+  left: 100%;
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(191, 13, 34, 0.3);
+  border-color: rgba(191, 13, 34, 0.5);
+  /* animation: pulseGlow 2s ease-in-out infinite; */
+/* z-index: 20; */
+  }
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #cccbcb;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.card-list li {
+  margin-bottom: 1rem;
+  color: #a0a4ad;
+  padding-left: 1.5rem;
+  position: relative;
+  line-height: 1.5;
+  transition: color 0.3s ease;
+}
+
+.card-list li::before {
+  content: '♪';
+  position: absolute;
+  left: 0;
+  color: #bf0d22;
+  font-weight: bold;
+  animation: floatMusic 3s ease-in-out infinite;
+}
+
+.card-list li:nth-child(2)::before {
+  animation-delay: 0.5s;
+}
+
+.card-list li:nth-child(3)::before {
+  animation-delay: 1s;
+}
+
+.card-list li:nth-child(4)::before {
+  animation-delay: 1.5s;
+}
+
+.card:hover .card-list li {
+  color: #cccbcb;
+}
+
+.contact-section {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(107, 114, 128, 0.3);
+}
+
+@media (max-width: 640px) {
+  .contact-section {
+    margin-top: 1.5rem;
+    padding-top: 0.5rem;
+  }
+}
+
+/* Animación de entrada escalonada */
+.form-element {
+  opacity: 0;
+  animation: slideInFromLeft 0.6s ease-out forwards;
+}
+
+.form-element:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.form-element:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.form-element:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.form-element:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+/* Responsividad */
+@media (max-width: 640px) {
+  .glass-card {
+    margin: 1rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .main-title {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-title {
+    font-size: 2rem;
+  }
+
+  .card {
+    padding: 1.5rem;
+  }
+}
+
+/* Reducir animaciones para usuarios que lo prefieran */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,1 +1,120 @@
-<p>contacto-form works!</p>
+
+  <!-- Fondo con overlay -->
+
+  <!-- Notas musicales flotantes -->
+  <div class="floating-notes">
+    <div class="musical-note" style="top: 10%; left: 15%;">♪</div>
+    <div class="musical-note" style="top: 20%; left: 85%;">♫</div>
+    <div class="musical-note" style="top: 60%; left: 10%;">♪</div>
+    <div class="musical-note" style="top: 80%; left: 90%;">♫</div>
+    <div class="musical-note" style="top: 40%; left: 75%;">♪</div>
+    <div class="musical-note" style="top: 70%; left: 25%;">♫</div>
+  </div>
+
+  <!-- Partículas de fondo -->
+  <div class="particles-container">
+    <div class="particle" style="left: 20%; animation-delay: 0s; width: 4px; height: 4px;"></div>
+    <div class="particle" style="left: 40%; animation-delay: 2s; width: 6px; height: 6px;"></div>
+    <div class="particle" style="left: 60%; animation-delay: 4s; width: 3px; height: 3px;"></div>
+    <div class="particle" style="left: 80%; animation-delay: 6s; width: 5px; height: 5px;"></div>
+  </div>
+
+  <!-- Contenedor principal del formulario -->
+  <div class="instrucciones-container">
+    <div class="glass-card">
+      <!-- Título principal -->
+      <h1 class="text-customBlanco text-center font-medula" style="font-size: 3rem;">Contacto Musical</h1>
+      <p class="subtitle">
+        Comparte tus dudas, sugerencias o solicitudes especiales.
+        Estamos aquí para hacer de tu evento una experiencia musical inolvidable.
+      </p>
+
+      <!-- Formulario -->
+      <form
+        (ngSubmit)="enviarMensaje()"
+        #formulario="ngForm"
+        class="contact-form"
+      >
+        <!-- Campo Nombre -->
+        <div class="form-group form-element">
+          <label class="form-label">
+            <span class="label-icon">👤</span>
+            Tu nombre
+          </label>
+          <input
+            type="text"
+            name="nombre"
+            [(ngModel)]="form.nombre"
+            required
+            placeholder="Escribe tu nombre completo"
+            class="form-input"
+          />
+        </div>
+
+        <!-- Campo Email -->
+        <div class="form-group form-element">
+          <label class="form-label">
+            <span class="label-icon">📧</span>
+            Correo electrónico
+          </label>
+          <input
+            type="email"
+            name="email"
+            [(ngModel)]="form.email"
+            required
+            placeholder="tu@email.com"
+            class="form-input"
+          />
+        </div>
+
+        <!-- Campo Mensaje -->
+        <div class="form-group form-element">
+          <label class="form-label">
+            <span class="label-icon">💬</span>
+            Tu mensaje
+          </label>
+          <textarea
+            name="mensaje"
+            [(ngModel)]="form.mensaje"
+            required
+            rows="5"
+            placeholder="Cuéntanos sobre tu evento, dudas o solicitudes especiales..."
+            class="form-textarea"
+          ></textarea>
+        </div>
+
+        <!-- Botón de envío -->
+        <div class="form-group form-element">
+          <button
+            type="submit"
+            [disabled]="formulario.invalid || cargando"
+            class="submit-button"
+            [class.loading]="cargando"
+          >
+            <span class="button-icon" *ngIf="!cargando">🎵</span>
+            <span class="loading-spinner" *ngIf="cargando"></span>
+            {{ cargando ? 'Enviando melodía...' : 'Enviar mensaje' }}
+          </button>
+        </div>
+
+        <!-- Mensaje de éxito -->
+        <div *ngIf="enviado" class="message-alert success-alert form-element">
+          <div class="alert-icon">✅</div>
+          <div class="alert-content">
+            <h4>¡Mensaje enviado con éxito!</h4>
+            <p *ngIf="mensajeExito">{{ mensajeExito }}</p>
+            <p *ngIf="!mensajeExito">Gracias por contactarnos. Te responderemos pronto.</p>
+          </div>
+        </div>
+
+        <!-- Mensaje de error -->
+        <div *ngIf="error" class="message-alert error-alert form-element">
+          <div class="alert-icon">❌</div>
+          <div class="alert-content">
+            <h4>Oops, algo salió mal</h4>
+            <p>{{ mensajeError || 'Ocurrió un error al enviar el mensaje. Intenta más tarde.' }}</p>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
