@@ -1,0 +1,77 @@
+<div class="p-4 bg-gray-800 rounded-2xl shadow-md mx-4 lg:mx-16 text-white">
+  <h1 class="text-2xl font-bold mb-4">Resumen General</h1>
+
+  <!-- Sección 1: Totales principales -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+    <div class="bg-gray-700 p-4 rounded-lg shadow">
+      <h2 class="text-lg font-semibold">Usuarios Totales</h2>
+      <p class="text-4xl font-bold">{{ totalUsuarios }}</p>
+    </div>
+    <div class="bg-gray-700 p-4 rounded-lg shadow">
+      <h2 class="text-lg font-semibold">Eventos</h2>
+      <p class="text-4xl font-bold">{{ totalEventos }}</p>
+    </div>
+    <div class="bg-gray-700 p-4 rounded-lg shadow">
+      <h2 class="text-lg font-semibold">Salas</h2>
+      <p class="text-4xl font-bold">{{ totalSalas }}</p>
+    </div>
+  </div>
+
+  <!-- Sección 2: Usuarios por rol -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+    <div class="bg-gray-700 p-4 rounded-lg shadow">
+      <h2 class="text-lg font-semibold">Artistas</h2>
+      <p class="text-4xl font-bold">{{ totalArtistas }}</p>
+    </div>
+    <div class="bg-gray-700 p-4 rounded-lg shadow">
+      <h2 class="text-lg font-semibold">Promotores</h2>
+      <p class="text-4xl font-bold">{{ totalPromotores }}</p>
+    </div>
+    <div class="bg-gray-700 p-4 rounded-lg shadow">
+      <h2 class="text-lg font-semibold">Administradores</h2>
+      <p class="text-4xl font-bold">{{ totalAdministradores }}</p>
+    </div>
+  </div>
+
+  <!-- Sección 3: Salas por estado -->
+  <div class="bg-gray-700 p-4 rounded-lg shadow mb-4">
+    <h2 class="text-lg font-semibold mb-2">Estados de Salas</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-gray-600 p-3 rounded-lg">
+        <h3 class="font-medium">En Revisión</h3>
+        <p class="text-2xl font-bold">{{ salasEnRevision }}</p>
+      </div>
+      <div class="bg-gray-600 p-3 rounded-lg">
+        <h3 class="font-medium">Confirmadas</h3>
+        <p class="text-2xl font-bold">{{ salasConfirmadas }}</p>
+      </div>
+      <div class="bg-gray-600 p-3 rounded-lg">
+        <h3 class="font-medium">Rechazadas</h3>
+        <p class="text-2xl font-bold">{{ salasRechazadas }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección 4: Detalle por sala (opcional) -->
+  <div class="bg-gray-700 p-4 rounded-lg shadow">
+    <h2 class="text-lg font-semibold mb-2">Detalle por Sala</h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-gray-600 rounded-lg">
+        <thead>
+        <tr>
+          <th class="px-4 py-2 text-left">Sala</th>
+          <th class="px-4 py-2 text-left">Estado</th>
+          <th class="px-4 py-2 text-left">Cantidad</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of datosSalas" class="border-t border-gray-500">
+          <td class="px-4 py-2">{{ item.salaNombre }}</td>
+          <td class="px-4 py-2">{{ item.estado | titlecase }}</td>
+          <td class="px-4 py-2 font-bold">{{ item.cantidad }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

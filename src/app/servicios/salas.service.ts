@@ -251,7 +251,7 @@ export class SalasService {
 
 
   // Método para obtener los datos de la gráfica de reservas por estado
-  getDatosGrafica(): Observable<SalaEstadoCantidad[]> {
+  getDatosGraficaSalas(): Observable<SalaEstadoCantidad[]> {
     return this.http.get<SalaEstadoCantidad[]>('/api/salas/reservas-estado');
   }
 

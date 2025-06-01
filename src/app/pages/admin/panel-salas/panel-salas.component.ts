@@ -364,7 +364,7 @@ export class PanelSalasComponent implements OnInit {
   }
 
   private cargarDatosGrafica(): void {
-    this.salaService.getDatosGrafica().subscribe({
+    this.salaService.getDatosGraficaSalas().subscribe({
       next: (data: SalaEstadoCantidad[]) => {
         if (!data || data.length === 0) {
           console.warn('No se recibieron datos para la gráfica.');
