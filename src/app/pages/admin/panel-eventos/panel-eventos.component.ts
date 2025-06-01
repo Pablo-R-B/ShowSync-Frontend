@@ -23,16 +23,19 @@ import {Router} from '@angular/router';
 export class PanelEventosComponent implements OnInit {
   eventos: EventoDTO[] = [];
   eventosFiltrados: EventoDTO[] = [];
+  eventosPaginados: EventoDTO[] = [];
   cargando: boolean = true;
   error: string | null = null;
   filtroEstado: string = 'TODOS';
   filtro: string = '';
 
+  // Variable para navegación rápida
+  paginaNavegacion: number = 1;
 
-  // Paginación
-  paginaActual: number = 1;
-  itemsPorPagina: number = 10;
-  totalPaginas: number = 1;
+  // Paginación - usando solo estas variables
+  paginaActual: number = 0;
+  itemsPorPagina: number = 6;
+  totalPaginas: number = 0;
 
   // Búsqueda con debounce
   private searchSubject = new Subject<string>();
@@ -53,7 +56,6 @@ export class PanelEventosComponent implements OnInit {
     this.filtro = termino;
     this.filtrarEventos();
   }
-
 
   ngOnInit(): void {
     this.obtenerEventos();
@@ -92,75 +94,109 @@ export class PanelEventosComponent implements OnInit {
     }
 
     this.eventosFiltrados = filtrados;
-    this.paginaActual = 1;
-    this.calcularPaginas();
-  }
 
+    // Calcular el total de páginas correctamente
+    this.totalPaginas = Math.ceil(this.eventosFiltrados.length / this.itemsPorPagina);
 
-  calcularPaginas(): void {
-    this.totalPaginas = Math.ceil(this.eventosFiltrados.length / this.itemsPorPagina) || 1;
-  }
-
-  cambiarPagina(pagina: number): void {
-    if (pagina >= 1 && pagina <= this.totalPaginas) {
-      this.paginaActual = pagina;
+    // Si la página actual es mayor que el total de páginas disponibles, resetear
+    if (this.paginaActual >= this.totalPaginas) {
+      this.paginaActual = Math.max(0, this.totalPaginas - 1);
     }
+
+    this.paginaNavegacion = this.paginaActual + 1;
+
+    this.actualizarEventosPaginados();
+
+    // Debug para verificar los valores
+    console.log('Eventos filtrados:', this.eventosFiltrados.length);
+    console.log('Total páginas:', this.totalPaginas);
+    console.log('Página actual:', this.paginaActual);
+    console.log('Items por página:', this.itemsPorPagina);
   }
 
-  get eventosPaginados(): EventoDTO[] {
-    const inicio = (this.paginaActual - 1) * this.itemsPorPagina;
-    const fin = inicio + this.itemsPorPagina;
-    return this.eventosFiltrados.slice(inicio, fin);
+  actualizarEventosPaginados(): void {
+    const start = this.paginaActual * this.itemsPorPagina;
+    const end = start + this.itemsPorPagina;
+    this.eventosPaginados = this.eventosFiltrados.slice(start, end);
   }
 
   verDetallesEvento(id: number): void {
     this.router.navigate([`/eventos/${id}`]);
-
-    // Implementar lógica para ver detalles del evento
     console.log('Ver detalles del evento:', id);
   }
 
   editarEvento(id: number): void {
-    // Implementar lógica para editar evento
     console.log('Editar evento:', id);
   }
 
   cancelarEvento(id: number): void {
-    // Implementar lógica para cancelar evento
     console.log('Cancelar evento:', id);
-    // Ejemplo de implementación:
-    /*
-    if (confirm('¿Está seguro de que desea cancelar este evento?')) {
-      this.eventoService.cancelarEvento(id).subscribe({
-        next: () => {
-          this.obtenerEventos();
-        },
-        error: (err) => {
-          this.error = 'Error al cancelar el evento';
-        }
-      });
-    }
-    */
   }
 
-  // Métodos para la paginación
-  paginasArray(): number[] {
-    return Array.from({ length: this.totalPaginas }, (_, i) => i + 1);
-  }
-
-  mostrarNumeroPagina(pagina: number): boolean {
-    return Math.abs(pagina - this.paginaActual) <= 2 ||
-      pagina === 1 ||
-      pagina === this.totalPaginas;
-  }
-
-  mostrarPuntosSuspensivos(pagina: number): boolean {
-    return (pagina === 2 && this.paginaActual > 4) ||
-      (pagina === this.totalPaginas - 1 && this.paginaActual < this.totalPaginas - 3);
-  }
   // Métodos de filtrado
   onFiltroChange(): void {
     this.searchSubject.next(this.filtro);
   }
 
+  // Métodos de paginación
+  cambiarPagina(pagina: number): void {
+    if (pagina < 0 || pagina >= this.totalPaginas || pagina === this.paginaActual) return;
+
+    this.paginaActual = pagina;
+    this.paginaNavegacion = pagina + 1; // Sincronizar la navegación rápida
+    this.actualizarEventosPaginados();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  paginaAnterior(): void {
+    if (this.paginaActual > 0) {
+      this.cambiarPagina(this.paginaActual - 1);
+    }
+  }
+
+  paginaSiguiente(): void {
+    if (this.paginaActual < this.totalPaginas - 1) {
+      this.cambiarPagina(this.paginaActual + 1);
+    }
+  }
+
+  obtenerRangoPaginas(): number[] {
+    const rango = [];
+    const inicio = Math.max(0, this.paginaActual - 2);
+    const fin = Math.min(this.totalPaginas - 1, this.paginaActual + 2);
+
+    for (let i = inicio; i <= fin; i++) {
+      rango.push(i);
+    }
+    return rango;
+  }
+
+  irAPagina(): void {
+    if (this.paginaNavegacion &&
+      this.paginaNavegacion >= 1 &&
+      this.paginaNavegacion <= this.totalPaginas) {
+      this.cambiarPagina(this.paginaNavegacion - 1);
+    } else {
+      // Resetear el valor si es inválido
+      this.paginaNavegacion = this.paginaActual + 1;
+    }
+  }
+
+  // Getters para la vista
+  get esPrimeraPagina(): boolean {
+    return this.paginaActual === 0;
+  }
+
+  get esUltimaPagina(): boolean {
+    return this.paginaActual >= this.totalPaginas - 1;
+  }
+
+  get paginaActualDisplay(): number {
+    return this.paginaActual + 1;
+  }
+
+  // Getter para verificar si está cargando (para compatibilidad con template)
+  get isLoading(): boolean {
+    return this.cargando;
+  }
 }

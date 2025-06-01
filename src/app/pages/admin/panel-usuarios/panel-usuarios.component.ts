@@ -30,11 +30,11 @@ export class PanelUsuariosComponent implements OnInit {
   cargando: boolean = true;
   error: string | null = null;
 
+  paginaNavegacion: number = 1;
   paginaActual: number = 0;
-  itemsPorPagina: number = 6;
+  itemsPorPagina: number = 10;
   totalUsuarios: number = 0;
   totalPaginas: number = 1;
-  isLoading: boolean = false;
 
   private searchSubject = new Subject<string>();
 
@@ -44,7 +44,8 @@ export class PanelUsuariosComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe((termino) => {
       this.filtro = termino;
-      this.paginaActual = 0; // Reiniciar a primera página al buscar
+      this.paginaActual = 0;
+      this.paginaNavegacion = 1;
       this.cargarUsuarios();
     });
   }
@@ -59,22 +60,38 @@ export class PanelUsuariosComponent implements OnInit {
 
     const params: PaginationParams = {
       page: this.paginaActual,
-      size: this.itemsPorPagina,
-      termino: this.filtro.trim()
+      size: this.itemsPorPagina
     };
 
+    if (this.filtro && this.filtro.trim() !== '') {
+      params.termino = this.filtro.trim();
+    }
+
+    if (this.filtroRol !== 'TODOS') {
+      params.rol = this.filtroRol.trim();
+    }
+
+
+    console.log('Params enviados al backend:', params);
+
     this.usuarioService.obtenerTodasPaginadas(params).subscribe({
-      next: (usuarios) => {
-        this.usuarios = usuarios;
-        this.totalUsuarios = (this.paginaActual * this.itemsPorPagina) + usuarios.length;
-        this.totalPaginas = usuarios.length < this.itemsPorPagina
-          ? this.paginaActual + 1
-          : this.paginaActual + 2;
-        this.filtrarUsuarios();
+      next: (response) => {
+        this.usuarios = response.items;
+        this.totalUsuarios = response.totalItems;
+        this.totalPaginas = response.totalPages;
+        this.usuariosFiltrados = [...this.usuarios]; // Ya vienen filtrados
         this.cargando = false;
+        // Debug
+        console.log('Usuarios cargados:', this.usuarios.length);
+        console.log('Usuarios filtrados:', this.usuariosFiltrados.length);
+        console.log('Total usuarios:', this.totalUsuarios);
+        console.log('Total páginas:', this.totalPaginas);
       },
-      error: () => {
-        this.error = 'Error al cargar usuarios.';
+      error: (err) => {
+        console.error('Error al cargar usuarios:', err);
+        this.error = err.message || 'Error al cargar usuarios.';
+        this.usuarios = [];
+        this.usuariosFiltrados = [];
         this.cargando = false;
       }
     });
@@ -82,11 +99,9 @@ export class PanelUsuariosComponent implements OnInit {
 
   filtrarUsuarios(): void {
     let filtrados = this.usuarios;
-
     if (this.filtroRol !== 'TODOS') {
       filtrados = filtrados.filter(u => u.rol === this.filtroRol);
     }
-
     this.usuariosFiltrados = filtrados;
   }
 
@@ -95,7 +110,50 @@ export class PanelUsuariosComponent implements OnInit {
   }
 
   onFiltroRolChange(): void {
-    this.filtrarUsuarios();
+    this.paginaActual = 0;
+    this.paginaNavegacion = 1;
+    this.cargarUsuarios();
+  }
+
+  cambiarPagina(pagina: number): void {
+    if (pagina !== this.paginaActual && pagina >= 0 && pagina < this.totalPaginas) {
+      this.paginaActual = pagina;
+      this.paginaNavegacion = pagina + 1;
+      this.cargarUsuarios();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  paginaAnterior(): void {
+    if (!this.esPrimeraPagina) {
+      this.cambiarPagina(this.paginaActual - 1);
+    }
+  }
+
+  paginaSiguiente(): void {
+    if (!this.esUltimaPagina) {
+      this.cambiarPagina(this.paginaActual + 1);
+    }
+  }
+
+  obtenerRangoPaginas(): number[] {
+    const rango = [];
+    const inicio = Math.max(0, this.paginaActual - 2);
+    const fin = Math.min(this.totalPaginas - 1, this.paginaActual + 2);
+    for (let i = inicio; i <= fin; i++) {
+      rango.push(i);
+    }
+    return rango;
+  }
+
+  irAPagina(): void {
+    if (this.paginaNavegacion &&
+      this.paginaNavegacion >= 1 &&
+      this.paginaNavegacion <= this.totalPaginas) {
+      this.cambiarPagina(this.paginaNavegacion - 1);
+    } else {
+      this.paginaNavegacion = this.paginaActual + 1;
+    }
   }
 
   get esPrimeraPagina(): boolean {
@@ -103,35 +161,14 @@ export class PanelUsuariosComponent implements OnInit {
   }
 
   get esUltimaPagina(): boolean {
-    return this.paginaActual + 1 >= this.totalPaginas;
+    return this.paginaActual >= this.totalPaginas - 1;
   }
 
-  paginaAnterior(): void {
-    if (!this.esPrimeraPagina) {
-      this.paginaActual--;
-      this.cargarUsuarios();
-    }
+  get paginaActualDisplay(): number {
+    return this.paginaActual + 1;
   }
 
-  paginaSiguiente(): void {
-    if (!this.esUltimaPagina) {
-      this.paginaActual++;
-      this.cargarUsuarios();
-    }
-  }
-
-  cambiarPagina(pagina: number): void {
-    if (pagina !== this.paginaActual) {
-      this.paginaActual = pagina;
-      this.cargarUsuarios();
-    }
-  }
-
-  obtenerRangoPaginas(): number[] {
-    const paginas: number[] = [];
-    for (let i = 0; i < this.totalPaginas; i++) {
-      paginas.push(i);
-    }
-    return paginas;
+  get isLoading(): boolean {
+    return this.cargando;
   }
 }

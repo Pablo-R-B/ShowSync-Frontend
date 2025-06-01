@@ -112,47 +112,71 @@
   </table>
 
   <!-- Paginación -->
-  <div class="flex justify-center mt-8" *ngIf="totalPaginas > 1 && !cargando">
-    <nav class="flex items-center" aria-label="Paginación">
-      <button
-        (click)="cambiarPagina(paginaActual - 1)"
-        [disabled]="paginaActual === 1"
-        [class.opacity-50]="paginaActual === 1"
-        [class.cursor-not-allowed]="paginaActual === 1"
-        class="px-3 py-1 rounded-l bg-gray-800 hover:bg-gray-700 text-white flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-        </svg>
-      </button>
-
-      <ng-container *ngFor="let pagina of paginasArray()">
+  <div class="flex justify-center mt-6" *ngIf="totalPaginas > 1 && !isLoading">
+    <div class="flex flex-col items-center gap-4 mt-6" *ngIf="totalPaginas > 1 && !isLoading">
+      <div class="flex items-center gap-2 text-sm text-white">
+        <span>Ir a página:</span>
+        <input
+          type="number"
+          [min]="1"
+          [max]="totalPaginas"
+          [(ngModel)]="paginaNavegacion"
+          (keydown.enter)="irAPagina()"
+          class="w-16 px-2 py-1 bg-gray-800 border border-gray-600 text-white rounded text-center text-sm"
+        />
         <button
-          *ngIf="mostrarNumeroPagina(pagina)"
-          (click)="cambiarPagina(pagina)"
-          [class.bg-customRed]="pagina === paginaActual"
-          [class.bg-gray-800]="pagina !== paginaActual"
-          [class.hover:bg-customBurbundy]="pagina === paginaActual"
-          [class.hover:bg-gray-700]="pagina !== paginaActual"
-          class="px-3 py-1 text-white transition-colors duration-300">
-          {{ pagina }}
+          (click)="irAPagina()"
+          class="px-3 py-1 bg-customRed hover:bg-customBurbundy text-white rounded text-sm"
+        >
+          Ir
+        </button>
+      </div>
+      <nav class="flex items-center space-x-1" aria-label="Paginación">
+        <!-- Botón Anterior -->
+        <button
+          (click)="paginaAnterior()"
+          [disabled]="esPrimeraPagina"
+          [class.opacity-50]="esPrimeraPagina"
+          [class.cursor-not-allowed]="esPrimeraPagina"
+          class="px-3 py-2 rounded-l bg-gray-800 hover:bg-gray-700 text-white flex items-center transition-colors"
+          title="Página anterior"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
         </button>
 
-        <span *ngIf="mostrarPuntosSuspensivos(pagina)" class="px-2 py-1 text-white">...</span>
-      </ng-container>
+        <!-- Botones de páginas -->
+        <button
+          *ngFor="let pagina of obtenerRangoPaginas()"
+          (click)="cambiarPagina(pagina)"
+          [class.bg-customRed]="pagina === paginaActual"
+          [class.text-white]="pagina === paginaActual"
+          [class.bg-gray-800]="pagina !== paginaActual"
+          [class.text-gray-300]="pagina !== paginaActual"
+          [class.hover:bg-customBurbundy]="pagina === paginaActual"
+          [class.hover:bg-gray-700]="pagina !== paginaActual"
+          class="px-3 py-2 transition-colors duration-200 font-medium"
+        >
+          {{ pagina + 1 }}
+        </button>
 
-      <button
-        (click)="cambiarPagina(paginaActual + 1)"
-        [disabled]="paginaActual === totalPaginas"
-        [class.opacity-50]="paginaActual === totalPaginas"
-        [class.cursor-not-allowed]="paginaActual === totalPaginas"
-        class="px-3 py-1 rounded-r bg-gray-800 hover:bg-gray-700 text-white flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-        </svg>
-      </button>
-    </nav>
+        <!-- Botón Siguiente -->
+        <button
+          (click)="paginaSiguiente()"
+          [disabled]="esUltimaPagina"
+          [class.opacity-50]="esUltimaPagina"
+          [class.cursor-not-allowed]="esUltimaPagina"
+          class="px-3 py-2 rounded-r bg-gray-800 hover:bg-gray-700 text-white flex items-center transition-colors"
+          title="Página siguiente"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4-4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </nav>
+    </div>
   </div>
-
   <div *ngIf="!cargando && eventosFiltrados.length === 0" class="text-center py-12 text-gray-400">
     No se encontraron eventos
   </div>
