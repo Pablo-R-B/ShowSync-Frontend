@@ -131,7 +131,7 @@ export class LoginComponent implements OnInit {
 
   private redirectByRole(rol: string): void {
     const routes = {
-      'ADMINISTRADOR': '/admin/salas',
+      'ADMINISTRADOR': '/admin/resumen',
       'PROMOTOR': '/landing-page',
       'ARTISTA': '/landing-page'
     };
