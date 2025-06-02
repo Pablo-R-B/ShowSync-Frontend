@@ -40,7 +40,9 @@
     </div>
   </div>
 
-  <table class="table-auto w-full border border-gray-600 text-center text-white" *ngIf="!cargando && !error">
+  <div class="overflow-x-auto">
+
+    <table class="table-auto w-full border border-gray-600 text-center text-white" *ngIf="!cargando && !error">
     <thead class="bg-gray-800">
     <tr>
       <th class="border border-gray-600 p-2 text-center">ID</th>
@@ -102,6 +104,7 @@
     </tr>
     </tbody>
   </table>
+  </div>
 
   <!-- Paginación -->
   <div class="flex justify-center mt-6" *ngIf="totalPaginas > 1 && !isLoading">
