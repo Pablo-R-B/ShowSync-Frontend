@@ -1,10 +1,8 @@
 .admin-container {
-  padding: 1.5rem 1rem;
-  background-color: #0f0f0f; /* bg-customNegro equivalente */
-  min-height: 100vh;
-  margin: 0 1rem;
-  border-radius: 1rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 @media (min-width: 1024px) {
@@ -34,7 +32,6 @@
   padding: 0.75rem 1.5rem;
   background-color: #0f0f0f; /* customRed */
   color: white;
-  border: none;
   border-radius: 0.5rem;
   cursor: pointer;
   font-weight: 500;
@@ -56,4 +53,21 @@
 .admin-content {
   flex: 1;
   /* Removemos el border-top y padding-top para que el contenido hijo maneje su propio espaciado */
+}
+
+.admin-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+
+
+
+.admin-content {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
 }
