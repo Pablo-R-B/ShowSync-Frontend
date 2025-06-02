@@ -62,7 +62,6 @@
 /* Fondo principal */
 .main-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a1f 25%, #2a1a1f 50%, #3a1a2f 100%);
   position: relative;
   overflow: hidden;
 }

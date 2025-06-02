@@ -1,21 +1,25 @@
 /* Estilos base del calendario */
 .calendario-container {
   margin: 1rem auto;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  background: linear-gradient(135deg,
+  #801c1c 0%,
+  #2d2d2d 100%);
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 1rem;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  width: 98%;
-  max-width: 1200px;
+  width: 100%;
+  max-width: 1000px;
 }
 
 .calendario-wrapper {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(14, 12, 12, 0.83);
   border-radius: 8px;
   padding: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  min-height: 500px;
+  border: 1px solid rgb(87, 81, 81);
+  min-height: 400px;
+  max-height: 650px;
+  overflow-y: auto;
 }
 
 .calendario-wrapper ::ng-deep .evento-simple {
@@ -44,7 +48,8 @@
 /* Cabeceras de día */
 .calendario-wrapper ::ng-deep .fc-col-header-cell {
   background: rgba(255, 255, 255, 0.05);
-  color: #d1d5db;
+  color:
+    #d1d5db;
   padding: 0.5rem;
   font-size: 0.75rem;
 }
@@ -61,7 +66,8 @@
 
 /* Número del día */
 .calendario-wrapper ::ng-deep .fc-daygrid-day-number {
-  color: #d1d5db;
+  color:
+    #d1d5db;
   padding: 0.3rem;
   font-size: 0.8rem;
 }
@@ -72,7 +78,9 @@
 }
 
 .calendario-wrapper ::ng-deep .fc-day-today .fc-daygrid-day-number {
-  background: linear-gradient(135deg, #BF0D22, #dc2626);
+  background: linear-gradient(135deg,
+  #BF0D22,
+  #dc2626);
   color: white;
   border-radius: 50%;
   width: 1.8rem;
@@ -94,14 +102,16 @@
 
 /* Toolbar */
 .calendario-wrapper ::ng-deep .fc-toolbar-title {
-  color: #f3f4f6;
+  color:
+    #f3f4f6;
   font-size: 1.2rem;
 }
 
 .calendario-wrapper ::ng-deep .fc-button {
   background: rgba(55, 65, 81, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #f9fafb;
+  color:
+    #f9fafb;
   padding: 0.4rem 0.8rem;
   font-size: 0.8rem;
 }
@@ -136,4 +146,40 @@
   .calendario-wrapper ::ng-deep .fc-daygrid-day-number {
     font-size: 0.7rem;
   }
+
+  @media (max-width: 768px) {
+    .calendario-container {
+      padding: 0.75rem;
+      margin: 0.5rem auto;
+    }
+
+    .calendario-wrapper {
+      min-height: 300px;
+      padding: 0.5rem;
+    }
+
+    .calendario-wrapper ::ng-deep .fc-toolbar {
+      flex-direction: column;
+      align-items: start;
+      gap: 0.5rem;
+    }
+
+    .calendario-wrapper ::ng-deep .fc-toolbar-title {
+      font-size: 1rem;
+    }
+
+    .calendario-wrapper ::ng-deep .fc-button {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+    }
+  }
+
+  .subtitle {
+    font-size: 1.125rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    line-height: 1.6;
+
+  }
+
 }

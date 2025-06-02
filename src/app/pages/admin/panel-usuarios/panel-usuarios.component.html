@@ -40,31 +40,30 @@
       <span class="text-red-300">{{ error }}</span>
     </div>
   </div>
-
-  <table class="table-auto w-full border border-gray-600 text-center text-white" *ngIf="!cargando && !error">
-    <thead class="bg-gray-800">
-    <tr>
-      <th class="border border-gray-600 p-2 text-center">ID</th>
-      <th class="border border-gray-600 p-2 text-center">Nombre</th>
-      <th class="border border-gray-600 p-2 text-center">Email</th>
-      <th class="border border-gray-600 p-2 text-center">Rol</th>
-      <th class="border border-gray-600 p-2 text-center">Verificado</th>
-      <th class="border border-gray-600 p-2 text-center">Fecha Registro</th>
-    </tr>
-    </thead>
-    <tbody>
-
-    <tr *ngFor="let usuario of usuarios" class="hover:bg-gray-800/50">
-      <td class="border border-gray-600 p-2">{{ usuario.id }}</td>
-      <td class="border border-gray-600 p-2">{{ usuario.nombreUsuario }}</td>
-      <td class="border border-gray-600 p-2">{{ usuario.email }}</td>
-      <td class="border border-gray-600 p-2">{{ usuario.rol }}</td>
-      <td class="border border-gray-600 p-2">{{ usuario.verificado ? 'Sí' : 'No' }}</td>
-      <td class="border border-gray-600 p-2">{{ usuario.fechaRegistro | date:'dd/MM/yyyy' }}</td>
-
-    </tr>
-    </tbody>
-  </table>
+  <div class="overflow-x-auto">
+    <table class="table-auto w-full border border-gray-600 text-center text-white" *ngIf="!cargando && !error">
+      <thead class="bg-gray-800">
+      <tr>
+        <th class="border border-gray-600 p-2 text-center">ID</th>
+        <th class="border border-gray-600 p-2 text-center">Nombre</th>
+        <th class="border border-gray-600 p-2 text-center">Email</th>
+        <th class="border border-gray-600 p-2 text-center">Rol</th>
+        <th class="border border-gray-600 p-2 text-center">Verificado</th>
+        <th class="border border-gray-600 p-2 text-center">Fecha Registro</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let usuario of usuarios" class="hover:bg-gray-800/50">
+        <td class="border border-gray-600 p-2">{{ usuario.id }}</td>
+        <td class="border border-gray-600 p-2">{{ usuario.nombreUsuario }}</td>
+        <td class="border border-gray-600 p-2">{{ usuario.email }}</td>
+        <td class="border border-gray-600 p-2">{{ usuario.rol }}</td>
+        <td class="border border-gray-600 p-2">{{ usuario.verificado ? 'Sí' : 'No' }}</td>
+        <td class="border border-gray-600 p-2">{{ usuario.fechaRegistro | date:'dd/MM/yyyy' }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 
   <!-- Información de paginación -->
   <div *ngIf="!isLoading && usuarios.length === 0" class="text-center py-12 text-gray-400">
