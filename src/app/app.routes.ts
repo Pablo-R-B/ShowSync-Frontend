@@ -28,12 +28,12 @@ export const routes: Routes = [
   { path: 'auth/restablecer', component: RestablecerComponent },
   { path: 'datos-promotor', component: RegistroPromotorComponent },
   { path:'datos-artista', component:RegistroArtistaComponent},
+  { path: 'landing-page', component: LandingPageComponent },
 
   {
     path: '',
     canActivateChild: [PerfilCompletoGuard],
     children: [
-      { path: 'landing-page', component: LandingPageComponent },
       { path: 'promotores', component: PromotoresComponent },
       { path: 'promotores/:id', component: PromotoresComponent },
       { path: 'busqueda-promotores', component: BusquedaPromotoresComponent },
