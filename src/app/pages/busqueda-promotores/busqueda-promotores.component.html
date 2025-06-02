@@ -4,44 +4,61 @@
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
 />
 
-<!-- TÍTULO PRINCIPAL -->
-<div class="pt-6 text-center px-4">
-  <header class="w-full bg-gradient-to-r from-black-900 to-black-800 py-10 px-4 text-center">
-    <h2 class="text-2xl md:text-4xl font-semibold text-white leading-tight">
-      ¿En busca de las promotoras que organizan tus conciertos favoritos?
-    </h2>
-  </header>
+<!-- Hero Section con animación mejorada -->
+<div class="text-center mb-20 relative pt-[60px] sm:pt-[70px]">
+  <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-32 h-32 bg-red-500/20 rounded-full blur-3xl animate-pulse"></div>
+  <h2 class="text-4xl md:text-6xl font-medula inline-block relative tracking-wide">
+    ¿En busca de las promotoras que
+    <span class="text-red-500 animate-bounce inline-block"> organizan </span>
+    <span class="relative inline-block group">
+          tus conciertos favoritos?
+          <span class="absolute left-0 bottom-0 h-1 w-full bg-red-500 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500"></span>
+        </span>
+  </h2>
 </div>
 
 <!-- CONTENEDOR PRINCIPAL -->
 <main
   class="bg-black text-white p-6 md:p-10 flex flex-col md:flex-row gap-6 min-h-screen"
-  style="background-image: url('../../../assets/images/img_3.png'); background-size: cover; background-position: center;"
->
+  style="background-image: url('../../../assets/images/img_3.png'); background-size: cover; background-position: center;">
 
   <!-- FILTROS -->
-  <aside class="bg-zinc-900 p-6 rounded-xl border border-zinc-700 w-full md:w-2/5 lg:max-w-md self-start min-h-[500px]">
-    <h2 class="text-2xl font-semibold mb-6 text-center text-red-50-400">Filtros</h2>
+  <aside class="bg-gradient-to-br from-black/60 to-gray-900/40 backdrop-blur-sm p-6 rounded-2xl w-full xl:w-1/4 border border-white/10 shadow-2xl">
+    <div class="flex items-center mb-6">
+      <div class="w-8 h-8 bg-gradient-to-r from-red-500 to-purple-500 rounded-lg mr-3 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+        </svg>
+      </div>
+      <h3 class="text-white text-2xl font-bold">Filtros Avanzados</h3>
+    </div>
 
     <!-- Nombre del promotor -->
-    <label for="promotorSelect" class="block mb-4 text-lg font-medium text-white">
-      <i class="fa fa-user mr-2"></i>Promotor
-    </label>
-    <input
-      id="promotorSelect"
-      [(ngModel)]="nombrePromotoraSeleccionada"
-      type="text"
-      class="w-full mb-6 p-4 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:divide-customBurbundy-600"
-      placeholder="Buscar por nombre de promotor"
-    />
-
-    <!-- Botón de Aceptar -->
-    <button
-      class="bg-customBurbundy hover:bg-customBurbundy text-white w-full p-3 rounded-lg transition-all duration-300 transform hover:scale-105"
-      (click)="aplicarFiltros()"
-    >
-      Aceptar
-    </button>
+    <div class="mb-8">
+      <label class="block text-sm mb-3 font-semibold text-gray-200 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+        Buscar Promotor
+      </label>
+      <div class="relative group">
+        <input
+          id="promotorSelect"
+          [(ngModel)]="nombrePromotoraSeleccionada"
+          type="text"
+          placeholder="Escribe el nombre del promotor..."
+          class="w-full p-4 pr-14 rounded-xl border border-gray-600/50 bg-black/30 text-white placeholder-gray-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all duration-300 backdrop-blur-sm"
+        />
+        <button
+          (click)="aplicarFiltros()"
+          class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 p-2.5 rounded-lg transition-all duration-300 shadow-lg hover:shadow-red-500/25"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192.904 192.904" width="16px" class="fill-white">
+            <path d="m190.707 180.101-47.078-47.077c11.702-14.072 18.752-32.142 18.752-51.831C162.381 36.423 125.959 0 81.191 0 36.422 0 0 36.423 0 81.193c0 44.767 36.422 81.187 81.191 81.187 19.688 0 37.759-7.049 51.831-18.751l47.079 47.078a7.474 7.474 0 0 0 5.303 2.197 7.498 7.498 0 0 0 5.303-12.803zM15 81.193C15 44.694 44.693 15 81.191 15c36.497 0 66.189 29.694 66.189 66.193 0 36.496-29.692 66.187-66.189 66.187C44.693 147.38 15 117.689 15 81.193z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
   </aside>
 
 

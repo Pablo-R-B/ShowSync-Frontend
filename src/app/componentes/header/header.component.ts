@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { NgIf, NgOptimizedImage } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -13,13 +14,39 @@ import { NgIf, NgOptimizedImage } from '@angular/common';
     NgOptimizedImage
   ]
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit, OnDestroy {
   menuAbierto = false;
-  estaLogueado = !!localStorage.getItem('token');
+  estaLogueado = false;
   mostrarMenuPerfil = false;
-  username = localStorage.getItem('username') || '';
+  username = '';
+  rolUsuario = '';
+  private routerSubscription?: Subscription;
 
   constructor(private router: Router) {}
+
+  ngOnInit() {
+    this.actualizarEstadoUsuario();
+
+    // Suscribirse a cambios de ruta para actualizar el estado
+    this.routerSubscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.actualizarEstadoUsuario();
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+  }
+
+  private actualizarEstadoUsuario() {
+    const token = localStorage.getItem('token');
+    this.estaLogueado = !!token;
+    this.username = localStorage.getItem('username') || '';
+    this.rolUsuario = localStorage.getItem('rol') || '';
+  }
 
   toggleMenu() {
     this.menuAbierto = !this.menuAbierto;
@@ -30,42 +57,95 @@ export class HeaderComponent {
   }
 
   cerrarSesion() {
+    // Limpiar datos del localStorage
     localStorage.removeItem('token');
     localStorage.removeItem('username');
+    localStorage.removeItem('rol');
+
+    // Actualizar estado del componente
     this.estaLogueado = false;
+    this.username = '';
+    this.rolUsuario = '';
     this.mostrarMenuPerfil = false;
     this.menuAbierto = false;
-    this.router.navigate(['/auth/login']).then(() => {
-      this.mostrarMenuPerfil = false;
-      this.menuAbierto = false;
-    });
+
+    // Navegar al login
+    this.router.navigate(['/auth/login']);
   }
 
   getRutaPerfil() {
-    const rol = localStorage.getItem('rol');
     this.mostrarMenuPerfil = false;
     this.menuAbierto = false;
-    if (rol === 'PROMOTOR') {
-      return '/perfil-promotores';
-    } if (rol === 'ADMINISTRADOR') {
-      return '/admin';
-    } else {
-      return '/login';
+
+    switch (this.rolUsuario) {
+      case 'PROMOTOR':
+        return '/perfil-promotores';
+      case 'ADMINISTRADOR':
+        return '/admin';
+      case 'SALA':
+        return '/perfil-salas';
+      case 'ARTISTA':
+        return '/perfil-artistas';
+      default:
+        return '/auth/login';
     }
   }
 
-  // Nuevo método para obtener la imagen según el rol
   getImagenUsuario(): string {
-    const rol = localStorage.getItem('rol');
-    if (rol === 'ADMINISTRADOR') {
-      return 'assets/images/user_admin.png';
+    switch (this.rolUsuario) {
+      case 'ADMINISTRADOR':
+        return 'assets/images/user_admin.png';
+      case 'PROMOTOR':
+        return 'assets/images/user_promotor.png';
+      case 'SALA':
+        return 'assets/images/user_sala.png';
+      case 'ARTISTA':
+        return 'assets/images/user_artista.png';
+      default:
+        return '';
     }
-    // Para otros roles, mantén el ícono SVG actual (no necesitas una imagen)
-    return '';
   }
 
-  // Método para verificar si debe mostrar imagen o ícono SVG
   esAdministrador(): boolean {
-    return localStorage.getItem('rol') === 'ADMINISTRADOR';
+    return this.rolUsuario === 'ADMINISTRADOR';
+  }
+
+  // Métodos para controlar visibilidad de enlaces específicos
+  puedeVerEventos(): boolean {
+    return this.estaLogueado;
+  }
+
+  puedeVerSalas(): boolean {
+    return this.estaLogueado && this.rolUsuario !== 'ARTISTA';
+  }
+
+  puedeVerArtistas(): boolean {
+    return this.estaLogueado;
+  }
+
+  puedeVerPromotores(): boolean {
+    return this.estaLogueado;
+  }
+
+  // Método para restricciones más específicas por rol
+  tieneAccesoA(seccion: string): boolean {
+    if (!this.estaLogueado) {
+      // Solo páginas públicas para usuarios no logueados
+      return ['inicio', 'instrucciones'].includes(seccion);
+    }
+
+    // Lógica específica por rol si es necesario
+    switch (this.rolUsuario) {
+      case 'ADMINISTRADOR':
+        return true; // Admin tiene acceso a todo
+      case 'PROMOTOR':
+        return ['inicio', 'eventos', 'salas', 'artistas', 'instrucciones'].includes(seccion);
+      case 'SALA':
+        return ['inicio', 'eventos', 'artistas', 'promotores', 'instrucciones'].includes(seccion);
+      case 'ARTISTA':
+        return ['inicio', 'eventos', 'artistas', 'promotores', 'instrucciones'].includes(seccion);
+      default:
+        return ['inicio', 'instrucciones'].includes(seccion);
+    }
   }
 }

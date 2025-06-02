@@ -51,6 +51,11 @@ export const routes: Routes = [
     ],
   },
 
+  //Ruta de instrucciones
+   {path: 'instrucciones', loadComponent: () => import('./pages/intrucciones-uso/intrucciones-uso.component').then(m => m.InstruccionesUsoComponent)},
+
+
+
   // ✅ PANEL DE ADMINISTRACIÓN - Configuración correcta
   {
     path: 'admin',
@@ -68,6 +73,11 @@ export const routes: Routes = [
         path: 'eventos',
         loadComponent: () => import('./pages/admin/panel-eventos/panel-eventos.component').then(m => m.PanelEventosComponent),
       },
+
+      {
+        path:'resumen',
+        loadComponent: () => import('./pages/admin/resumen/resumen.component').then(m => m.ResumenComponent),
+      },
       {
         path: 'generos',
         loadComponent: () => import('./pages/admin/panel-generos/panel-generos.component').then(m => m.PanelGenerosComponent),
@@ -83,7 +93,7 @@ export const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'usuarios',
+        redirectTo: 'resumen',
         pathMatch: 'full',
       }
     ]

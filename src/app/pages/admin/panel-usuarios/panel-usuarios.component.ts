@@ -29,7 +29,7 @@ export class PanelUsuariosComponent implements OnInit {
   filtro: string = '';
   paginaNavegacion: number = 1;
   paginaActual: number = 0;
-  itemsPorPagina: number = 10;
+  itemsPorPagina: number = 6;
   totalUsuarios: number = 0;
   totalPaginas: number = 1;
 
@@ -164,15 +164,12 @@ export class PanelUsuariosComponent implements OnInit {
     return this.paginaActual >= this.totalPaginas - 1;
   }
 
-  get paginaActualDisplay(): number {
-    return this.paginaActual + 1;
-  }
+
 
   get isLoading(): boolean {
     return this.cargando;
   }
 
-  private obtenerMensajeError(err: any) {
-    return undefined;
-  }
+
+
 }

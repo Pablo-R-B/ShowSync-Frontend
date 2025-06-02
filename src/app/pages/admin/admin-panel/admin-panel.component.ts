@@ -14,7 +14,6 @@ export class AdminPanelComponent {
   constructor(private router: Router, private route: ActivatedRoute) {}
 
   navigateTo(path: string): void {
-    //this.router.navigate([path], { relativeTo: this.route });
     this.router.navigate(['/admin', path]);
 
   }

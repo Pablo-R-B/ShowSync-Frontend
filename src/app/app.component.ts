@@ -7,6 +7,8 @@ import {HeaderComponent} from './componentes/header/header.component';
 import {FooterComponent} from './componentes/footer/footer.component';
 import {SharedModule} from 'primeng/api';
 import localeEs from '@angular/common/locales/es';
+
+// Importa el locale de español
 registerLocaleData(localeEs, 'es');
 
 // @ts-ignore

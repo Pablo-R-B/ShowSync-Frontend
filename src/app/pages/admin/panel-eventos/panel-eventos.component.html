@@ -1,5 +1,5 @@
-<div class="p-4 bg-customNegro rounded-2xl shadow-md mx-4 lg:mx-16">
-  <h1 class="text-2xl font-bold mb-4 text-white">Gestión de Eventos</h1>
+<div class="p-4 bg-black/90 rounded-2xl shadow-md mx-4 lg:mx-16">
+  <h1 class="text-2xl font-bold mb-4 text-white text-center">Gestión de Eventos</h1>
 
   <div class="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
     <div class="w-full md:w-1/3">
@@ -40,7 +40,9 @@
     </div>
   </div>
 
-  <table class="table-auto w-full border border-gray-600 text-center text-white" *ngIf="!cargando && !error">
+  <div class="overflow-x-auto">
+
+    <table class="table-auto w-full border border-gray-600 text-center text-white" *ngIf="!cargando && !error">
     <thead class="bg-gray-800">
     <tr>
       <th class="border border-gray-600 p-2 text-center">ID</th>
@@ -86,15 +88,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
             </svg>
           </button>
-          <button
-            (click)="editarEvento(evento.id)"
-            class="text-yellow-600 hover:text-yellow-900 dark:hover:text-yellow-400 px-2 py-1 rounded hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors duration-200"
-            title="Editar"
-          >
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-            </svg>
-          </button>
+
           <button
             (click)="cancelarEvento(evento.id)"
             *ngIf="evento.estado !== 'cancelado'"
@@ -110,6 +104,7 @@
     </tr>
     </tbody>
   </table>
+  </div>
 
   <!-- Paginación -->
   <div class="flex justify-center mt-6" *ngIf="totalPaginas > 1 && !isLoading">

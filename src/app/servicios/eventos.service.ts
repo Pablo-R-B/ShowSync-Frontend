@@ -90,6 +90,11 @@ export class EventosService {
     return this.http.get<string[]>(`${this.apiUrl}/eventos/estados`);
   }
 
+  // Obtener el total de eventos
+  obtenerTotalEventos(): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/eventos/total`);
+  }
+
 
 
 // Obtener eventos de un promotor específico
