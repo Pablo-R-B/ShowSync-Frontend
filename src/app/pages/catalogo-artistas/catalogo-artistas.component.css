@@ -1,0 +1,131 @@
+/* Hero animado */
+h2 span.group {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  color: #fff;
+}
+
+h2 span.group span::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100%;
+  background: linear-gradient(to right, #ff416c, #ff4b2b);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s ease;
+}
+
+h2 span.group:hover span::after {
+  transform: scaleX(1);
+}
+
+/* Animación vibrante para "artista" */
+h2 span.group span {
+  animation: popText 2.5s infinite;
+}
+
+@keyframes popText {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+/* Barras de frecuencia estilo profesional */
+.frequency-bars {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 3rem;
+}
+
+.freq-bar {
+  width: 4px;
+  height: 30px;
+  background: linear-gradient(to top, #ff4b2b, #ff416c);
+  animation: bounce 1s infinite ease-in-out;
+  border-radius: 4px;
+  opacity: 0.8;
+
+}
+
+.freq-bar:nth-child(1) { height: 20px; animation-delay: 0s; }
+.freq-bar:nth-child(2) { height: 35px; animation-delay: 0.1s; }
+.freq-bar:nth-child(3) { height: 50px; animation-delay: 0.2s; }
+.freq-bar:nth-child(4) { height: 40px; animation-delay: 0.3s; }
+.freq-bar:nth-child(5) { height: 60px; animation-delay: 0.4s; }
+.freq-bar:nth-child(6) { height: 30px; animation-delay: 0.5s; }
+.freq-bar:nth-child(7) { height: 45px; animation-delay: 0.6s; }
+.freq-bar:nth-child(8) { height: 25px; animation-delay: 0.7s; }
+.freq-bar:nth-child(9) { height: 55px; animation-delay: 0.8s; }
+.freq-bar:nth-child(10) { height: 35px; animation-delay: 0.9s; }
+.freq-bar:nth-child(11) { height: 50px; animation-delay: 1s; }
+.freq-bar:nth-child(12) { height: 40px; animation-delay: 1.1s; }
+.freq-bar:nth-child(13) { height: 60px; animation-delay: 1.2s; }
+.freq-bar:nth-child(14) { height: 30px; animation-delay: 1.3s; }
+.freq-bar:nth-child(15) { height: 45px; animation-delay: 1.4s; }
+.freq-bar:nth-child(16) { height: 25px; animation-delay: 1.5s; }
+.freq-bar:nth-child(17) { height: 55px; animation-delay: 1.6s; }
+.freq-bar:nth-child(18) { height: 35px; animation-delay: 1.7s; }
+.freq-bar:nth-child(19) { height: 50px; animation-delay: 1.8s; }
+.freq-bar:nth-child(20) { height: 40px; animation-delay: 1.9s; }
+.freq-bar:nth-child(21) { height: 60px; animation-delay: 2s; }
+.freq-bar:nth-child(22) { height: 30px; animation-delay: 2.1s; }
+.freq-bar:nth-child(23) { height: 45px; animation-delay: 2.2s; }
+.freq-bar:nth-child(24) { height: 25px; animation-delay: 2.3s; }
+.freq-bar:nth-child(25) { height: 55px; animation-delay: 2.4s; }
+.freq-bar:nth-child(26) { height: 35px; animation-delay: 2.5s; }
+.freq-bar:nth-child(27) { height: 50px; animation-delay: 2.6s; }
+.freq-bar:nth-child(28) { height: 40px; animation-delay: 2.7s; }
+.freq-bar:nth-child(29) { height: 60px; animation-delay: 2.8s; }
+.freq-bar:nth-child(30) { height: 30px; animation-delay: 2.9s; }
+.freq-bar:nth-child(31) { height: 45px; animation-delay: 3s; }
+.freq-bar:nth-child(32) { height: 25px; animation-delay: 3.1s; }
+.freq-bar:nth-child(33) { height: 55px; animation-delay: 3.2s; }
+.freq-bar:nth-child(34) { height: 35px; animation-delay: 3.3s; }
+.freq-bar:nth-child(35) { height: 50px; animation-delay: 3.4s; }
+.freq-bar:nth-child(36) { height: 40px; animation-delay: 3.5s; }
+.freq-bar:nth-child(37) { height: 60px; animation-delay: 3.6s; }
+.freq-bar:nth-child(38) { height: 30px; animation-delay: 3.7s; }
+.freq-bar:nth-child(39) { height: 45px; animation-delay: 3.8s; }
+.freq-bar:nth-child(40) { height: 25px; animation-delay: 3.9s; }
+.freq-bar:nth-child(41) { height: 55px; animation-delay: 4s; }
+.freq-bar:nth-child(42) { height: 35px; animation-delay: 4.1s; }
+.freq-bar:nth-child(21) { height: 60px; animation-delay: 2s; }
+
+
+
+@keyframes bounce {
+  0%, 100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1.5);
+  }
+}
+
+/* Pulsación del fondo circular detrás del texto */
+.animate-pulse {
+  animation: pulse-glow 3s infinite;
+}
+
+@keyframes pulse-glow {
+  0% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.15);
+  }
+  100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+}

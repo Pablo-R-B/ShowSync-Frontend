@@ -14,11 +14,12 @@
 }
 
 .admin-title {
-  font-size: 1.75rem;
-  font-weight: bold;
+  font-size: 3rem;
   margin-bottom: 1.5rem;
   color: white;
   text-align: center;
+  font-family: "Medula One", serif;
+  margin-top: 2rem;
 }
 
 .admin-tabs {
@@ -31,7 +32,7 @@
 
 .admin-tabs button {
   padding: 0.75rem 1.5rem;
-  background-color: #BF0D22; /* customRed */
+  background-color: #0f0f0f; /* customRed */
   color: white;
   border: none;
   border-radius: 0.5rem;

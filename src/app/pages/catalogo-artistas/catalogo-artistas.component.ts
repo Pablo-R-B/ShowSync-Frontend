@@ -141,4 +141,8 @@ export class CatalogoArtistasComponent implements OnInit {
   onPageChange($event: PaginatorState) {
 
   }
+
+
+
+
 }

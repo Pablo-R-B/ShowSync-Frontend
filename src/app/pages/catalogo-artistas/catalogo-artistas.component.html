@@ -2,32 +2,91 @@
   <!-- Overlay con gradiente más sutil -->
   <div class="absolute inset-0 bg-gradient-to-br from-black/80 via-black/70 to-purple-900/40"></div>
 
-  <div class="relative pt-8 pb-32 px-4 md:px-20 text-white">
+  <div class="relative pt-8 pb-10 px-4 md:px-20 text-white">
     <!-- Hero Section con animación mejorada -->
     <div class="text-center mb-20 relative">
       <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-32 h-32 bg-red-500/20 rounded-full blur-3xl animate-pulse"></div>
       <h2 class="text-4xl md:text-6xl font-medula inline-block relative tracking-wide">
-        Encuentra al artista de
-        <span class="text-red-500 animate-bounce inline-block"> tu </span>
-        <span class="relative inline-block group">
-          mundo sonoro
-          <span class="absolute left-0 bottom-0 h-1 w-full bg-red-500 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500"></span>
-        </span>
+          Encuentra al
+          <span class="relative inline-block group">
+            artista
+            <span class="absolute left-0 bottom-0 h-1 w-full bg-red-500 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500"></span>
+          </span>
+          de tu mundo sonoro
       </h2>
       <p class="text-lg md:text-xl text-gray-300 max-w-4xl mx-auto mt-6 leading-relaxed">
-        Conecta con artistas excepcionales para tus mejores eventos, conciertos y colaboraciones. Explora un catálogo exclusivo de talentos emergentes y consolidados, todos listos para llevar tu experiencia musical al siguiente nivel.
+        Conecta con músicos excepcionales para tus mejores eventos, conciertos y colaboraciones. Explora un catálogo exclusivo de talentos emergentes y consolidados, todos listos para llevar tu experiencia musical al siguiente nivel.
       </p>
+    </div>
+
+
+    <!-- Contenedor de ondas de sonido -->
+
+    <div class="wave-container" id="waveContainer">
+           <!--  <div class="wave-glow"></div> -->
+      <!-- <div class="wave-line" id="waveLine"></div> -->
+            <!-- Partículas de sonido -->
+          <!-- <div class="sound-particle"></div>
+          <div class="sound-particle"></div>
+          <div class="sound-particle"></div>
+          <div class="sound-particle"></div> -->
+
+      <!-- Barras de frecuencia -->
+      <div class="frequency-bars">
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+        <div class="freq-bar"></div>
+      </div>
     </div>
 
     <div class="flex flex-col xl:flex-row gap-8">
       <!-- Panel de Filtros Mejorado -->
 <div class="bg-gradient-to-br from-black/60 to-gray-900/40 backdrop-blur-sm p-6 rounded-2xl w-full xl:w-1/4 border border-white/10 shadow-2xl">        <div class="flex items-center mb-6">
-          <div class="w-8 h-8 bg-gradient-to-r from-red-500 to-purple-500 rounded-lg mr-3 flex items-center justify-center">
+          <div class="w-8 h-8 bg-gradient-to-r from-red-500 to-customGrisOscurso rounded-lg mr-3 flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
             </svg>
           </div>
-          <h3 class="text-white text-2xl font-bold">Filtros Avanzados</h3>
+          <h3 class="text-white text-4xl  font-medula">Filtros avanzados</h3>
         </div>
 
         <!-- Buscador elegante -->
@@ -91,11 +150,9 @@
         </div>
       </div>
 
+
       <!-- Contenido Principal -->
       <div class="w-full xl:w-2/3 space-y-8">
-        <!-- Barra de estado mejorada -->
-
-
         <!-- Mensaje de error premium -->
         <div *ngIf="errorMsj" class="bg-gradient-to-r from-red-900/40 to-red-800/40 backdrop-blur-sm border border-red-500/50 text-red-200 px-6 py-4 rounded-xl shadow-lg">
           <div class="flex items-center">
@@ -214,4 +271,56 @@
       </div>
     </div>
   </div>
+
+  <script>
+    let animationPaused = false;
+    let currentSpeed = 1;
+
+    function toggleAnimation() {
+      const waveContainer = document.getElementById('waveContainer');
+      animationPaused = !animationPaused;
+
+      if (animationPaused) {
+        waveContainer.style.animationPlayState = 'paused';
+        waveContainer.querySelectorAll('*').forEach(el => {
+          el.style.animationPlayState = 'paused';
+        });
+      } else {
+        waveContainer.style.animationPlayState = 'running';
+        waveContainer.querySelectorAll('*').forEach(el => {
+          el.style.animationPlayState = 'running';
+        });
+      }
+    }
+
+    function changeSpeed() {
+      const speeds = [0.5, 1, 1.5, 2];
+      const currentIndex = speeds.indexOf(currentSpeed);
+      currentSpeed = speeds[(currentIndex + 1) % speeds.length];
+
+      const waveContainer = document.getElementById('waveContainer');
+      waveContainer.style.animationDuration = `${3 / currentSpeed}s`;
+
+      // Actualizar velocidad de todos los elementos animados
+      const animatedElements = waveContainer.querySelectorAll('*');
+      animatedElements.forEach(el => {
+        const computedStyle = window.getComputedStyle(el);
+        const duration = computedStyle.animationDuration;
+        if (duration && duration !== 'none') {
+          const numericDuration = parseFloat(duration);
+          el.style.animationDuration = `${numericDuration / currentSpeed}s`;
+        }
+      });
+    }
+
+    // Efecto de mouseover para interactividad
+    document.getElementById('waveContainer').addEventListener('mouseenter', function() {
+      this.style.transform = 'scale(1.02)';
+      this.style.transition = 'transform 0.3s ease';
+    });
+
+    document.getElementById('waveContainer').addEventListener('mouseleave', function() {
+      this.style.transform = 'scale(1)';
+    });
+  </script>
 </div>

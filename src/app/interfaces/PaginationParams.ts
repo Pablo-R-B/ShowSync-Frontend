@@ -4,4 +4,8 @@ export interface PaginationParams {
   sortField?: string;
   sortDirection?: string;
   termino?: string;
+
+  rol?: string;
+
+
 }

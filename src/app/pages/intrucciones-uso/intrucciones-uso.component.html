@@ -1,0 +1,72 @@
+<div class="main-container" style="margin-top: 5vw;">
+  <!-- Fondo con overlay -->
+  <div class="background-overlay"></div>
+
+  <!-- Notas musicales flotantes -->
+  <div class="floating-notes">
+    <div *ngFor="let nota of notasMusicales"
+         class="musical-note"
+         [style.top]="nota.top"
+         [style.left]="nota.left"
+         [style.opacity]="nota.opacity"
+         [style.animation-delay]="nota.delay"
+         [style.font-size]="nota.fontSize">
+      {{ nota.simbolo }}
+    </div>
+  </div>
+
+  <!-- Partículas de fondo -->
+  <div class="particles-container">
+    <div *ngFor="let particula of particulas"
+         class="particle"
+         [style.left]="particula.left"
+         [style.width.px]="particula.size"
+         [style.height.px]="particula.size"
+         [style.animation-delay]="particula.delay"
+         [style.animation-duration]="particula.duration">
+    </div>
+  </div>
+
+  <section class="instrucciones-container">
+    <div class="glass-card">
+      <h1 class="main-title font-medula">¿Cómo funciona ShowSync?</h1>
+      <p class="subtitle">
+        Nuestra plataforma conecta artistas con promotores a través de eventos musicales únicos.
+        Aquí te explicamos cómo usarla según tu rol.
+      </p>
+
+      <div class="grid-container">
+        <!-- Artistas -->
+        <div class="card form-element"
+             (mouseenter)="onCardHover($event)"
+             (mouseleave)="onCardLeave($event)">
+          <h2 class="card-title">🎤 Soy Artista</h2>
+          <ul class="card-list">
+            <li>Explora los eventos disponibles en el catálogo.</li>
+            <li>Postúlate a los eventos que encajen con tu estilo y disponibilidad.</li>
+            <li>Recibe notificaciones si eres seleccionado por un promotor.</li>
+            <li>Prepara tu mejor show y haz crecer tu carrera.</li>
+          </ul>
+        </div>
+
+        <!-- Promotores -->
+        <div class="card form-element"
+             (mouseenter)="onCardHover($event)"
+             (mouseleave)="onCardLeave($event)">
+          <h2 class="card-title">🎟️ Soy Promotor</h2>
+          <ul class="card-list">
+            <li>Consulta las salas disponibles y crea tu evento fácilmente.</li>
+            <li>Publica el evento aunque aún no tengas artistas asignados.</li>
+            <li>Recibe postulaciones o busca artistas directamente.</li>
+            <li>Asigna a los artistas ideales y confirma tu evento.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Sección de contacto -->
+      <div class="contact-section form-element">
+        <app-contacto-form></app-contacto-form>
+      </div>
+    </div>
+  </section>
+</div>

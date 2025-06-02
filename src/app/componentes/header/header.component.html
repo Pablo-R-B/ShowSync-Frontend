@@ -1,3 +1,4 @@
+<!-- Template HTML modificado con restricciones -->
 <header class="fixed top-0 left-0 w-full bg-black text-white px-6 py-4 shadow-md backdrop-blur-sm bg-opacity-90 z-50">
   <!-- Contenedor principal -->
   <div class="flex items-center justify-between max-w-screen-xl mx-auto">
@@ -7,13 +8,21 @@
            alt="Logo ShowSync"
            class="h-16 w-auto drop-shadow-md max-w-[180px] object-contain" height="375" width="666">
 
-      <!-- Enlaces navegación -->
+      <!-- Enlaces navegación - RESTRINGIDOS SEGÚN AUTENTICACIÓN -->
       <div class="hidden md:flex space-x-14 font-medula text-3xl">
         <a routerLink="landing-page" class="hover:text-customGrisMedio transition">Inicio</a>
-        <a routerLink="/busqueda-eventos" class="hover:text-customGrisMedio transition">Eventos</a>
-        <a routerLink="catalogo-salas" class="hover:text-customGrisMedio transition">Salas</a>
-        <a routerLink="/catalogo-artistas" class="hover:text-customGrisMedio transition">Artistas</a>
-        <a routerLink="/busqueda-promotores" class="hover:text-customGrisMedio transition">Promotores</a>
+
+        <!-- Enlaces solo visibles para usuarios logueados -->
+        <ng-container *ngIf="estaLogueado">
+          <a routerLink="/busqueda-eventos" class="hover:text-customGrisMedio transition">Eventos</a>
+          <!-- Salas - Solo visible si NO es ARTISTA -->
+          <a *ngIf="rolUsuario !== 'ARTISTA'" routerLink="catalogo-salas" class="hover:text-customGrisMedio transition">Salas</a>
+          <a routerLink="/catalogo-artistas" class="hover:text-customGrisMedio transition">Artistas</a>
+          <a routerLink="/busqueda-promotores" class="hover:text-customGrisMedio transition">Promotores</a>
+        </ng-container>
+
+        <!-- Este enlace siempre visible -->
+        <a routerLink="/instrucciones" class="hover:text-customGrisMedio transition">¿Cómo funciona?</a>
       </div>
     </div>
 
@@ -73,13 +82,21 @@
     </button>
   </div>
 
-  <!-- Menú móvil -->
+  <!-- Menú móvil - TAMBIÉN RESTRINGIDO -->
   <div *ngIf="menuAbierto" class="md:hidden mt-4 space-y-2 text-center">
     <a routerLink="/landing-page" class="block hover:text-gray-400 transition">Inicio</a>
-    <a routerLink="/busqueda-eventos" class="block hover:text-gray-400 transition">Eventos</a>
-    <a routerLink="/busqueda-promotores" class="block hover:text-gray-400 transition">Promotores</a>
-    <a routerLink="/catalogo-salas" class="block hover:text-gray-400 transition">Salas</a>
-    <a routerLink="/catalogo-artistas" class="block hover:text-gray-400 transition">Artistas</a>
+
+    <!-- Enlaces solo para usuarios logueados en móvil -->
+    <ng-container *ngIf="estaLogueado">
+      <a routerLink="/busqueda-eventos" class="block hover:text-gray-400 transition">Eventos</a>
+      <a routerLink="/busqueda-promotores" class="block hover:text-gray-400 transition">Promotores</a>
+      <!-- Salas - Solo visible si NO es ARTISTA -->
+      <a *ngIf="rolUsuario !== 'ARTISTA'" routerLink="/catalogo-salas" class="block hover:text-gray-400 transition">Salas</a>
+      <a routerLink="/catalogo-artistas" class="block hover:text-gray-400 transition">Artistas</a>
+    </ng-container>
+
+    <!-- Este enlace siempre visible -->
+    <a routerLink="/instrucciones" class="block hover:text-gray-400 transition">¿Cómo funciona?</a>
 
     <!-- Si NO está logueado -->
     <ng-container *ngIf="!estaLogueado">

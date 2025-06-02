@@ -1,0 +1,79 @@
+
+/* Animaciones */
+@keyframes wave-flow {
+  0% {
+    background-position: -100% 0%;
+    opacity: 0.8;
+  }
+  50% {
+    background-position: 0% 0%;
+    opacity: 1;
+  }
+  100% {
+    background-position: 100% 0%;
+    opacity: 0.8;
+  }
+}
+
+@keyframes particle-move {
+  0% {
+    left: -10px;
+    opacity: 0;
+    transform: translateY(0px);
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    left: calc(100% + 10px);
+    opacity: 0;
+    transform: translateY(0px);
+  }
+}
+
+
+
+/* Efectos adicionales */
+.wave-glow {
+  position: absolute;
+  top: 25%;
+  left: 60%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgb(148, 149, 148), rgba(255, 0, 0, 0.1));
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: glow-pulse 4s infinite ease-in-out;
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .top-section, .bottom-section {
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+
+  .top-section h1 {
+    font-size: 2rem;
+  }
+
+  .wave-container {
+    height: 80px;
+    margin: 2rem 0;
+  }
+
+}

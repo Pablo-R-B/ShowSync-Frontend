@@ -1,4 +1,5 @@
 export interface RespuestaPaginada<T> {
+  length: number;
   items: T[];
   totalPages: number;
   currentPage: number;
