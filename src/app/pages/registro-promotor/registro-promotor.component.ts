@@ -72,7 +72,9 @@ export class RegistroPromotorComponent implements OnInit{
           console.log('Perfil enviado correctamente:', response);
           this.successMessage = response.mensaje;
           this.loading = false;
-          this.router.navigate(['/landing-page']);
+          this.router.navigate(['/landing-page'], {
+            state: { mensajeExito: response.mensaje }
+          });
         },
         error: (error) => {
           console.error('Error al enviar perfil:', error);

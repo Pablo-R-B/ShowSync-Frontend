@@ -1,7 +1,10 @@
+import {GeneroMusical} from './GeneroMusical';
+
 export interface Artistas {
   id: number;
   nombreArtista: string;
   imagenPerfil:string;
   biografia: string;
-  generosMusicales:string[];
+  musicUrl?:string
+  generosMusicales: string[] | GeneroMusical[];
 }

@@ -7,6 +7,7 @@ import {Artistas} from '../../interfaces/artistas';
 import {ArtistasService} from '../../servicios/artistas.service';
 import {RespuestaPaginada} from '../../interfaces/respuesta-paginada';
 import {Router, RouterLink} from '@angular/router';
+import {GeneroMusical} from '../../interfaces/GeneroMusical';
 
 @Component({
   selector: 'app-catalogo-artistas',
@@ -87,8 +88,8 @@ export class CatalogoArtistasComponent implements OnInit {
 
   cargarGeneros() {
     this.generosMusicalesService.listarGeneros().subscribe({
-      next: (data: string[]) => {
-        this.generos = data
+      next: (data: GeneroMusical[]) => {
+        this.generos =data.map(gen => gen.nombre);
         console.error('Datos recibidos:', data);
       },
       error: (err: any) => console.error('Error al cargar géneros:', err)
