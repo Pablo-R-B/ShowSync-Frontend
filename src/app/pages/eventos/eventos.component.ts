@@ -84,6 +84,15 @@ export class EventosComponent implements OnInit {
   }
 
   enviarOferta() {
+    const fechaEvento = new Date(this.evento.fecha);
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    if (fechaEvento < hoy) {
+      this.alertaSolicitud('noenviada', 'No puedes postularte a un evento pasado.');
+      return;
+    }
+
     this.postulacionService.nuevaSolicitud(this.idEvento, this.artistaId)
       .subscribe({
         next: response =>{

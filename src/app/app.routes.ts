@@ -19,6 +19,7 @@ import {AdminPanelComponent} from './pages/admin/admin-panel/admin-panel.compone
 import {PerfilCompletoGuard} from './guards/PerfilCompletoGuard';
 import {RegistroPromotorComponent} from './pages/registro-promotor/registro-promotor.component';
 import {RegistroArtistaComponent} from './pages/registro-artista/registro-artista.component';
+import {PerfilAdminArtistaComponent} from './pages/perfil-admin-artista/perfil-admin-artista.component';
 
 export const routes: Routes = [
   // Rutas de autenticación
@@ -48,6 +49,7 @@ export const routes: Routes = [
       { path: 'salas/:id', component: PerfilSalaComponent },
       { path: 'catalogo-artistas', component: CatalogoArtistasComponent },
       { path: 'artista/:id', component: PerfilArtistaComponent },
+      {path: 'admin-artista', component: PerfilAdminArtistaComponent},
     ],
   },
 

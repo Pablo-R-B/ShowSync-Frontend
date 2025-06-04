@@ -202,8 +202,9 @@ export class PerfilPromotoresComponent implements OnInit {
         console.log("Lista completa:", lista);
 
         // Separando solicitudes según el tipo
-        this.postulaciones = lista.filter(post => post.tipoSolicitud === 'postulacion');
-        this.ofertas = lista.filter(post => post.tipoSolicitud === 'oferta');
+        this.postulaciones = lista.filter(post => post.tipoSolicitud === 'postulacion' && post.estado !== 'rechazado');
+        this.ofertas = lista.filter(post => post.tipoSolicitud === 'oferta' && post.estado !== 'rechazado');
+
 
         console.log("Postulaciones:", this.postulaciones);
         console.log("Ofertas:", this.ofertas);
@@ -214,7 +215,14 @@ export class PerfilPromotoresComponent implements OnInit {
 
   respuestaSolicitud(post: Postulacion, estado: 'aceptado' | 'rechazado') {
     this.postulacionService.actualizarEstadoSolicitud(post.id, estado)
-      .subscribe(() => post.estado = estado);
-  }
+      .subscribe(() => {
+        post.estado = estado;
 
+        // Si fue rechazado, se elimina de la vista actual
+        if (estado === 'rechazado') {
+          this.postulaciones = this.postulaciones.filter(p => p.id !== post.id);
+          this.ofertas = this.ofertas.filter(p => p.id !== post.id);
+        }
+      });
+  }
 }
