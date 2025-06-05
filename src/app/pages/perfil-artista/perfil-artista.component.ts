@@ -30,7 +30,6 @@ export class PerfilArtistaComponent implements OnInit{
   IdUsuarioDePromotor!: number;
   eventos: EventoDTO[] = [];
   artistaId!: number;
-  usuarioId!: number;
   usuarioRol!:string | null;
 
 
@@ -40,31 +39,22 @@ export class PerfilArtistaComponent implements OnInit{
   }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      this.artistaId = Number(params.get('id'));
-      if (this.artistaId) {
-        this.artistasService.artistaPorId(+this.artistaId).subscribe(
+    const userId = this.authService.userId;
+
+    this.artistasService.getArtistaIdPorUsuario(userId).subscribe(
+      artistaId => {
+        this.artistaId = artistaId;
+
+        // Ya con el id, puedes usar artistaPorId
+        this.artistasService.artistaPorId(this.artistaId).subscribe(
           data => { this.artista = data; },
-          err  => console.error('Error HTTP:', err)
+          err => console.error('Error al obtener datos del artista:', err)
         );
-      } else {
-        console.error('ID no encontrado en la URL');
-      }
-    });
-    this.IdUsuarioDePromotor = this.authService.userId;
-    console.log("Usuario promtor", this.IdUsuarioDePromotor)
-    console.log("Artista id", this.artistaId)
+      },
+      err => console.error('Error al obtener ID de artista desde userId:', err)
+    );
+
     this.usuarioRol = this.authService.userRole
-    console.log("Rol usuario", this.usuarioRol);
-
-    if(this.usuarioRol === 'PROMOTOR'){
-      this.cargarEventosPromotor();
-    }
-
-    console.log("Artista id", this.artistaId)
-    this.usuarioRol = this.authService.userRole;
-    console.log("Rol usuario", this.usuarioRol);
-
     if(this.usuarioRol === 'PROMOTOR'){
       this.cargarEventosPromotor();
     }
