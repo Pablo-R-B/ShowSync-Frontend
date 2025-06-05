@@ -16,6 +16,7 @@ import {EditarEventosComponent} from './pages/editar-eventos/editar-eventos.comp
 import {PerfilArtistaComponent} from './pages/perfil-artista/perfil-artista.component';
 import {CatalogoSalaComponent} from './pages/catalogo-sala/catalogo-sala.component';
 import {AdminPanelComponent} from './pages/admin/admin-panel/admin-panel.component';
+import {ConfirmarEventosComponent} from './pages/confirmar-eventos/confirmar-eventos.component';
 
 export const routes: Routes = [
   // Rutas de autenticación
@@ -42,6 +43,7 @@ export const routes: Routes = [
   { path: 'busqueda-eventos', component: BusquedaEventosComponent },
   { path: 'editar-eventos', component: EditarEventosComponent },
   { path: 'promotores/:idPromotor/eventos/:idEvento/editar', component: EditarEventosComponent },
+  { path: 'promotores/:idPromotor/eventos/:idEvento/confirmar', component: ConfirmarEventosComponent },
 
   // Rutas de salas (públicas)
   { path: 'catalogo-salas', component: CatalogoSalaComponent, pathMatch: 'full' },

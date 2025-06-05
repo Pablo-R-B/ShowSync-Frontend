@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import {Evento} from '../interfaces/Evento';
 import {EventoCreacion} from '../interfaces/eventoCreacion';
 import {EventoBackendDTO} from '../interfaces/EventoBackendDTO';
+import {EventoActualizado} from '../interfaces/EventoActualizado';
 
 
 @Injectable({
@@ -62,6 +63,11 @@ export class EventosService {
     return this.http.put<Evento>(`${this.apiUrl}/eventos/promotor/${promotorId}/evento/${eventoId}`, evento);
   }
 
+  // Actualizar un evento existente
+  actualizarEvento(idPromotor: number, idEvento: number, evento: EventoActualizado): Observable<any> {
+    return this.http.put(`${this.apiUrl}/eventos/promotores/${idPromotor}/eventos/${idEvento}/editar`, evento);
+  }
+
 
   // Eliminar un evento de un promotor
   eliminarEvento(promotorId: number, eventoId: number): Observable<string> {
@@ -72,7 +78,7 @@ export class EventosService {
 
   // Obtener un evento específico por ID
   obtenerEventoPorId(eventoId: number): Observable<Evento> {
-    return this.http.get<Evento>(`${this.apiUrl}/evento/evento/${eventoId}`);
+    return this.http.get<Evento>(`${this.apiUrl}/eventos/evento/${eventoId}`);
   }
 
 

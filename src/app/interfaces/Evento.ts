@@ -18,4 +18,5 @@ export interface Evento {
   imagenEvento: string;
   salaNombre: string;
   seguido?: boolean; // opcional si luego lo usas
+  estadoPostulacion: string;
 }

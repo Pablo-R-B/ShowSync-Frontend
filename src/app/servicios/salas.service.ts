@@ -259,6 +259,4 @@ export class SalasService {
     return this.http.get<number>(`api/salas/total`);
   }
 
-
-
 }
