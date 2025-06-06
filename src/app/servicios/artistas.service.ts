@@ -121,9 +121,11 @@ export class ArtistasService {
     return throwError(() => new Error(errorMessage));
   }
 
-  guardarPerfilArtista(usuarioId: number, data: any): Observable<any> {
+  guardarPerfilArtista(usuarioId: number, data: FormData): Observable<any> {
     return this.http.put(`${this.apiUrl}/artista/usuario/${usuarioId}`, data);
   }
+
+
 
   getGenerosDelArtista(id: number): Observable<GeneroMusical[]> {
     return this.http.get<GeneroMusical[]>(`${this.apiUrl}/artista/${id}/generos`);

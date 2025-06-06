@@ -8,6 +8,8 @@ import {jwtDecode} from 'jwt-decode';
 import {Router} from '@angular/router';
 import {GenerosMusicalesService} from '../../servicios/generos-musicales.service';
 import {GeneroMusical} from '../../interfaces/GeneroMusical';
+import {FileUploadModule} from 'primeng/fileupload';
+
 
 @Component({
   selector: 'app-registro-artista',
@@ -16,7 +18,8 @@ import {GeneroMusical} from '../../interfaces/GeneroMusical';
     NgIf,
     FormsModule,
     ReactiveFormsModule,
-    NgForOf
+    NgForOf,
+    FileUploadModule
   ],
   templateUrl: './registro-artista.component.html',
   standalone: true,
@@ -30,6 +33,11 @@ export class RegistroArtistaComponent implements OnInit {
   generosMusicales: GeneroMusical[] = [];
   generosSeleccionados: number[] = [];
   esEdicion: boolean = false;
+  imagenSeleccionada: File | null = null;
+  imagenPreview: string | ArrayBuffer | null = null;
+
+
+
 
 
 
@@ -55,23 +63,26 @@ export class RegistroArtistaComponent implements OnInit {
       const decoded: TokenPayload = jwtDecode(token);
       this.perfilCompleto = decoded?.perfilCompleto || false;
       this.esEdicion = this.perfilCompleto;
-
     }
 
     const idUsuario = Number(localStorage.getItem('userId'));
-
     if (this.perfilCompleto && idUsuario) {
       this.artistaService.getArtistaIdPorUsuario(idUsuario).subscribe(artistaId => {
         this.artistaService.artistaPorId(artistaId).subscribe(artista => {
-          this.registroArtistaForm = this.fb.group({
-            nombreArtista: ['', [Validators.required, Validators.maxLength(100)]],
-            biografia: ['', Validators.required],
-            musicUrl: ['', Validators.required],
-            imagenPerfil: ['', Validators.required],
-            generosMusicales: this.fb.array([], Validators.required)
+          // Rellenar campos directamente
+          this.registroArtistaForm.patchValue({
+            nombreArtista: artista.nombreArtista,
+            biografia: artista.biografia,
+            musicUrl: artista.musicUrl,
+            imagenPerfil: artista.imagenPerfil // si necesitas enviarla aunque no se vea
           });
 
+          // Mostrar vista previa si ya hay imagen
+          if (artista.imagenPerfil) {
+            this.imagenPreview = artista.imagenPerfil;
+          }
 
+          // Manejar géneros musicales
           type GeneroMusicalInput = string | GeneroMusical;
           const selectedGeneroIds = artista.generosMusicales.map((g: GeneroMusicalInput) =>
             typeof g === 'string' ? +g : g.id
@@ -93,35 +104,33 @@ export class RegistroArtistaComponent implements OnInit {
 
   onSubmit() {
     if (this.registroArtistaForm.valid) {
-      this.registroArtistaForm.markAllAsTouched(); // fuerza mostrar los errores
       this.loading = true;
-      const formData = this.registroArtistaForm.value;
-
-      const artistaPayload = {
-        nombreArtista: formData.nombreArtista,
-        biografia: formData.biografia,
-        imagenPerfil: formData.imagenPerfil,
-        musicUrl: formData.musicUrl,
-        generosMusicales: formData.generosMusicales.map((id: number) => ({ id } as GeneroMusical))
-      };
 
       const usuarioId = Number(localStorage.getItem('userId'));
 
-      this.artistaService.guardarPerfilArtista(usuarioId, artistaPayload).subscribe({
-        next: (response: any) => {
-          console.log('Perfil enviado correctamente:', response);
+      const formData = new FormData();
+      const artistaPayload = {
+        nombreArtista: this.registroArtistaForm.value.nombreArtista,
+        biografia: this.registroArtistaForm.value.biografia,
+        musicUrl: this.registroArtistaForm.value.musicUrl,
+        generosMusicales: this.registroArtistaForm.value.generosMusicales.map((id: number) => ({ id }))
+      };
+
+      formData.append('artista', new Blob([JSON.stringify(artistaPayload)], { type: 'application/json' }));
+
+      if (this.imagenSeleccionada) {
+        formData.append('imagenArchivo', this.imagenSeleccionada);
+      }
+
+      this.artistaService.guardarPerfilArtista(usuarioId, formData).subscribe({
+        next: (response) => {
           this.successMessage = response.mensaje;
           this.loading = false;
-
           if (this.esEdicion) {
-            // Solo mostramos un mensaje o redirigimos a otra ruta si se desea
             alert('Perfil actualizado correctamente');
-            this.router.navigate(['/perfil']); // o la ruta que uses para ver el perfil
+            this.router.navigate(['/perfil']);
           } else {
-            // Modo completar perfil
-            localStorage.removeItem('token');
-            localStorage.removeItem('userId');
-            localStorage.removeItem('rol');
+            localStorage.clear();
             this.router.navigate(['/auth/login']);
           }
         },
@@ -131,10 +140,10 @@ export class RegistroArtistaComponent implements OnInit {
         }
       });
     } else {
+      this.registroArtistaForm.markAllAsTouched();
       console.log('Formulario inválido');
     }
   }
-
 
   onCheckboxChange(event: any) {
     const formArray: FormArray = this.registroArtistaForm.get('generosMusicales') as FormArray;
@@ -151,4 +160,23 @@ export class RegistroArtistaComponent implements OnInit {
       }
     }
   }
+
+
+
+
+
+
+
+  subirImagen(event: any): void {
+    const archivo = event.files?.[0];
+    if (archivo) {
+      this.imagenSeleccionada = archivo;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagenPreview = reader.result;
+      };
+      reader.readAsDataURL(archivo);
+    }
+  }
+
 }

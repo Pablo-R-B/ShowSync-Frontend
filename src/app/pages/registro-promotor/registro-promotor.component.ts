@@ -6,6 +6,8 @@ import {jwtDecode} from 'jwt-decode';
 import {AuthService} from '../../servicios/auth.service';
 import {PromotoresService} from '../../servicios/promotores.service';
 import {Router} from '@angular/router';
+import {FileUploadModule} from 'primeng/fileupload';
+
 
 @Component({
   selector: 'app-registro-promotor',
@@ -16,7 +18,9 @@ import {Router} from '@angular/router';
     FormsModule,
     NgIf,
     ReactiveFormsModule,
-    NgClass
+    NgClass,
+    FileUploadModule
+
   ],
   templateUrl: './registro-promotor.component.html',
   styleUrl: './registro-promotor.component.css'
