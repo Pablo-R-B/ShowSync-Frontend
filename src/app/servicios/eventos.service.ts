@@ -83,8 +83,9 @@ export class EventosService {
 
   // Obtener todos los géneros musicales disponibles
   getGenero(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.apiUrl}/genero/listar-generos`);
+    return this.http.get<string[]>(`${this.apiUrl}/genero/listar-generos-eventos`);
   }
+
   // Obtener todos los estados posibles de los eventos
   obtenerEstados(): Observable<string[]> {
     return this.http.get<string[]>(`${this.apiUrl}/eventos/estados`);
