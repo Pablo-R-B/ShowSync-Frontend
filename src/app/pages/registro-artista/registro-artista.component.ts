@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {NgForOf, NgIf} from '@angular/common';
+import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ArtistasService} from '../../servicios/artistas.service';
 import {AuthService} from '../../servicios/auth.service';
@@ -19,7 +19,8 @@ import {FileUploadModule} from 'primeng/fileupload';
     FormsModule,
     ReactiveFormsModule,
     NgForOf,
-    FileUploadModule
+    FileUploadModule,
+    NgClass
   ],
   templateUrl: './registro-artista.component.html',
   standalone: true,
@@ -36,6 +37,8 @@ export class RegistroArtistaComponent implements OnInit {
   imagenSeleccionada: File | null = null;
   imagenPreview: string | ArrayBuffer | null = null;
 
+  originalFormValue: any;
+  originalImagenPreview: string | ArrayBuffer | null = null;
 
 
 
@@ -76,6 +79,9 @@ export class RegistroArtistaComponent implements OnInit {
             musicUrl: artista.musicUrl,
             imagenPerfil: artista.imagenPerfil // si necesitas enviarla aunque no se vea
           });
+          // Guardar valores originales para comparación
+          this.originalFormValue = this.registroArtistaForm.getRawValue();
+          this.originalImagenPreview = artista.imagenPerfil;
 
           // Mostrar vista previa si ya hay imagen
           if (artista.imagenPerfil) {
@@ -120,7 +126,10 @@ export class RegistroArtistaComponent implements OnInit {
 
       if (this.imagenSeleccionada) {
         formData.append('imagenArchivo', this.imagenSeleccionada);
-      }
+      } else if (this.imagenPreview && typeof this.imagenPreview === 'string') {
+        // Reenviamos la imagen original si no se seleccionó otra
+        (artistaPayload as any)['imagenPerfil'] = this.imagenPreview;      }
+
 
       this.artistaService.guardarPerfilArtista(usuarioId, formData).subscribe({
         next: (response) => {
@@ -178,5 +187,19 @@ export class RegistroArtistaComponent implements OnInit {
       reader.readAsDataURL(archivo);
     }
   }
+
+  formularioModificado(): boolean {
+    const currentValue = this.registroArtistaForm.getRawValue();
+
+    // Comparamos campos simples
+    const formChanged = JSON.stringify(currentValue) !== JSON.stringify(this.originalFormValue);
+
+    // Comparamos imagen
+    const imagenChanged = this.imagenSeleccionada !== null;
+
+    return formChanged || imagenChanged;
+  }
+
+
 
 }

@@ -2,16 +2,17 @@
   <div class="bg-black bg-opacity-80 p-8 rounded-3xl max-w-md w-full shadow-lg">
 
     <h2 class="font-medula text-white text-5xl mb-6 text-center">Datos Promotor</h2>
-    <hr class="border-gray-600 mb-6">
+    <hr class="border-gray-600 mb-6" />
 
     <form [formGroup]="registroPromotorForm" (ngSubmit)="onSubmit()">
-      <!-- Nombre del Promotor -->
+
+      <!-- Nombre -->
       <div class="mb-4">
         <input
           type="text"
           placeholder="Nombre del Promotor"
-          class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
           formControlName="nombrePromotor"
+          class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 transition"
         />
         <div *ngIf="hasError('nombrePromotor', 'required')" class="text-red-500 text-sm">
           El nombre del promotor es obligatorio.
@@ -20,59 +21,67 @@
 
       <!-- Descripción -->
       <div class="mb-4">
-  <textarea
-    placeholder="Descripción"
-    class="w-full p-3 rounded-lg bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
-    formControlName="descripcion"
-  ></textarea>
+        <textarea
+          placeholder="Descripción"
+          formControlName="descripcion"
+          class="w-full p-3 rounded-lg bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 transition"
+        ></textarea>
         <div *ngIf="hasError('descripcion', 'required')" class="text-red-500 text-sm">
           La descripción es obligatoria.
         </div>
       </div>
 
-      <!-- Imagen de Perfil -->
+      <!-- Imagen -->
       <div class="mb-4">
         <input
-          type="text"
-          placeholder="URL de la Imagen de Perfil"
-          class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
-          formControlName="imagenPerfil"
+          type="file"
+          accept="image/*"
+          (change)="onFileSelected($event)"
+          class="block w-full text-sm text-gray-800 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:font-semibold file:bg-gray-300 file:text-gray-800 hover:file:bg-gray-400"
         />
-        <div *ngIf="hasError('imagenPerfil', 'required')" class="text-red-500 text-sm">
-          La imagen de perfil es obligatoria.
+        <div *ngIf="!imagenArchivo && !imagenPreview && !perfilCompleto && esFormularioTocado()" class="text-red-500 text-sm">
+          La imagen de perfil es obligatoria para registrarse.
         </div>
       </div>
 
+      <!-- Preview -->
+      <div *ngIf="imagenPreview" class="flex justify-center mb-4">
+        <img [src]="imagenPreview" class="w-40 h-40 object-cover rounded-full shadow-lg" />
+      </div>
 
-      <!-- Botón de registro -->
+      <!-- Botón Guardar / Registrar -->
       <button
         type="submit"
-        class="w-full bg-customGrisOscurso text-white py-3 rounded-full text-lg font-semibold transition duration-300
-         hover:bg-gray-500"
-        [disabled]="loading || registroPromotorForm.invalid"
+        [disabled]="
+    loading ||
+    registroPromotorForm.invalid ||
+    (!perfilCompleto && !imagenArchivo) ||
+    (perfilCompleto && !formularioModificado())  // evitar guardar si no cambió nada
+  "
+        class="w-full bg-customGrisOscurso text-white py-3 rounded-full text-lg font-semibold transition hover:bg-gray-500"
         [ngClass]="{
-        'cursor-not-allowed opacity-60': registroPromotorForm.invalid || loading,
-        'cursor-pointer': !registroPromotorForm.invalid && !loading
-      }"
+    'cursor-not-allowed opacity-60': loading || registroPromotorForm.invalid || (!perfilCompleto && !imagenArchivo) || (perfilCompleto && !formularioModificado()),
+    'cursor-pointer': !registroPromotorForm.invalid && !loading && (imagenArchivo || !perfilCompleto || formularioModificado())
+  }"
       >
-        {{ loading ? 'Guardando...' : perfilCompleto ? 'Guardar Cambios' : 'Registrarse' }}
+        {{ loading ? 'Guardando...' : (perfilCompleto ? 'Guardar Cambios' : 'Registrarse') }}
       </button>
 
 
-
-      <!-- Botón de salir sin guardar -->
+      <!-- Botón salir -->
       <button
         *ngIf="perfilCompleto"
         type="button"
         (click)="router.navigate(['/perfil-promotores'])"
-      class="w-full mt-2 bg-gray-600 hover:bg-gray-700 text-white py-3 rounded-full text-lg font-semibold transition duration-300"
+        class="w-full mt-2 bg-gray-600 hover:bg-gray-700 text-white py-3 rounded-full text-lg font-semibold transition"
       >
-      Salir
+        Salir
       </button>
-      <div *ngIf="successMessage" class="alert alert-success">
+
+      <!-- Éxito -->
+      <div *ngIf="successMessage" class="text-green-500 mt-4 text-center">
         {{ successMessage }}
       </div>
-
     </form>
   </div>
 </div>
