@@ -76,7 +76,7 @@ export class LandingPageComponent implements OnInit {
     // Ajusta el volumen del video
     setTimeout(() => {
       if (this.heroVideo && this.heroVideo.nativeElement) {
-        this.heroVideo.nativeElement.volume = 0.02; // Volumen al 4%
+        this.heroVideo.nativeElement.muted = true;
       }
     }, 100);
 
