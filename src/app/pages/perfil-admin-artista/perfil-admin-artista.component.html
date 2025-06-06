@@ -1,0 +1,140 @@
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+<div class="bg-[#7e001b] min-h-screen text-white font-sans pt-[80px] pb-[60px] px-[10%]">
+
+  <!-- Info del artista -->
+  <div class="p-8 flex items-center gap-8 px-6 sm:ml-[10%] bg-[#4c0012] rounded-lg shadow-lg">
+    <img [src]="artista?.imagenPerfil"
+         [alt]="artista?.nombreArtista"
+         class="w-24 h-24 rounded-full border-4 border-white shadow-md object-cover" />
+    <div>
+      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-wide drop-shadow-lg">{{ artista?.nombreArtista }}</h1>
+      <!--    <p class="mt-2 max-w-lg text-lg text-gray-300 leading-relaxed">{{ promotor?.descripcion }}</p>-->
+    </div>
+
+  </div>
+
+  <!-- Botón Editar Mi Perfil -->
+  <div class="flex justify-center mt-12 mb-[75px]">
+    <button class="bg-[#e4e4e4] text-black px-10 py-4 text-2xl rounded-2xl shadow-md hover:bg-[#d4d4d4] transition font-semibold"
+            [routerLink]="['/datos-artista']">
+      EDITAR MI PERFIL <i class="fas fa-user-edit ml-2"></i>
+    </button>
+  </div>
+
+  <!-- Panel de Gestión -->
+  <div class="grid md:grid-cols-2 gap-8 mb-10 pb-6">
+
+    <!-- Solicitud de Artista -->
+    <div class="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold flex items-center gap-2">
+          <i class="fas fa-microphone text-white"></i> SOLICITUDES DE ARTISTA
+        </h2>
+      </div>
+      <ul *ngFor="let pos of postulaciones" class="space-y-4">
+        <li class="bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center">
+          <div class="flex items-center gap-3">
+<!--            <img [src]="pos.eventoImagen" alt="Logo sala" class="w-10 h-10 rounded-full" />-->
+            <div>
+              <p class="font-semibold">{{ pos.eventoNombre }}</p>
+              <p class="font-semibold">{{pos.artistaNombre}}</p>
+              <p class="font-semibold">{{ pos.salaNombre }}</p>
+              <p class="font-semibold">{{ pos.fechaPostulacion | date:'dd/MM/yyyy' }}</p>
+              <p class="text-sm text-gray-600">Estado: <span [ngClass]="{'text-yellow-500': pos.estado === 'pendiente', 'text-green-500': pos.estado === 'aceptado', 'text-red-500': pos.estado === 'rechazado'}">{{ pos.estado }}</span></p>
+            </div>
+          </div>
+        </li>
+        <li *ngIf="postulaciones.length === 0" class="text-gray-400">No hay postulaciones para mostrar.</li>
+      </ul>
+    </div>
+
+    <!-- Solicitud de Promotor -->
+    <div  class="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold flex items-center gap-2">
+          <i class="fas fa-user-tie text-white"></i> SOLICITUDES DE PROMOTOR
+        </h2>
+      </div>
+      <ul *ngFor="let oferta of ofertas" class="space-y-4">
+        <li class="bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center">
+          <div class="flex items-center gap-3">
+            <img [src]="oferta.eventoImagen" alt="Logo sala" class="w-10 h-10 rounded-full" />
+            <div>
+              <p class="font-semibold">{{ oferta.eventoNombre }}</p>
+              <p class="font-semibold">{{oferta.artistaNombre}}</p>
+              <p class="font-semibold">{{ oferta.salaNombre }}</p>
+              <p class="font-semibold">{{ oferta.fechaPostulacion | date:'dd/MM/yyyy' }}</p>
+              <p class="text-sm text-gray-600">Estado: <span [ngClass]="{'text-yellow-500': oferta.estado === 'pendiente', 'text-green-500': oferta.estado === 'aceptado', 'text-red-500': oferta.estado === 'rechazado'}">{{ oferta.estado }}</span></p>
+            </div>
+          </div>
+          <div class="flex gap-2 items-center">
+
+
+
+            <button
+              *ngIf="oferta.estado === 'pendiente'"
+              class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-full font-semibold"
+              (click)="respuestaSolicitud(oferta, 'aceptado')">
+              Aceptar
+            </button>
+            <button
+              *ngIf="oferta.estado === 'pendiente'"
+              class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-full font-semibold"
+              (click)="respuestaSolicitud(oferta, 'rechazado')">
+              Rechazar
+            </button>
+
+
+          </div>
+        </li>
+        <li *ngIf="ofertas.length === 0" class="text-gray-400">No hay ofertas para mostrar.</li>
+      </ul>
+    </div>
+  </div>
+
+
+  <!-- Gestión de Eventos -->
+    <div class="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold flex items-center gap-2">
+          <i class="fas fa-ticket-alt text-white"></i> EVENTOS
+        </h2>
+      </div>
+      <ul class="space-y-4">
+        <li *ngFor="let evento of eventos" class="bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center">
+          <div>
+            <h3 class="font-semibold text-lg">{{ evento.nombreEvento }}</h3>
+            <p class="text-sm text-gray-400">{{ evento.fechaEvento | date:'dd/MM/yyyy' }}</p>
+            <p class="text-sm text-gray-400">{{ evento.nombreSala }}</p>
+          </div>
+          <div class="flex gap-3">
+            <!-- Icono de edición -->
+<!--            <button class="text-yellow-400 hover:text-yellow-300 text-xl flex items-center"-->
+<!--                    [routerLink]="['/promotores', promotor?.id, 'eventos', evento.id, 'editar']">-->
+<!--              <i class="fas fa-pencil-alt"></i>-->
+<!--            </button>-->
+
+<!--            &lt;!&ndash; Icono de eliminación &ndash;&gt;-->
+<!--            <button class="text-red-500 hover:text-red-400 text-xl flex items-center"-->
+<!--                    (click)="eliminarEvento(evento.id)">-->
+<!--              <i class="fas fa-trash-alt"></i>-->
+<!--            </button>-->
+          </div>
+        </li>
+        <li *ngIf="eventos.length === 0" class="text-gray-400">No hay eventos para mostrar.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Botón Gestionar Salas -->
+  <div class="flex justify-center mt-12 mb-[75px]">
+    <button class="bg-[#e4e4e4] text-black px-10 py-4 text-2xl rounded-2xl shadow-md hover:bg-[#d4d4d4] transition font-semibold"
+            [routerLink]="['/eventos']">
+      CATÁLOGO EVENTOS<i class="fas fa-book ml-2"></i>
+    </button>
+  </div>
+
+<!--</div>-->
+

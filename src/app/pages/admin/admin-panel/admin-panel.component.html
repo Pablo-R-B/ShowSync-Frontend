@@ -1,12 +1,12 @@
-<div class="admin-container flex flex-col min-h-screen  " style="background-image: url('assets/images/img_2.png'); background-size: cover; background-position: center;">
+<div class="admin-container flex flex-col min-h-screen w-full" style="background-image: url('assets/images/img_2.png'); background-size: cover; background-position: center;">
   <h1 class="admin-title">Panel de Administración</h1>
 
-  <div class="admin-tabs">
-    <button (click)="navigateTo('resumen')">Resumen</button>
-    <button (click)="navigateTo('salas')">Salas</button>
-    <button (click)="navigateTo('usuarios')">Usuarios</button>
-    <button (click)="navigateTo('eventos')">Eventos</button>
-    <button (click)="navigateTo('generos')">Géneros</button>
+  <div class="admin-tabs flex flex-wrap justify-center gap-4 p-4">
+    <button class="btn-tab" (click)="navigateTo('resumen')">Resumen</button>
+    <button class="btn-tab" (click)="navigateTo('salas')">Salas</button>
+    <button class="btn-tab" (click)="navigateTo('usuarios')">Usuarios</button>
+    <button class="btn-tab" (click)="navigateTo('eventos')">Eventos</button>
+    <button class="btn-tab" (click)="navigateTo('generos')">Géneros</button>
   </div>
 
   <div class="admin-content">

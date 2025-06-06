@@ -76,6 +76,11 @@ export class PromotoresService {
     return this.http.get<Promotor>(`${this.apiUrl}/auth/perfil`);
   }
 
+  guardarPerfilPromotor(usuarioId: number, data: FormData): Observable<any> {
+    return this.http.put(`${this.apiUrl}/promotores/promotor/usuario/${usuarioId}`, data);
+  }
+
+
 
   getPromotorPorIdUsuario(idUsuario: number) {
     return this.http.get<Promotor>(`${this.apiUrl}/promotores/usuario/${idUsuario}`);

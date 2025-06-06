@@ -11,6 +11,8 @@ import { PromotoresService } from '../../servicios/promotores.service';
 
 
 
+
+
 @Component({
   selector: 'app-landing-page',
   standalone: true,
@@ -92,6 +94,7 @@ export class LandingPageComponent implements OnInit {
         }, 100);
       }
     });
+
   }
 
 

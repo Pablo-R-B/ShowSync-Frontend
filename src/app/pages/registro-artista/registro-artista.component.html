@@ -1,49 +1,112 @@
-<!--<div class="min-h-screen bg-cover bg-center flex items-center justify-center" style="background-image: url('../../../assets/images/img.png');">-->
-<!--  <div class="bg-black bg-opacity-80 p-8 rounded-3xl max-w-md w-full shadow-lg">-->
-<!--    <h2 class="font-medula text-white text-5xl mb-6 text-center">Datos Artista</h2>-->
-<!--    <hr class="border-gray-600 mb-6">-->
+<div class="min-h-screen bg-cover bg-center flex items-center justify-center" style="background-image: url('../../../assets/images/img.png');">
+  <div class="bg-black bg-opacity-80 p-8 rounded-3xl max-w-md w-full shadow-lg">
+    <h2 class="font-medula text-white text-5xl mb-6 text-center">Datos Artista</h2>
+    <hr class="border-gray-600 mb-6">
 
-<!--    <form [formGroup]="registroArtistaForm" (ngSubmit)="onSubmit()">-->
-<!--      &lt;!&ndash; Nombre del Promotor &ndash;&gt;-->
-<!--      <div class="mb-4">-->
-<!--        <input-->
-<!--          type="text"-->
-<!--          placeholder="Nombre del Promotor"-->
-<!--          class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"-->
-<!--          formControlName="nombreArtista"-->
-<!--        />-->
-<!--        <div *ngIf="hasError('nombreArtista', 'required')" class="text-red-500 text-sm">-->
-<!--          El nombre del promotor es obligatorio.-->
-<!--        </div>-->
-<!--      </div>-->
+    <form [formGroup]="registroArtistaForm" (ngSubmit)="onSubmit()">
+      <!-- Nombre del Promotor -->
+      <div class="mb-4">
+        <input
+          type="text"
+          placeholder="Nombre del Artista"
+          class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
+          formControlName="nombreArtista"
+        />
+        <div *ngIf="hasError('nombreArtista', 'required')" class="text-red-500 text-sm">
+          El nombre del artista es obligatorio.
+        </div>
+      </div>
 
-<!--      &lt;!&ndash; Descripción &ndash;&gt;-->
-<!--      <div class="mb-4">-->
-<!--        <textarea-->
-<!--          placeholder="Descripción"-->
-<!--          class="w-full p-3 rounded-lg bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"-->
-<!--          formControlName="biografia"-->
-<!--        ></textarea>-->
-<!--      </div>-->
+      <!-- Descripción -->
+      <div class="mb-4">
+        <textarea
+          placeholder="Biografía"
+          class="w-full p-3 rounded-lg bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
+          formControlName="biografia"
+        ></textarea>
+      </div>
 
-<!--      &lt;!&ndash; Imagen de Perfil &ndash;&gt;-->
-<!--      <div class="mb-4">-->
-<!--        <input-->
-<!--          type="text"-->
-<!--          placeholder="URL de la Imagen de Perfil"-->
-<!--          class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"-->
-<!--          formControlName="imagenPerfil"-->
-<!--        />-->
-<!--      </div>-->
+      <!-- Imagen de Perfil -->
+      <div class="mb-4">
+        <p-fileUpload
+          name="imagen"
+          accept="image/*"
+          maxFileSize="5242880"
+          (onSelect)="subirImagen($event)"
+          [auto]="true"
+          chooseLabel="Seleccionar imagen"
+          mode="basic"
+          [disabled]="loading"
+        ></p-fileUpload>
+      </div>
+      <img *ngIf="imagenPreview"
+           [src]="imagenPreview"
+           class="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-full mx-auto mt-4 object-cover"
+      />
 
-<!--      &lt;!&ndash; Botón de registro &ndash;&gt;-->
-<!--      <button-->
-<!--        type="submit"-->
-<!--        class="w-full bg-customGrisOscurso hover:bg-gray-500 text-white py-3 rounded-full text-lg font-semibold transition duration-300"-->
-<!--        [disabled]="loading"-->
-<!--      >-->
-<!--        {{ loading ? 'Guardando...' : perfilCompleto ? 'Guardar Cambios' : 'Registrarse' }}-->
-<!--      </button>-->
-<!--    </form>-->
-<!--  </div>-->
-<!--</div>-->
+
+
+
+      <div class="mb-4">
+        <input
+          type="text"
+          placeholder="URL streaming"
+          class="w-full p-3 rounded-full bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
+          formControlName="musicUrl"
+        />
+      </div>
+
+      <!-- Selección de Géneros Musicales -->
+      <div class="mb-6">
+        <label class="block text-white text-lg font-semibold mb-2">Géneros Musicales</label>
+        <div class="bg-gray-200 rounded-lg p-4">
+          <div *ngFor="let genero of generosMusicales">
+            <label class="inline-flex items-center space-x-2">
+              <input
+                type="checkbox"
+                [value]="genero.id"
+                (change)="onCheckboxChange($event)"
+                [checked]="registroArtistaForm.get('generosMusicales')?.value.includes(genero.id)"
+                class="form-checkbox text-gray-600 h-5 w-5"
+              />
+              <span class="text-gray-800">{{ genero.nombre }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Botón de registro -->
+      <button
+        type="submit"
+        class="w-full bg-customGrisOscurso hover:bg-gray-500 text-white py-3 rounded-full text-lg font-semibold transition duration-300"
+        [disabled]="
+            loading ||
+            registroArtistaForm.invalid ||
+            (!perfilCompleto && !imagenSeleccionada) ||
+            (perfilCompleto && !formularioModificado())
+          "
+        [ngClass]="{
+    'cursor-not-allowed opacity-60': loading || registroArtistaForm.invalid || (!perfilCompleto && !imagenSeleccionada) || (perfilCompleto && !formularioModificado()),
+    'cursor-pointer': !registroArtistaForm.invalid && !loading && (imagenSeleccionada || !perfilCompleto || formularioModificado())
+  }"
+      >
+        {{ loading ? 'Guardando...' : perfilCompleto ? 'Guardar Cambios' : 'Registrarse' }}
+      </button>
+
+
+
+
+      <!-- Botón de SALIR -->
+
+      <button
+        *ngIf="esEdicion"
+        type="button"
+        class="w-full mt-4 bg-gray-500 hover:bg-gray-700 text-white py-3 rounded-full text-lg font-semibold transition duration-300"
+        (click)="router.navigate(['admin-artista'])"
+      > Salir
+      </button>
+
+    </form>
+  </div>
+</div>

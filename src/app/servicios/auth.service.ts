@@ -16,6 +16,7 @@ export class AuthService {
     return this.http.post(this.apiUrl, body, {responseType:'text'} );
   }
 
+
   get userId(): number {
     const id = localStorage.getItem('userId');      // MDN: localStorage.getItem devuelve string o null :contentReference[oaicite:0]{index=0}
     return id !== null && !isNaN(+id) ? +id : 0;
@@ -32,6 +33,28 @@ export class AuthService {
 
   getPerfil(): Observable<any> {
     return this.http.get('http://localhost:8081/auth/perfil');
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('token'); //
+  }
+
+
+  getPerfilCompletoFromToken(): boolean {
+    const token = localStorage.getItem('token');
+    if (!token) return false;
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      const payload = JSON.parse(jsonPayload);
+      return payload.perfilCompleto === true;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return false;
+    }
   }
 
 

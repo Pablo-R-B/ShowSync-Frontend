@@ -16,9 +16,9 @@ export class GenerosMusicalesService {
   // Para el nuevo endpoint CRUD completo (con id y nombre)
   private apiAdminUrl: string = `http://localhost:8081/genero-admin`;
 
-  listarGeneros(): Observable<string[]> {
+  listarGeneros(): Observable<GeneroMusical[]> {
     const headers = this.getHeaders();
-    return this.http.get<string[]>(`${this.apiUrl}/listar-generos`, { headers });
+    return this.http.get<GeneroMusicalDTO[]>(`${this.apiUrl}/listar-generos`, { headers });
   }
 
   listarGenerosConId(): Observable<GeneroMusicalDTO[]> {

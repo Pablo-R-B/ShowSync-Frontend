@@ -17,6 +17,10 @@ import {PerfilArtistaComponent} from './pages/perfil-artista/perfil-artista.comp
 import {CatalogoSalaComponent} from './pages/catalogo-sala/catalogo-sala.component';
 import {AdminPanelComponent} from './pages/admin/admin-panel/admin-panel.component';
 import {ConfirmarEventosComponent} from './pages/confirmar-eventos/confirmar-eventos.component';
+import {PerfilCompletoGuard} from './guards/PerfilCompletoGuard';
+import {RegistroPromotorComponent} from './pages/registro-promotor/registro-promotor.component';
+import {RegistroArtistaComponent} from './pages/registro-artista/registro-artista.component';
+import {PerfilAdminArtistaComponent} from './pages/perfil-admin-artista/perfil-admin-artista.component';
 
 export const routes: Routes = [
   // Rutas de autenticación
@@ -24,9 +28,8 @@ export const routes: Routes = [
   { path: 'auth/login', component: LoginComponent },
   { path: 'auth/recuperar', component: RecuperarComponent },
   { path: 'auth/restablecer', component: RestablecerComponent },
-
-  // Rutas principales
-  { path: '', redirectTo: 'landing-page', pathMatch: 'full' },
+  { path: 'datos-promotor', component: RegistroPromotorComponent },
+  { path:'datos-artista', component:RegistroArtistaComponent},
   { path: 'landing-page', component: LandingPageComponent },
 
   // Rutas de promotores
@@ -52,6 +55,27 @@ export const routes: Routes = [
   // Rutas de artistas
   { path: 'catalogo-artistas', component: CatalogoArtistasComponent, pathMatch: 'full' },
   { path: 'artista/:id', component: PerfilArtistaComponent, pathMatch: 'full' },
+  {
+    path: '',
+    canActivateChild: [PerfilCompletoGuard],
+    children: [
+      { path: 'promotores', component: PromotoresComponent },
+      { path: 'promotores/:id', component: PromotoresComponent },
+      { path: 'busqueda-promotores', component: BusquedaPromotoresComponent },
+      { path: 'eventos/:id', component: EventosComponent },
+      { path: 'eventos', component: EventosComponent },
+      { path: 'perfil-promotores', component: PerfilPromotoresComponent },
+      { path: 'busqueda-eventos', component: BusquedaEventosComponent },
+      { path: 'editar-eventos', component: EditarEventosComponent },
+      { path: 'promotores/:idPromotor/eventos/:idEvento/editar', component: EditarEventosComponent },
+      { path: 'promotor/:id', component: PromotoresComponent },
+      { path: 'catalogo-salas', component: CatalogoSalaComponent },
+      { path: 'salas/:id', component: PerfilSalaComponent },
+      { path: 'catalogo-artistas', component: CatalogoArtistasComponent },
+      { path: 'artista/:id', component: PerfilArtistaComponent },
+      {path: 'admin-artista', component: PerfilAdminArtistaComponent},
+    ],
+  },
 
   //Ruta de instrucciones
    {path: 'instrucciones', loadComponent: () => import('./pages/intrucciones-uso/intrucciones-uso.component').then(m => m.InstruccionesUsoComponent)},

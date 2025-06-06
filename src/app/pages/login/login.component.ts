@@ -25,6 +25,7 @@ export class LoginComponent implements OnInit {
   showPassword: boolean = false;
   keepSession: boolean = false;
 
+
   constructor(
     private authService: AuthService,
     private router: Router
@@ -85,12 +86,31 @@ export class LoginComponent implements OnInit {
           // Almacenar datos del usuario
           this.storeUserData(decoded);
 
+
           // Log para debugging (remover en producción)
           console.log('Login exitoso:', {
             rol: decoded.rol,
             nombre: decoded.nombre,
-            id: decoded.id
+            id: decoded.id,
+            perfilCompleto: decoded.perfilCompleto
           });
+
+          console.log('Perfil completo:', decoded.perfilCompleto);
+
+          const perfilCompleto = decoded.perfilCompleto;
+
+          if (!perfilCompleto && decoded.rol !== 'ADMINISTRADOR') {
+            // Redirigir a completar perfil si no es admin y el perfil no está completo
+            switch (decoded.rol) {
+              case 'ARTISTA':
+                this.router.navigate(['/datos-artista']);
+                break;
+              case 'PROMOTOR':
+                this.router.navigate(['/datos-promotor']);
+                break;
+            }
+            return;
+          }
 
           // Redirigir según el rol
           this.redirectByRole(decoded.rol);
@@ -124,6 +144,7 @@ export class LoginComponent implements OnInit {
     localStorage.setItem('rol', decoded.rol);
     localStorage.setItem('username', decoded.nombre);
     localStorage.setItem('userId', String(decoded.id));
+    localStorage.setItem('perfilCompleto', JSON.stringify(decoded.perfilCompleto));
 
     // Almacenar timestamp de login para control de sesión
     localStorage.setItem('loginTime', Date.now().toString());

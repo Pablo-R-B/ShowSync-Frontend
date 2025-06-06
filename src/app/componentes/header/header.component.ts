@@ -1,7 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, RouterLink, NavigationEnd } from '@angular/router';
+import {Router, RouterLink, NavigationEnd, ActivatedRoute} from '@angular/router';
 import { NgIf, NgOptimizedImage } from '@angular/common';
 import { Subscription } from 'rxjs';
+import {ArtistasService} from '../../servicios/artistas.service';
+import {AuthService} from '../../servicios/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -20,9 +22,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   mostrarMenuPerfil = false;
   username = '';
   rolUsuario = '';
+  artistaId: number | undefined;
   private routerSubscription?: Subscription;
+  usuarioId!: number;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private artistaService:ArtistasService, private authService:AuthService) {}
 
   ngOnInit() {
     this.actualizarEstadoUsuario();
@@ -33,6 +37,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.actualizarEstadoUsuario();
       }
     });
+
+    this.artistaService.getArtistaIdPorUsuario(this.authService.userId).subscribe(id => {
+      this.artistaId = id;
+      console.log('artistaId obtenido:', this.artistaId);
+    });
+
   }
 
   ngOnDestroy() {
@@ -85,7 +95,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
       case 'SALA':
         return '/perfil-salas';
       case 'ARTISTA':
-        return '/perfil-artistas';
+          return `/artista/${this.artistaId}`;
+
       default:
         return '/auth/login';
     }

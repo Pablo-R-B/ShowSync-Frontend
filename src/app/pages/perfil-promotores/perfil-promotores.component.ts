@@ -202,8 +202,9 @@ export class PerfilPromotoresComponent implements OnInit {
         console.log("Lista completa:", lista);
 
         // Separando solicitudes según el tipo
-        this.postulaciones = lista.filter(post => post.tipoSolicitud === 'postulacion');
-        this.ofertas = lista.filter(post => post.tipoSolicitud === 'oferta');
+        this.postulaciones = lista.filter(post => post.tipoSolicitud === 'postulacion' && post.estado !== 'rechazado');
+        this.ofertas = lista.filter(post => post.tipoSolicitud === 'oferta' && post.estado !== 'rechazado');
+
 
         console.log("Postulaciones:", this.postulaciones);
         console.log("Ofertas:", this.ofertas);
