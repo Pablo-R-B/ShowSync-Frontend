@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {NgIf} from "@angular/common";
+import {NgClass, NgIf} from "@angular/common";
 import {TokenPayload} from '../../interfaces/TokenPayload';
 import {jwtDecode} from 'jwt-decode';
 import {AuthService} from '../../servicios/auth.service';
@@ -15,7 +15,8 @@ import {Router} from '@angular/router';
     NgIf,
     FormsModule,
     NgIf,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgClass
   ],
   templateUrl: './registro-promotor.component.html',
   styleUrl: './registro-promotor.component.css'
@@ -30,9 +31,10 @@ export class RegistroPromotorComponent implements OnInit{
               protected router: Router,) {
     this.registroPromotorForm = this.fb.group({
       nombrePromotor: ['', [Validators.required, Validators.maxLength(100)]],
-      descripcion: [''],
-      imagenPerfil: ['']
+      descripcion: ['', Validators.required],
+      imagenPerfil: ['', Validators.required]
     });
+
   }
 
   ngOnInit() {

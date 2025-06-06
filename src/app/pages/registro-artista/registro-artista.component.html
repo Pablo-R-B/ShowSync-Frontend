@@ -69,12 +69,14 @@
       <button
         type="submit"
         class="w-full bg-customGrisOscurso hover:bg-gray-500 text-white py-3 rounded-full text-lg font-semibold transition duration-300"
-        [disabled]="loading"
+        [disabled]="loading || registroArtistaForm.invalid"
+        [class.cursor-not-allowed]="registroArtistaForm.invalid"
       >
         {{ loading ? 'Guardando...' : perfilCompleto ? 'Guardar Cambios' : 'Registrarse' }}
       </button>
 
-      <!-- Botón de EDICIÓN -->
+
+      <!-- Botón de SALIR -->
 
       <button
         *ngIf="esEdicion"

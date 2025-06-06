@@ -63,12 +63,14 @@ export class RegistroArtistaComponent implements OnInit {
     if (this.perfilCompleto && idUsuario) {
       this.artistaService.getArtistaIdPorUsuario(idUsuario).subscribe(artistaId => {
         this.artistaService.artistaPorId(artistaId).subscribe(artista => {
-          this.registroArtistaForm.patchValue({
-            nombreArtista: artista.nombreArtista,
-            biografia: artista.biografia,
-            imagenPerfil: artista.imagenPerfil,
-            musicUrl: artista.musicUrl,
+          this.registroArtistaForm = this.fb.group({
+            nombreArtista: ['', [Validators.required, Validators.maxLength(100)]],
+            biografia: ['', Validators.required],
+            musicUrl: ['', Validators.required],
+            imagenPerfil: ['', Validators.required],
+            generosMusicales: this.fb.array([], Validators.required)
           });
+
 
           type GeneroMusicalInput = string | GeneroMusical;
           const selectedGeneroIds = artista.generosMusicales.map((g: GeneroMusicalInput) =>
@@ -91,6 +93,7 @@ export class RegistroArtistaComponent implements OnInit {
 
   onSubmit() {
     if (this.registroArtistaForm.valid) {
+      this.registroArtistaForm.markAllAsTouched(); // fuerza mostrar los errores
       this.loading = true;
       const formData = this.registroArtistaForm.value;
 
