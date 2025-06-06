@@ -73,6 +73,17 @@
       >
         {{ loading ? 'Guardando...' : perfilCompleto ? 'Guardar Cambios' : 'Registrarse' }}
       </button>
+
+      <!-- Botón de EDICIÓN -->
+
+      <button
+        *ngIf="esEdicion"
+        type="button"
+        class="w-full mt-4 bg-gray-500 hover:bg-gray-700 text-white py-3 rounded-full text-lg font-semibold transition duration-300"
+        (click)="router.navigate(['admin-artista'])"
+      > Salir
+      </button>
+
     </form>
   </div>
 </div>

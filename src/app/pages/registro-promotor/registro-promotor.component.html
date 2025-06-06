@@ -1,8 +1,6 @@
 <div class="min-h-screen bg-cover bg-center flex items-center justify-center" style="background-image: url('../../../assets/images/img.png');">
   <div class="bg-black bg-opacity-80 p-8 rounded-3xl max-w-md w-full shadow-lg">
-    <div *ngIf="successMessage" class="alert alert-success">
-      {{ successMessage }}
-    </div>
+
     <h2 class="font-medula text-white text-5xl mb-6 text-center">Datos Promotor</h2>
     <hr class="border-gray-600 mb-6">
 
@@ -47,6 +45,21 @@
       >
         {{ loading ? 'Guardando...' : perfilCompleto ? 'Guardar Cambios' : 'Registrarse' }}
       </button>
+
+
+      <!-- Botón de salir sin guardar -->
+      <button
+        *ngIf="perfilCompleto"
+        type="button"
+        (click)="router.navigate(['/perfil-promotores'])"
+      class="w-full mt-2 bg-gray-600 hover:bg-gray-700 text-white py-3 rounded-full text-lg font-semibold transition duration-300"
+      >
+      Salir
+      </button>
+      <div *ngIf="successMessage" class="alert alert-success">
+        {{ successMessage }}
+      </div>
+
     </form>
   </div>
 </div>

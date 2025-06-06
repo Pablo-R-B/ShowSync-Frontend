@@ -29,10 +29,13 @@ export class RegistroArtistaComponent implements OnInit {
   successMessage: string = '';
   generosMusicales: GeneroMusical[] = [];
   generosSeleccionados: number[] = [];
+  esEdicion: boolean = false;
+
+
 
 
   constructor(private fb: FormBuilder, private artistaService: ArtistasService, private authService: AuthService,
-              private router: Router, private generosService: GenerosMusicalesService) {
+              protected router: Router, private generosService: GenerosMusicalesService) {
     this.registroArtistaForm = this.fb.group({
       nombreArtista: ['', [Validators.required, Validators.maxLength(100)]],
       biografia: [''],
@@ -51,6 +54,8 @@ export class RegistroArtistaComponent implements OnInit {
     if (token) {
       const decoded: TokenPayload = jwtDecode(token);
       this.perfilCompleto = decoded?.perfilCompleto || false;
+      this.esEdicion = this.perfilCompleto;
+
     }
 
     const idUsuario = Number(localStorage.getItem('userId'));
@@ -95,9 +100,7 @@ export class RegistroArtistaComponent implements OnInit {
         imagenPerfil: formData.imagenPerfil,
         musicUrl: formData.musicUrl,
         generosMusicales: formData.generosMusicales.map((id: number) => ({ id } as GeneroMusical))
-
       };
-
 
       const usuarioId = Number(localStorage.getItem('userId'));
 
@@ -106,10 +109,18 @@ export class RegistroArtistaComponent implements OnInit {
           console.log('Perfil enviado correctamente:', response);
           this.successMessage = response.mensaje;
           this.loading = false;
-          localStorage.removeItem('token');
-          localStorage.removeItem('userId');
-          localStorage.removeItem('rol');
-          this.router.navigate(['/auth/login']);
+
+          if (this.esEdicion) {
+            // Solo mostramos un mensaje o redirigimos a otra ruta si se desea
+            alert('Perfil actualizado correctamente');
+            this.router.navigate(['/perfil']); // o la ruta que uses para ver el perfil
+          } else {
+            // Modo completar perfil
+            localStorage.removeItem('token');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('rol');
+            this.router.navigate(['/auth/login']);
+          }
         },
         error: (error) => {
           console.error('Error al enviar perfil:', error);
@@ -120,6 +131,7 @@ export class RegistroArtistaComponent implements OnInit {
       console.log('Formulario inválido');
     }
   }
+
 
   onCheckboxChange(event: any) {
     const formArray: FormArray = this.registroArtistaForm.get('generosMusicales') as FormArray;

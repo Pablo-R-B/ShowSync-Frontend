@@ -27,7 +27,7 @@ export class RegistroPromotorComponent implements OnInit{
   successMessage: string = '';
 
   constructor(private fb: FormBuilder, private authService: AuthService, private promotorService: PromotoresService,
-              private router: Router,) {
+              protected router: Router,) {
     this.registroPromotorForm = this.fb.group({
       nombrePromotor: ['', [Validators.required, Validators.maxLength(100)]],
       descripcion: [''],
@@ -72,10 +72,17 @@ export class RegistroPromotorComponent implements OnInit{
           console.log('Perfil enviado correctamente:', response);
           this.successMessage = response.mensaje;
           this.loading = false;
-          localStorage.removeItem('token');
-          localStorage.removeItem('userId');
-          localStorage.removeItem('rol');
-          this.router.navigate(['/auth/login']);
+
+          if (!this.perfilCompleto) {
+            // Primer login, perfil incompleto: forzar nuevo login
+            localStorage.removeItem('token');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('rol');
+            this.router.navigate(['/auth/login']);
+          } else {
+            // Perfil ya completo: solo actualizar y quedarse
+            this.successMessage = 'Cambios guardados correctamente.';
+          }
         },
         error: (error) => {
           console.error('Error al enviar perfil:', error);
@@ -86,4 +93,5 @@ export class RegistroPromotorComponent implements OnInit{
       console.log('Formulario inválido');
     }
   }
+
 }
