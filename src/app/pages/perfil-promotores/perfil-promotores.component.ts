@@ -212,9 +212,30 @@ export class PerfilPromotoresComponent implements OnInit {
     });
   }
 
-  respuestaSolicitud(post: Postulacion, estado: 'aceptado' | 'rechazado') {
-    this.postulacionService.actualizarEstadoSolicitud(post.id, estado)
-      .subscribe(() => post.estado = estado);
+  respuestaSolicitud(postulacion: Postulacion, estado: 'aceptado' | 'rechazado'): void {
+    if (estado === 'aceptado') {
+      this.eventosService.aceptarPostulacion(postulacion.id).subscribe({
+        next: () => {
+          postulacion.estado = 'aceptado'; // Actualiza el estado localmente
+          alert('Postulación aceptada exitosamente');
+        },
+        error: (err) => {
+          console.error('Error al aceptar la postulación', err);
+          alert('Ocurrió un error al aceptar la postulación');
+        }
+      });
+    } else if (estado === 'rechazado') {
+      this.postulacionService.actualizarEstadoSolicitud(postulacion.id, estado).subscribe({
+        next: () => {
+          postulacion.estado = 'rechazado'; // Actualiza el estado localmente
+          alert('Postulación rechazada exitosamente');
+        },
+        error: (err) => {
+          console.error('Error al rechazar la postulación', err);
+          alert('Ocurrió un error al rechazar la postulación');
+        }
+      });
+    }
   }
 
 }

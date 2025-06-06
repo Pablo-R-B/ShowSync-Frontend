@@ -131,5 +131,12 @@ export class EventosService {
     return this.http.get<Evento[]>(`${this.apiUrl}/eventos/paginado?page=${pagina}&size=${tamano}`);
   }
 
+  // Aceptar una postulación de un evento
+  aceptarPostulacion(postulacionId: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/eventos/${postulacionId}/aceptar`, {}, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
 
 }
