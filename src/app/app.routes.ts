@@ -32,47 +32,36 @@ export const routes: Routes = [
   { path:'datos-artista', component:RegistroArtistaComponent},
   { path: 'landing-page', component: LandingPageComponent },
 
-  // Rutas de promotores
-  { path: 'promotores', component: PromotoresComponent },
-  { path: 'promotores/:id', component: PromotoresComponent },
-  { path: 'promotor/:id', component: PromotoresComponent },
-  { path: 'busqueda-promotores', component: BusquedaPromotoresComponent },
-  { path: 'perfil-promotores', component: PerfilPromotoresComponent },
 
 
   // Rutas de eventos
   { path: 'eventos', component: EventosComponent },
-  { path: 'eventos/:id', component: EventosComponent },
-  { path: 'busqueda-eventos', component: BusquedaEventosComponent },
-  { path: 'editar-eventos', component: EditarEventosComponent },
-  { path: 'promotores/:idPromotor/eventos/:idEvento/editar', component: EditarEventosComponent },
-  { path: 'promotores/:idPromotor/eventos/:idEvento/confirmar', component: ConfirmarEventosComponent },
 
-  // Rutas de salas (públicas)
-  { path: 'catalogo-salas', component: CatalogoSalaComponent, pathMatch: 'full' },
-  { path: 'salas/:id', component: PerfilSalaComponent },
-
-  // Rutas de artistas
-  { path: 'catalogo-artistas', component: CatalogoArtistasComponent, pathMatch: 'full' },
-  { path: 'artista/:id', component: PerfilArtistaComponent, pathMatch: 'full' },
   {
     path: '',
     canActivateChild: [PerfilCompletoGuard],
     children: [
+      // Rutas de promotores
       { path: 'promotores', component: PromotoresComponent },
       { path: 'promotores/:id', component: PromotoresComponent },
+      { path: 'promotor/:id', component: PromotoresComponent },
       { path: 'busqueda-promotores', component: BusquedaPromotoresComponent },
-      { path: 'eventos/:id', component: EventosComponent },
-      { path: 'eventos', component: EventosComponent },
       { path: 'perfil-promotores', component: PerfilPromotoresComponent },
+
+      // Rutas de eventos
+      { path: 'eventos/:id', component: EventosComponent },
       { path: 'busqueda-eventos', component: BusquedaEventosComponent },
       { path: 'editar-eventos', component: EditarEventosComponent },
       { path: 'promotores/:idPromotor/eventos/:idEvento/editar', component: EditarEventosComponent },
-      { path: 'promotor/:id', component: PromotoresComponent },
-      { path: 'catalogo-salas', component: CatalogoSalaComponent },
+      { path: 'promotores/:idPromotor/eventos/:idEvento/confirmar', component: ConfirmarEventosComponent },
+
+      // Rutas de salas (públicas)
+      { path: 'catalogo-salas', component: CatalogoSalaComponent, pathMatch: 'full' },
       { path: 'salas/:id', component: PerfilSalaComponent },
-      { path: 'catalogo-artistas', component: CatalogoArtistasComponent },
-      { path: 'artista/:id', component: PerfilArtistaComponent },
+
+      // Rutas de artistas
+      { path: 'catalogo-artistas', component: CatalogoArtistasComponent, pathMatch: 'full' },
+      { path: 'artista/:id', component: PerfilArtistaComponent, pathMatch: 'full' },
       {path: 'admin-artista', component: PerfilAdminArtistaComponent},
     ],
   },
