@@ -115,14 +115,10 @@ export class EventosComponent implements OnInit {
           }
         },
         error: (err) => {
-          // Puede venir un 500, un timeout, o un 0 si no hay conexión
-          console.error('Error al enviar la oferta:', err);
-          // Extrae el código si está disponible
           const status = err.status ?? 'desconocido';
-          this.alertaSolicitud(
-            'noenviada',
-            `Error en la solicitud (status ${status})`
-          );
+          const message = err.error?.message ?? 'Error desconocido';
+          console.error(`Error al enviar la oferta: ${message}`);
+          this.alertaSolicitud('noenviada', `Error en la solicitud ${message}`);
         },
       });
   }

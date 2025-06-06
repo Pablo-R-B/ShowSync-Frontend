@@ -106,7 +106,10 @@ export class RegistroArtistaComponent implements OnInit {
           console.log('Perfil enviado correctamente:', response);
           this.successMessage = response.mensaje;
           this.loading = false;
-          this.router.navigate(['/landing-page']);
+          localStorage.removeItem('token');
+          localStorage.removeItem('userId');
+          localStorage.removeItem('rol');
+          this.router.navigate(['/auth/login']);
         },
         error: (error) => {
           console.error('Error al enviar perfil:', error);

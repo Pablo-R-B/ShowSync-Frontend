@@ -5,6 +5,7 @@ import { Observable, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { catchError } from 'rxjs/operators';
+import {GeneroMusical} from '../interfaces/GeneroMusical';
 
 @Injectable({
   providedIn: 'root'
@@ -80,6 +81,12 @@ export class ArtistasService {
       );
   }
 
+  getDatosArtistaPorUsuarioId(usuarioId: number): Observable<Artistas> {
+    return this.http.get<Artistas>(`${this.apiUrl}/miperfil?usuarioId=${usuarioId}`)
+      .pipe(catchError(this.handleError));
+  }
+
+
   obtenerImagenesDeTodosLosArtistas(): Observable<string[]> {
     return this.http.get<string[]>(`${this.apiUrl}/imagenes`)
       .pipe(
@@ -117,5 +124,10 @@ export class ArtistasService {
   guardarPerfilArtista(usuarioId: number, data: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/artista/usuario/${usuarioId}`, data);
   }
+
+  getGenerosDelArtista(id: number): Observable<GeneroMusical[]> {
+    return this.http.get<GeneroMusical[]>(`${this.apiUrl}/artista/${id}/generos`);
+  }
+
 
 }

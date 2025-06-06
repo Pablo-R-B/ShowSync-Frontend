@@ -9,6 +9,7 @@ import {PostulacionEventoService} from '../../servicios/postulacion-evento.servi
 import {Postulacion} from '../../interfaces/postulacion';
 import {EventoDTO} from '../../interfaces/EventoDTO';
 import {PromotoresService} from '../../servicios/promotores.service';
+import {GeneroMusical} from '../../interfaces/GeneroMusical';
 
 
 @Component({
@@ -29,8 +30,10 @@ export class PerfilArtistaComponent implements OnInit{
   eventoSeleccionado!:number
   IdUsuarioDePromotor!: number;
   eventos: EventoDTO[] = [];
-  artistaId!: number;
+  generos: GeneroMusical[] = [];
   usuarioRol!:string | null;
+  artistaVisualizadoId!: number;
+  artistaLogueadoId!: number;
 
 
   constructor(private artistasService:ArtistasService, private route: ActivatedRoute,
@@ -40,24 +43,37 @@ export class PerfilArtistaComponent implements OnInit{
 
   ngOnInit() {
     const userId = this.authService.userId;
-
-    this.artistasService.getArtistaIdPorUsuario(userId).subscribe(
-      artistaId => {
-        this.artistaId = artistaId;
-
-        // Ya con el id, puedes usar artistaPorId
-        this.artistasService.artistaPorId(this.artistaId).subscribe(
-          data => { this.artista = data; },
-          err => console.error('Error al obtener datos del artista:', err)
-        );
-      },
-      err => console.error('Error al obtener ID de artista desde userId:', err)
-    );
-
     this.usuarioRol = this.authService.userRole
+    this.IdUsuarioDePromotor = this.authService.userId;
+    this.route.paramMap.subscribe(params => {
+      this.artistaVisualizadoId = Number(params.get('id'));
+
+      if (this.artistaVisualizadoId) {
+        this.artistasService.artistaPorId(this.artistaVisualizadoId).subscribe(
+          data => { this.artista = data; },
+          err => console.error('Error obteniendo artista de la URL:', err)
+        );
+      }
+    });
+
+    if (this.usuarioRol === 'ARTISTA' && userId) {
+      this.artistasService.getDatosArtistaPorUsuarioId(userId).subscribe(
+        artista => {
+          this.artistaLogueadoId = artista.id;
+        },
+        err => console.error('Error obteniendo artista logueado:', err)
+      );
+    }
+
     if(this.usuarioRol === 'PROMOTOR'){
       this.cargarEventosPromotor();
     }
+
+    const artistaId = Number(this.route.snapshot.paramMap.get('id'));
+
+    this.artistasService.getGenerosDelArtista(artistaId).subscribe(generos => {
+      this.generos = generos;
+    });
 
 
 
@@ -94,38 +110,34 @@ export class PerfilArtistaComponent implements OnInit{
   }
 
   enviarOferta() {
-    this.postulacionService.nuevaSolicitud(this.eventoSeleccionado, this.artistaId)
-      .subscribe({
-        next: response =>{
-          switch (response.status) {
-            case 201:
-              this.alertaSolicitud('enviada', '¡Oferta enviada con éxito! 🎉');
-              break;
-            case 400:
-              this.alertaSolicitud('noenviada', 'Solicitud inválida. Revisa los datos.');
-              break;
-            case 409:
-              this.alertaSolicitud('noenviada', 'Ya existe una oferta/postulación previa.');
-              break;
-            default:
-              this.alertaSolicitud(
-                  'noenviada',
-                  `Respuesta inesperada: ${response.status}`
-              );
-              console.warn(`Status inesperado: ${response.status}`);
+    this.route.paramMap.subscribe(params => {
+      const artistaId = Number(params.get('id'));
+
+      this.postulacionService.nuevaSolicitud(this.eventoSeleccionado, artistaId)
+        .subscribe({
+          next: response => {
+            switch (response.status) {
+              case 201:
+                this.alertaSolicitud('enviada', '¡Oferta enviada con éxito! 🎉');
+                break;
+              case 400:
+                this.alertaSolicitud('noenviada', 'Solicitud inválida. Revisa los datos.');
+                break;
+              case 409:
+                this.alertaSolicitud('noenviada', 'Ya existe una oferta/postulación previa.');
+                break;
+              default:
+                this.alertaSolicitud('noenviada', `Error inesperado (status ${response.status})`);
+            }
+          },
+          error: err => {
+            const status = err.status ?? 'desconocido';
+            const msg = err?.error?.message ?? 'No se pudo enviar la solicitud.';
+            this.alertaSolicitud('noenviada', `Error en la solicitud : ${msg}`);
           }
-        },
-        error: (err) => {
-          // Puede venir un 500, un timeout, o un 0 si no hay conexión
-          console.error('Error al enviar la oferta:', err);
-          // Extrae el código si está disponible
-          const status = err.status ?? 'desconocido';
-          this.alertaSolicitud(
-              'noenviada',
-              `Error en la solicitud (status ${status})`
-          );
-        },
-      });
-  }
+        });
+    });
+
+    }
 
   }
