@@ -25,100 +25,107 @@
 
 
   <!-- Panel de Gestión -->
+
   <div class="grid md:grid-cols-1 gap-8 mb-10 pb-6">
 
 
 
 
-  <div class="grid md:grid-cols-2 gap-8">
+    <div class="grid md:grid-cols-2 gap-8">
 
-    <!-- Solicitud de Artista -->
-    <div class="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-semibold flex items-center gap-2">
-          <i class="fas fa-microphone text-white"></i> SOLICITUDES DE ARTISTA
-        </h2>
+      <!-- Solicitud de Artista -->
+      <div class="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-semibold flex items-center gap-2">
+            <i class="fas fa-microphone text-white"></i> SOLICITUDES DE ARTISTA
+          </h2>
+        </div>
+
+        <ul *ngFor="let post of postulaciones" class="space-y-4">
+          <li class=" bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center">
+            <div class="flex items-center gap-3">
+              <img [src]="post.eventoImagen" alt="Logo sala" class="w-10 h-10 rounded-full" />
+              <div>
+
+                <p class="font-semibold">{{ post.eventoNombre }}</p>
+                <p class="font-semibold">{{post.artistaNombre}}</p>
+                <p class="font-semibold">{{ post.salaNombre }}</p>
+                <p class="font-semibold">{{ post.fechaPostulacion | date:'dd/MM/yyyy' }}</p>
+                <p class="text-sm text-gray-600">Estado: <span [ngClass]="{'text-yellow-500': post.estado === 'pendiente', 'text-green-500': post.estado === 'aceptado', 'text-red-500': post.estado === 'rechazado'}">{{ post.estado }}</span></p>
+              </div>
+            </div>
+
+
+
+            <!-- Botones de estado -->
+            <div class="flex gap-2 items-center">
+
+
+
+              <button
+                *ngIf="post.estado === 'pendiente'"
+                class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-full font-semibold"
+                (click)="respuestaSolicitud(post, 'aceptado')">
+                Aceptar
+              </button>
+              <button
+                *ngIf="post.estado === 'pendiente'"
+                class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-full font-semibold"
+                (click)="respuestaSolicitud(post, 'rechazado')">
+                Rechazar
+              </button>
+
+
+            </div>
+          </li>
+          <!--        <li *ngIf="salas.length === 0" class="text-gray-400">No hay salas para mostrar.</li>-->
+          <li *ngIf="postulaciones.length === 0" class="text-gray-400">No hay postulaciones para mostrar.</li>
+        </ul>
       </div>
 
-      <ul *ngFor="let post of postulaciones" class="space-y-4">
-        <li class=" bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center">
-          <div class="flex items-center gap-3">
-            <img [src]="post.eventoImagen" alt="Logo sala" class="w-10 h-10 rounded-full" />
-            <div>
+      <!-- Solicitud de Promotor -->
+      <div class="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-semibold flex items-center gap-2">
+            <i class="fas fa-user-tie text-white"></i> SOLICITUDES DE PROMOTOR
+          </h2>
+        </div>
 
-              <p class="font-semibold">{{ post.eventoNombre }}</p>
-              <p class="font-semibold">{{post.artistaNombre}}</p>
-              <p class="font-semibold">{{ post.salaNombre }}</p>
-              <p class="font-semibold">{{ post.fechaPostulacion | date:'dd/MM/yyyy' }}</p>
-              <p class="text-sm text-gray-600">Estado: <span [ngClass]="{'text-yellow-500': post.estado === 'pendiente', 'text-green-500': post.estado === 'aceptado', 'text-red-500': post.estado === 'rechazado'}">{{ post.estado }}</span></p>
+        <ul  *ngFor="let oferta of ofertas" class="space-y-4">
+          <li class="bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center">
+            <div class="flex items-center gap-3">
+              <img [src]="oferta.eventoImagen" alt="Logo sala" class="w-10 h-10 rounded-full" />
+              <div>
+
+                <p class="font-semibold">{{ oferta.eventoNombre }}</p>
+                <p class="font-semibold">{{oferta.artistaNombre}}</p>
+                <p class="font-semibold">{{ oferta.salaNombre }}</p>
+                <p class="font-semibold">{{ oferta.fechaPostulacion | date:'dd/MM/yyyy' }}</p>
+                <p class="text-sm text-gray-600">Estado: <span [ngClass]="{'text-yellow-500': oferta.estado === 'pendiente', 'text-green-500': oferta.estado === 'aceptado', 'text-red-500': oferta.estado === 'rechazado'}">{{ oferta.estado }}</span></p>
+              </div>
             </div>
-          </div>
 
 
 
-          <!-- Botones de estado -->
-          <div class="flex gap-2 items-center">
+            <!-- Botones de estado -->
+            <div class="flex gap-2 items-center">
 
-
-
-                        <button
-                          *ngIf="post.estado === 'pendiente'"
-                          class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-full font-semibold"
-                          (click)="respuestaSolicitud(post, 'aceptado')">
-                          Aceptar
-                        </button>
-            <button
-              *ngIf="post.estado === 'pendiente'"
-                            class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-full font-semibold"
-              (click)="respuestaSolicitud(post, 'rechazado')">
-                            Rechazar
-                          </button>
-
-
-          </div>
-        </li>
-<!--        <li *ngIf="salas.length === 0" class="text-gray-400">No hay salas para mostrar.</li>-->
-        <li *ngIf="postulaciones.length === 0" class="text-gray-400">No hay postulaciones para mostrar.</li>
-      </ul>
-    </div>
-
-    <!-- Solicitud de Promotor -->
-    <div class="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-semibold flex items-center gap-2">
-          <i class="fas fa-user-tie text-white"></i> SOLICITUDES DE PROMOTOR
-        </h2>
+            </div>
+          </li>
+          <!--        <li *ngIf="salas.length === 0" class="text-gray-400">No hay salas para mostrar.</li>-->
+          <li *ngIf="ofertas.length === 0" class="text-gray-400">No hay ofertas para mostrar.</li>
+        </ul>
       </div>
 
-      <ul  *ngFor="let oferta of ofertas" class="space-y-4">
-        <li class="bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center">
-          <div class="flex items-center gap-3">
-            <img [src]="oferta.eventoImagen" alt="Logo sala" class="w-10 h-10 rounded-full" />
-            <div>
-
-              <p class="font-semibold">{{ oferta.eventoNombre }}</p>
-              <p class="font-semibold">{{oferta.artistaNombre}}</p>
-              <p class="font-semibold">{{ oferta.salaNombre }}</p>
-              <p class="font-semibold">{{ oferta.fechaPostulacion | date:'dd/MM/yyyy' }}</p>
-              <p class="text-sm text-gray-600">Estado: <span [ngClass]="{'text-yellow-500': oferta.estado === 'pendiente', 'text-green-500': oferta.estado === 'aceptado', 'text-red-500': oferta.estado === 'rechazado'}">{{ oferta.estado }}</span></p>
-            </div>
-          </div>
 
 
-
-          <!-- Botones de estado -->
-          <div class="flex gap-2 items-center">
-
-          </div>
-        </li>
-<!--        <li *ngIf="salas.length === 0" class="text-gray-400">No hay salas para mostrar.</li>-->
-        <li *ngIf="ofertas.length === 0" class="text-gray-400">No hay ofertas para mostrar.</li>
-      </ul>
     </div>
 
 
 
-  </div>
+
+
+
 
 
     <!-- Gestión de Eventos -->

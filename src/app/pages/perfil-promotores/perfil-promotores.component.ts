@@ -22,8 +22,8 @@ import {FormsModule} from '@angular/forms';
     NgForOf,
     NgIf,
     DatePipe,
-    NgClass,
-    FormsModule
+    FormsModule,
+    NgClass
   ],
   providers: [DatePipe],
   templateUrl: './perfil-promotores.component.html',
