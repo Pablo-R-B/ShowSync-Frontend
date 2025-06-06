@@ -120,7 +120,7 @@ export class PerfilSalaComponent implements OnInit {
 
   cargarGenerosMusicales() {
     this.eventosService.getGenero().subscribe({
-      next: generos => this.generosDisponibles = generos,
+      next: genero => this.generosDisponibles = genero,
       error: err => {
         console.error('Error al cargar géneros', err);
         this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Error al cargar géneros' });
