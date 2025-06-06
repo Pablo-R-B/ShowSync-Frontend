@@ -66,8 +66,7 @@ export class PanelEventosComponent implements OnInit {
     this.error = null;
 
     this.eventoService.getTodosLosEventos().subscribe({
-      next: (eventos) => {
-        this.eventos = eventos;
+      next: (eventos) => {this.eventos = eventos.sort((a, b) => new Date(b.fechaEvento).getTime() - new Date(a.fechaEvento).getTime());
         this.filtrarEventos();
         this.cargando = false;
       },
@@ -107,11 +106,6 @@ export class PanelEventosComponent implements OnInit {
 
     this.actualizarEventosPaginados();
 
-    // Debug para verificar los valores
-    console.log('Eventos filtrados:', this.eventosFiltrados.length);
-    console.log('Total páginas:', this.totalPaginas);
-    console.log('Página actual:', this.paginaActual);
-    console.log('Items por página:', this.itemsPorPagina);
   }
 
   actualizarEventosPaginados(): void {
@@ -130,7 +124,15 @@ export class PanelEventosComponent implements OnInit {
   }
 
   cancelarEvento(id: number): void {
-    console.log('Cancelar evento:', id);
+    this.eventoService.cancelarEvento(id).subscribe({
+      next: () => {
+        console.log('Evento cancelado exitosamente:', id);
+        this.obtenerEventos(); // Actualizar la lista de eventos
+      },
+      error: (err) => {
+        console.error('Error al cancelar el evento:', err);
+      }
+    });
   }
 
   // Métodos de filtrado
