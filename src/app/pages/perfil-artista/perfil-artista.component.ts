@@ -1,15 +1,15 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Artistas} from '../../interfaces/artistas';
 import {ArtistasService} from '../../servicios/artistas.service';
-import {ActivatedRoute, RouterLink} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {AuthService} from '../../servicios/auth.service';
 import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
-import {Postulacion} from '../../interfaces/postulacion';
 import {EventoDTO} from '../../interfaces/EventoDTO';
 import {PromotoresService} from '../../servicios/promotores.service';
 import {GeneroMusical} from '../../interfaces/GeneroMusical';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -18,7 +18,6 @@ import {GeneroMusical} from '../../interfaces/GeneroMusical';
     NgIf,
     FormsModule,
     NgForOf,
-    RouterLink
   ],
   templateUrl: './perfil-artista.component.html',
   standalone: true,
@@ -32,8 +31,7 @@ export class PerfilArtistaComponent implements OnInit{
   eventos: EventoDTO[] = [];
   generos: GeneroMusical[] = [];
   usuarioRol!:string | null;
-  artistaVisualizadoId!: number;
-  artistaLogueadoId!: number;
+  artistaId!: number;
 
 
   constructor(private artistasService:ArtistasService, private route: ActivatedRoute,
@@ -45,31 +43,33 @@ export class PerfilArtistaComponent implements OnInit{
     const userId = this.authService.userId;
     this.usuarioRol = this.authService.userRole
     this.IdUsuarioDePromotor = this.authService.userId;
-    this.route.paramMap.subscribe(params => {
-      this.artistaVisualizadoId = Number(params.get('id'));
 
-      if (this.artistaVisualizadoId) {
-        this.artistasService.artistaPorId(this.artistaVisualizadoId).subscribe(
+    this.route.paramMap.subscribe(params => {
+      this.artistaId = Number(params.get('id'));
+      if (this.artistaId) {
+        this.artistasService.artistaPorId(+this.artistaId).subscribe(
           data => { this.artista = data; },
-          err => console.error('Error obteniendo artista de la URL:', err)
+          err  => console.error('Error HTTP:', err)
         );
+      } else {
+        console.error('ID no encontrado en la URL');
       }
     });
 
-    if (this.usuarioRol === 'ARTISTA' && userId) {
-      this.artistasService.getDatosArtistaPorUsuarioId(userId).subscribe(
-        artista => {
-          this.artistaLogueadoId = artista.id;
-        },
-        err => console.error('Error obteniendo artista logueado:', err)
-      );
-    }
+    const artistaId = Number(this.route.snapshot.paramMap.get('id'));
+
+      if (artistaId) {
+        this.artistasService.artistaPorId(artistaId).subscribe(
+          data => { this.artista = data; },
+          err  => console.error('Error HTTP:', err)
+        );
+      } else {
+        console.error('ID no encontrado en la URL');
+      }
 
     if(this.usuarioRol === 'PROMOTOR'){
       this.cargarEventosPromotor();
     }
-
-    const artistaId = Number(this.route.snapshot.paramMap.get('id'));
 
     this.artistasService.getGenerosDelArtista(artistaId).subscribe(generos => {
       this.generos = generos;
@@ -96,48 +96,50 @@ export class PerfilArtistaComponent implements OnInit{
     this.mostrarModal = false;
   }
 
-  alerta = {
-    tipo: '' as'enviada' | 'noenviada',
-    mensaje:'',
-    visible:false
-  }
+  mostrarToast(tipo: 'success' | 'error', mensaje: string) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'center',
+      iconColor: 'white',
+      customClass: {
+        popup: 'colored-toast',
+      },
+      showConfirmButton: false,
+      timer: 1500,
+      timerProgressBar: true,
+    });
 
-  private alertaSolicitud(tipo:'enviada' | 'noenviada', mensaje:string):  void{
-    this.alerta = {tipo, mensaje, visible:true}
-    setTimeout(()=>{
-      this.alerta.visible = false;
-    }, 5000);
+    Toast.fire({
+      icon: tipo,
+      title: mensaje,
+    });
   }
 
   enviarOferta() {
-    this.route.paramMap.subscribe(params => {
-      const artistaId = Number(params.get('id'));
 
-      this.postulacionService.nuevaSolicitud(this.eventoSeleccionado, artistaId)
-        .subscribe({
-          next: response => {
-            switch (response.status) {
-              case 201:
-                this.alertaSolicitud('enviada', '¡Oferta enviada con éxito! 🎉');
-                break;
-              case 400:
-                this.alertaSolicitud('noenviada', 'Solicitud inválida. Revisa los datos.');
-                break;
-              case 409:
-                this.alertaSolicitud('noenviada', 'Ya existe una oferta/postulación previa.');
-                break;
-              default:
-                this.alertaSolicitud('noenviada', `Error inesperado (status ${response.status})`);
-            }
-          },
-          error: err => {
-            const status = err.status ?? 'desconocido';
-            const msg = err?.error?.message ?? 'No se pudo enviar la solicitud.';
-            this.alertaSolicitud('noenviada', `Error en la solicitud : ${msg}`);
+      this.postulacionService.nuevaSolicitud(this.eventoSeleccionado, this.artistaId).subscribe({
+        next: (response) => {
+          switch (response.status) {
+            case 201:
+              this.mostrarToast('success', '¡Oferta enviada con éxito! 🎉');
+              break;
+            case 400:
+              this.mostrarToast('error', 'Solicitud inválida. Revisa los datos.');
+              break;
+            case 409:
+              this.mostrarToast('error', 'Ya existe una oferta/postulación previa.');
+              break;
+            default:
+              this.mostrarToast('error', `Error inesperado (status ${response.status})`);
           }
-        });
-    });
-
-    }
-
+        },
+        error: (err) => {
+          const msg = err?.error?.message ?? 'No se pudo enviar la solicitud.';
+          this.mostrarToast('error', `Error en la solicitud: ${msg}`);
+        }
+      });
   }
+
+
+
+}

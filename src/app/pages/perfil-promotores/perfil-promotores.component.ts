@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
-import {DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
+import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {PromotoresService} from '../../servicios/promotores.service';
 import {EventoDTO} from '../../interfaces/EventoDTO';
 import {Promotor} from '../../interfaces/Promotor';
@@ -9,7 +9,6 @@ import {EventosService} from '../../servicios/eventos.service';
 import {Sala} from '../../interfaces/sala';
 import {Postulacion} from '../../interfaces/postulacion';
 import {AuthService} from '../../servicios/auth.service';
-import {ArtistasService} from '../../servicios/artistas.service';
 import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
 import {FormsModule} from '@angular/forms';
 
@@ -22,8 +21,7 @@ import {FormsModule} from '@angular/forms';
     NgForOf,
     NgIf,
     DatePipe,
-    NgClass,
-    FormsModule
+    FormsModule,
   ],
   providers: [DatePipe],
   templateUrl: './perfil-promotores.component.html',
@@ -42,6 +40,11 @@ export class PerfilPromotoresComponent implements OnInit {
   idPromotor!: number;
   postulaciones: Postulacion[] = [];
   ofertas: Postulacion[] = [];
+  postulacionesPendientes: Postulacion[] = [];
+  postulacionesAceptadas: Postulacion[] = [];
+  ofertasPendientes: Postulacion[] = [];
+  ofertasAceptadas: Postulacion[] = [];
+
   usuarioRol!:string | null;
 
 
@@ -202,41 +205,37 @@ export class PerfilPromotoresComponent implements OnInit {
         console.log("Lista completa:", lista);
 
         // Separando solicitudes según el tipo
-        this.postulaciones = lista.filter(post => post.tipoSolicitud === 'postulacion' && post.estado !== 'rechazado');
-        this.ofertas = lista.filter(post => post.tipoSolicitud === 'oferta' && post.estado !== 'rechazado');
+        this.postulacionesPendientes = lista.filter(
+          post => post.tipoSolicitud === 'postulacion' && post.estado === 'pendiente'
+        );
 
+        this.postulacionesAceptadas = lista.filter(
+          post => post.tipoSolicitud === 'postulacion' && post.estado === 'aceptado'
+        );
 
-        console.log("Postulaciones:", this.postulaciones);
-        console.log("Ofertas:", this.ofertas);
+        this.ofertasPendientes = lista.filter(
+          post => post.tipoSolicitud === 'oferta' && post.estado === 'pendiente'
+        );
+
+        this.ofertasAceptadas = lista.filter(
+          post => post.tipoSolicitud === 'oferta' && post.estado === 'aceptado'
+        );
       },
       error: (err) => console.error('Error cargando solicitudes:', err)
     });
   }
 
-  respuestaSolicitud(postulacion: Postulacion, estado: 'aceptado' | 'rechazado'): void {
-    if (estado === 'aceptado') {
-      this.eventosService.aceptarPostulacion(postulacion.id).subscribe({
-        next: () => {
-          postulacion.estado = 'aceptado'; // Actualiza el estado localmente
-          alert('Postulación aceptada exitosamente');
-        },
-        error: (err) => {
-          console.error('Error al aceptar la postulación', err);
-          alert('Ocurrió un error al aceptar la postulación');
-        }
-      });
-    } else if (estado === 'rechazado') {
-      this.postulacionService.actualizarEstadoSolicitud(postulacion.id, estado).subscribe({
-        next: () => {
-          postulacion.estado = 'rechazado'; // Actualiza el estado localmente
-          alert('Postulación rechazada exitosamente');
-        },
-        error: (err) => {
-          console.error('Error al rechazar la postulación', err);
-          alert('Ocurrió un error al rechazar la postulación');
-        }
-      });
-    }
-  }
+  respuestaSolicitud(post: Postulacion, estado: 'aceptado' | 'rechazado') {
+    this.postulacionService.actualizarEstadoSolicitud(post.id, estado)
+      .subscribe(() => {
+        post.estado = estado;
+        this.cargarSolicitudes();
 
+        // Si fue rechazado, se elimina de la vista actual
+        if (estado === 'rechazado') {
+          this.postulaciones = this.postulaciones.filter(p => p.id !== post.id);
+          this.ofertas = this.ofertas.filter(p => p.id !== post.id);
+        }
+      });
+  }
 }

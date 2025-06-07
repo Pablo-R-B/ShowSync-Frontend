@@ -5,6 +5,7 @@ import {EventosService} from '../../servicios/eventos.service';
 import {AuthService} from '../../servicios/auth.service';
 import {ArtistasService} from '../../servicios/artistas.service';
 import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -69,19 +70,25 @@ export class EventosComponent implements OnInit {
     );
   }
 
+  mostrarToast(tipo: 'success' | 'error', mensaje: string) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'center',
+      iconColor: 'white',
+      customClass: {
+        popup: 'colored-toast',
+      },
+      showConfirmButton: false,
+      timer: 1500,
+      timerProgressBar: true,
+    });
 
-  alerta = {
-    tipo: '' as'enviada' | 'noenviada',
-    mensaje:'',
-    visible:false
+    Toast.fire({
+      icon: tipo,
+      title: mensaje,
+    });
   }
 
-  private alertaSolicitud(tipo:'enviada' | 'noenviada', mensaje:string):  void{
-    this.alerta = {tipo, mensaje, visible:true}
-    setTimeout(()=>{
-      this.alerta.visible = false;
-    }, 5000);
-  }
 
   enviarOferta() {
     const fechaEvento = new Date(this.evento.fecha);
@@ -89,37 +96,33 @@ export class EventosComponent implements OnInit {
     hoy.setHours(0, 0, 0, 0);
 
     if (fechaEvento < hoy) {
-      this.alertaSolicitud('noenviada', 'No puedes postularte a un evento pasado.');
+      this.mostrarToast('error', 'No puedes postularte a un evento pasado.');
       return;
     }
 
-    this.postulacionService.nuevaSolicitud(this.idEvento, this.artistaId)
-      .subscribe({
-        next: response =>{
-          switch (response.status) {
-            case 201:
-              this.alertaSolicitud('enviada', '¡Oferta enviada con éxito! 🎉');
-              break;
-            case 400:
-              this.alertaSolicitud('noenviada', 'Solicitud inválida. Revisa los datos.');
-              break;
-            case 409:
-              this.alertaSolicitud('noenviada', 'Ya existe una oferta/postulación previa.');
-              break;
-            default:
-              this.alertaSolicitud(
-                'noenviada',
-                `Respuesta inesperada: ${response.status}`
-              );
-              console.warn(`Status inesperado: ${response.status}`);
-          }
-        },
-        error: (err) => {
-          const status = err.status ?? 'desconocido';
-          const message = err.error?.message ?? 'Error desconocido';
-          console.error(`Error al enviar la oferta: ${message}`);
-          this.alertaSolicitud('noenviada', `Error en la solicitud ${message}`);
-        },
-      });
+    this.postulacionService.nuevaSolicitud(this.idEvento, this.artistaId).subscribe({
+      next: (response) => {
+        switch (response.status) {
+          case 201:
+            this.mostrarToast('success', '¡Oferta enviada con éxito! 🎉');
+            break;
+          case 400:
+            this.mostrarToast('error', 'Solicitud inválida. Revisa los datos.');
+            break;
+          case 409:
+            this.mostrarToast('error', 'Ya existe una oferta/postulación previa.');
+            break;
+          default:
+            this.mostrarToast('error', `Respuesta inesperada: ${response.status}`);
+            console.warn(`Status inesperado: ${response.status}`);
+        }
+      },
+      error: (err) => {
+        const mensaje = err.error?.message ?? 'Error desconocido';
+        console.error(`Error al enviar la oferta: ${mensaje}`);
+        this.mostrarToast('error', `Error en la solicitud: ${mensaje}`);
+      },
+    });
   }
+
 }
