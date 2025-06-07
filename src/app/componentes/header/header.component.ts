@@ -95,7 +95,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       case 'SALA':
         return '/perfil-salas';
       case 'ARTISTA':
-          return `/artista/${this.artistaId}`;
+          return `/admin-artista`;
 
       default:
         return '/auth/login';

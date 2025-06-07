@@ -8,6 +8,9 @@ import { Router } from '@angular/router';
 import { FileUploadModule } from 'primeng/fileupload';
 import { TokenPayload } from '../../interfaces/TokenPayload';
 
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+
 @Component({
   selector: 'app-registro-promotor',
   standalone: true,
@@ -16,8 +19,11 @@ import { TokenPayload } from '../../interfaces/TokenPayload';
     FormsModule,
     NgIf,
     NgClass,
-    FileUploadModule
+    FileUploadModule,
+    ToastModule
+
   ],
+  providers: [MessageService],
   templateUrl: './registro-promotor.component.html',
   styleUrl: './registro-promotor.component.css'
 })
@@ -28,13 +34,20 @@ export class RegistroPromotorComponent implements OnInit {
   successMessage = '';
   imagenPreview: string | ArrayBuffer | null = null;
   imagenArchivo: File | null = null;
+  isOpen = false;
+  cuentaAtrasModal = 5;
+  private modalCerradoCallback: (() => void) | null = null;
+
+
 
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private promotorService: PromotoresService,
-    protected router: Router
+    protected router: Router,
+    private messageService: MessageService
+
   ) {
     this.registroPromotorForm = this.fb.group({
       nombrePromotor: ['', [Validators.required, Validators.maxLength(100)]],
@@ -81,11 +94,42 @@ export class RegistroPromotorComponent implements OnInit {
     }
   }
 
-  onSubmit() {
-    if (!this.registroPromotorForm.valid) return;
+  abrirModalConCallback(callback: () => void) {
+    this.isOpen = true;
+    this.modalCerradoCallback = callback;
+    this.startCountdown(); // cuenta regresiva de cierre automático
+  }
 
-    // Validar imagen solo si es nuevo registro
+  closeModal() {
+    this.isOpen = false;
+    this.cuentaAtrasModal = 5;
+
+    if (this.modalCerradoCallback) {
+      this.modalCerradoCallback(); // ejecutar la acción pendiente
+      this.modalCerradoCallback = null;
+    }
+  }
+
+  startCountdown() {
+    const interval = setInterval(() => {
+      this.cuentaAtrasModal--;
+      if (this.cuentaAtrasModal <= 0) {
+        clearInterval(interval);
+        this.closeModal(); // cierra modal automáticamente
+      }
+    }, 1000);
+  }
+
+
+  onSubmit() {
+    if (!this.registroPromotorForm.valid) {
+      this.markAllAsTouched();
+      this.messageService.add({severity:'warn', summary:'Formulario inválido', detail:'Por favor completa todos los campos obligatorios.'});
+      return;
+    }
+
     if (!this.perfilCompleto && !this.imagenArchivo) {
+      this.messageService.add({severity:'warn', summary:'Imagen requerida', detail:'La imagen de perfil es obligatoria para registrarse.'});
       return;
     }
 
@@ -105,17 +149,21 @@ export class RegistroPromotorComponent implements OnInit {
 
     this.promotorService.guardarPerfilPromotor(usuarioId, formData).subscribe({
       next: (res) => {
-        this.successMessage = this.perfilCompleto ? 'Cambios guardados correctamente.' : res.mensaje;
         this.loading = false;
+        const msg = this.perfilCompleto ? 'Cambios guardados correctamente.' : res.mensaje || 'Registro exitoso.';
+        this.messageService.add({severity:'success', summary:'Éxito', detail: msg});
 
         if (!this.perfilCompleto) {
-          localStorage.clear();
-          this.router.navigate(['/auth/login']);
+          this.abrirModalConCallback(() => {
+            localStorage.clear();
+            this.router.navigate(['/auth/login']);
+          });
         }
       },
       error: (err) => {
         console.error('Error al enviar perfil:', err);
         this.loading = false;
+        this.messageService.add({severity:'error', summary:'Error', detail:'Error al guardar el perfil. Inténtalo de nuevo.'});
       }
     });
   }
@@ -124,5 +172,11 @@ export class RegistroPromotorComponent implements OnInit {
   formularioModificado(): boolean {
     return this.registroPromotorForm.dirty || !!this.imagenArchivo;
   }
+
+  private markAllAsTouched() {
+    Object.values(this.registroPromotorForm.controls).forEach(control => control.markAsTouched());
+  }
+
+
 
 }

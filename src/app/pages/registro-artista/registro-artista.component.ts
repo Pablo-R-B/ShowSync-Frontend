@@ -9,10 +9,14 @@ import {Router} from '@angular/router';
 import {GenerosMusicalesService} from '../../servicios/generos-musicales.service';
 import {GeneroMusical} from '../../interfaces/GeneroMusical';
 import {FileUploadModule} from 'primeng/fileupload';
+import {ToastModule} from 'primeng/toast';
+import {MessageService} from 'primeng/api';
+
 
 
 @Component({
   selector: 'app-registro-artista',
+  providers: [MessageService],
   imports: [
     ReactiveFormsModule,
     NgIf,
@@ -20,7 +24,9 @@ import {FileUploadModule} from 'primeng/fileupload';
     ReactiveFormsModule,
     NgForOf,
     FileUploadModule,
-    NgClass
+    NgClass,
+    ToastModule,
+
   ],
   templateUrl: './registro-artista.component.html',
   standalone: true,
@@ -40,19 +46,25 @@ export class RegistroArtistaComponent implements OnInit {
   originalFormValue: any;
   originalImagenPreview: string | ArrayBuffer | null = null;
 
+  isOpen = false;
+  cuentaAtrasModal = 5;
+  private modalCerradoCallback: (() => void) | null = null;
+
 
 
 
 
 
   constructor(private fb: FormBuilder, private artistaService: ArtistasService, private authService: AuthService,
-              protected router: Router, private generosService: GenerosMusicalesService) {
+              protected router: Router, private generosService: GenerosMusicalesService,   private messageService: MessageService
+  ) {
     this.registroArtistaForm = this.fb.group({
       nombreArtista: ['', [Validators.required, Validators.maxLength(100)]],
       biografia: [''],
-      musicUrl: [''],
+      musicUrl: ['', [Validators.pattern('https?://.+')]],
       imagenPerfil: [''],
-      generosMusicales: this.fb.array([], Validators.required)
+      generosMusicales: this.fb.array([], Validators.required),
+
     });
   }
 
@@ -108,6 +120,33 @@ export class RegistroArtistaComponent implements OnInit {
     return control ? control.hasError(errorCode) && control.touched : false;
   }
 
+  abrirModalConCallback(callback: () => void) {
+    this.isOpen = true;
+    this.modalCerradoCallback = callback;
+    this.startCountdown(); // cuenta regresiva de cierre automático
+  }
+
+  closeModal() {
+    this.isOpen = false;
+    this.cuentaAtrasModal = 5;
+
+    if (this.modalCerradoCallback) {
+      this.modalCerradoCallback(); // ejecutar la acción pendiente
+      this.modalCerradoCallback = null;
+    }
+  }
+
+  startCountdown() {
+    const interval = setInterval(() => {
+      this.cuentaAtrasModal--;
+      if (this.cuentaAtrasModal <= 0) {
+        clearInterval(interval);
+        this.closeModal(); // cierra modal automáticamente
+      }
+    }, 1000);
+  }
+
+
   onSubmit() {
     if (this.registroArtistaForm.valid) {
       this.loading = true;
@@ -124,30 +163,51 @@ export class RegistroArtistaComponent implements OnInit {
 
       formData.append('artista', new Blob([JSON.stringify(artistaPayload)], { type: 'application/json' }));
 
+      if (!this.imagenSeleccionada && this.imagenPreview && typeof this.imagenPreview === 'string') {
+        (artistaPayload as any)['imagenPerfil'] = this.imagenPreview;
+      }
+
+      formData.append('artista', new Blob([JSON.stringify(artistaPayload)], { type: 'application/json' }));
+
       if (this.imagenSeleccionada) {
         formData.append('imagenArchivo', this.imagenSeleccionada);
-      } else if (this.imagenPreview && typeof this.imagenPreview === 'string') {
-        // Reenviamos la imagen original si no se seleccionó otra
-        (artistaPayload as any)['imagenPerfil'] = this.imagenPreview;      }
+      }
 
 
       this.artistaService.guardarPerfilArtista(usuarioId, formData).subscribe({
         next: (response) => {
-          this.successMessage = response.mensaje;
           this.loading = false;
+
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: response.mensaje || 'Perfil guardado correctamente',
+            life: 3000,
+          });
+
           if (this.esEdicion) {
-            alert('Perfil actualizado correctamente');
-            this.router.navigate(['/perfil']);
+            setTimeout(() => this.router.navigate(['/perfil']), 3000);
           } else {
-            localStorage.clear();
-            this.router.navigate(['/auth/login']);
+            this.abrirModalConCallback(() => {
+              localStorage.clear();
+              this.router.navigate(['/auth/login']);
+            });
           }
         },
         error: (error) => {
-          console.error('Error al enviar perfil:', error);
           this.loading = false;
+
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error?.mensaje || 'Hubo un problema al guardar el perfil',
+            life: 4000,
+          });
+
+          console.error('Error al enviar perfil:', error);
         }
       });
+
     } else {
       this.registroArtistaForm.markAllAsTouched();
       console.log('Formulario inválido');
@@ -189,16 +249,28 @@ export class RegistroArtistaComponent implements OnInit {
   }
 
   formularioModificado(): boolean {
-    const currentValue = this.registroArtistaForm.getRawValue();
-
-    // Comparamos campos simples
-    const formChanged = JSON.stringify(currentValue) !== JSON.stringify(this.originalFormValue);
-
-    // Comparamos imagen
-    const imagenChanged = this.imagenSeleccionada !== null;
-
-    return formChanged || imagenChanged;
+    return JSON.stringify(this.registroArtistaForm.getRawValue()) !== JSON.stringify(this.originalFormValue)
+      || this.imagenPreview !== this.originalImagenPreview;
   }
+
+
+puedeGuardar(): boolean {
+  if (this.loading) return false;
+  if (this.registroArtistaForm.invalid) return false;
+
+  const { nombreArtista, biografia, musicUrl, generosMusicales } = this.registroArtistaForm.value;
+
+  if (!nombreArtista || !biografia || !musicUrl || generosMusicales.length === 0) {
+    return false;
+  }
+
+  if (this.perfilCompleto) {
+    return this.formularioModificado() || this.imagenSeleccionada !== null;
+  }
+
+  return this.imagenSeleccionada !== null;
+}
+
 
 
 

@@ -60,23 +60,6 @@
       Postularse
     </button>
   </div>
-
-  <!-- Mensajes de alerta -->
-  <div class="mt-12">
-    <div
-      *ngIf="alerta.visible && alerta.tipo === 'enviada'"
-      class="font-medium mb-4 block w-full rounded-lg bg-green-600 p-4 text-lg text-white shadow-md"
-    >
-      {{ alerta.mensaje }}
-    </div>
-
-    <div
-      *ngIf="alerta.visible && alerta.tipo === 'noenviada'"
-      class="font-medium mb-4 block w-full rounded-lg bg-red-600 p-4 text-lg text-white shadow-md"
-    >
-      {{ alerta.mensaje }}
-    </div>
-  </div>
 </div>
 
 <!-- Si no hay evento cargado, mostrar un mensaje de error o cargando -->
