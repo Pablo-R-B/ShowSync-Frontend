@@ -79,7 +79,7 @@ export class EventosComponent implements OnInit {
         popup: 'colored-toast',
       },
       showConfirmButton: false,
-      timer: 1500,
+      timer: 2000,
       timerProgressBar: true,
     });
 
@@ -91,6 +91,10 @@ export class EventosComponent implements OnInit {
 
 
   enviarOferta() {
+    if (this.authService.userRole === 'ADMINISTRADOR') {
+      this.mostrarToast('error', 'Como administrador no tienes acceso a esta función.');
+      return;
+    }
     const fechaEvento = new Date(this.evento.fecha);
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
