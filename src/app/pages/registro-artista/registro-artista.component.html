@@ -3,6 +3,8 @@
     <h2 class="font-medula text-white text-5xl mb-6 text-center">Datos Artista</h2>
     <hr class="border-gray-600 mb-6">
 
+    <p-toast></p-toast>
+
     <form [formGroup]="registroArtistaForm" (ngSubmit)="onSubmit()">
       <!-- Nombre del Promotor -->
       <div class="mb-4">
@@ -56,6 +58,10 @@
         />
       </div>
 
+      <div *ngIf="hasError('musicUrl', 'pattern')" class="text-red-500 text-sm">
+        La URL no es válida.
+      </div>
+
       <!-- Selección de Géneros Musicales -->
       <div class="mb-6">
         <label class="block text-white text-lg font-semibold mb-2">Géneros Musicales</label>
@@ -80,16 +86,12 @@
       <button
         type="submit"
         class="w-full bg-customGrisOscurso hover:bg-gray-500 text-white py-3 rounded-full text-lg font-semibold transition duration-300"
-        [disabled]="
-            loading ||
-            registroArtistaForm.invalid ||
-            (!perfilCompleto && !imagenSeleccionada) ||
-            (perfilCompleto && !formularioModificado())
-          "
+        [disabled]="!puedeGuardar()"
+
         [ngClass]="{
-    'cursor-not-allowed opacity-60': loading || registroArtistaForm.invalid || (!perfilCompleto && !imagenSeleccionada) || (perfilCompleto && !formularioModificado()),
-    'cursor-pointer': !registroArtistaForm.invalid && !loading && (imagenSeleccionada || !perfilCompleto || formularioModificado())
-  }"
+          'cursor-not-allowed opacity-60': loading || registroArtistaForm.invalid || (!perfilCompleto && !imagenSeleccionada) || (perfilCompleto && !formularioModificado()),
+          'cursor-pointer': !registroArtistaForm.invalid && !loading && (imagenSeleccionada || !perfilCompleto || formularioModificado())
+        }"
       >
         {{ loading ? 'Guardando...' : perfilCompleto ? 'Guardar Cambios' : 'Registrarse' }}
       </button>
