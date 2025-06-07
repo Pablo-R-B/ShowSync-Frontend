@@ -45,7 +45,7 @@
       <thead class="bg-gray-800">
       <tr>
         <th class="border border-gray-600 p-2 text-center">ID</th>
-        <th class="border border-gray-600 p-2 text-center">Nombre</th>
+        <th class="border border-gray-600 p-2 text-center">Usuario</th>
         <th class="border border-gray-600 p-2 text-center">Email</th>
         <th class="border border-gray-600 p-2 text-center">Rol</th>
         <th class="border border-gray-600 p-2 text-center">Verificado</th>
@@ -55,7 +55,23 @@
       <tbody>
       <tr *ngFor="let usuario of usuarios" class="hover:bg-gray-800/50">
         <td class="border border-gray-600 p-2">{{ usuario.id }}</td>
-        <td class="border border-gray-600 p-2">{{ usuario.nombreUsuario }}</td>
+        <td class="border border-gray-600 p-2">
+          <a
+            *ngIf="usuario.rol === 'ARTISTA'; else promotorLink"
+            [routerLink]="['/artista', usuario.id]"
+            class=" hover:underline hover:font-semibold"
+          >
+            {{ usuario.nombreUsuario }}
+          </a>
+          <ng-template #promotorLink>
+            <a
+              [routerLink]="['/promotores', usuario.id]"
+              class=" hover:underline hover:font-semibold"
+            >
+              {{ usuario.nombreUsuario }}
+            </a>
+          </ng-template>
+        </td>
         <td class="border border-gray-600 p-2">{{ usuario.email }}</td>
         <td class="border border-gray-600 p-2">{{ usuario.rol }}</td>
         <td class="border border-gray-600 p-2">{{ usuario.verificado ? 'Sí' : 'No' }}</td>
@@ -141,6 +157,7 @@
         </svg>
       </button>
     </nav>
+  </div>
   </div>
 
   <!-- Mensaje cuando no hay resultados -->

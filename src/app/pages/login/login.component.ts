@@ -134,7 +134,7 @@ export class LoginComponent implements OnInit {
         } else if (err.status === 0) {
           this.error = 'Error de conexión. Verifica tu conexión a internet.';
         } else {
-          this.error = 'Error del servidor. Por favor, inténtalo más tarde.';
+          this.error = 'Error del servidor. ¿Has verificado tu cuenta con el email de confirmación?';
         }
       }
     });
