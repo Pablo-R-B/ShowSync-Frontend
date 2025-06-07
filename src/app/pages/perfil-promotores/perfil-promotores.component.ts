@@ -21,7 +21,6 @@ import {FormsModule} from '@angular/forms';
     NgForOf,
     NgIf,
     DatePipe,
-    NgClass,
     FormsModule,
     SlicePipe
   ],
@@ -300,22 +299,20 @@ export class PerfilPromotoresComponent implements OnInit,AfterViewInit {
 
 
 
-  respuestaSolicitud(post: Postulacion, estado: 'aceptado' | 'rechazado') {
-    this.postulacionService.actualizarEstadoSolicitud(post.id, estado)
-      .subscribe(() => {
-
-        post.estado = estado;
-        this.cargarSolicitudes();
-
-        // Si fue rechazado, se elimina de la vista actual
-        if (estado === 'rechazado') {
-          this.postulaciones = this.postulaciones.filter(p => p.id !== post.id);
-          this.ofertas = this.ofertas.filter(p => p.id !== post.id);
+  respuestaSolicitud(postulacion: Postulacion, estado: 'aceptado' | 'rechazado'): void {
+    if (estado === 'aceptado') {
+      this.eventosService.aceptarPostulacion(postulacion.id).subscribe({
+        next: () => {
+          postulacion.estado = 'aceptado'; // Actualiza el estado localmente
+          alert('Postulación aceptada exitosamente');
+        },
+        error: (err) => {
+          console.error('Error al aceptar la postulación', err);
+          alert('Ocurrió un error al aceptar la postulación');
         }
       });
     } else if (estado === 'rechazado') {
       this.postulacionService.actualizarEstadoSolicitud(postulacion.id, estado).subscribe({
-
         next: () => {
           postulacion.estado = 'rechazado'; // Actualiza el estado localmente
           alert('Postulación rechazada exitosamente');
@@ -327,4 +324,7 @@ export class PerfilPromotoresComponent implements OnInit,AfterViewInit {
       });
     }
   }
+
+
 }
+
