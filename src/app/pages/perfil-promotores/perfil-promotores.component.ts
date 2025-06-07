@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
-import {DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
+import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {PromotoresService} from '../../servicios/promotores.service';
 import {EventoDTO} from '../../interfaces/EventoDTO';
 import {Promotor} from '../../interfaces/Promotor';
@@ -9,7 +9,6 @@ import {EventosService} from '../../servicios/eventos.service';
 import {Sala} from '../../interfaces/sala';
 import {Postulacion} from '../../interfaces/postulacion';
 import {AuthService} from '../../servicios/auth.service';
-import {ArtistasService} from '../../servicios/artistas.service';
 import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
 import {FormsModule} from '@angular/forms';
 
@@ -23,7 +22,6 @@ import {FormsModule} from '@angular/forms';
     NgIf,
     DatePipe,
     FormsModule,
-    NgClass
   ],
   providers: [DatePipe],
   templateUrl: './perfil-promotores.component.html',

@@ -254,17 +254,22 @@ export class RegistroArtistaComponent implements OnInit {
   }
 
 
+puedeGuardar(): boolean {
+  if (this.loading) return false;
+  if (this.registroArtistaForm.invalid) return false;
 
-  puedeGuardar(): boolean {
-    if (this.loading) return false;
-    if (this.registroArtistaForm.invalid) return false;
+  const { nombreArtista, biografia, musicUrl, generosMusicales } = this.registroArtistaForm.value;
 
-    if (this.perfilCompleto) {
-      return this.formularioModificado() || this.imagenSeleccionada !== null;
-    }
-
-    return this.registroArtistaForm.valid && this.imagenSeleccionada !== null;
+  if (!nombreArtista || !biografia || !musicUrl || generosMusicales.length === 0) {
+    return false;
   }
+
+  if (this.perfilCompleto) {
+    return this.formularioModificado() || this.imagenSeleccionada !== null;
+  }
+
+  return this.imagenSeleccionada !== null;
+}
 
 
 

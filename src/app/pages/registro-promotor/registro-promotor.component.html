@@ -60,7 +60,7 @@
           (!perfilCompleto && !imagenArchivo) ||
           (perfilCompleto && !formularioModificado())
         "
-        class="w-full bg-customGrisOscurso text-white py-3 rounded-full text-lg font-semibold transition hover:bg-gray-500"
+        class=" btn-registrarse w-full bg-customGrisOscurso text-white py-3 rounded-full text-lg font-semibold transition hover:bg-gray-500"
         [ngClass]="{
           'cursor-not-allowed opacity-60': loading || registroPromotorForm.invalid || (!perfilCompleto && !imagenArchivo) || (perfilCompleto && !formularioModificado()),
           'cursor-pointer': !registroPromotorForm.invalid && !loading && (imagenArchivo || !perfilCompleto || formularioModificado())
