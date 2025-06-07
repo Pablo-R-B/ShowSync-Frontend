@@ -5,7 +5,7 @@ import {EstadoService} from '../../servicios/estado.service';
 import {EventosService} from '../../servicios/eventos.service';
 import {SalasService} from '../../servicios/salas.service';
 import {ActivatedRoute} from '@angular/router';
-import {EventoBackendDTO} from '../../interfaces/EventoBackendDTO'
+import {EventoBackend} from '../../interfaces/EventoBackend'
 
 
 @Component({
@@ -89,7 +89,7 @@ export class ConfirmarEventosComponent implements OnInit{
 
       const formData = this.editarEventoForm.value;
 
-      const eventoActualizar: EventoBackendDTO = {
+      const eventoActualizar: EventoBackend = {
         nombre_evento: formData.nombreEvento,
         descripcion: formData.descripcion,
         sala: { id: Number(formData.salaId) },

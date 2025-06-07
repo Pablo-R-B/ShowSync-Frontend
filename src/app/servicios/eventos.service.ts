@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {Evento} from '../interfaces/Evento';
 import {EventoCreacion} from '../interfaces/eventoCreacion';
-import {EventoBackendDTO} from '../interfaces/EventoBackendDTO';
+import {EventoBackend} from '../interfaces/EventoBackend';
 import {EventoActualizado} from '../interfaces/EventoActualizado';
 
 
@@ -59,13 +59,14 @@ export class EventosService {
   }
 
   // Editar un evento de un promotor
-  editarEvento(promotorId: number, eventoId: number, evento: EventoBackendDTO): Observable<Evento> {
+  editarEvento(promotorId: number, eventoId: number, evento: EventoBackend): Observable<Evento> {
     return this.http.put<Evento>(`${this.apiUrl}/eventos/promotor/${promotorId}/evento/${eventoId}`, evento);
   }
 
   // Actualizar un evento existente
-  actualizarEvento(idPromotor: number, idEvento: number, evento: EventoActualizado): Observable<any> {
-    return this.http.put(`${this.apiUrl}/eventos/promotores/${idPromotor}/eventos/${idEvento}/editar`, evento);
+  actualizarEvento(promotorId: number, idEvento: number, formData: FormData): Observable<any> {
+    const url = `${this.apiUrl}/promotores/${promotorId}/eventos/${idEvento}`;
+    return this.http.put(url, formData);
   }
 
 
@@ -109,6 +110,8 @@ export class EventosService {
   return this.http.get<Evento[]>(`${this.apiUrl}/eventos/promotor/${promotorId}`);
 }
 
+
+
   crearEventoEnRevision(evento: FormData): Observable<any> {
     const token = localStorage.getItem('token'); // o donde lo guardes
     return this.http.post(`${this.apiUrl}/eventos/reserva/sala`, evento, {
@@ -125,6 +128,11 @@ export class EventosService {
 
   confirmarEvento(id: number): Observable<void> {
     return this.http.patch<void>(`${this.apiUrl}/eventos/confirmar/${id}`, {});
+  }
+
+  // Obtener detalles de un evento para edición
+  obtenerEventoDetalleParaEdicion(idEvento: number): Observable<EventoActualizado> {
+    return this.http.get<EventoActualizado>(`${this.apiUrl}/eventos/detalle-edicion/${idEvento}`);
   }
 
   // Obtener eventos paginados

@@ -1,4 +1,4 @@
-export interface EventoBackendDTO {
+export interface EventoBackend {
   nombre_evento: string;
   descripcion: string;
   sala: { id: number };
