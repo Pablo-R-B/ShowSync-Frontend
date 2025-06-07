@@ -178,6 +178,16 @@ export class PerfilSalaComponent implements OnInit {
       return;
     }
 
+    if (this.authService.userRole === 'ADMINISTRADOR') {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Acceso denegado',
+        detail: 'Como administrador no tienes acceso a esta función',
+        life: 5000
+      });
+      return;
+    }
+
     const estaDisponible = this.disponibilidadMap.get(fecha);
     if (estaDisponible === false) {
       this.messageService.add({ severity: 'warn', summary: 'Fecha no disponible', detail: 'No disponible' });
