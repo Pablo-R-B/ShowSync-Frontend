@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
-import {DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
+import {DatePipe, NgClass, NgForOf, NgIf, SlicePipe} from '@angular/common';
 import {PromotoresService} from '../../servicios/promotores.service';
 import {EventoDTO} from '../../interfaces/EventoDTO';
 import {Promotor} from '../../interfaces/Promotor';
@@ -23,26 +23,46 @@ import {FormsModule} from '@angular/forms';
     NgIf,
     DatePipe,
     NgClass,
-    FormsModule
+    FormsModule,
+    SlicePipe
   ],
   providers: [DatePipe],
   templateUrl: './perfil-promotores.component.html',
   styleUrls: ['./perfil-promotores.component.css']
 })
-export class PerfilPromotoresComponent implements OnInit {
+export class PerfilPromotoresComponent implements OnInit,AfterViewInit {
+
+
+
 
   promotor: Promotor | null = null;
   logoUrl: string = '../../../assets/images/logo_1.png';
   salas: Sala[] = [];
   eventos: EventoDTO[] = [];
+  eventosConfirmados: EventoDTO[] = []; // Filtered confirmed events
+  eventosEnRevision: EventoDTO[] = []; // Filtered 'En Revisión' events
   eventoDestacado?: EventoDTO;
   eventosProximos: Array<{ fecha: string; lugar: string; nombre: string }> = [];
+
+
+
 
   idUsuario!: number;
   idPromotor!: number;
   postulaciones: Postulacion[] = [];
   ofertas: Postulacion[] = [];
   usuarioRol!:string | null;
+
+
+
+
+  selectedTab: 'Confirmado' | 'En Revisión' = 'Confirmado';
+
+
+
+
+
+
 
 
   constructor(
@@ -53,18 +73,26 @@ export class PerfilPromotoresComponent implements OnInit {
     private authService: AuthService,
     private datePipe: DatePipe,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cd :ChangeDetectorRef
   ) {}
+
+
+
 
   ngOnInit(): void {
     this.obtenerPerfilUsuario();
     this.idUsuario = parseInt(localStorage.getItem('userId') ?? '0', 10);
     this.usuarioRol=this.authService.userRole;
 
+
+
+
     this.promotoresService.getPromotorPorIdUsuario(this.idUsuario).subscribe({
       next: (promotor) => {
         this.idPromotor = promotor.id;
         this.cargarSolicitudes();
+        this.cd.detectChanges();
       },
       error: (err) => {
         console.error('Error al obtener el promotor:', err);
@@ -72,11 +100,24 @@ export class PerfilPromotoresComponent implements OnInit {
     });
   }
 
+
+
+
+  ngAfterViewInit(): void {
+    this.cd.detectChanges();
+  }
+
+
+
+
   private obtenerPerfilUsuario(): void {
     this.promotoresService.getPerfilUsuario().subscribe({
       next: (perfilUsuario) => {
         const idUsuario = perfilUsuario.id;
         console.log('ID del usuario autenticado:', idUsuario);
+
+
+
 
         this.promotoresService.getPromotorPorIdUsuario(idUsuario).subscribe({
           next: (data: Promotor) => {
@@ -86,19 +127,23 @@ export class PerfilPromotoresComponent implements OnInit {
             this.idPromotor = data.id;
             this.obtenerEventos();
             this.cargarSalas();
+            this.cd.detectChanges();
           },
           error: (err) => {
             console.error('Error al obtener datos del promotor', err);
-            this.router.navigate(['/login']);
+
           }
         });
       },
       error: (err) => {
         console.error('Error al obtener perfil del usuario', err);
-        this.router.navigate(['/login']);
+
       }
     });
   }
+
+
+
 
   editarMiPerfil(): void {
     // Aquí defines lo que quieres que haga el botón
@@ -108,19 +153,46 @@ export class PerfilPromotoresComponent implements OnInit {
 
 
 
+
+
+
+
+
+
+
+
+
   private obtenerEventos() {
     if (!this.idPromotor) return;
 
+
+
+
     const hoy = new Date();
+
+
+
 
     this.promotoresService.cargarEventosDePromotor(this.idPromotor)
       .subscribe({
         next: (data) => {
-          this.eventos = data;
-          if (data.length > 0) {
-            this.eventoDestacado = data[0];
+          this.eventos = data; // Assign all events first
+          this.filterEventsByStatus(); // Always filter after loading all events
+
+
+
+
+          // Now, set eventoDestacado based on the ALL events, if any
+          if (this.eventos.length > 0) {
+            this.eventoDestacado = this.eventos[0];
+          } else {
+            this.eventoDestacado = undefined; // Clear if no events
           }
 
+
+
+
+          // Filter for upcoming events (this part was already fine)
           this.eventosProximos = data
             .filter(e => new Date(e.fechaEvento) > hoy)
             .map(e => ({
@@ -133,9 +205,38 @@ export class PerfilPromotoresComponent implements OnInit {
       });
   }
 
+
+
+
+  // New method to filter events by status
+  filterEventsByStatus(): void {
+    this.eventosConfirmados = this.eventos.filter(evento => evento.estado === 'confirmado');
+    this.eventosEnRevision = this.eventos.filter(evento => evento.estado === 'en_revision')
+
+
+
+
+  }
+
+
+
+
+  // New method to change the selected tab
+  selectTab(tab: 'Confirmado' | 'En Revisión'): void {
+    console.log('Cambiando a la pestaña:', tab);
+    this.selectedTab = tab;
+    this.cd.detectChanges();
+  }
+
+
+
+
   editarEvento(evento: EventoDTO): void {
     this.router.navigate(['/eventos/editar', evento.id]);
   }
+
+
+
 
   eliminarEvento(eventoId: number): void {
     if (!this.promotor) {
@@ -143,9 +244,15 @@ export class PerfilPromotoresComponent implements OnInit {
       return;
     }
 
+
+
+
     if (!confirm('¿Seguro que deseas eliminar este evento?')) {
       return;
     }
+
+
+
 
     this.eventosService.eliminarEvento(this.promotor.id, eventoId)
       .subscribe({
@@ -158,8 +265,34 @@ export class PerfilPromotoresComponent implements OnInit {
   }
 
 
+
+
+  confirmarEvento(eventoId: number): void {
+    if (!this.promotor) {
+      console.error('No hay promotor cargado para confirmar el evento');
+      return;
+    }
+
+
+    this.eventosService.confirmarEvento(eventoId).subscribe({
+      next: () => {
+        alert('Evento confirmado correctamente');
+        this.obtenerEventos(); // Refrescar la lista para actualizar el estado
+      },
+      error: (err) => console.error('Error al confirmar evento', err)
+    });
+  }
+
+
+
+
+
+
   cargarSalas(): void {
     if (!this.promotor?.id) return;
+
+
+
 
     this.salasService.obtenerTodas()
       .subscribe({
@@ -173,27 +306,11 @@ export class PerfilPromotoresComponent implements OnInit {
       });
   }
 
-  confirmarSala(salaId: number): void {
-    this.salasService.confirmarSala(salaId)
-      .subscribe({
-        next: () => {
-          alert('Sala confirmada correctamente');
-          this.cargarSalas(); // refrescar listado tras confirmar
-        },
-        error: (err) => console.error('Error al confirmar sala', err)
-      });
-  }
 
-  rechazarSala(salaId: number): void {
-    this.salasService.rechazarSala(salaId)
-      .subscribe({
-        next: () => {
-          alert('Sala rechazada correctamente');
-          this.cargarSalas(); // refrescar listado tras rechazar
-        },
-        error: (err: any) => console.error('Error al rechazar sala', err)
-      });
-  }
+
+
+
+
 
 
   cargarSolicitudes() {
@@ -201,9 +318,19 @@ export class PerfilPromotoresComponent implements OnInit {
       next: (lista) => {
         console.log("Lista completa:", lista);
 
+
+
+
         // Separando solicitudes según el tipo
-        this.postulaciones = lista.filter(post => post.tipoSolicitud === 'postulacion');
-        this.ofertas = lista.filter(post => post.tipoSolicitud === 'oferta');
+        this.postulaciones = lista.filter(post => post.tipoSolicitud === 'postulacion' && post.estado !== 'rechazado');
+        this.ofertas = lista.filter(post => post.tipoSolicitud === 'oferta' && post.estado !== 'rechazado');
+
+
+
+
+
+
+
 
         console.log("Postulaciones:", this.postulaciones);
         console.log("Ofertas:", this.ofertas);
@@ -212,9 +339,13 @@ export class PerfilPromotoresComponent implements OnInit {
     });
   }
 
+
+
+
   respuestaSolicitud(postulacion: Postulacion, estado: 'aceptado' | 'rechazado'): void {
     if (estado === 'aceptado') {
       this.eventosService.aceptarPostulacion(postulacion.id).subscribe({
+
         next: () => {
           postulacion.estado = 'aceptado'; // Actualiza el estado localmente
           alert('Postulación aceptada exitosamente');
@@ -226,6 +357,7 @@ export class PerfilPromotoresComponent implements OnInit {
       });
     } else if (estado === 'rechazado') {
       this.postulacionService.actualizarEstadoSolicitud(postulacion.id, estado).subscribe({
+
         next: () => {
           postulacion.estado = 'rechazado'; // Actualiza el estado localmente
           alert('Postulación rechazada exitosamente');
@@ -237,5 +369,8 @@ export class PerfilPromotoresComponent implements OnInit {
       });
     }
   }
+
+
+
 
 }
