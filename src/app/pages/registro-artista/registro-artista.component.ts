@@ -40,6 +40,10 @@ export class RegistroArtistaComponent implements OnInit {
   originalFormValue: any;
   originalImagenPreview: string | ArrayBuffer | null = null;
 
+  isOpen = false;
+  cuentaAtrasModal = 5;
+  private modalCerradoCallback: (() => void) | null = null;
+
 
 
 
@@ -108,6 +112,33 @@ export class RegistroArtistaComponent implements OnInit {
     return control ? control.hasError(errorCode) && control.touched : false;
   }
 
+  abrirModalConCallback(callback: () => void) {
+    this.isOpen = true;
+    this.modalCerradoCallback = callback;
+    this.startCountdown(); // cuenta regresiva de cierre automático
+  }
+
+  closeModal() {
+    this.isOpen = false;
+    this.cuentaAtrasModal = 5;
+
+    if (this.modalCerradoCallback) {
+      this.modalCerradoCallback(); // ejecutar la acción pendiente
+      this.modalCerradoCallback = null;
+    }
+  }
+
+  startCountdown() {
+    const interval = setInterval(() => {
+      this.cuentaAtrasModal--;
+      if (this.cuentaAtrasModal <= 0) {
+        clearInterval(interval);
+        this.closeModal(); // cierra modal automáticamente
+      }
+    }, 1000);
+  }
+
+
   onSubmit() {
     if (this.registroArtistaForm.valid) {
       this.loading = true;
@@ -139,8 +170,10 @@ export class RegistroArtistaComponent implements OnInit {
             alert('Perfil actualizado correctamente');
             this.router.navigate(['/perfil']);
           } else {
-            localStorage.clear();
-            this.router.navigate(['/auth/login']);
+            this.abrirModalConCallback(() => {
+              localStorage.clear();
+              this.router.navigate(['/auth/login']);
+            });
           }
         },
         error: (error) => {

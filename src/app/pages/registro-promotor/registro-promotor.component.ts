@@ -28,6 +28,11 @@ export class RegistroPromotorComponent implements OnInit {
   successMessage = '';
   imagenPreview: string | ArrayBuffer | null = null;
   imagenArchivo: File | null = null;
+  isOpen = false;
+  cuentaAtrasModal = 5;
+  private modalCerradoCallback: (() => void) | null = null;
+
+
 
 
   constructor(
@@ -81,6 +86,33 @@ export class RegistroPromotorComponent implements OnInit {
     }
   }
 
+  abrirModalConCallback(callback: () => void) {
+    this.isOpen = true;
+    this.modalCerradoCallback = callback;
+    this.startCountdown(); // cuenta regresiva de cierre automático
+  }
+
+  closeModal() {
+    this.isOpen = false;
+    this.cuentaAtrasModal = 5;
+
+    if (this.modalCerradoCallback) {
+      this.modalCerradoCallback(); // ejecutar la acción pendiente
+      this.modalCerradoCallback = null;
+    }
+  }
+
+  startCountdown() {
+    const interval = setInterval(() => {
+      this.cuentaAtrasModal--;
+      if (this.cuentaAtrasModal <= 0) {
+        clearInterval(interval);
+        this.closeModal(); // cierra modal automáticamente
+      }
+    }, 1000);
+  }
+
+
   onSubmit() {
     if (!this.registroPromotorForm.valid) return;
 
@@ -109,8 +141,11 @@ export class RegistroPromotorComponent implements OnInit {
         this.loading = false;
 
         if (!this.perfilCompleto) {
-          localStorage.clear();
-          this.router.navigate(['/auth/login']);
+          // Abre modal y espera a que se cierre para continuar
+          this.abrirModalConCallback(() => {
+            localStorage.clear();
+            this.router.navigate(['/auth/login']);
+          });
         }
       },
       error: (err) => {
@@ -124,5 +159,7 @@ export class RegistroPromotorComponent implements OnInit {
   formularioModificado(): boolean {
     return this.registroPromotorForm.dirty || !!this.imagenArchivo;
   }
+
+
 
 }

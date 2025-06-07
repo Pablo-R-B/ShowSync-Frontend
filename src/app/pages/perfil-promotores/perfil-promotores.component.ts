@@ -42,6 +42,11 @@ export class PerfilPromotoresComponent implements OnInit {
   idPromotor!: number;
   postulaciones: Postulacion[] = [];
   ofertas: Postulacion[] = [];
+  postulacionesPendientes: Postulacion[] = [];
+  postulacionesAceptadas: Postulacion[] = [];
+  ofertasPendientes: Postulacion[] = [];
+  ofertasAceptadas: Postulacion[] = [];
+
   usuarioRol!:string | null;
 
 
@@ -202,12 +207,21 @@ export class PerfilPromotoresComponent implements OnInit {
         console.log("Lista completa:", lista);
 
         // Separando solicitudes según el tipo
-        this.postulaciones = lista.filter(post => post.tipoSolicitud === 'postulacion' && post.estado !== 'rechazado');
-        this.ofertas = lista.filter(post => post.tipoSolicitud === 'oferta' && post.estado !== 'rechazado');
+        this.postulacionesPendientes = lista.filter(
+          post => post.tipoSolicitud === 'postulacion' && post.estado === 'pendiente'
+        );
 
+        this.postulacionesAceptadas = lista.filter(
+          post => post.tipoSolicitud === 'postulacion' && post.estado === 'aceptado'
+        );
 
-        console.log("Postulaciones:", this.postulaciones);
-        console.log("Ofertas:", this.ofertas);
+        this.ofertasPendientes = lista.filter(
+          post => post.tipoSolicitud === 'oferta' && post.estado === 'pendiente'
+        );
+
+        this.ofertasAceptadas = lista.filter(
+          post => post.tipoSolicitud === 'oferta' && post.estado === 'aceptado'
+        );
       },
       error: (err) => console.error('Error cargando solicitudes:', err)
     });
@@ -217,6 +231,7 @@ export class PerfilPromotoresComponent implements OnInit {
     this.postulacionService.actualizarEstadoSolicitud(post.id, estado)
       .subscribe(() => {
         post.estado = estado;
+        this.cargarSolicitudes();
 
         // Si fue rechazado, se elimina de la vista actual
         if (estado === 'rechazado') {

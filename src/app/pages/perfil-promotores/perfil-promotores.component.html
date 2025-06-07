@@ -194,6 +194,154 @@
       SALAS<i class="fas fa-book ml-2"></i>
     </button>
   </div>
+  <section class="grid place-items-center gap-6 p-6">
+
+    <!-- Fila 1: Postulaciones -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-6xl">
+
+      <!-- Postulaciones Pendientes -->
+<!--      <label class="w-full">-->
+<!--        <input class="peer/showLabel absolute scale-0" type="checkbox" />-->
+<!--        <span class="block max-h-14 overflow-hidden rounded-lg bg-emerald-100 px-4 py-0 text-cyan-800 shadow-lg transition-all duration-300 peer-checked/showLabel:max-h-[1000px]">-->
+<!--        <h3 class="flex h-14 cursor-pointer items-center font-bold px-4">🎤 Postulaciones Pendientes</h3>-->
+<!--        <div *ngIf="postulacionesPendientes.length > 0; else noPostPend" class="grid gap-4 p-4">-->
+<!--          <div *ngFor="let post of postulacionesPendientes" class="flex gap-4 p-4 bg-white rounded-xl shadow-md max-h-[500px] overflow-y-auto">-->
+<!--            <img [src]="post.eventoImagen" alt="Evento" class="w-24 h-24 object-cover rounded-lg" />-->
+<!--            <div>-->
+<!--              <h4 class="font-bold text-lg">{{ post.eventoNombre }}</h4>-->
+<!--              <p><span class="font-semibold">Artista:</span> {{ post.artistaNombre }}</p>-->
+<!--              <p><span class="font-semibold">Sala:</span> {{ post.salaNombre }}</p>-->
+<!--              <p><span class="font-semibold">Fecha Postulación:</span> {{ post.fechaPostulacion | date }}</p>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <ng-template #noPostPend><p class="px-4 py-2 text-sm italic">No hay postulaciones pendientes.</p></ng-template>-->
+<!--      </span>-->
+<!--      </label>-->
+
+      <label class="w-full">
+        <input class="peer/showLabel absolute scale-0" type="checkbox" />
+        <span
+          class="block max-h-14 overflow-hidden rounded-lg bg-emerald-100 px-4 py-0 text-cyan-800 shadow-lg transition-all duration-300 peer-checked/showLabel:max-h-[600px]">
+
+    <h3 class="flex h-14 cursor-pointer items-center font-bold px-4">
+      🎤 Postulaciones Pendientes
+    </h3>
+
+          <!-- Contenido con scroll interno -->
+    <div class="max-h-[500px] overflow-y-auto" *ngIf="postulacionesPendientes.length > 0; else noPostPend">
+      <div class="grid gap-4 p-4">
+
+        <div *ngFor="let post of postulacionesPendientes"
+             class="flex flex-col md:flex-row gap-4 p-4 bg-white rounded-xl shadow-md items-start md:items-center">
+
+          <img [src]="post.eventoImagen" alt="Evento"
+               class="w-24 h-24 object-cover rounded-lg shrink-0" />
+
+          <div class="flex-1">
+            <h4 class="font-bold text-lg">{{ post.eventoNombre }}</h4>
+            <p><span class="font-semibold">Artista:</span> {{ post.artistaNombre }}</p>
+            <p><span class="font-semibold">Sala:</span> {{ post.salaNombre }}</p>
+            <p><span class="font-semibold">Fecha Postulación:</span> {{ post.fechaPostulacion | date }}</p>
+
+            <!-- Botones de acción -->
+            <div class="flex gap-2 mt-3">
+              <button
+                *ngIf="post.estado === 'pendiente'"
+                class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-full font-semibold"
+                (click)="respuestaSolicitud(post, 'aceptado')">
+                Aceptar
+              </button>
+              <button
+                *ngIf="post.estado === 'pendiente'"
+                class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-full font-semibold"
+                (click)="respuestaSolicitud(post, 'rechazado')">
+                Rechazar
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <ng-template #noPostPend>
+      <p class="px-4 py-2 text-sm italic">No hay postulaciones pendientes.</p>
+    </ng-template>
+  </span>
+      </label>
+
+
+      <!-- Postulaciones Aceptadas -->
+      <label class="w-full">
+        <input class="peer/showLabel absolute scale-0" type="checkbox" />
+        <span class="block max-h-14 overflow-hidden rounded-lg bg-green-100 px-4 py-0 text-green-800 shadow-lg transition-all duration-300 peer-checked/showLabel:max-h-[1000px]">
+        <h3 class="flex h-14 cursor-pointer items-center font-bold px-4">✅ Postulaciones Aceptadas</h3>
+        <div *ngIf="postulacionesAceptadas.length > 0; else noPostAcept" class="grid gap-4 p-4 max-h-[500px] overflow-y-auto">
+          <div *ngFor="let post of postulacionesAceptadas" class="flex gap-4 p-4 bg-white rounded-xl shadow-md max-h-[500px] overflow-y-auto">
+            <img [src]="post.eventoImagen" alt="Evento" class="w-24 h-24 object-cover rounded-lg" />
+            <div>
+              <h4 class="font-bold text-lg">{{ post.eventoNombre }}</h4>
+              <p><span class="font-semibold">Artista:</span> {{ post.artistaNombre }}</p>
+              <p><span class="font-semibold">Sala:</span> {{ post.salaNombre }}</p>
+              <p><span class="font-semibold">Fecha Postulación:</span> {{ post.fechaPostulacion | date }}</p>
+            </div>
+          </div>
+        </div>
+        <ng-template #noPostAcept><p class="px-4 py-2 text-sm italic">No hay postulaciones aceptadas.</p></ng-template>
+      </span>
+      </label>
+    </div>
+
+    <!-- Fila 2: Ofertas -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-6xl">
+
+      <!-- Ofertas Pendientes -->
+      <label class="w-full">
+        <input class="peer/showLabel absolute scale-0" type="checkbox" />
+        <span class="block max-h-14 overflow-hidden rounded-lg bg-yellow-100 px-4 py-0 text-yellow-800 shadow-lg transition-all duration-300 peer-checked/showLabel:max-h-[1000px]">
+        <h3 class="flex h-14 cursor-pointer items-center font-bold px-4">📨 Ofertas Pendientes</h3>
+        <div *ngIf="ofertasPendientes.length > 0; else noOfertasPend" class="grid gap-4 p-4 max-h-[500px] overflow-y-auto">
+          <div *ngFor="let oferta of ofertasPendientes" class="flex gap-4 p-4 bg-white rounded-xl shadow-md">
+            <img [src]="oferta.eventoImagen" alt="Evento" class="w-24 h-24 object-cover rounded-lg" />
+            <div>
+              <h4 class="font-bold text-lg">{{ oferta.eventoNombre }}</h4>
+              <p><span class="font-semibold">Artista:</span> {{ oferta.artistaNombre }}</p>
+              <p><span class="font-semibold">Sala:</span> {{ oferta.salaNombre }}</p>
+              <p><span class="font-semibold">Fecha Postulación:</span> {{ oferta.fechaPostulacion | date }}</p>
+            </div>
+          </div>
+        </div>
+        <ng-template #noOfertasPend><p class="px-4 py-2 text-sm italic">No hay ofertas pendientes.</p></ng-template>
+      </span>
+      </label>
+
+      <!-- Ofertas Aceptadas -->
+      <label class="w-full">
+        <input class="peer/showLabel absolute scale-0" type="checkbox" />
+        <span class="block max-h-14 overflow-hidden rounded-lg bg-blue-100 px-4 py-0 text-blue-800 shadow-lg transition-all duration-300 peer-checked/showLabel:max-h-[1000px]">
+        <h3 class="flex h-14 cursor-pointer items-center font-bold px-4">🎉 Ofertas Aceptadas</h3>
+        <div *ngIf="ofertasAceptadas.length > 0; else noOfertasAcept" class="grid gap-4 p-4 max-h-[500px] overflow-y-auto">
+          <div *ngFor="let oferta of ofertasAceptadas" class="flex gap-4 p-4 bg-white rounded-xl shadow-md">
+            <img [src]="oferta.eventoImagen" alt="Evento" class="w-24 h-24 object-cover rounded-lg" />
+            <div>
+              <h4 class="font-bold text-lg">{{ oferta.eventoNombre }}</h4>
+              <p><span class="font-semibold">Artista:</span> {{ oferta.artistaNombre }}</p>
+              <p><span class="font-semibold">Sala:</span> {{ oferta.salaNombre }}</p>
+              <p><span class="font-semibold">Fecha Postulación:</span> {{ oferta.fechaPostulacion | date }}</p>
+            </div>
+          </div>
+        </div>
+        <ng-template #noOfertasAcept><p class="px-4 py-2 text-sm italic">No hay ofertas aceptadas.</p></ng-template>
+      </span>
+      </label>
+    </div>
+
+  </section>
+
+
+
 </div>
 
 
