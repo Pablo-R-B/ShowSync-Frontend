@@ -25,6 +25,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   artistaId: number | undefined;
   private routerSubscription?: Subscription;
   usuarioId!: number;
+  perfilCompleto = false; // Nueva propiedad
 
   constructor(private router: Router, private artistaService:ArtistasService, private authService:AuthService) {}
 
@@ -37,12 +38,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.actualizarEstadoUsuario();
       }
     });
-
-   // this.artistaService.getArtistaIdPorUsuario(this.authService.userId).subscribe(id => {
-   //   this.artistaId = id;
-   //   console.log('artistaId obtenido:', this.artistaId);
-   // });
-
   }
 
   ngOnDestroy() {
@@ -56,12 +51,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.estaLogueado = !!token;
     this.username = localStorage.getItem('username') || '';
     this.rolUsuario = localStorage.getItem('rol') || '';
+    this.perfilCompleto = localStorage.getItem('perfilCompleto') === 'true'; // Verificar si el perfil está completo
   }
 
   toggleMenu() {
     this.menuAbierto = !this.menuAbierto;
   }
 
+  // MÉTODO MODIFICADO: Ahora el menú se abre siempre cuando el usuario está logueado
   toggleMenuPerfil() {
     this.mostrarMenuPerfil = !this.mostrarMenuPerfil;
   }
@@ -95,7 +92,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       case 'SALA':
         return '/perfil-salas';
       case 'ARTISTA':
-          return `/admin-artista`;
+        return `/admin-artista`;
 
       default:
         return '/auth/login';
