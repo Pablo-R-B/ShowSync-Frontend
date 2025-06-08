@@ -38,10 +38,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.artistaService.getArtistaIdPorUsuario(this.authService.userId).subscribe(id => {
-      this.artistaId = id;
-      console.log('artistaId obtenido:', this.artistaId);
-    });
+   // this.artistaService.getArtistaIdPorUsuario(this.authService.userId).subscribe(id => {
+   //   this.artistaId = id;
+   //   console.log('artistaId obtenido:', this.artistaId);
+   // });
 
   }
 
