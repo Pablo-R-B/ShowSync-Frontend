@@ -1,105 +1,193 @@
-<!-- Fuente de iconos FontAwesome -->
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-/>
+<div class="min-h-screen bg-cover bg-center relative" style="background-image: url('https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+  <!-- Overlay -->
+  <div class="absolute inset-0 bg-gradient-to-br from-black/80 via-black/70 to-purple-900/40"></div>
 
-<!-- Hero Section con animación mejorada -->
-<div class="text-center mb-20 relative pt-[60px] sm:pt-[70px]">
-  <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-32 h-32 bg-red-500/20 rounded-full blur-3xl animate-pulse"></div>
-  <h2 class="text-4xl md:text-6xl font-medula inline-block relative tracking-wide">
-    ¿En busca de las promotoras que
-    <span class="text-red-500 animate-bounce inline-block"> organizan </span>
-    <span class="relative inline-block group">
-          tus conciertos favoritos?
+  <div class="relative pt-8 pb-10 px-4 md:px-20 text-white">
+    <!-- Hero -->
+    <div class="text-center mb-20 relative pt-[60px] sm:pt-[70px]">
+      <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-32 h-32 bg-red-500/20 rounded-full blur-3xl animate-pulse-glow"></div>
+      <h2 class="text-4xl md:text-6xl font-bold inline-block relative tracking-wide">
+        ¿En busca de los promotores que
+        <span class="text-red-500 bounce-text inline-block">organizan</span>
+        <span class="relative inline-block group">
+          <span>tus conciertos favoritos?</span>
           <span class="absolute left-0 bottom-0 h-1 w-full bg-red-500 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500"></span>
         </span>
-  </h2>
-</div>
-
-<!-- CONTENEDOR PRINCIPAL -->
-<main
-  class="bg-black text-white p-6 md:p-10 flex flex-col md:flex-row gap-6 min-h-screen"
-  style="background-image: url('../../../assets/images/img_3.png'); background-size: cover; background-position: center;">
-
-  <!-- FILTROS -->
-  <aside class="bg-gradient-to-br from-black/60 to-gray-900/40 backdrop-blur-sm p-6 rounded-2xl w-full xl:w-1/4 border border-white/10 shadow-2xl">
-    <div class="flex items-center mb-6">
-      <div class="w-8 h-8 bg-gradient-to-r from-red-500 to-purple-500 rounded-lg mr-3 flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-        </svg>
-      </div>
-      <h3 class="text-white text-2xl font-bold">Filtros Avanzados</h3>
+      </h2>
+      <p class="text-lg md:text-xl text-gray-300 max-w-4xl mx-auto mt-6 leading-relaxed">
+        Descubre los mejores promotores musicales que hacen realidad los eventos más increíbles. Conecta con profesionales que transforman la música en experiencias inolvidables.
+      </p>
     </div>
 
-    <!-- Nombre del promotor -->
-    <div class="mb-8">
-      <label class="block text-sm mb-3 font-semibold text-gray-200 flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-        </svg>
-        Buscar Promotor
-      </label>
-      <div class="relative group">
-        <input
-          id="promotorSelect"
-          [(ngModel)]="nombrePromotoraSeleccionada"
-          type="text"
-          placeholder="Escribe el nombre del promotor..."
-          class="w-full p-4 pr-14 rounded-xl border border-gray-600/50 bg-black/30 text-white placeholder-gray-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all duration-300 backdrop-blur-sm"
-        />
-        <button
-          (click)="aplicarFiltros()"
-          class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 p-2.5 rounded-lg transition-all duration-300 shadow-lg hover:shadow-red-500/25"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192.904 192.904" width="16px" class="fill-white">
-            <path d="m190.707 180.101-47.078-47.077c11.702-14.072 18.752-32.142 18.752-51.831C162.381 36.423 125.959 0 81.191 0 36.422 0 0 36.423 0 81.193c0 44.767 36.422 81.187 81.191 81.187 19.688 0 37.759-7.049 51.831-18.751l47.079 47.078a7.474 7.474 0 0 0 5.303 2.197 7.498 7.498 0 0 0 5.303-12.803zM15 81.193C15 44.694 44.693 15 81.191 15c36.497 0 66.189 29.694 66.189 66.193 0 36.496-29.692 66.187-66.189 66.187C44.693 147.38 15 117.689 15 81.193z"></path>
-          </svg>
-        </button>
-      </div>
-    </div>
-  </aside>
-
-
-  <!-- PROMOTORES -->
-  <div class="flex-1 px-6">
-    <section class="w-full max-w-screen-2xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      <div
-        *ngFor="let promotor of promotorasFiltradas"
-        class="bg-zinc-900 rounded-xl border border-zinc-700 flex flex-col items-center p-6 space-y-4 transition-all duration-300 ease-in-out hover:scale-105"
-      >
-        <!-- Imagen del promotor -->
-        <img [src]="promotor?.imagenPerfil"
-             alt="Imagen del promotor"
-             class="w-32 h-32 object-cover rounded-full border-4 border-red-600 shadow-lg"
-        />
-
-        <!-- Info del promotor -->
-        <div class="text-center">
-          <h3 class="text-lg font-semibold text-white">{{ promotor?.nombrePromotor }}</h3>
-          <p class="text-sm text-gray-400 mt-1">{{ promotor?.descripcion || 'Descripción no disponible' }}</p>
+    <div class="flex flex-col xl:flex-row gap-8">
+      <!-- Filtros -->
+      <div class="bg-gradient-to-br from-black/60 to-gray-900/40 backdrop-blur-sm p-6 rounded-2xl w-full xl:w-1/4 border border-white/10 shadow-2xl">
+        <div class="flex items-center mb-6">
+          <div class="w-8 h-8 bg-gradient-to-r from-red-500 to-purple-500 rounded-lg mr-3 flex items-center justify-center">
+            <i class="fas fa-filter text-white text-sm"></i>
+          </div>
+          <h3 class="text-white text-2xl font-bold">Filtros Avanzados</h3>
         </div>
 
-        <!-- Botón +info -->
-        <button
-          class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition-transform duration-200 hover:scale-105"
-          [routerLink]="['/promotores', promotor?.id]"
-        >
-          + info
-        </button>
-      </div>
-    </section>
+        <!-- Buscador -->
+        <div class="mb-8">
+          <label class="block text-sm mb-3 font-semibold text-gray-200 flex items-center">
+            <i class="fas fa-user-tie mr-2"></i>
+            Buscar Promotor
+          </label>
+          <div class="relative group">
+            <input
+              type="text"
+              [(ngModel)]="nombrePromotorSeleccionado"
+              (keyup.enter)="aplicarFiltros()"
+              placeholder="Escribe el nombre del promotor..."
+              class="w-full p-4 pr-14 rounded-xl border border-gray-600/50 bg-black/30 text-white placeholder-gray-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all duration-300 backdrop-blur-sm"
+            />
+            <button
+              (click)="aplicarFiltros()"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 p-2.5 rounded-lg transition-all duration-300 shadow-lg hover:shadow-red-500/25"
+            >
+              <i class="fas fa-search text-white"></i>
+            </button>
+          </div>
+        </div>
 
-    <!-- Paginador centrado con margen superior -->
-    <div class="card flex justify-center mt-40">
-      <p-paginator
-        [rows]="pageSize"
-        [totalRecords]="totalItems"
-        [rowsPerPageOptions]="[6, 9, 12]"
-        (onPageChange)="onPageChange($event)">
-      </p-paginator>
+        <!-- Estadísticas -->
+        <div class="mt-6 p-4 bg-gradient-to-r from-purple-900/30 to-red-900/30 rounded-xl border border-purple-500/20">
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-gray-300">Promotores encontrados</span>
+            <span class="text-white font-bold">{{ totalItems }}</span>
+          </div>
+          <div class="flex items-center justify-between text-sm mt-2">
+            <span class="text-gray-300">Páginas totales</span>
+            <span class="text-white font-bold">{{ totalPaginas }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de promotores -->
+      <div class="flex-1">
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="flex justify-center items-center py-20">
+          <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!isLoading && promotores.length === 0" class="text-center py-12">
+          <div class="text-gray-400 mb-4">
+            <i class="fas fa-user-slash text-4xl"></i>
+          </div>
+          <h3 class="text-xl font-medium text-gray-300 mb-2">No se encontraron promotores</h3>
+          <p class="text-gray-500">Intenta ajustar tus filtros de búsqueda</p>
+        </div>
+
+        <!-- Cards de Promotores -->
+        <section *ngIf="!isLoading && promotores.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div *ngFor="let promotor of promotores" class="promotor-card fade-in-up bg-gradient-to-br from-gray-900/70 to-gray-800/70 rounded-lg shadow-lg p-4 transition-all transform hover:scale-105 border border-white/10 hover:border-red-500/30 hover:shadow-red-500/10">
+            <div class="relative overflow-hidden rounded-lg aspect-square mb-4">
+              <img
+                [src]="promotor.imagenPerfil || 'https://via.placeholder.com/300x300?text=Promotor'"
+                alt="Imagen del promotor"
+                class="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                (error)="promotor.imagenPerfil = 'https://via.placeholder.com/300x300?text=Promotor'"/>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+            </div>
+            <h3 class="text-xl font-semibold text-white mb-2 truncate">{{ promotor.nombrePromotor }}</h3>
+            <p class="text-gray-400 text-sm line-clamp-2">{{ promotor.descripcion || 'Sin descripción disponible' }}</p>
+            <button class="mt-4 w-full py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 rounded-lg text-white text-sm font-medium transition-all duration-300 shadow-md hover:shadow-red-500/20">
+              Ver detalles
+            </button>
+          </div>
+        </section>
+
+        <!-- Paginación -->
+        <div class="flex flex-col items-center mt-12 space-y-4" *ngIf="!isLoading && totalPaginas > 1">
+          <!-- Información de página actual -->
+          <div class="text-sm text-gray-300 text-center">
+            Mostrando {{ promotores.length }} de {{ totalItems }} promotores (Página {{ paginaActualDisplay }} de {{ totalPaginas }})
+          </div>
+
+          <!-- Controles de paginación -->
+          <nav class="flex items-center" aria-label="Paginación">
+            <!-- Primera página -->
+            <button
+              (click)="cambiarPagina(0)"
+              [disabled]="esPrimeraPagina || isLoading"
+              [class.opacity-50]="esPrimeraPagina || isLoading"
+              [class.cursor-not-allowed]="esPrimeraPagina || isLoading"
+              class="px-4 py-2 rounded-l-lg bg-gray-800 hover:bg-gray-700 text-white text-sm transition-colors duration-300">
+              Primera
+            </button>
+
+            <!-- Anterior -->
+            <button
+              (click)="paginaAnterior()"
+              [disabled]="esPrimeraPagina || isLoading"
+              [class.opacity-50]="esPrimeraPagina || isLoading"
+              [class.cursor-not-allowed]="esPrimeraPagina || isLoading"
+              class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white flex items-center border-l border-gray-700 transition-colors duration-300">
+              <i class="fas fa-chevron-left text-xs"></i>
+            </button>
+
+            <!-- Números de página -->
+            <ng-container *ngFor="let pagina of getPaginasMostradas()">
+              <button
+                (click)="cambiarPagina(pagina)"
+                [disabled]="isLoading"
+                [class.bg-red-600]="pagina === paginaActual"
+                [class.bg-gray-800]="pagina !== paginaActual"
+                [class.hover:bg-red-700]="pagina === paginaActual && !isLoading"
+                [class.hover:bg-gray-700]="pagina !== paginaActual && !isLoading"
+                [class.text-white]="pagina === paginaActual"
+                [class.text-gray-300]="pagina !== paginaActual"
+                [class.cursor-not-allowed]="isLoading"
+                class="px-4 py-2 transition-colors duration-300 border-l border-gray-700">
+                {{ pagina + 1 }}
+              </button>
+            </ng-container>
+
+            <!-- Siguiente -->
+            <button
+              (click)="paginaSiguiente()"
+              [disabled]="esUltimaPagina || isLoading"
+              [class.opacity-50]="esUltimaPagina || isLoading"
+              [class.cursor-not-allowed]="esUltimaPagina || isLoading"
+              class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white flex items-center border-l border-gray-700 transition-colors duration-300">
+              <i class="fas fa-chevron-right text-xs"></i>
+            </button>
+
+            <!-- Última página -->
+            <button
+              (click)="cambiarPagina(totalPaginas - 1)"
+              [disabled]="esUltimaPagina || isLoading"
+              [class.opacity-50]="esUltimaPagina || isLoading"
+              [class.cursor-not-allowed]="esUltimaPagina || isLoading"
+              class="px-4 py-2 rounded-r-lg bg-gray-800 hover:bg-gray-700 text-white text-sm transition-colors duration-300 border-l border-gray-700">
+              Última
+            </button>
+          </nav>
+
+          <!-- Navegación rápida -->
+          <div class="flex items-center gap-2 text-sm mt-4">
+            <span class="text-gray-300">Ir a página:</span>
+            <input
+              type="number"
+              [min]="1"
+              [max]="totalPaginas"
+              [(ngModel)]="paginaNavegacion"
+              (keydown.enter)="irAPagina()"
+              [disabled]="isLoading"
+              class="w-16 px-3 py-1.5 bg-gray-800 border border-gray-600 text-white rounded-lg text-center text-sm focus:border-red-500 focus:ring-1 focus:ring-red-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
+              placeholder="{{ paginaActualDisplay }}" />
+            <button
+              (click)="irAPagina()"
+              [disabled]="isLoading"
+              class="px-4 py-1.5 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-lg text-sm font-medium transition-all duration-300 shadow-md hover:shadow-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed">
+              Ir
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-
-</main>
+</div>

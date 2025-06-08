@@ -1,62 +1,121 @@
-import {Component, NgIterable, OnInit} from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {NgForOf} from '@angular/common';
-import {PromotoresService} from '../../servicios/promotores.service';
-import {Promotor} from '../../interfaces/Promotor';
-import {RouterLink} from '@angular/router';
-import {Paginator} from 'primeng/paginator';
-
-
-
+import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { NgForOf, NgIf } from '@angular/common';
+import { PromotoresService } from '../../servicios/promotores.service';
+import { Promotor } from '../../interfaces/Promotor';
+import { Page } from '../../interfaces/Page';
 
 @Component({
   selector: 'app-busqueda-promotores',
+  standalone: true,
   imports: [
     FormsModule,
     NgForOf,
-    RouterLink,
-    Paginator
+    NgIf
   ],
   templateUrl: './busqueda-promotores.component.html',
-  styleUrl: './busqueda-promotores.component.css'
+  styleUrls: ['./busqueda-promotores.component.css']
 })
 export class BusquedaPromotoresComponent implements OnInit {
-  promotoras: Promotor[] = [];
-  nombrePromotoraSeleccionada: string = '';
-  promotorasFiltradas: Promotor[] = []
-
+  promotores: Promotor[] = [];
+  nombrePromotorSeleccionado: string = '';
+  totalPaginas: number = 0;
+  paginaActual: number = 0;
   pageSize: number = 6;
   totalItems: number = 0;
-  paginaActual: number = 0;
-  eventosPaginados: any[] = [];
+  paginaNavegacion: number = 1;
+  isLoading: boolean = true;
 
   constructor(private promotoresService: PromotoresService) {}
 
   ngOnInit(): void {
-    this.cargarPromotoras();
+    this.cargarPromotores();
   }
 
-  cargarPromotoras(): void {
-    this.promotoresService.obtenerPromotorasPaginadas(this.paginaActual, this.pageSize).subscribe(data => {
-      this.promotoras = data.content;
-      this.totalItems = data.totalElements;
-      this.promotorasFiltradas = [...this.promotoras];
+  cargarPromotores(): void {
+    console.log('Cargando promotores con parámetros:', {
+      page: this.paginaActual,
+      size: this.pageSize,
+      nombre: this.nombrePromotorSeleccionado
+    });
+    this.isLoading = true;
+    this.promotoresService.obtenerPromotoresPaginados(
+      this.paginaActual,
+      this.pageSize,
+      this.nombrePromotorSeleccionado // Este parámetro puede ser undefined inicialmente
+    ).subscribe({
+
+      next: (data) => {
+        console.log('Datos recibidos:', data);
+
+        this.promotores = data.content;
+        this.totalItems = data.totalElements;
+        this.totalPaginas = data.totalPages;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar promotores:', error);
+        if (error.error) {
+          console.error('Detalles del error:', error.error);
+        }
+        this.isLoading = false;
+      }
     });
   }
 
   aplicarFiltros(): void {
-    const filtro = this.nombrePromotoraSeleccionada.toLowerCase();
-    this.promotorasFiltradas = this.promotoras.filter(p =>
-      p.nombrePromotor.toLowerCase().includes(filtro)
-    );
+    this.paginaActual = 0;
+    this.cargarPromotores();
   }
 
-  onPageChange(event: any): void {
-    this.paginaActual = event.page;
-    this.pageSize = event.rows;
-    this.cargarPromotoras(); // Recargar datos desde el backend
+  cambiarPagina(pagina: number): void {
+    if (pagina < 0 || pagina >= this.totalPaginas) return;
+    this.paginaActual = pagina;
+    this.cargarPromotores();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  paginaSiguiente(): void {
+    if (!this.esUltimaPagina) {
+      this.cambiarPagina(this.paginaActual + 1);
+    }
+  }
 
+  paginaAnterior(): void {
+    if (!this.esPrimeraPagina) {
+      this.cambiarPagina(this.paginaActual - 1);
+    }
+  }
 
+  irAPagina(): void {
+    const pagina = Number(this.paginaNavegacion);
+    if (!isNaN(pagina)) {
+      const paginaIndex = Math.max(0, Math.min(pagina - 1, this.totalPaginas - 1));
+      this.cambiarPagina(paginaIndex);
+    }
+  }
+
+  get paginaActualDisplay(): number {
+    return this.paginaActual + 1;
+  }
+
+  get esPrimeraPagina(): boolean {
+    return this.paginaActual === 0;
+  }
+
+  get esUltimaPagina(): boolean {
+    return this.paginaActual >= this.totalPaginas - 1;
+  }
+
+  getPaginasMostradas(): number[] {
+    const paginasAMostrar = 5;
+    let inicio = Math.max(0, this.paginaActual - Math.floor(paginasAMostrar / 2));
+    let fin = Math.min(this.totalPaginas - 1, inicio + paginasAMostrar - 1);
+
+    if (fin - inicio + 1 < paginasAMostrar) {
+      inicio = Math.max(0, fin - paginasAMostrar + 1);
+    }
+
+    return Array.from({ length: fin - inicio + 1 }, (_, i) => inicio + i);
+  }
 }
