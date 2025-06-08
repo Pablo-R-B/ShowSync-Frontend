@@ -60,7 +60,7 @@ export class RegistroArtistaComponent implements OnInit {
   ) {
     this.registroArtistaForm = this.fb.group({
       nombreArtista: ['', [Validators.required, Validators.maxLength(100)]],
-      biografia: [''],
+      biografia: ['', [Validators.required, Validators.maxLength(500)]],
       musicUrl: ['', [Validators.pattern('https?://.+')]],
       imagenPerfil: [''],
       generosMusicales: this.fb.array([], Validators.required),
@@ -204,7 +204,6 @@ export class RegistroArtistaComponent implements OnInit {
             life: 4000,
           });
 
-          console.error('Error al enviar perfil:', error);
         }
       });
 
