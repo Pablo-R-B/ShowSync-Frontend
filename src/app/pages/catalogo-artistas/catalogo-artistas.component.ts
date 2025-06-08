@@ -149,6 +149,9 @@ export class CatalogoArtistasComponent implements OnInit {
   }
 
 
+  protected readonly window = window;
 
-
+  abrirEnlace(url: string): void {
+    window.open(url, '_blank');
+  }
 }

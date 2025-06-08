@@ -4,6 +4,7 @@ import { NgForOf, NgIf } from '@angular/common';
 import { PromotoresService } from '../../servicios/promotores.service';
 import { Promotor } from '../../interfaces/Promotor';
 import { Page } from '../../interfaces/Page';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-busqueda-promotores',
@@ -11,7 +12,8 @@ import { Page } from '../../interfaces/Page';
   imports: [
     FormsModule,
     NgForOf,
-    NgIf
+    NgIf,
+    RouterLink
   ],
   templateUrl: './busqueda-promotores.component.html',
   styleUrls: ['./busqueda-promotores.component.css']

@@ -23,10 +23,10 @@
       <!-- Filtros -->
       <div class="bg-gradient-to-br from-black/60 to-gray-900/40 backdrop-blur-sm p-6 rounded-2xl w-full xl:w-1/4 border border-white/10 shadow-2xl">
         <div class="flex items-center mb-6">
-          <div class="w-8 h-8 bg-gradient-to-r from-red-500 to-purple-500 rounded-lg mr-3 flex items-center justify-center">
+          <div class="w-8 h-8 bg-gradient-to-r from-red-500 to-customGrisOscurso rounded-lg mr-3 flex items-center justify-center">
             <i class="fas fa-filter text-white text-sm"></i>
           </div>
-          <h3 class="text-white text-2xl font-bold">Filtros Avanzados</h3>
+          <h3 class="text-white text-4xl  font-medula">Filtros avanzados</h3>
         </div>
 
         <!-- Buscador -->
@@ -53,15 +53,12 @@
         </div>
 
         <!-- Estadísticas -->
-        <div class="mt-6 p-4 bg-gradient-to-r from-purple-900/30 to-red-900/30 rounded-xl border border-purple-500/20">
+        <div class="mt-6 p-4 bg-gradient-to-r from-customBurbundy/50 to-red-900/30 rounded-xl border border-purple-500/20">
           <div class="flex items-center justify-between text-sm">
             <span class="text-gray-300">Promotores encontrados</span>
             <span class="text-white font-bold">{{ totalItems }}</span>
           </div>
-          <div class="flex items-center justify-between text-sm mt-2">
-            <span class="text-gray-300">Páginas totales</span>
-            <span class="text-white font-bold">{{ totalPaginas }}</span>
-          </div>
+
         </div>
       </div>
 
@@ -94,8 +91,10 @@
             </div>
             <h3 class="text-xl font-semibold text-white mb-2 truncate">{{ promotor.nombrePromotor }}</h3>
             <p class="text-gray-400 text-sm line-clamp-2">{{ promotor.descripcion || 'Sin descripción disponible' }}</p>
-            <button class="mt-4 w-full py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 rounded-lg text-white text-sm font-medium transition-all duration-300 shadow-md hover:shadow-red-500/20">
-              Ver detalles
+            <button class="mt-4 w-full py-2 bg-gradient-to-r from-customBurbundy to-red-700 hover:from-red-700 hover:to-red-800 rounded-lg text-white text-sm font-medium transition-all duration-300 shadow-md hover:shadow-red-500/20"
+                    [routerLink]="['/promotores', promotor?.id]"
+            >
+              + info
             </button>
           </div>
         </section>

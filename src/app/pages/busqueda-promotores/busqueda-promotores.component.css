@@ -109,22 +109,8 @@ h2 span.group:hover span::after {
 }
 
 /* Efectos hover para las tarjetas */
-.promotor-card {
-  transition: all 0.3s ease;
-  background: linear-gradient(135deg, rgba(24, 24, 27, 0.9), rgba(39, 39, 42, 0.9));
-  backdrop-filter: blur(10px);
-}
 
-.promotor-card:hover {
-  transform: translateY(-10px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(239, 68, 68, 0.3);
-  border-color: rgba(239, 68, 68, 0.5);
-}
 
-.promotor-card:hover .promotor-image {
-  transform: scale(1.1);
-  box-shadow: 0 0 30px rgba(239, 68, 68, 0.6);
-}
 
 .promotor-image {
   transition: all 0.3s ease;
