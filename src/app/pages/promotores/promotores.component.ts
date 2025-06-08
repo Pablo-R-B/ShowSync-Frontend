@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import { CommonModule, DatePipe, NgForOf } from '@angular/common';
 import {Promotor} from '../../interfaces/Promotor';
@@ -8,7 +8,9 @@ import {PromotoresService} from '../../servicios/promotores.service';
 import {AuthService} from '../../servicios/auth.service';
 import {ArtistasService} from '../../servicios/artistas.service';
 import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
-import { Artistas } from '../../interfaces/artistas';
+import { register } from 'swiper/element/bundle';
+register();
+
 
 @Component({
   selector: 'app-promotores',
@@ -20,9 +22,11 @@ import { Artistas } from '../../interfaces/artistas';
   ],
   providers: [DatePipe],
   templateUrl: './promotores.component.html',
-  styleUrls: ['./promotores.component.css']
+  styleUrls: ['./promotores.component.css'],
+  encapsulation: ViewEncapsulation.None,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class PromotoresComponent implements OnInit {
+export class PromotoresComponent implements OnInit{
   promotor: Promotor | null = null;
   logoUrl: string = '../../../assets/images/logo_1.png';
   eventos: EventoDTO[] = [];
@@ -44,7 +48,6 @@ export class PromotoresComponent implements OnInit {
     private promotoresService: PromotoresService,
     private authService: AuthService,
     private artistasService: ArtistasService,
-    private postulacionService: PostulacionEventoService,
     private datePipe: DatePipe,
     private router: Router,
     private route: ActivatedRoute
@@ -67,8 +70,8 @@ export class PromotoresComponent implements OnInit {
       console.error('No se encontró un ID de usuario válido');
       return;
     }
-
   }
+
 
   // Obtener los detalles del promotor
   private obtenerPromotor() {
@@ -85,11 +88,15 @@ export class PromotoresComponent implements OnInit {
 
     this.promotoresService.cargarEventosDePromotor(this.idPromotor)
       .subscribe(data => {
-        this.eventos = data;
+        this.eventos = data.sort((a, b) => {
+          const dateA = new Date(a.fechaEvento);
+          const dateB = new Date(b.fechaEvento);
+          // Ordena en orden descendente (el más nuevo primero)
+          return dateB.getTime() - dateA.getTime();
+        });
 
-        if (data.length) {
-          // Establecer el evento destacado
-          this.eventoDestacado = data[0];
+        if (this.eventos.length) {
+          this.eventoDestacado = this.eventos[0];
         }
 
         // Filtrar los eventos futuros
@@ -99,7 +106,8 @@ export class PromotoresComponent implements OnInit {
             fecha: this.datePipe.transform(e.fechaEvento, 'dd/MM/yyyy')!,
             lugar: e.nombreSala,
             nombre: e.nombreEvento
-          }));
+          }))
+
       });
   }
 
@@ -116,10 +124,8 @@ export class PromotoresComponent implements OnInit {
             id: artista.id,
             nombre: artista.nombreArtista,
             generosMusicales: artista.generosMusicales ? artista.generosMusicales.join(', ') : '',
-            // ✅ 2. AÑADE LA PROPIEDAD 'imagenPerfil' AL MAPEO
             imagenPerfil: artista.imagenPerfil // <-- ¡Asigna la URL de la imagen del backend!
           }));
-          console.log('Artistas procesados (después de mapeo):', this.artistas);
         },
         error: (err) => {
           console.error('Error al obtener artistas asociados al promotor:', err);
@@ -127,8 +133,6 @@ export class PromotoresComponent implements OnInit {
       });
   }
 
-
-  // ✅ 3. AÑADE UN MÉTODO PARA NAVEGAR AL PERFIL DEL ARTISTA
   navigateToArtistaProfile(artistaId: number): void {
     if (artistaId) {
       this.router.navigate(['/artista', artistaId]);
