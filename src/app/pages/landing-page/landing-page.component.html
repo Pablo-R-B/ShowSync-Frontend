@@ -12,9 +12,11 @@
   </video>
 
   <!-- Botón centrado -->
-  <button class="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-red-600 text-white font-bold px-8 py-3 rounded-lg hover:bg-red-700 transition-all duration-300 shadow-lg hover:shadow-red-500/50 transform hover:scale-105 border-2 border-red-500 z-20" [routerLink]="['/auth/registro']" aria-label="Regístrate Ahora">
-    Regístrate Ahora
-  </button>
+  <ng-container *ngIf="!usuarioLogueado">
+    <button class="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-red-600 text-white font-bold px-8 py-3 rounded-lg hover:bg-red-700 transition-all duration-300 shadow-lg hover:shadow-red-500/50 transform hover:scale-105 border-2 border-red-500 z-20" [routerLink]="['/auth/registro']" aria-label="Regístrate Ahora">
+      Regístrate Ahora
+    </button>
+  </ng-container>
 </div>
 
 <!-- INFO -->
