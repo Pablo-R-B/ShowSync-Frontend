@@ -75,10 +75,14 @@
       <h2 class="text-lg font-semibold mb-4">Artistas 🎤</h2>
       <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <li *ngFor="let artista of artistas" class="bg-gray-900 p-3 rounded-lg shadow flex flex-col gap-2">
-          <span class="bg-gray-500 text-white px-2 py-1 rounded text-xs w-fit">🎤</span>
-          <p class="font-bold text-white">{{ artista.nombre }}</p>
-          <p class="text-gray-400 text-sm">{{ artista.generosMusicales }}</p>
-          <p class="text-gray-500 text-sm">{{ artista.biografia }}</p>
+          <div class="flex items-center gap-3">
+            <img [src]="artista.imagenPerfil" alt="Foto de {{ artista.nombre }}" class="w-10 h-10 rounded-full object-cover border-2 border-gray-600">
+            <p class="font-bold text-white cursor-pointer hover:text-blue-400 transition-colors duration-200"
+               (click)="navigateToArtistaProfile(artista.id)">
+              {{ artista.nombre }}
+            </p>
+          </div>
+          <span class="bg-gray-500 text-white px-2 py-1 rounded text-xs w-fit">🎤 {{ artista.generosMusicales }}</span>
         </li>
       </ul>
     </div>

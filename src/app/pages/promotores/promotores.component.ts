@@ -29,13 +29,15 @@ export class PromotoresComponent implements OnInit {
   eventoDestacado?: EventoDTO;
   eventosProximos: Array<{ fecha: string; lugar: string; nombre: string }> = [];
   artistas: Array<{
-      biografia: string;
-      generosMusicales: string; nombre: string
+    id: number;
+    generosMusicales: string;
+    nombre: string;
+    imagenPerfil: string; // <-- ¡Añade la URL de la imagen aquí!
   }> = [];
   idPromotor!: number;
   isModalOpen = false;
   eventoSeleccionado!:number
-  artistaId!: number;
+
 
 
   constructor(
@@ -106,20 +108,35 @@ export class PromotoresComponent implements OnInit {
     this.artistasService.artistasPorPromotor(this.idPromotor)
       .subscribe({
         next: (data: any) => {
-          console.log('Respuesta del servicio:', data); // Verifica la estructura de los datos
-          const artistasArray = Array.isArray(data.content) ? data.content : []; // Accede a la propiedad `content`
-          this.artistas = artistasArray.map((artista: Artistas) => ({
+          console.log('Respuesta del servicio (antes de procesar):', data);
+
+          const artistasRecibidos = Array.isArray(data) ? data : [];
+
+          this.artistas = artistasRecibidos.map((artista: any) => ({
+            id: artista.id,
             nombre: artista.nombreArtista,
-            generosMusicales: artista.generosMusicales.join(', '),
-            biografia: artista.biografia
+            generosMusicales: artista.generosMusicales ? artista.generosMusicales.join(', ') : '',
+            // ✅ 2. AÑADE LA PROPIEDAD 'imagenPerfil' AL MAPEO
+            imagenPerfil: artista.imagenPerfil // <-- ¡Asigna la URL de la imagen del backend!
           }));
-          console.log('Artistas procesados:', this.artistas); // Muestra los artistas procesados
+          console.log('Artistas procesados (después de mapeo):', this.artistas);
         },
         error: (err) => {
           console.error('Error al obtener artistas asociados al promotor:', err);
         }
       });
   }
+
+
+  // ✅ 3. AÑADE UN MÉTODO PARA NAVEGAR AL PERFIL DEL ARTISTA
+  navigateToArtistaProfile(artistaId: number): void {
+    if (artistaId) {
+      this.router.navigate(['/artista', artistaId]);
+    } else {
+      console.error('ID del artista no válido para navegar al perfil.');
+    }
+  }
+
 
   // Método para ver los detalles de un evento
   verDetallesEvento(eventoId: number) {
