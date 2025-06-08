@@ -4,13 +4,14 @@
 
   <div class="relative pt-8 pb-10 px-4 md:px-20 text-white">
     <!-- Hero -->
-    <div class="text-center mb-20 relative pt-[60px] sm:pt-[70px]">
+    <div class="text-center mb-20 relative pt-[60px] sm:pt-[70px] ">
       <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-32 h-32 bg-red-500/20 rounded-full blur-3xl animate-pulse-glow"></div>
-      <h2 class="text-4xl md:text-6xl font-bold inline-block relative tracking-wide">
+      <h2 class="text-4xl md:text-6xl  inline-block relative tracking-wide mx-2 font-medula">
         ¿En busca de los promotores que
-        <span class="text-red-500 bounce-text inline-block">organizan</span>
-        <span class="relative inline-block group">
-          <span>tus conciertos favoritos?</span>
+
+        <span class="text-red-500 bounce-text inline-block" >organizan </span>
+        <span class="relative inline-block group mx-2">
+          <span> tus conciertos favoritos?</span>
           <span class="absolute left-0 bottom-0 h-1 w-full bg-red-500 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500"></span>
         </span>
       </h2>
@@ -42,12 +43,15 @@
               (keyup.enter)="aplicarFiltros()"
               placeholder="Escribe el nombre del promotor..."
               class="w-full p-4 pr-14 rounded-xl border border-gray-600/50 bg-black/30 text-white placeholder-gray-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all duration-300 backdrop-blur-sm"
+
             />
             <button
               (click)="aplicarFiltros()"
-              class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 p-2.5 rounded-lg transition-all duration-300 shadow-lg hover:shadow-red-500/25"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-customBurbundy to-red-600 hover:from-red-600 hover:to-red-700 p-2.5 rounded-lg transition-all duration-300 shadow-lg hover:shadow-red-500/25"
             >
-              <i class="fas fa-search text-white"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
             </button>
           </div>
         </div>
@@ -79,10 +83,11 @@
         </div>
 
         <!-- Cards de Promotores -->
-        <section *ngIf="!isLoading && promotores.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <section *ngIf="!isLoading && promotores.length > 0" class="space-y-6">
           <div *ngFor="let promotor of promotores"
-               class="promotor-card fade-in-up bg-black bg-opacity-60 rounded-lg shadow-lg p-4 transition-all transform hover:scale-105 border border-white/10 hover:border-red-500/30 hover:shadow-red-500/10">
-            <div class="relative overflow-hidden rounded-lg aspect-square mb-4">
+               class="promotor-card fade-in-up bg-black bg-opacity-90 rounded-lg shadow-lg p-4 flex items-center transition-all transform hover:scale-105 border border-white/10 hover:border-red-500/30 hover:shadow-red-500/10">
+            <!-- Imagen del promotor -->
+            <div class="relative overflow-hidden rounded-lg w-24 h-24 flex-shrink-0 mr-4">
               <img
                 [src]="promotor.imagenPerfil || 'https://via.placeholder.com/300x300?text=Promotor'"
                 alt="Imagen del promotor"
@@ -90,13 +95,18 @@
                 (error)="promotor.imagenPerfil = 'https://via.placeholder.com/300x300?text=Promotor'"/>
               <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
             </div>
-            <h3 class="text-xl font-semibold text-white mb-2 truncate">{{ promotor.nombrePromotor }}</h3>
-            <p class="text-gray-400 text-sm line-clamp-2">{{ promotor.descripcion || 'Sin descripción disponible' }}</p>
-            <button class="mt-4 w-full py-2 bg-gradient-to-r from-customBurbundy to-red-700 hover:from-red-700 hover:to-red-800 rounded-lg text-white text-sm font-medium transition-all duration-300 shadow-md hover:shadow-red-500/20"
-                    [routerLink]="['/promotores', promotor?.id]"
-            >
-              + info
-            </button>
+
+            <!-- Información del promotor -->
+            <div class="flex-1">
+              <h3 class="text-xl font-semibold text-white mb-2 truncate">{{ promotor.nombrePromotor }}</h3>
+              <p class="text-customGrisClaro text-lg line-clamp-2">{{ promotor.descripcion || 'Sin descripción disponible' }}</p>
+              <div class="flex justify-end items-end mt-4">
+               <button class="py-2 px-4 bg-gradient-to-r from-customBurbundy to-customRed hover:from-red-700 hover:to-red-800 rounded-lg text-white text-sm font-medium transition-all duration-300 shadow-md hover:shadow-red-500/20"
+                       [routerLink]="['/promotores', promotor?.id]">
+                 + info
+               </button>
+             </div>
+            </div>
           </div>
         </section>
 

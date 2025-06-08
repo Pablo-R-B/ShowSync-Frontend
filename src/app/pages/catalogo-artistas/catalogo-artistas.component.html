@@ -129,8 +129,8 @@
         <!-- Botones con diseño premium -->
         <div class="space-y-3">
           <button (click)="onGeneroSeleccionado(generoSeleccionado)"
-                  class="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white py-4 rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-red-500/25 transform hover:scale-105 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            class="w-full bg-gradient-to-r from-customBurbundy to-red-600 hover:from-red-600 hover:to-red-700 text-white py-3 rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-red-500/25 transform hover:scale-105 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             Buscar Artistas
@@ -270,55 +270,5 @@
     </div>
   </div>
 
-  <script>
-    let animationPaused = false;
-    let currentSpeed = 1;
 
-    function toggleAnimation() {
-      const waveContainer = document.getElementById('waveContainer');
-      animationPaused = !animationPaused;
-
-      if (animationPaused) {
-        waveContainer.style.animationPlayState = 'paused';
-        waveContainer.querySelectorAll('*').forEach(el => {
-          el.style.animationPlayState = 'paused';
-        });
-      } else {
-        waveContainer.style.animationPlayState = 'running';
-        waveContainer.querySelectorAll('*').forEach(el => {
-          el.style.animationPlayState = 'running';
-        });
-      }
-    }
-
-    function changeSpeed() {
-      const speeds = [0.5, 1, 1.5, 2];
-      const currentIndex = speeds.indexOf(currentSpeed);
-      currentSpeed = speeds[(currentIndex + 1) % speeds.length];
-
-      const waveContainer = document.getElementById('waveContainer');
-      waveContainer.style.animationDuration = `${3 / currentSpeed}s`;
-
-      // Actualizar velocidad de todos los elementos animados
-      const animatedElements = waveContainer.querySelectorAll('*');
-      animatedElements.forEach(el => {
-        const computedStyle = window.getComputedStyle(el);
-        const duration = computedStyle.animationDuration;
-        if (duration && duration !== 'none') {
-          const numericDuration = parseFloat(duration);
-          el.style.animationDuration = `${numericDuration / currentSpeed}s`;
-        }
-      });
-    }
-
-    // Efecto de mouseover para interactividad
-    document.getElementById('waveContainer').addEventListener('mouseenter', function() {
-      this.style.transform = 'scale(1.02)';
-      this.style.transition = 'transform 0.3s ease';
-    });
-
-    document.getElementById('waveContainer').addEventListener('mouseleave', function() {
-      this.style.transform = 'scale(1)';
-    });
-  </script>
 </div>
