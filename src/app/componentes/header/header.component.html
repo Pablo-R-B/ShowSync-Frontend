@@ -65,15 +65,21 @@
       <!-- Menú desplegable -->
       <div *ngIf="mostrarMenuPerfil"
            class="absolute right-0 top-full mt-2 w-48 bg-white text-black rounded-lg shadow-lg z-50">
-        <a [routerLink]="getRutaPerfil()"
-           class="block px-4 py-2 hover:bg-gray-100 transition">Perfil</a>
-        <a *ngIf="estaLogueado && rolUsuario === 'ARTISTA'"
-           routerLink="/datos-artista"
-           class="block px-4 py-2 hover:bg-gray-100 transition font-medium">
-          Editar mi perfil
-        </a>
+
+        <!-- Enlaces solo visibles cuando el perfil está completo -->
+        <ng-container *ngIf="perfilCompleto">
+          <a [routerLink]="getRutaPerfil()"
+             class="block px-4 py-2 hover:bg-gray-100 transition">Perfil</a>
+          <a *ngIf="rolUsuario === 'ARTISTA'"
+             routerLink="/datos-artista"
+             class="block px-4 py-2 hover:bg-gray-100 transition font-medium rounded-lg">
+            Editar mi perfil
+          </a>
+        </ng-container>
+
+        <!-- Botón cerrar sesión - SIEMPRE VISIBLE -->
         <button (click)="cerrarSesion()"
-                class="w-full text-left px-4 py-2 hover:bg-gray-100 transition">Cerrar sesión</button>
+                class="w-full text-left px-4 py-2 hover:bg-gray-100  hover:rounded-lg ">Cerrar sesión</button>
       </div>
     </div>
 
@@ -117,12 +123,14 @@
 
     <!-- Si SÍ está logueado -->
     <ng-container *ngIf="estaLogueado">
-      <a [routerLink]="getRutaPerfil()"
-         class="block w-full text-white bg-gray-800 hover:bg-gray-700 font-semibold py-2 px-4 rounded transition">
+      <!-- Perfil solo visible si está completo -->
+      <a *ngIf="perfilCompleto" [routerLink]="getRutaPerfil()"
+         class="block w-full text-white bg-gray-800 hover:bg-gray-700 font-semibold py-2 px-4 rounded-lg transition">
         Perfil
       </a>
+      <!-- Cerrar sesión SIEMPRE visible -->
       <button (click)="cerrarSesion()"
-              class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded transition">
+              class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4  rounded-lg">
         Cerrar sesión
       </button>
     </ng-container>

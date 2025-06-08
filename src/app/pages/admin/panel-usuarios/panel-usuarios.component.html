@@ -82,15 +82,16 @@
   </div>
 
   <!-- Información de paginación -->
-  <div *ngIf="!isLoading && usuarios.length === 0" class="text-center py-12 text-gray-400">
+<div *ngIf="!isLoading && usuarios.length > 0" class="flex justify-between items-center mt-4 text-white text-sm">
   <span>
     Página {{ paginaActual + 1 }} de {{ totalPaginas }}
     ({{ totalUsuarios }} usuarios en total)
   </span>
-    <span>
-  Mostrando {{ usuarios.length }} de {{ totalUsuarios }} usuarios
+  <span>
+    Mostrando {{ (paginaActual * itemsPorPagina) + 1 }}-{{ (paginaActual * itemsPorPagina) + usuarios.length }}
+    de {{ totalUsuarios }} usuarios
   </span>
-  </div>
+</div>
 
   <!-- Paginación -->
   <div class="flex justify-center mt-6" *ngIf="totalPaginas > 1 && !isLoading">

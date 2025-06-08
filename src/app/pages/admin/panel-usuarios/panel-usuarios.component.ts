@@ -103,7 +103,7 @@ export class PanelUsuariosComponent implements OnInit {
   }
 
   onFiltroTextoChange(): void {
-    this.searchSubject.next(this.filtro);
+    this.searchSubject.next(this.filtro.toLowerCase());
   }
 
   onFiltroRolChange(): void {

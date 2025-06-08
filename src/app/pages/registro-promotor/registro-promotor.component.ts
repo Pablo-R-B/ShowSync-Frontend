@@ -51,8 +51,7 @@ export class RegistroPromotorComponent implements OnInit {
   ) {
     this.registroPromotorForm = this.fb.group({
       nombrePromotor: ['', [Validators.required, Validators.maxLength(100)]],
-      descripcion: ['', Validators.required],
-    });
+      descripcion: ['', [Validators.required, Validators.maxLength(500)]]});
   }
 
   ngOnInit() {
@@ -135,6 +134,10 @@ export class RegistroPromotorComponent implements OnInit {
 
     this.loading = true;
     const usuarioId = Number(localStorage.getItem('userId'));
+    if (this.registroPromotorForm.get('descripcion')?.value?.length > 500) {
+      this.messageService.add({severity: 'error', summary: 'Error', detail: 'La descripción no puede superar los 255 caracteres.'});
+      return;
+    }
     const promotor = {
       nombrePromotor: this.registroPromotorForm.get('nombrePromotor')?.value,
       descripcion: this.registroPromotorForm.get('descripcion')?.value,
@@ -163,8 +166,7 @@ export class RegistroPromotorComponent implements OnInit {
       error: (err) => {
         console.error('Error al enviar perfil:', err);
         this.loading = false;
-        this.messageService.add({severity:'error', summary:'Error', detail:'Error al guardar el perfil. Inténtalo de nuevo.'});
-      }
+        this.messageService.add({severity: 'error', summary: 'Error', detail: 'La descripción no puede superar los 500 caracteres.'});      }
     });
   }
 
