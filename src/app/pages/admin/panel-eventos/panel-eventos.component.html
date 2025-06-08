@@ -106,6 +106,21 @@
   </table>
   </div>
 
+  <!-- Información de paginación -->
+
+
+  <div *ngIf="!cargando && eventosFiltrados.length > 0" class="flex justify-between items-center mt-4 text-white text-sm">
+    <span>
+      Página {{ paginaActualDisplay }} de {{ totalPaginas }}
+      ({{ totalEventos }} eventos en total)
+    </span>
+    <span>
+      Mostrando {{ (paginaActual * itemsPorPagina) + 1 }}-{{ (paginaActual * itemsPorPagina) + eventosPaginados.length }}
+      de {{ totalEventos }} eventos
+    </span>
+  </div>
+
+
   <!-- Paginación -->
   <div class="flex justify-center mt-6" *ngIf="totalPaginas > 1 && !isLoading">
     <div class="flex flex-col items-center gap-4 mt-6" *ngIf="totalPaginas > 1 && !isLoading">
