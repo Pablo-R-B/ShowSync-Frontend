@@ -27,16 +27,24 @@ export class SalasService {
 
 
   // Métodos CRUD básicos (sin cambios)
-  crear(sala: Sala, imagen: File): Observable<Sala> {
+  crear(sala: Sala, imagen?: File): Observable<Sala> {
     const formData = new FormData();
-    const salaBlob = new Blob([JSON.stringify(sala)], { type: 'application/json' });
-    formData.append('data', salaBlob);
-    formData.append('imagen', imagen);
 
-    return this.http.post<Sala>(`${this.apiUrl}/crear`, formData, {
-      headers: this.getAuthHeaders()
-    });
+    formData.append('nombre', sala.nombre || '');
+    formData.append('direccion', sala.direccion || '');
+    formData.append('capacidad', sala.capacidad?.toString() || '0');
+    formData.append('ciudad', sala.ciudad || '');
+    formData.append('provincia', sala.provincia || '');
+    formData.append('codigoPostal', sala.codigoPostal || '');
+    formData.append('descripcion', sala.descripcion || '');
+
+    if (imagen) {
+      formData.append('imagen', imagen);
+    }
+
+    return this.http.post<Sala>(`${this.apiUrl}`, formData);
   }
+
 
   editar(id: number, sala: Sala, imagenArchivo?: File): Observable<Sala> {
     const formData = new FormData();
