@@ -26,7 +26,7 @@ export class EventosComponent implements OnInit {
 
   constructor(
     private eventosService: EventosService,
-    private authService: AuthService,
+    protected authService: AuthService,
     private artistasService: ArtistasService,
     private postulacionService:PostulacionEventoService,
     private route: ActivatedRoute
@@ -91,8 +91,8 @@ export class EventosComponent implements OnInit {
 
 
   enviarOferta() {
-    if (this.authService.userRole === 'ADMINISTRADOR') {
-      this.mostrarToast('error', 'Como administrador no tienes acceso a esta función.');
+    if (this.authService.userRole === 'ADMINISTRADOR' || this.authService.userRole === 'PROMOTOR') {
+      this.mostrarToast('error', 'Solo los artistas pueden postularse a eventos.');
       return;
     }
     const fechaEvento = new Date(this.evento.fecha);
