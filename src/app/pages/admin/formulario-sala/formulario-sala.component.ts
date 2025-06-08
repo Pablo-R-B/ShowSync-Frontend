@@ -28,7 +28,7 @@ export class FormularioSalaComponent implements OnInit {
     provincia: '',
     codigoPostal: '',
     descripcion: '',
-    logo: '' // Asegurar que logo está definido para preview
+    imagen: ''
   };
 
   provincias = PROVINCIAS_ES;
@@ -63,7 +63,7 @@ export class FormularioSalaComponent implements OnInit {
 
     setTimeout(() => {
       this.toastVisible = false;
-    }, 3000); // Ocultar después de 3 segundos
+    }, 3000);
   }
 
   subirImagen(event: any): void {
@@ -83,10 +83,9 @@ export class FormularioSalaComponent implements OnInit {
 
     this.imagenArchivo = file;
 
-    // Mostrar preview de imagen
     const reader = new FileReader();
     reader.onload = () => {
-      this.sala.logo = reader.result as string;
+      this.sala.imagen = reader.result as string;
     };
     reader.readAsDataURL(file);
 
@@ -124,7 +123,7 @@ export class FormularioSalaComponent implements OnInit {
     if (this.editando && this.sala.id) {
       operacion = this.salaService.editar(this.sala.id, this.sala as Sala, this.imagenArchivo);
     } else {
-      if (!this.imagenArchivo) {
+      if (!this.imagenArchivo && !this.sala.imagen) {
         this.mostrarToast('Debe seleccionar una imagen', 'error');
         this.isLoading = false;
         return;
@@ -135,8 +134,6 @@ export class FormularioSalaComponent implements OnInit {
     operacion.subscribe({
       next: () => {
         this.mostrarToast(`Sala ${this.editando ? 'actualizada' : 'creada'} correctamente`);
-
-        // Pequeño delay para que el usuario vea el mensaje antes de navegar
         setTimeout(() => {
           this.router.navigate(['/admin/salas']);
         }, 1500);
@@ -144,7 +141,6 @@ export class FormularioSalaComponent implements OnInit {
       error: (err) => {
         console.error(`Error al ${this.editando ? 'actualizar' : 'crear'} sala:`, err);
         const mensajeError = err?.error?.message || '';
-
         if (mensajeError.includes('Ya existe una sala con el mismo nombre y dirección')) {
           this.mostrarToast('Ya existe una sala con el mismo nombre y dirección', 'error');
         } else {
@@ -157,14 +153,21 @@ export class FormularioSalaComponent implements OnInit {
 
   cancelar(): void {
     this.mostrarToast('Operación cancelada');
-
     setTimeout(() => {
       this.router.navigate(['/admin/salas']);
     }, 1000);
   }
 
-  get imagenPreview(): string {
-    return this.sala.logo || 'assets/images/logo_1.png';
+  get imagenPreview(): string | undefined {
+    if (this.imagenArchivo) {
+      return this.sala.imagen;
+    }
+
+    if (this.sala.imagen) {
+      return this.sala.imagen;
+    }
+
+    return undefined;
   }
 
   onProvinciaChange(): void {
@@ -227,8 +230,7 @@ export class FormularioSalaComponent implements OnInit {
       return false;
     }
 
-    if (!this.imagenArchivo && !this.sala.logo) {
-      // En edición, si ya hay logo no se obliga a cargar imagen nueva
+    if (!this.imagenArchivo && !this.sala.imagen) {
       this.mostrarToast('Debe seleccionar una imagen', 'error');
       return false;
     }

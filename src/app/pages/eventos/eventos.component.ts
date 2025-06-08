@@ -26,7 +26,7 @@ export class EventosComponent implements OnInit {
 
   constructor(
     private eventosService: EventosService,
-    private authService: AuthService,
+    protected authService: AuthService,
     private artistasService: ArtistasService,
     private postulacionService:PostulacionEventoService,
     private route: ActivatedRoute
@@ -79,7 +79,7 @@ export class EventosComponent implements OnInit {
         popup: 'colored-toast',
       },
       showConfirmButton: false,
-      timer: 1500,
+      timer: 2000,
       timerProgressBar: true,
     });
 
@@ -91,6 +91,10 @@ export class EventosComponent implements OnInit {
 
 
   enviarOferta() {
+    if (this.authService.userRole === 'ADMINISTRADOR' || this.authService.userRole === 'PROMOTOR') {
+      this.mostrarToast('error', 'Solo los artistas pueden postularse a eventos.');
+      return;
+    }
     const fechaEvento = new Date(this.evento.fecha);
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);

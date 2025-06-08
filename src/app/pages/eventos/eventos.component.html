@@ -55,7 +55,8 @@
 
   <!-- Botón de acción -->
   <div class="mt-10 text-center">
-    <button (click)="enviarOferta()"
+    <button *ngIf="authService.userRole !== 'ADMINISTRADOR' && authService.userRole !== 'PROMOTOR'"
+            (click)="enviarOferta()"
             class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full border border-red-500 shadow-lg transition-all">
       Postularse
     </button>

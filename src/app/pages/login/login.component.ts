@@ -124,19 +124,18 @@ export class LoginComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
-        console.error('Error de login:', err);
 
-        // Manejo de errores más específico
         if (err.status === 401) {
           this.error = 'Credenciales incorrectas. Verifica tu email y contraseña.';
         } else if (err.status === 403) {
-          this.error = 'Cuenta bloqueada o sin permisos.';
+          this.error = err.error?.mensaje || 'Cuenta bloqueada o sin permisos. ¿Has confirmado su cuenta?';
         } else if (err.status === 0) {
           this.error = 'Error de conexión. Verifica tu conexión a internet.';
         } else {
-          this.error = 'Error del servidor. Por favor, inténtalo más tarde.';
+          this.error = 'Error del servidor.';
         }
       }
+
     });
   }
 
