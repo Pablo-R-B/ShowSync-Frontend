@@ -1,121 +1,57 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {NgForOf, NgIf} from "@angular/common";
-import {EstadoService} from '../../servicios/estado.service';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {EventosService} from '../../servicios/eventos.service';
-import {SalasService} from '../../servicios/salas.service';
 import {ActivatedRoute} from '@angular/router';
-import {EventoBackend} from '../../interfaces/EventoBackend'
+import {DatePipe, NgIf} from '@angular/common';
+import {EventoConfirmado} from '../../interfaces/EventoConfirmado';
 
 
 @Component({
   selector: 'app-confirmar-eventos',
-    imports: [
-        FormsModule,
-        NgForOf,
-        NgIf,
-        ReactiveFormsModule
-    ],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    DatePipe,
+    NgIf
+  ],
   templateUrl: './confirmar-eventos.component.html',
   styleUrl: './confirmar-eventos.component.css'
 })
 export class ConfirmarEventosComponent implements OnInit{
-  editarEventoForm: FormGroup;
-  loading: boolean = false;
-  estados: string[] = [];
   eventoId!: number;
   promotorId!: number;
-  salas: { id: number; nombre: string }[] = [];
+  loading = false;
+  eventoConfirmado?: EventoConfirmado;
 
   constructor(
-    private fb: FormBuilder,
-    private estadoService: EstadoService,
-    private eventosService: EventosService,
-    private salasService: SalasService,
-    private route: ActivatedRoute
-  ) {
-    this.editarEventoForm = this.fb.group({
-      nombreEvento: ['', [Validators.required, Validators.maxLength(100)]],
-      descripcion: [''],
-      salaId: ['', Validators.required],
-      estado: ['', Validators.required],
-      imagenEvento: ['']
-    });
-  }
+    private route: ActivatedRoute,
+    private eventosService: EventosService
+  ) {}
 
   ngOnInit(): void {
-        this.estadoService.getEstados().subscribe({
-          next: (data) => this.estados = data,
-          error: (err) => console.error('Error al cargar estados:', err)
-    });
-
-    const promotorParam = this.route.snapshot.paramMap.get('idPromotor');
-    const eventoParam = this.route.snapshot.paramMap.get('idEvento');
-
-    if (promotorParam && eventoParam) {
-      this.promotorId = +promotorParam;
-      this.eventoId = +eventoParam;
-      this.cargarEvento(this.promotorId, this.eventoId);
-    } else {
-      console.error('Faltan parámetros de promotor o evento en la ruta');
-    }
-
-    this.salasService.obtenerTodas().subscribe({
-      next: (data) => this.salas = data,
-      error: (err) => console.error('Error al cargar salas:', err)
+    this.route.paramMap.subscribe(params => {
+      const eventoIdParam = params.get('eventoId');
+      const promotorIdParam = params.get('promotorId');
+      if (eventoIdParam) this.eventoId = +eventoIdParam;
+      if (promotorIdParam) this.promotorId = +promotorIdParam;
     });
   }
 
-  private cargarEvento(promotorId: number, eventoId: number): void {
-    this.eventosService.getEventoPorPromotor(promotorId, eventoId).subscribe({
-      next: (evento) => {
-        this.editarEventoForm.patchValue({
-          nombreEvento: evento.nombreEvento,
-          descripcion: evento.descripcion,
-          salaId: evento.idSala,
-          estado: evento.estado,
-          imagenEvento: evento.imagenEvento
-        });
+  confirmarEvento(): void {
+    this.loading = true;
+    this.eventosService.confirmarEventos(this.promotorId, this.eventoId).subscribe({
+      next: (respuesta) => {
+        this.eventoConfirmado = respuesta;
+        console.log('Evento confirmado:', this.eventoConfirmado);
+        alert('¡Evento confirmado exitosamente!');
+        this.loading = false;
       },
-      error: (err) => {
-        console.error('Error al cargar el evento:', err);
+      error: (error) => {
+        console.error('Error al confirmar el evento:', error);
+        alert('Error al confirmar el evento. Revisa si está en estado "en_revision" o si el promotor es correcto.');
+        this.loading = false;
       }
     });
   }
-
-  onSubmit(): void {
-    if (this.editarEventoForm.valid) {
-      this.loading = true;
-
-      const formData = this.editarEventoForm.value;
-
-      const eventoActualizar: EventoBackend = {
-        nombre_evento: formData.nombreEvento,
-        descripcion: formData.descripcion,
-        sala: { id: Number(formData.salaId) },
-        estado: formData.estado,
-        imagen_evento: formData.imagenEvento,
-
-      };
-
-      this.eventosService.editarEvento(this.promotorId, this.eventoId, eventoActualizar).subscribe({
-        next: () => {
-          console.log('✅ Evento actualizado correctamente');
-          this.loading = false;
-        },
-        error: (err) => {
-          console.error('❌ Error al actualizar el evento:', err);
-          this.loading = false;
-        }
-      });
-    } else {
-      console.warn('⚠️ Formulario inválido', this.editarEventoForm.value);
-    }
-  }
-
-  // @ts-ignore
-  hasError(controlName: string, errorName: string): boolean {
-    const control = this.editarEventoForm.get(controlName);
-
-  }
 }
+

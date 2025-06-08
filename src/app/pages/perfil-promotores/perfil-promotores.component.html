@@ -212,7 +212,7 @@
         <ul class="space-y-4">
           <ng-container *ngIf="selectedTab === 'Confirmado'">
             <li
-              *ngFor="let evento of eventosConfirmados | slice:0:6"
+              *ngFor="let evento of eventosConfirmados | slice:0:50"
               class="bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center"
             >
               <div>
@@ -252,7 +252,7 @@
 
           <ng-container *ngIf="selectedTab === 'En Revisión'">
             <li
-              *ngFor="let evento of eventosEnRevision | slice:0:6"
+              *ngFor="let evento of eventosEnRevision | slice:0:50"
               class="bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center"
             >
               <div>
