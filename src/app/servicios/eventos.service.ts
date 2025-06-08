@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
+import {map, Observable} from 'rxjs';
 import {Evento} from '../interfaces/Evento';
 import {EventoCreacion} from '../interfaces/eventoCreacion';
 import {EventoBackend} from '../interfaces/EventoBackend';
@@ -64,9 +64,22 @@ export class EventosService {
   }
 
   // Actualizar un evento existente
-  actualizarEvento(promotorId: number, idEvento: number, formData: FormData): Observable<any> {
-    const url = `${this.apiUrl}/promotores/${promotorId}/eventos/${idEvento}`;
-    return this.http.put(url, formData);
+  actualizarEvento(promotorId: number, idEvento: number, eventoActualizado: EventoActualizado): Observable<string> {
+    const url = `${this.apiUrl}/eventos/promotor/${promotorId}/evento/${idEvento}/editar`;
+    return this.http.put(url, eventoActualizado, {
+      observe: 'response',
+      responseType: 'text'
+    }).pipe(
+      map((response: HttpResponse<string>) => {
+        if (response.body !== null) {
+          return response.body;
+        } else {
+
+          console.warn('Backend returned a successful response with a null body.');
+          return '';
+        }
+      })
+    );
   }
 
 
