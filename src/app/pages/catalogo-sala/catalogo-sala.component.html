@@ -131,7 +131,7 @@
 
         <!-- Loader -->
         <!-- Cambiar el loader para que ocupe el espacio del grid -->
-        <ng-container *ngIf="cargando">
+        <ng-container *ngIf="cargando as isLoading">
           <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             <div *ngFor="let i of [1,2,3,4,5,6]" class="bg-black bg-opacity-60 p-4 rounded-lg h-64 animate-pulse"></div>
           </div>
@@ -152,10 +152,11 @@
         <!-- Lista de salas -->
         <ng-container *ngIf="tieneResultados && !cargando; else sinResultados">
           <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            <div *ngFor="let sala of salas"
+            <div *ngFor="let sala of salas; trackBy: trackBySalaId"
+
                  class="bg-black bg-opacity-60 p-4 rounded-lg flex flex-col shadow-lg hover:shadow-xl transition-shadow duration-300 hover:bg-opacity-90 group  border border-white/10 hover:border-red-500/60 hover:shadow-red-500/10 ">
               <div class="relative overflow-hidden rounded-lg mb-3">
-                <img [src]="sala.imagen || 'assets/images/placeholder.jpg'"
+                <img loading="lazy"  [src]="sala.imagen || 'assets/images/placeholder.jpg'"
                      alt="Imagen de {{ sala.nombre }}"
                      class="w-full h-48 object-cover rounded-lg transform group-hover:scale-105 transition-transform duration-300" />
                 <div class="absolute top-2 right-2 bg-customNegro text-white px-4 py-3 rounded-full text-xs">

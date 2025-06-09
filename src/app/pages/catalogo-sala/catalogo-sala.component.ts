@@ -300,6 +300,11 @@ export class CatalogoSalaComponent implements OnInit {
   }
 
   // Métodos auxiliares para la vista
+  trackBySalaId(index: number, sala: Sala) {
+    return sala.id;
+  }
+
+
   get paginaActualDisplay(): number {
     return this.paginaActual + 1;
   }
