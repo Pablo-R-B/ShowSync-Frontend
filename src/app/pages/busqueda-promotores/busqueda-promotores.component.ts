@@ -120,4 +120,17 @@ export class BusquedaPromotoresComponent implements OnInit {
 
     return Array.from({ length: fin - inicio + 1 }, (_, i) => inicio + i);
   }
+
+  getShortDescription(description: string): string {
+    if (!description) {
+      return 'Sin descripción disponible';
+    }
+
+    const words = description.split(' ');
+    if (words.length <= 10) {
+      return description;
+    }
+
+    return words.slice(0, 10).join(' ') + '...';
+  }
 }

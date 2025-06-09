@@ -33,6 +33,9 @@ export class CatalogoSalaComponent implements OnInit {
   // Variable para navegación rápida
   paginaNavegacion: number = 1;
 
+  totalItems: number = 0;
+
+
   // Filtros
   filtros: FiltrosSala = {
     texto: '',
@@ -111,10 +114,14 @@ export class CatalogoSalaComponent implements OnInit {
     this.salasService.obtenerTodasPaginadas(params).subscribe({
       next: (respuesta) => {
         this.actualizarDatosPaginacion(respuesta);
+        this.salas = respuesta.items;
+        this.totalItems = respuesta.totalItems;
         this.cargando = false;
       },
       error: (err) => {
         this.manejarError('Error al cargar las salas', err);
+        this.totalItems = 0;
+
       }
     });
   }
@@ -128,10 +135,14 @@ export class CatalogoSalaComponent implements OnInit {
       ).subscribe({
         next: (respuesta) => {
           this.actualizarDatosPaginacion(respuesta);
+          this.salas = respuesta.items;
+          this.totalItems = respuesta.totalItems;
           this.cargando = false;
         },
         error: (err) => {
           this.manejarError('Error al filtrar por capacidad', err);
+          this.totalItems = 0;
+
         }
       });
     }
@@ -141,11 +152,15 @@ export class CatalogoSalaComponent implements OnInit {
     if (this.filtros.ciudad.trim()) {
       this.salasService.buscarSalasPorCiudadPaginadas(this.filtros.ciudad, params).subscribe({
         next: (respuesta) => {
+          this.salas = respuesta.items;
+          this.totalItems = respuesta.totalItems;
           this.actualizarDatosPaginacion(respuesta);
           this.cargando = false;
         },
         error: (err) => {
           this.manejarError('Error al buscar por ciudad', err);
+          this.totalItems = 0;
+
         }
       });
     }
@@ -155,11 +170,15 @@ export class CatalogoSalaComponent implements OnInit {
     if (this.filtros.provincia.trim()) {
       this.salasService.buscarSalasPorProvinciaPaginadas(this.filtros.provincia, params).subscribe({
         next: (respuesta) => {
+          this.salas = respuesta.items;
+          this.totalItems = respuesta.totalItems;
           this.actualizarDatosPaginacion(respuesta);
           this.cargando = false;
         },
         error: (err) => {
           this.manejarError('Error al buscar por provincia', err);
+          this.totalItems = 0;
+
         }
       });
     }
@@ -323,5 +342,9 @@ export class CatalogoSalaComponent implements OnInit {
     console.error(mensaje, error);
     this.errorMessage = `${mensaje}. Por favor, intente nuevamente.`;
     this.cargando = false;
+  }
+
+  get totalSalasDisponibles(): number {
+    return this.totalItems || 0;
   }
 }

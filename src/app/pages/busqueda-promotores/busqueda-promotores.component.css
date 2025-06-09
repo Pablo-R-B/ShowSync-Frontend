@@ -189,3 +189,89 @@ h2 span.group:hover span::after {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg);
   }  }
+
+
+/* Agrega estas clases CSS a tu archivo de estilos */
+
+/* Opción 1: Altura uniforme automática (recomendada) */
+.uniform-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.uniform-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 250px; /* Altura mínima uniforme */
+}
+
+.uniform-card-image {
+  width: 100%;
+  height: 200px; /* Altura fija para todas las imágenes */
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.uniform-card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.uniform-card-body {
+  flex: 1;
+}
+
+.uniform-card-footer {
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+/* Opción 2: Para layout horizontal con imágenes uniformes */
+@media (min-width: 640px) {
+  .horizontal-uniform-card {
+    display: flex;
+    height: 220px; /* Altura fija para cards horizontales */
+  }
+
+  .horizontal-uniform-image {
+    width: 40%;
+    height: 100%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .horizontal-uniform-content {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+}
+
+/* Opción 3: Grid con alturas calculadas dinámicamente */
+.dynamic-height-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  grid-auto-rows: minmax(250px, auto);
+}
+
+.dynamic-height-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Para filas pares, asegurar que ambas cards tengan la misma altura */
+.row-pair {
+  display: contents;
+}
+
+.row-pair .dynamic-height-card {
+  height: 100%;
+}

@@ -1,8 +1,8 @@
 <div class="min-h-screen bg-cover bg-center relative" style="background-image: url('https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
   <!-- Overlay -->
-  <div class="absolute inset-0 bg-gradient-to-br from-black/80 via-black/70 to-purple-900/40"></div>
+  <div class="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-customBurbundy/40"></div>
 
-  <div class="relative pt-8 pb-10 px-4 md:px-20 text-white">
+  <div class="relative pt-4 pb-10 px-4 md:px-20 text-white">
     <!-- Hero -->
     <div class="text-center mb-20 relative pt-[60px] sm:pt-[70px] ">
       <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-32 h-32 bg-red-500/20 rounded-full blur-3xl animate-pulse-glow"></div>
@@ -83,29 +83,42 @@
         </div>
 
         <!-- Cards de Promotores -->
-        <section *ngIf="!isLoading && promotores.length > 0" class="space-y-6">
-          <div *ngFor="let promotor of promotores"
-               class="promotor-card fade-in-up bg-black bg-opacity-90 rounded-lg shadow-lg p-4 flex items-center transition-all transform hover:scale-105 border border-white/10 hover:border-red-500/30 hover:shadow-red-500/10">
-            <!-- Imagen del promotor -->
-            <div class="relative overflow-hidden rounded-lg w-24 h-24 flex-shrink-0 mr-4">
-              <img
-                [src]="promotor.imagenPerfil || 'https://via.placeholder.com/300x300?text=Promotor'"
-                alt="Imagen del promotor"
-                class="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                (error)="promotor.imagenPerfil = 'https://via.placeholder.com/300x300?text=Promotor'"/>
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-            </div>
+        <section *ngIf="!isLoading && promotores.length > 0" class="w-full">
+          <!-- Loading spinner -->
+          <div id="loadingSpinner" class="hidden text-center py-20">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <p class="text-gray-400">Cargando promotores...</p>
+          </div>
 
-            <!-- Información del promotor -->
-            <div class="flex-1">
-              <h3 class="text-xl font-semibold text-white mb-2 truncate">{{ promotor.nombrePromotor }}</h3>
-              <p class="text-customGrisClaro text-lg line-clamp-2">{{ promotor.descripcion || 'Sin descripción disponible' }}</p>
-              <div class="flex justify-end items-end mt-4">
-               <button class="py-2 px-4 bg-gradient-to-r from-customBurbundy to-customRed hover:from-red-700 hover:to-red-800 rounded-lg text-white text-sm font-medium transition-all duration-300 shadow-md hover:shadow-red-500/20"
-                       [routerLink]="['/promotores', promotor?.id]">
-                 + info
-               </button>
-             </div>
+          <!-- Grid de promotores - 4 columnas -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div *ngFor="let promotor of promotores"
+                 class="promotor-card fade-in-up bg-black/80 bg-opacity-90 rounded-lg shadow-lg p-6 flex flex-col items-center transition-all transform hover:scale-105 border border-white/10 hover:border-red-500/30 hover:shadow-red-500/10">
+
+              <!-- Imagen del promotor - Circular -->
+              <div class="relative mb-4">
+                <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-red-600 shadow-lg">
+                  <img
+                    [src]="promotor.imagenPerfil || 'https://via.placeholder.com/300x300?text=Promotor'"
+                    alt="Imagen del promotor"
+                    class="w-full h-full object-cover"
+                    (error)="promotor.imagenPerfil = 'https://via.placeholder.com/300x300?text=Promotor'"/>
+                </div>
+              </div>
+
+              <!-- Nombre del promotor -->
+              <h3 class="text-lg font-semibold text-white mb-2 text-center">{{ promotor.nombrePromotor }}</h3>
+
+              <!-- Descripción truncada -->
+              <p class="text-customGrisClaro text-sm text-center mb-4 flex-1">
+                {{ getShortDescription(promotor.descripcion) }}
+              </p>
+
+              <!-- Botón + info -->
+              <button class="py-2 px-4 bg-gradient-to-r from-customBurbundy to-customRed hover:from-red-700 hover:to-red-800 rounded-lg text-white text-sm font-medium transition-all duration-300 shadow-md hover:shadow-red-500/20 mt-auto"
+                      [routerLink]="['/promotores', promotor?.id]">
+                + info
+              </button>
             </div>
           </div>
         </section>
