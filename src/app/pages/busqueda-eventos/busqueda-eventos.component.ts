@@ -283,4 +283,51 @@ export class BusquedaEventosComponent implements OnInit {
   get esUltimaPagina(): boolean {
     return this.paginaActual >= this.totalPaginas - 1;
   }
+
+  /**
+   * Formatea una fecha en un string completo y legible
+   * Ejemplo: "Viernes, 15 de Marzo de 2024 a las 20:30"
+   * @param fechaString Fecha en formato string (ISO o similar)
+   * @returns String con la fecha formateada
+   */
+  formatearFechaCompleta(fechaString: string): string {
+    const fecha = new Date(fechaString);
+
+    // Verificar si la fecha es válida
+    if (isNaN(fecha.getTime())) {
+      return 'Fecha no disponible';
+    }
+
+    const opcionesDia: Intl.DateTimeFormatOptions = { weekday: 'long' };
+    const opcionesMes: Intl.DateTimeFormatOptions = { month: 'long' };
+
+    const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const diaSemana = diasSemana[fecha.getDay()];
+
+    const dia = fecha.getDate();
+    const mes = fecha.toLocaleDateString('es-ES', opcionesMes);
+    const año = fecha.getFullYear();
+
+    const horas = fecha.getHours().toString().padStart(2, '0');
+    const minutos = fecha.getMinutes().toString().padStart(2, '0');
+
+    return `${diaSemana}, ${dia} de ${mes} de ${año} a las ${horas}:${minutos}`;
+  }
+
+  formatearFechaCorta(fechaString: string): string {
+    const fecha = new Date(fechaString);
+
+    if (isNaN(fecha.getTime())) {
+      return '--/--/----';
+    }
+
+    const dia = fecha.getDate().toString().padStart(2, '0');
+    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+    const año = fecha.getFullYear();
+
+    return `${dia}/${mes}/${año}`;
+  }
+
+
+
 }
