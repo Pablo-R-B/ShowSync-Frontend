@@ -4,7 +4,6 @@ import { NgClass, NgForOf, NgIf, TitleCasePipe } from '@angular/common';
 import { EventosService } from '../../servicios/eventos.service';
 import { AuthService } from '../../servicios/auth.service';
 import { FormsModule } from '@angular/forms';
-import {Paginator} from 'primeng/paginator';
 import {filtroEvento} from '../../interfaces/filtroEvento';
 import { Subject } from 'rxjs';
 
@@ -20,7 +19,6 @@ import { Subject } from 'rxjs';
     NgIf,
     NgClass,
     FormsModule,
-    Paginator
   ]
 })
 export class BusquedaEventosComponent implements OnInit {
@@ -42,6 +40,11 @@ export class BusquedaEventosComponent implements OnInit {
   totalItems: number = 0;
   paginaActual: number = 0;
   eventosPaginados: any[] = [];
+
+  totalPaginas: number = 0;
+  paginaNavegacion: number = 1;
+
+
 
 
   filtro: filtroEvento = {
@@ -73,9 +76,11 @@ export class BusquedaEventosComponent implements OnInit {
       next: (data) => {
         this.eventosOriginales = [...data];
         this.eventosFiltrados = [...data];
-        this.totalItems = this.eventosFiltrados.length;
         this.actualizarEventosPaginados();
         this.estados = [...new Set(data.map((e: any) => e.estado))];
+        this.totalItems = this.eventosFiltrados.length;
+        this.totalPaginas = Math.ceil(this.totalItems / this.pageSize); // Calcular total de páginas
+        this.actualizarEventosPaginados();
       },
       error: (err) => {
         console.error('Error al cargar los eventos', err);
@@ -118,6 +123,7 @@ export class BusquedaEventosComponent implements OnInit {
     });
 
     this.totalItems = this.eventosFiltrados.length;
+    this.totalPaginas = Math.ceil(this.totalItems / this.pageSize); // Calcular total de páginas
     this.paginaActual = 0;
     this.actualizarEventosPaginados();
   }
@@ -215,5 +221,66 @@ export class BusquedaEventosComponent implements OnInit {
 
   actualizarBusquedaTexto(): void {
     this.filtrosSubject.next();
+  }
+
+// Métodos de paginación
+  cambiarPagina(pagina: number): void {
+    if (pagina < 0 || pagina >= this.totalPaginas) return;
+    this.paginaActual = pagina;
+    this.paginaNavegacion = pagina + 1;
+    this.cargarEventos();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  paginaAnterior(): void {
+    if (this.paginaActual > 0) {
+      this.cambiarPagina(this.paginaActual - 1);
+    }
+  }
+
+  paginaSiguiente(): void {
+    if (this.paginaActual < this.totalPaginas - 1) {
+      this.cambiarPagina(this.paginaActual + 1);
+    }
+  }
+
+  cambiarItemsPorPagina(): void {
+    this.paginaActual = 0;
+    this.paginaNavegacion = 1;
+    this.cargarEventos()
+  }
+
+  irAPagina(): void {
+    if (this.paginaNavegacion && this.paginaNavegacion >= 1 && this.paginaNavegacion <= this.totalPaginas) {
+      this.cambiarPagina(this.paginaNavegacion - 1);
+    } else {
+      this.paginaNavegacion = this.paginaActual + 1;
+    }
+  }
+
+  obtenerRangoPaginas(): number[] {
+    const rango = [];
+    const inicio = Math.max(0, this.paginaActual - 2);
+    const fin = Math.min(this.totalPaginas - 1, this.paginaActual + 2);
+
+    for (let i = inicio; i <= fin; i++) {
+      rango.push(i);
+    }
+    return rango;
+  }
+
+
+
+  get paginaActualDisplay(): number {
+    return this.paginaActual + 1;
+  }
+
+
+  get esPrimeraPagina(): boolean {
+    return this.paginaActual === 0;
+  }
+
+  get esUltimaPagina(): boolean {
+    return this.paginaActual >= this.totalPaginas - 1;
   }
 }

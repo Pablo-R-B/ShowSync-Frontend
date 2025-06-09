@@ -22,11 +22,18 @@
   class="min-h-screen bg-black text-white p-6"
   style="background-image: url('../../../assets/images/img_1.png'); background-size: cover; background-position: center;"
 >
-  <div class="flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-6">
+  <div class="flex flex-col lg:flex-row gap-6">
 
     <!-- FILTROS -->
-    <div class="bg-zinc-900 p-6 rounded-xl border border-zinc-700 w-full md:w-1/4">
-      <h2 class="text-xl font-bold mb-4 text-center">FILTROS</h2>
+    <div class="bg-black bg-opacity-60 p-4 rounded-lg w-full lg:w-1/4 ">
+      <div class="flex items-center  mb-4">
+        <div class="w-8 h-8 bg-gradient-to-r from-red-500 to-customGrisOscurso rounded-lg mr-3 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+          </svg>
+        </div>
+        <h3 class="text-white text-4xl font-medula">Filtros avanzados</h3>
+      </div>
 
       <!-- Género musical -->
       <label for="generoSelect" class="block mb-2 text-lg font-semibold text-white">
@@ -184,13 +191,92 @@
       </div>
 
       <!-- Paginador centrado -->
-      <div class="card flex justify-center">
-        <p-paginator
-          [rows]="pageSize"
-          [totalRecords]="totalItems"
-          [rowsPerPageOptions]="[6, 10, 12]"
-          (onPageChange)="onPageChange($event)">
-        </p-paginator>
+      <!-- Paginación mejorada -->
+      <div class="flex flex-col items-center mt-8 space-y-4" *ngIf="totalPaginas > 1">
+        <!-- Información de página actual -->
+        <div class="text-sm text-gray-300 text-center">
+          Página {{ paginaActualDisplay }} de {{ totalPaginas }}
+        </div>
+
+        <!-- Controles de paginación -->
+        <nav class="flex items-center" aria-label="Paginación">
+          <!-- Botón Primera página -->
+          <button
+            (click)="cambiarPagina(0)"
+            [disabled]="esPrimeraPagina"
+            [class.opacity-50]="esPrimeraPagina"
+            [class.cursor-not-allowed]="esPrimeraPagina"
+            class="px-3 py-2 rounded-l bg-gray-800 hover:bg-gray-700 text-white text-xs">
+            Primera
+          </button>
+
+          <!-- Botón Anterior -->
+          <button
+            (click)="paginaAnterior()"
+            [disabled]="esPrimeraPagina"
+            [class.opacity-50]="esPrimeraPagina"
+            [class.cursor-not-allowed]="esPrimeraPagina"
+            class="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-white flex items-center border-l border-gray-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+          </button>
+
+          <!-- Números de página -->
+          <ng-container *ngFor="let pagina of obtenerRangoPaginas()">
+            <button
+              (click)="cambiarPagina(pagina)"
+              [class.bg-red-600]="pagina === paginaActual"
+              [class.bg-gray-800]="pagina !== paginaActual"
+              [class.hover:bg-red-700]="pagina === paginaActual"
+              [class.hover:bg-gray-700]="pagina !== paginaActual"
+              [class.text-white]="pagina === paginaActual"
+              [class.text-gray-300]="pagina !== paginaActual"
+              class="px-3 py-2 transition-colors duration-300 border-l border-gray-600">
+              {{ pagina + 1 }}
+            </button>
+          </ng-container>
+
+          <!-- Botón Siguiente -->
+          <button
+            (click)="paginaSiguiente()"
+            [disabled]="esUltimaPagina"
+            [class.opacity-50]="esUltimaPagina"
+            [class.cursor-not-allowed]="esUltimaPagina"
+            class="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-white flex items-center border-l border-gray-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+            </svg>
+          </button>
+
+          <!-- Botón Última página -->
+          <button
+            (click)="cambiarPagina(totalPaginas - 1)"
+            [disabled]="esUltimaPagina"
+            [class.opacity-50]="esUltimaPagina"
+            [class.cursor-not-allowed]="esUltimaPagina"
+            class="px-3 py-2 rounded-r bg-gray-800 hover:bg-gray-700 text-white text-xs border-l border-gray-600">
+            Última
+          </button>
+        </nav>
+
+        <!-- Navegación rápida -->
+        <div class="flex items-center gap-2 text-sm">
+          <span class="text-gray-300">Ir a página:</span>
+          <input
+            type="number"
+            [min]="1"
+            [max]="totalPaginas"
+            [(ngModel)]="paginaNavegacion"
+            (keydown.enter)="irAPagina()"
+            class="w-16 px-2 py-1 bg-gray-800 border border-gray-600 text-white rounded text-center text-sm"
+            placeholder="{{ paginaActualDisplay }}" />
+          <button
+            (click)="irAPagina()"
+            class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">
+            Ir
+          </button>
+        </div>
       </div>
     </div>
 
