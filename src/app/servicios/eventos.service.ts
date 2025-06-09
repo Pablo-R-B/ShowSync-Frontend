@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
+import {map, Observable} from 'rxjs';
 import {Evento} from '../interfaces/Evento';
 import {EventoCreacion} from '../interfaces/eventoCreacion';
 import {EventoBackend} from '../interfaces/EventoBackend';
 import {EventoActualizado} from '../interfaces/EventoActualizado';
+import {EventoConfirmado} from '../interfaces/EventoConfirmado';
 
 
 @Injectable({
@@ -53,10 +54,12 @@ export class EventosService {
   crearEvento(promotorId: number, evento: Evento): Observable<Evento> {
     return this.http.post<Evento>(`${this.apiUrl}/eventos/promotor/${promotorId}`, evento);
   }
-
-  getEventoPorPromotor(idPromotor: number, idEvento: number): Observable<Evento> {
-    return this.http.get<Evento>(`${this.apiUrl}/eventos/promotor/${idPromotor}/evento/${idEvento}`);
+// Crear un nuevo evento para un promotor
+  confirmarEventos(promotorId: number, eventoId: number): Observable<EventoConfirmado> {
+    const url = `${this.apiUrl}/promotor/${promotorId}/eventos/${eventoId}/confirmar`;
+    return this.http.put<EventoConfirmado>(url, null);
   }
+
 
   // Editar un evento de un promotor
   editarEvento(promotorId: number, eventoId: number, evento: EventoBackend): Observable<Evento> {
@@ -64,9 +67,22 @@ export class EventosService {
   }
 
   // Actualizar un evento existente
-  actualizarEvento(promotorId: number, idEvento: number, formData: FormData): Observable<any> {
-    const url = `${this.apiUrl}/promotores/${promotorId}/eventos/${idEvento}`;
-    return this.http.put(url, formData);
+  actualizarEvento(promotorId: number, idEvento: number, eventoActualizado: EventoActualizado): Observable<string> {
+    const url = `${this.apiUrl}/eventos/promotor/${promotorId}/evento/${idEvento}/editar`;
+    return this.http.put(url, eventoActualizado, {
+      observe: 'response',
+      responseType: 'text'
+    }).pipe(
+      map((response: HttpResponse<string>) => {
+        if (response.body !== null) {
+          return response.body;
+        } else {
+
+          console.warn('Backend returned a successful response with a null body.');
+          return '';
+        }
+      })
+    );
   }
 
 
@@ -126,6 +142,7 @@ export class EventosService {
     return this.http.patch<void>(`${this.apiUrl}/eventos/cancelar/${id}`, {});
   }
 
+  // Confirmar un evento de un Artista
   confirmarEvento(id: number): Observable<void> {
     return this.http.patch<void>(`${this.apiUrl}/eventos/confirmar/${id}`, {});
   }

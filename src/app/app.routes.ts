@@ -36,7 +36,7 @@ export const routes: Routes = [
 
 
   // Rutas de eventos
-  { path: 'eventos', component: EventosComponent },
+  { path: '', redirectTo: 'landing-page', pathMatch: 'full' },
 
   {
     path: '',
