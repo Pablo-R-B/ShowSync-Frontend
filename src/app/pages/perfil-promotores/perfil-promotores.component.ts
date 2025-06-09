@@ -271,6 +271,7 @@ export class PerfilPromotoresComponent implements OnInit,AfterViewInit {
 
 
   cargarSolicitudes() {
+    const hoy = new Date();
     this.postulacionService.listarPorPromotor(this.idPromotor).subscribe({
       next: (lista) => {
         console.log("Lista completa:", lista);
