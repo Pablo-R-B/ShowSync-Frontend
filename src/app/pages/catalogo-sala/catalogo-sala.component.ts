@@ -33,6 +33,9 @@ export class CatalogoSalaComponent implements OnInit {
   // Variable para navegación rápida
   paginaNavegacion: number = 1;
 
+  totalItems: number = 0;
+
+
   // Filtros
   filtros: FiltrosSala = {
     texto: '',
@@ -59,6 +62,7 @@ export class CatalogoSalaComponent implements OnInit {
 
   // Búsqueda con debounce
   private searchSubject = new Subject<string>();
+  private filtrosSubject = new Subject<void>(); // Inicialización correcta
 
   constructor(
     private salasService: SalasService,
@@ -111,10 +115,14 @@ export class CatalogoSalaComponent implements OnInit {
     this.salasService.obtenerTodasPaginadas(params).subscribe({
       next: (respuesta) => {
         this.actualizarDatosPaginacion(respuesta);
+        this.salas = respuesta.items;
+        this.totalItems = respuesta.totalItems;
         this.cargando = false;
       },
       error: (err) => {
         this.manejarError('Error al cargar las salas', err);
+        this.totalItems = 0;
+
       }
     });
   }
@@ -128,10 +136,14 @@ export class CatalogoSalaComponent implements OnInit {
       ).subscribe({
         next: (respuesta) => {
           this.actualizarDatosPaginacion(respuesta);
+          this.salas = respuesta.items;
+          this.totalItems = respuesta.totalItems;
           this.cargando = false;
         },
         error: (err) => {
           this.manejarError('Error al filtrar por capacidad', err);
+          this.totalItems = 0;
+
         }
       });
     }
@@ -141,11 +153,15 @@ export class CatalogoSalaComponent implements OnInit {
     if (this.filtros.ciudad.trim()) {
       this.salasService.buscarSalasPorCiudadPaginadas(this.filtros.ciudad, params).subscribe({
         next: (respuesta) => {
+          this.salas = respuesta.items;
+          this.totalItems = respuesta.totalItems;
           this.actualizarDatosPaginacion(respuesta);
           this.cargando = false;
         },
         error: (err) => {
           this.manejarError('Error al buscar por ciudad', err);
+          this.totalItems = 0;
+
         }
       });
     }
@@ -155,11 +171,15 @@ export class CatalogoSalaComponent implements OnInit {
     if (this.filtros.provincia.trim()) {
       this.salasService.buscarSalasPorProvinciaPaginadas(this.filtros.provincia, params).subscribe({
         next: (respuesta) => {
+          this.salas = respuesta.items;
+          this.totalItems = respuesta.totalItems;
           this.actualizarDatosPaginacion(respuesta);
           this.cargando = false;
         },
         error: (err) => {
           this.manejarError('Error al buscar por provincia', err);
+          this.totalItems = 0;
+
         }
       });
     }
@@ -174,7 +194,7 @@ export class CatalogoSalaComponent implements OnInit {
 
   // Métodos de filtrado
   actualizarBusquedaTexto(): void {
-    this.searchSubject.next(this.filtros.texto);
+    this.filtrosSubject.next();
   }
 
   private buscarConDebounce(termino: string): void {
@@ -281,6 +301,11 @@ export class CatalogoSalaComponent implements OnInit {
   }
 
   // Métodos auxiliares para la vista
+  trackBySalaId(index: number, sala: Sala) {
+    return sala.id;
+  }
+
+
   get paginaActualDisplay(): number {
     return this.paginaActual + 1;
   }
@@ -323,5 +348,16 @@ export class CatalogoSalaComponent implements OnInit {
     console.error(mensaje, error);
     this.errorMessage = `${mensaje}. Por favor, intente nuevamente.`;
     this.cargando = false;
+  }
+
+  get totalSalasDisponibles(): number {
+    return this.totalItems || 0;
+  }
+
+
+  aplicarFiltros(): void {
+    this.tipoFiltroActivo = 'general'; // Restablecer a filtro general
+    this.paginaActual = 0; // Reiniciar a la primera página
+    this.cargarSalas(); // Cargar las salas con los filtros aplicados
   }
 }

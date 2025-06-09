@@ -29,7 +29,9 @@ export class EventosComponent implements OnInit {
     protected authService: AuthService,
     private artistasService: ArtistasService,
     private postulacionService:PostulacionEventoService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private routeTo: Router
+
   ) {}
 
   ngOnInit(): void {
@@ -127,6 +129,20 @@ export class EventosComponent implements OnInit {
         this.mostrarToast('error', `Error en la solicitud: ${mensaje}`);
       },
     });
+  }
+
+  volver(): void {
+    this.routeTo.navigate(['/busqueda-eventos']);
+  }
+
+  mostrarModal: boolean = false;
+
+  abrirModal() {
+    this.mostrarModal = true;
+  }
+
+  cerrarModal() {
+    this.mostrarModal = false;
   }
 
 }

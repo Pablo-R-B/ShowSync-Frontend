@@ -22,6 +22,7 @@ import {RegistroPromotorComponent} from './pages/registro-promotor/registro-prom
 import {RegistroArtistaComponent} from './pages/registro-artista/registro-artista.component';
 import {PerfilAdminArtistaComponent} from './pages/perfil-admin-artista/perfil-admin-artista.component';
 
+
 export const routes: Routes = [
   // Rutas de autenticación
   { path: 'auth/registro', component: RegistroComponent },
