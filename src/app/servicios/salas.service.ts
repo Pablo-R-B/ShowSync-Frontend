@@ -30,20 +30,21 @@ export class SalasService {
   crear(sala: Sala, imagen?: File): Observable<Sala> {
     const formData = new FormData();
 
-    formData.append('nombre', sala.nombre || '');
-    formData.append('direccion', sala.direccion || '');
-    formData.append('capacidad', sala.capacidad?.toString() || '0');
-    formData.append('ciudad', sala.ciudad || '');
-    formData.append('provincia', sala.provincia || '');
-    formData.append('codigoPostal', sala.codigoPostal || '');
-    formData.append('descripcion', sala.descripcion || '');
+    // Agrega el JSON del objeto como un Blob con el nombre correcto
+    formData.append(
+      'data',
+      new Blob([JSON.stringify(sala)], { type: 'application/json' })
+    );
 
+
+    // Agrega la imagen
     if (imagen) {
       formData.append('imagen', imagen);
     }
 
-    return this.http.post<Sala>(`${this.apiUrl}`, formData);
+    return this.http.post<Sala>(`${this.apiUrl}/crear`, formData);
   }
+
 
 
   editar(id: number, sala: Sala, imagenArchivo?: File): Observable<Sala> {

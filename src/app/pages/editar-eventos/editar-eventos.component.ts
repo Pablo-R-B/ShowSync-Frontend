@@ -15,6 +15,9 @@ import {AuthService} from '../../servicios/auth.service';
 import {forkJoin, Observable} from 'rxjs';
 import {GeneroMusicalDTO} from '../../interfaces/GeneroMusicalDTO';
 import {ArtistaEvento} from '../../interfaces/ArtistaEvento';
+import {PromotoresService} from '../../servicios/promotores.service';
+import {Promotor} from '../../interfaces/Promotor';
+
 
 
 
@@ -59,6 +62,7 @@ export class EditarEventosComponent implements OnInit{
     private estadoService: EstadoService,
     private salaService: SalasService,
     private artistasService: ArtistasService,
+    private promotoresService: PromotoresService,
     private generosMusicalesService: GenerosMusicalesService,
     private authService: AuthService,
     private route: ActivatedRoute,
@@ -71,26 +75,50 @@ export class EditarEventosComponent implements OnInit{
       estado: ['', Validators.required],
     });
   }
-
   ngOnInit(): void {
-    this.promotorId = this.authService.userId;
-    if (!this.promotorId) {
-      this.errorMensaje = 'No se pudo obtener el ID del promotor. Por favor, inicie sesión.';
+    // Paso 1: Obtener el ID del USUARIO autenticado (el 24)
+    const authenticatedUserId = parseInt(localStorage.getItem('userId') ?? '0', 10); // O this.authService.userId; si ya lo tienes accesible
+
+    if (!authenticatedUserId || authenticatedUserId === 0) {
+      this.errorMensaje = 'No se pudo obtener el ID del usuario autenticado. Por favor, inicie sesión.';
       this.loading = false;
       this.router.navigate(['/login']);
       return;
     }
 
-    const eventoParam = this.route.snapshot.paramMap.get('idEvento');
-    if (eventoParam) {
-      this.idEvento = +eventoParam;
-      this.cargarTodoElFormulario();
-    } else {
-      console.error('Falta el ID del evento en la ruta');
-      this.errorMensaje = 'No se encontró el evento para editar.';
-      this.loading = false;
-    }
+    // Paso 2: Usar el ID del USUARIO para obtener el objeto Promotor completo, y de ahí su ID_PROMOTOR (el 7)
+    this.promotoresService.getPromotorPorIdUsuario(authenticatedUserId).subscribe({
+      next: (promotor: Promotor) => { // Asegúrate de que Promotor está bien tipado
+        if (promotor && promotor.id) {
+          this.promotorId = promotor.id; // <--- ¡AQUÍ ESTÁ LA CLAVE! Guardamos el ID_PROMOTOR correcto
+          console.log('ID de usuario autenticado:', authenticatedUserId);
+          console.log('Promotor recibido (id_promotor: ' + promotor.id + ', usuarioId: ' + promotor.id+ '):', promotor);
+          console.log('ID del promotor para operaciones (el que se usará en la URL):', this.promotorId);
+
+          // Paso 3: Una vez que tenemos el ID del promotor, podemos cargar el formulario del evento
+          const eventoParam = this.route.snapshot.paramMap.get('idEvento');
+          if (eventoParam) {
+            this.idEvento = +eventoParam;
+            this.cargarTodoElFormulario(); // Tu método para cargar el formulario del evento
+          } else {
+            console.error('Falta el ID del evento en la ruta');
+            this.errorMensaje = 'No se encontró el evento para editar.';
+            this.loading = false;
+          }
+        } else {
+          this.errorMensaje = 'El usuario autenticado no tiene un perfil de promotor asociado.';
+          this.loading = false;
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error al obtener el perfil del promotor:', error);
+        this.errorMensaje = error.error?.message || error.message || 'Error desconocido al cargar el perfil del promotor.';
+        this.loading = false;
+      }
+    });
   }
+
+
 
   private cargarTodoElFormulario(): void {
     this.loading = true;
@@ -99,14 +127,16 @@ export class EditarEventosComponent implements OnInit{
     forkJoin({
       estados: this.estadoService.getEstados() as Observable<string[]>,
       salas: this.salaService.obtenerTodas() as Observable<Sala[]>,
+      // Asegúrate de que `artistasPorPromotor` devuelve los objetos `Artistas` completos (con ID, nombre, imagen)
       artistasPromotor: this.artistasService.artistasPorPromotor(this.promotorId) as Observable<Artistas[]>,
       generos: this.generosMusicalesService.listarGeneros() as Observable<GeneroMusicalDTO[]>,
-      evento: this.eventoService.obtenerEventoDetalleParaEdicion(this.idEvento) as Observable<EventoActualizado>
+      // Cambiamos el tipo de `evento` a `any` para manejar el formato mixto del backend
+      evento: this.eventoService.obtenerEventoDetalleParaEdicion(this.idEvento) as Observable<any>
     }).subscribe({
       next: ({ estados, salas, artistasPromotor, generos, evento }) => {
         this.estados = estados;
         this.salas = salas;
-        this.artistasDisponibles = artistasPromotor;
+        this.artistasDisponibles = artistasPromotor; // Esta lista ya contiene objetos completos
         this.generosMusicalesDisponibles = generos;
         console.log('Géneros disponibles (todos):', this.generosMusicalesDisponibles);
         console.log('Géneros del evento (del backend):', evento.generosMusicales);
@@ -120,10 +150,46 @@ export class EditarEventosComponent implements OnInit{
 
         this.imagenPreviaUrl = evento.imagenEvento || null;
 
-        // Populate artistasAsignados and selectedGenreIds based on fetched event
-        // Backend's ArtistasDTO should have nombreArtista here
-        this.artistasAsignados = evento.artistasAsignados || [];
-        this.selectedGenreIds = evento.generosMusicales?.map(g => g.id) || [];
+        // *** LA MODIFICACIÓN CRÍTICA: Convertir strings de artistas a objetos ArtistaEvento completos ***
+        if (evento.artistasAsignados && Array.isArray(evento.artistasAsignados) && evento.artistasAsignados.length > 0) {
+          this.artistasAsignados = evento.artistasAsignados.map((item: string | ArtistaEvento) => {
+            // Si el item ya es un objeto (por si tu backend cambia su comportamiento o si la interfaz de artista es diferente), lo usamos directamente
+            if (typeof item === 'object' && item !== null && 'id' in item && 'nombreArtista' in item) {
+              return item as ArtistaEvento;
+            }
+            // Si es un string (que es tu caso actual, ej. "Farruco")
+            else if (typeof item === 'string') {
+              const nombreArtistaDelBackend = item;
+              const artistaCompleto = this.artistasDisponibles.find(
+                a => a.nombreArtista === nombreArtistaDelBackend
+              );
+              if (artistaCompleto) {
+                // Si lo encontramos en la lista de artistas disponibles, devolvemos el objeto completo
+                return {
+                  id: artistaCompleto.id,
+                  nombreArtista: artistaCompleto.nombreArtista,
+                  imagenPerfil: artistaCompleto.imagenPerfil
+                } as ArtistaEvento;
+              } else {
+                // Si el artista del evento no se encuentra en la lista de disponibles,
+                // loggeamos una advertencia y creamos un objeto básico para evitar errores en la UI.
+                // Esto podría indicar un artista inactivo o un dato inconsistente en la DB.
+                console.warn(`Artista "${nombreArtistaDelBackend}" del evento (ID: ${this.idEvento}) no encontrado en la lista de artistas disponibles.`);
+                return { id: 0, nombreArtista: nombreArtistaDelBackend, imagenPerfil: 'https://via.placeholder.com/50?text=No+Img' } as ArtistaEvento;
+              }
+            }
+            // En caso de un formato inesperado, devolvemos un objeto por defecto
+            console.warn(`Formato inesperado para artista asignado: ${item}`);
+            return { id: 0, nombreArtista: 'Desconocido', imagenPerfil: 'https://via.placeholder.com/50?text=Error' } as ArtistaEvento;
+          });
+          // Opcional: Asegúrate de que los artistas asignados se muestren ordenados
+          this.artistasAsignados.sort((a, b) => a.nombreArtista.localeCompare(b.nombreArtista));
+        } else {
+          this.artistasAsignados = []; // Si no hay artistas o el array es vacío, inicializa vacío
+        }
+
+        // Géneros musicales: esto ya lo manejas bien, ya que el backend te los da como objetos con ID
+        this.selectedGenreIds = evento.generosMusicales?.map((g: any) => g.id) || [];
 
         this.loading = false;
       },
@@ -188,6 +254,7 @@ export class EditarEventosComponent implements OnInit{
 
   onSubmit() {
     this.editarEventoForm.markAllAsTouched();
+
     if (this.artistasAsignados.length === 0) {
       this.errorMensaje = 'Debe seleccionar al menos un artista.';
       return;
@@ -204,30 +271,30 @@ export class EditarEventosComponent implements OnInit{
     this.loading = true;
     this.errorMensaje = null;
 
-    const formData = new FormData();
-
-    const eventoEditado: EventoActualizado = {
+    // 1. Construct the EventoActualizado object
+    const eventoAEnviar: EventoActualizado = {
+      // It's good practice to send the ID if your DTO has it,
+      // even if the backend primarily uses the @PathVariable.
+      id: this.idEvento,
       nombreEvento: this.editarEventoForm.get('nombreEvento')?.value,
       descripcion: this.editarEventoForm.get('descripcion')?.value,
       idSala: this.editarEventoForm.get('idSala')?.value,
       estado: this.editarEventoForm.get('estado')?.value,
+      // If you're not using FormData for image upload, you'll send the image URL here.
+      // Ensure `this.imagenPreviaUrl` holds the current (or new if set by other means) URL.
       imagenEvento: this.imagenPreviaUrl || '',
-      artistasAsignados: this.artistasAsignados, // Send the ArtistaEvento objects
-      generosMusicalesIds: this.selectedGenreIds // Send array of genre IDs
+      artistasAsignados: this.artistasAsignados,
+      generosMusicalesIds: this.selectedGenreIds
     };
 
-    if (this.archivoImagen) {
-      formData.append('imagenArchivo', this.archivoImagen, this.archivoImagen.name);
-      eventoEditado.imagenEvento = '';
-    } else if (this.imagenPreviaUrl) {
-      eventoEditado.imagenEvento = this.imagenPreviaUrl;
-    } else {
-      eventoEditado.imagenEvento = '';
-    }
+    // 2. Remove all FormData related logic
+    // Removed:
+    // const formData = new FormData();
+    // if (this.archivoImagen) { ... } else if (this.imagenPreviaUrl) { ... } else { ... }
+    // formData.append('evento', new Blob([JSON.stringify(eventoEditado)], { type: 'application/json' }));
 
-    formData.append('evento', new Blob([JSON.stringify(eventoEditado)], { type: 'application/json' }));
-
-    this.eventoService.actualizarEvento(this.promotorId, this.idEvento, formData).subscribe({
+    // 3. Call the service method, passing the JSON object directly
+    this.eventoService.actualizarEvento(this.promotorId, this.idEvento, eventoAEnviar).subscribe({
       next: () => {
         this.loading = false;
         alert('Evento editado correctamente.');
@@ -240,7 +307,6 @@ export class EditarEventosComponent implements OnInit{
       }
     });
   }
-
   navigateToPerfilPromotores(): void {
     this.router.navigate(['/perfil-promotores']);
   }

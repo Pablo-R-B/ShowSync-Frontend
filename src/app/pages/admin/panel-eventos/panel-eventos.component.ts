@@ -36,6 +36,8 @@ export class PanelEventosComponent implements OnInit {
   paginaActual: number = 0;
   itemsPorPagina: number = 6;
   totalPaginas: number = 0;
+  totalEventos: number = 0;
+
 
   // Búsqueda con debounce
   private searchSubject = new Subject<string>();
@@ -67,6 +69,7 @@ export class PanelEventosComponent implements OnInit {
 
     this.eventoService.getTodosLosEventos().subscribe({
       next: (eventos) => {this.eventos = eventos.sort((a, b) => new Date(b.fechaEvento).getTime() - new Date(a.fechaEvento).getTime());
+        this.totalEventos = this.eventos.length; // Calcular el total de eventos
         this.filtrarEventos();
         this.cargando = false;
       },

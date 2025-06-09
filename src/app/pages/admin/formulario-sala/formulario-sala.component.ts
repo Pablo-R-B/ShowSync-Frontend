@@ -112,7 +112,7 @@ export class FormularioSalaComponent implements OnInit {
   }
 
   guardarSala(): void {
-    if (!this.validarFormulario()) return;
+    if (!this.validarFormulario() && !this.imagenArchivo) return;
     if (this.isLoading) return;
 
     this.isLoading = true;
@@ -225,7 +225,7 @@ export class FormularioSalaComponent implements OnInit {
       return false;
     }
 
-    if (!this.sala.descripcion?.trim() || this.sala.descripcion.length < 20 || this.sala.descripcion.length > 500) {
+    if (!this.sala.descripcion?.trim() || this.sala.descripcion.length < 20 || this.sala.descripcion.length > 1000) {
       this.mostrarToast('La descripción debe tener entre 20 y 500 caracteres', 'error');
       return false;
     }

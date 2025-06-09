@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import { CommonModule, DatePipe, NgForOf } from '@angular/common';
 import {Promotor} from '../../interfaces/Promotor';
@@ -8,7 +8,9 @@ import {PromotoresService} from '../../servicios/promotores.service';
 import {AuthService} from '../../servicios/auth.service';
 import {ArtistasService} from '../../servicios/artistas.service';
 import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
-import { Artistas } from '../../interfaces/artistas';
+import { register } from 'swiper/element/bundle';
+register();
+
 
 @Component({
   selector: 'app-promotores',
@@ -20,29 +22,32 @@ import { Artistas } from '../../interfaces/artistas';
   ],
   providers: [DatePipe],
   templateUrl: './promotores.component.html',
-  styleUrls: ['./promotores.component.css']
+  styleUrls: ['./promotores.component.css'],
+  encapsulation: ViewEncapsulation.None,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class PromotoresComponent implements OnInit {
+export class PromotoresComponent implements OnInit{
   promotor: Promotor | null = null;
   logoUrl: string = '../../../assets/images/logo_1.png';
   eventos: EventoDTO[] = [];
   eventoDestacado?: EventoDTO;
   eventosProximos: Array<{ fecha: string; lugar: string; nombre: string }> = [];
   artistas: Array<{
-      biografia: string;
-      generosMusicales: string; nombre: string
+    id: number;
+    generosMusicales: string;
+    nombre: string;
+    imagenPerfil: string; // <-- ¡Añade la URL de la imagen aquí!
   }> = [];
   idPromotor!: number;
   isModalOpen = false;
   eventoSeleccionado!:number
-  artistaId!: number;
+
 
 
   constructor(
     private promotoresService: PromotoresService,
     private authService: AuthService,
     private artistasService: ArtistasService,
-    private postulacionService: PostulacionEventoService,
     private datePipe: DatePipe,
     private router: Router,
     private route: ActivatedRoute
@@ -65,8 +70,8 @@ export class PromotoresComponent implements OnInit {
       console.error('No se encontró un ID de usuario válido');
       return;
     }
-
   }
+
 
   // Obtener los detalles del promotor
   private obtenerPromotor() {
@@ -83,11 +88,15 @@ export class PromotoresComponent implements OnInit {
 
     this.promotoresService.cargarEventosDePromotor(this.idPromotor)
       .subscribe(data => {
-        this.eventos = data;
+        this.eventos = data.sort((a, b) => {
+          const dateA = new Date(a.fechaEvento);
+          const dateB = new Date(b.fechaEvento);
+          // Ordena en orden descendente (el más nuevo primero)
+          return dateB.getTime() - dateA.getTime();
+        });
 
-        if (data.length) {
-          // Establecer el evento destacado
-          this.eventoDestacado = data[0];
+        if (this.eventos.length) {
+          this.eventoDestacado = this.eventos[0];
         }
 
         // Filtrar los eventos futuros
@@ -97,7 +106,8 @@ export class PromotoresComponent implements OnInit {
             fecha: this.datePipe.transform(e.fechaEvento, 'dd/MM/yyyy')!,
             lugar: e.nombreSala,
             nombre: e.nombreEvento
-          }));
+          }))
+
       });
   }
 
@@ -106,20 +116,31 @@ export class PromotoresComponent implements OnInit {
     this.artistasService.artistasPorPromotor(this.idPromotor)
       .subscribe({
         next: (data: any) => {
-          console.log('Respuesta del servicio:', data); // Verifica la estructura de los datos
-          const artistasArray = Array.isArray(data.content) ? data.content : []; // Accede a la propiedad `content`
-          this.artistas = artistasArray.map((artista: Artistas) => ({
+          console.log('Respuesta del servicio (antes de procesar):', data);
+
+          const artistasRecibidos = Array.isArray(data) ? data : [];
+
+          this.artistas = artistasRecibidos.map((artista: any) => ({
+            id: artista.id,
             nombre: artista.nombreArtista,
-            generosMusicales: artista.generosMusicales.join(', '),
-            biografia: artista.biografia
+            generosMusicales: artista.generosMusicales ? artista.generosMusicales.join(', ') : '',
+            imagenPerfil: artista.imagenPerfil // <-- ¡Asigna la URL de la imagen del backend!
           }));
-          console.log('Artistas procesados:', this.artistas); // Muestra los artistas procesados
         },
         error: (err) => {
           console.error('Error al obtener artistas asociados al promotor:', err);
         }
       });
   }
+
+  navigateToArtistaProfile(artistaId: number): void {
+    if (artistaId) {
+      this.router.navigate(['/artista', artistaId]);
+    } else {
+      console.error('ID del artista no válido para navegar al perfil.');
+    }
+  }
+
 
   // Método para ver los detalles de un evento
   verDetallesEvento(eventoId: number) {
