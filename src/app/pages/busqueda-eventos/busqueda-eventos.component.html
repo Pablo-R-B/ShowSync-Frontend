@@ -100,10 +100,13 @@
               <!-- Botón de Aceptar -->
               <button
                 id="btnAceptar"
-                class="w-full bg-gray-700/50 hover:bg-gray-600/60 text-white py-3 rounded-xl transition-all duration-300 backdrop-blur-sm border border-gray-600/30 hover:border-gray-500/50"
                 (click)="aplicarFiltros()"
-              >
-                Aceptar
+                class="w-full bg-gradient-to-r from-customBurbundy to-red-600 hover:from-red-600 hover:to-red-700 text-white py-3 rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-red-500/25 transform hover:scale-105 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+
+                Aplicar
               </button>
 
               <button (click)="limpiarTodosFiltros()"
@@ -177,8 +180,11 @@
                 <!-- Información del evento -->
                 <div class="flex-1 w-full text-center md:text-left">
                   <h3 class="text-xl font-semibold">{{ evento.nombreEvento }}</h3>
-                  <div class="text-sm mt-1">📍 {{ evento.nombreSala }}</div>
-                  <div class="text-sm mt-1">📅 {{ formatearFecha(evento.fechaEvento) }}</div>
+                  <div class="text-sm mt-1">
+                    <i class="fa fa-map-signs mr-2"></i> {{ evento.nombreSala }}</div>
+
+                  <div class="text-sm mt-1">
+                    <i class="fa fa-calendar mr-2"></i> {{ formatearFecha(evento.fechaEvento) }}</div>
                 </div>
 
                 <!-- Botón + info -->

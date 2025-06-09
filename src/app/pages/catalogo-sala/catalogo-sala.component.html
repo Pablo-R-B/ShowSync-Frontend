@@ -79,10 +79,13 @@
 
         <button
           id="btnAceptar"
-          class="w-full bg-gray-700/50 hover:bg-gray-600/60 text-white py-3 rounded-xl transition-all duration-300 backdrop-blur-sm border border-gray-600/30 hover:border-gray-500/50"
           (click)="aplicarFiltros()"
-        >
-          Aceptar
+          class="w-full bg-gradient-to-r from-customBurbundy to-red-600 hover:from-red-600 hover:to-red-700 text-white py-3 rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-red-500/25 transform hover:scale-105 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+
+          Aplicar
         </button>
 
         <button (click)="limpiarTodosFiltros()"
@@ -170,7 +173,7 @@
                 <img loading="lazy"  [src]="sala.imagen || 'assets/images/placeholder.jpg'"
                      alt="Imagen de {{ sala.nombre }}"
                      class="w-full h-48 object-cover rounded-lg transform group-hover:scale-105 transition-transform duration-300" />
-                <div class="absolute top-2 right-2 bg-customNegro text-white px-4 py-3 rounded-full text-xs">
+                <div class="absolute top-2 right-2 bg-customNegro text-white border-2 border-customGrisMedio px-4 py-3 rounded-full text-xs">
                   {{ sala.capacidad }} personas
                 </div>
               </div>
@@ -185,9 +188,9 @@
                 </span>
               </p>
               <p class="text-sm text-gray-200 flex-grow mb-3 line-clamp-3">{{ sala.descripcion }}</p>
-              <div class="flex justify-between items-center mt-2">
+              <div class="flex justify-between items-end mt-2">
                 <button (click)="irAReservarSala(sala.id)"
-                        class="bg-customRed text-white px-4 py-2 rounded hover:bg-customBurbundy transition-colors duration-300 flex items-center">
+                        class="ml-auto  bg-customGrisClaro text-customBurbundy px-4 py-2 rounded hover:bg-customRed hover:text-customBlanco transition-colors duration-300 flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
