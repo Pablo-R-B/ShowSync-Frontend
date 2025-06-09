@@ -36,7 +36,7 @@ export class BusquedaEventosComponent implements OnInit {
   fechaDesde: string = '';
   fechaHasta: string = '';
 
-  pageSize: number = 6;
+  pageSize: number = 12;
   totalItems: number = 0;
   paginaActual: number = 0;
   eventosPaginados: any[] = [];
