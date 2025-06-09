@@ -167,47 +167,53 @@
               <!-- Lista de eventos -->
               <div
                 *ngFor="let evento of eventosPaginados"
-                class="bg-zinc-900 rounded-xl border border-zinc-700 flex flex-col md:flex-row items-center p-4 space-y-4 md:space-y-0 md:space-x-4"
+                class="relative bg-zinc-900 rounded-xl border  overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-300 group  border-white/10 hover:border-red-500/60 hover:shadow-red-500/10"
+                (click)="usuarioLogueado ? verInfo(evento) : null"
               >
-                <!-- Imagen del evento -->
-                <img
-                  [src]="evento.imagenEvento"
-                  (error)="evento.imagenEvento = 'assets/images/default-evento.jpg'"
-                  alt="Imagen del evento"
-                  class="w-full md:w-1/4 h-32 object-cover rounded"
-                />
+                <!-- Imagen de fondo -->
+                <div
+                  class="absolute inset-0 bg-cover bg-center opacity-80"
+                  [style.background-image]="'url(' + evento.imagenEvento + ')'"
+                ></div>
 
-                <!-- Información del evento -->
-                <div class="flex-1 w-full text-center md:text-left">
-                  <h3 class="text-xl font-semibold">{{ evento.nombreEvento }}</h3>
-                  <div class="text-sm mt-1">
-                    <i class="fa fa-map-signs mr-2"></i> {{ evento.nombreSala }}</div>
+                <!-- Overlay gradient -->
+                <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/70"></div>
 
-                  <div class="text-sm mt-1">
-                    <i class="fa fa-calendar mr-2"></i> {{ formatearFecha(evento.fechaEvento) }}</div>
+                <!-- Contenido -->
+                <div class="relative z-10 flex flex-col md:flex-row items-center p-6 space-y-4 md:space-y-0 md:space-x-6">
+                  <!-- Información del evento -->
+                  <div class="flex-1 w-full text-center md:text-left">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-customRed transition-colors">{{ evento.nombreEvento }}</h3>
+                    <div class="text-gray-200 text-sm mb-2 flex items-center justify-center md:justify-start">
+                      <i class="fa fa-map-signs mr-2 text-customGrisClaro2"></i>
+                      <span>{{ evento.nombreSala }}</span>
+                    </div>
+                    <div class="text-gray-200 text-sm flex items-center justify-center md:justify-start">
+                      <i class="fa fa-calendar mr-2 text-customGrisClaro2"></i>
+                      <span>{{ formatearFecha(evento.fechaEvento) }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Botón + info -->
+                  <ng-container *ngIf="usuarioLogueado; else accesoDenegado">
+                    <button
+                      class="bg-customRed hover:bg-customGrisOscurso text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 "
+                      (click)="verInfo(evento); $event.stopPropagation()"
+                      aria-label="Ver más información del evento"
+                    >
+                      <i class="fa fa-arrow-right"></i>
+                    </button>
+                  </ng-container>
+                  <ng-template #accesoDenegado>
+                    <button
+                      class="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold opacity-60 cursor-not-allowed flex items-center space-x-2"
+                      disabled
+                      aria-disabled="true"
+                    >
+                      <i class="fa fa-lock"></i>
+                    </button>
+                  </ng-template>
                 </div>
-
-                <!-- Botón + info -->
-                <ng-container *ngIf="usuarioLogueado; else accesoDenegado">
-                  <button
-                    class="bg-slate-500 hover:bg-slate-600 text-white px-3 py-1 rounded"
-                    (click)="verInfo(evento)"
-                    aria-label="Ver más información del evento"
-                  >
-                    + info
-                  </button>
-                </ng-container>
-                <ng-template #accesoDenegado>
-                  <button
-                    class="bg-gray-600 text-white px-3 py-1 rounded opacity-60 cursor-not-allowed"
-                    disabled
-                    aria-disabled="true"
-                  >
-                    + info
-                  </button>
-                </ng-template>
-
-
               </div>
 
               <!-- Paginación mejorada -->
