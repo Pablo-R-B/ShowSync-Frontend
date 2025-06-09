@@ -123,94 +123,96 @@
           </div>
         </section>
 
-        <!-- Paginación -->
-        <div class="flex flex-col items-center mt-12 space-y-4" *ngIf="!isLoading && totalPaginas > 1">
-          <!-- Información de página actual -->
-          <div class="text-sm text-gray-300 text-center">
-            Mostrando {{ promotores.length }} de {{ totalItems }} promotores (Página {{ paginaActualDisplay }} de {{ totalPaginas }})
-          </div>
 
-          <!-- Controles de paginación -->
-          <nav class="flex items-center" aria-label="Paginación">
-            <!-- Primera página -->
-            <button
-              (click)="cambiarPagina(0)"
-              [disabled]="esPrimeraPagina || isLoading"
-              [class.opacity-50]="esPrimeraPagina || isLoading"
-              [class.cursor-not-allowed]="esPrimeraPagina || isLoading"
-              class="px-4 py-2 rounded-l-lg bg-gray-800 hover:bg-gray-700 text-white text-sm transition-colors duration-300">
-              Primera
-            </button>
-
-            <!-- Anterior -->
-            <button
-              (click)="paginaAnterior()"
-              [disabled]="esPrimeraPagina || isLoading"
-              [class.opacity-50]="esPrimeraPagina || isLoading"
-              [class.cursor-not-allowed]="esPrimeraPagina || isLoading"
-              class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white flex items-center border-l border-gray-700 transition-colors duration-300">
-              <i class="fas fa-chevron-left text-xs"></i>
-            </button>
-
-            <!-- Números de página -->
-            <ng-container *ngFor="let pagina of getPaginasMostradas()">
-              <button
-                (click)="cambiarPagina(pagina)"
-                [disabled]="isLoading"
-                [class.bg-red-600]="pagina === paginaActual"
-                [class.bg-gray-800]="pagina !== paginaActual"
-                [class.hover:bg-red-700]="pagina === paginaActual && !isLoading"
-                [class.hover:bg-gray-700]="pagina !== paginaActual && !isLoading"
-                [class.text-white]="pagina === paginaActual"
-                [class.text-gray-300]="pagina !== paginaActual"
-                [class.cursor-not-allowed]="isLoading"
-                class="px-4 py-2 transition-colors duration-300 border-l border-gray-700">
-                {{ pagina + 1 }}
-              </button>
-            </ng-container>
-
-            <!-- Siguiente -->
-            <button
-              (click)="paginaSiguiente()"
-              [disabled]="esUltimaPagina || isLoading"
-              [class.opacity-50]="esUltimaPagina || isLoading"
-              [class.cursor-not-allowed]="esUltimaPagina || isLoading"
-              class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white flex items-center border-l border-gray-700 transition-colors duration-300">
-              <i class="fas fa-chevron-right text-xs"></i>
-            </button>
-
-            <!-- Última página -->
-            <button
-              (click)="cambiarPagina(totalPaginas - 1)"
-              [disabled]="esUltimaPagina || isLoading"
-              [class.opacity-50]="esUltimaPagina || isLoading"
-              [class.cursor-not-allowed]="esUltimaPagina || isLoading"
-              class="px-4 py-2 rounded-r-lg bg-gray-800 hover:bg-gray-700 text-white text-sm transition-colors duration-300 border-l border-gray-700">
-              Última
-            </button>
-          </nav>
-
-          <!-- Navegación rápida -->
-          <div class="flex items-center gap-2 text-sm mt-4">
-            <span class="text-gray-300">Ir a página:</span>
-            <input
-              type="number"
-              [min]="1"
-              [max]="totalPaginas"
-              [(ngModel)]="paginaNavegacion"
-              (keydown.enter)="irAPagina()"
-              [disabled]="isLoading"
-              class="w-16 px-3 py-1.5 bg-gray-800 border border-gray-600 text-white rounded-lg text-center text-sm focus:border-red-500 focus:ring-1 focus:ring-red-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
-              placeholder="{{ paginaActualDisplay }}" />
-            <button
-              (click)="irAPagina()"
-              [disabled]="isLoading"
-              class="px-4 py-1.5 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-lg text-sm font-medium transition-all duration-300 shadow-md hover:shadow-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed">
-              Ir
-            </button>
-          </div>
         </div>
       </div>
     </div>
+  </div>
+
+<!-- Paginación -->
+<div class="flex flex-col items-center mt-12 space-y-4" *ngIf="!isLoading && totalPaginas > 1">
+  <!-- Información de página actual -->
+  <div class="text-sm text-gray-300 text-center">
+    Mostrando {{ promotores.length }} de {{ totalItems }} promotores (Página {{ paginaActualDisplay }} de {{ totalPaginas }})
+  </div>
+
+  <!-- Controles de paginación -->
+  <nav class="flex items-center" aria-label="Paginación">
+    <!-- Primera página -->
+    <button
+      (click)="cambiarPagina(0)"
+      [disabled]="esPrimeraPagina || isLoading"
+      [class.opacity-50]="esPrimeraPagina || isLoading"
+      [class.cursor-not-allowed]="esPrimeraPagina || isLoading"
+      class="px-4 py-2 rounded-l-lg bg-gray-800 hover:bg-gray-700 text-white text-sm transition-colors duration-300">
+      Primera
+    </button>
+
+    <!-- Anterior -->
+    <button
+      (click)="paginaAnterior()"
+      [disabled]="esPrimeraPagina || isLoading"
+      [class.opacity-50]="esPrimeraPagina || isLoading"
+      [class.cursor-not-allowed]="esPrimeraPagina || isLoading"
+      class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white flex items-center border-l border-gray-700 transition-colors duration-300">
+      <i class="fas fa-chevron-left text-xs"></i>
+    </button>
+
+    <!-- Números de página -->
+    <ng-container *ngFor="let pagina of getPaginasMostradas()">
+      <button
+        (click)="cambiarPagina(pagina)"
+        [disabled]="isLoading"
+        [class.bg-red-600]="pagina === paginaActual"
+        [class.bg-gray-800]="pagina !== paginaActual"
+        [class.hover:bg-red-700]="pagina === paginaActual && !isLoading"
+        [class.hover:bg-gray-700]="pagina !== paginaActual && !isLoading"
+        [class.text-white]="pagina === paginaActual"
+        [class.text-gray-300]="pagina !== paginaActual"
+        [class.cursor-not-allowed]="isLoading"
+        class="px-4 py-2 transition-colors duration-300 border-l border-gray-700">
+        {{ pagina + 1 }}
+      </button>
+    </ng-container>
+
+    <!-- Siguiente -->
+    <button
+      (click)="paginaSiguiente()"
+      [disabled]="esUltimaPagina || isLoading"
+      [class.opacity-50]="esUltimaPagina || isLoading"
+      [class.cursor-not-allowed]="esUltimaPagina || isLoading"
+      class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white flex items-center border-l border-gray-700 transition-colors duration-300">
+      <i class="fas fa-chevron-right text-xs"></i>
+    </button>
+
+    <!-- Última página -->
+    <button
+      (click)="cambiarPagina(totalPaginas - 1)"
+      [disabled]="esUltimaPagina || isLoading"
+      [class.opacity-50]="esUltimaPagina || isLoading"
+      [class.cursor-not-allowed]="esUltimaPagina || isLoading"
+      class="px-4 py-2 rounded-r-lg bg-gray-800 hover:bg-gray-700 text-white text-sm transition-colors duration-300 border-l border-gray-700">
+      Última
+    </button>
+  </nav>
+
+  <!-- Navegación rápida -->
+  <div class="flex items-center gap-2 text-sm mt-4">
+    <span class="text-gray-300">Ir a página:</span>
+    <input
+      type="number"
+      [min]="1"
+      [max]="totalPaginas"
+      [(ngModel)]="paginaNavegacion"
+      (keydown.enter)="irAPagina()"
+      [disabled]="isLoading"
+      class="w-16 px-3 py-1.5 bg-gray-800 border border-gray-600 text-white rounded-lg text-center text-sm focus:border-red-500 focus:ring-1 focus:ring-red-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
+      placeholder="{{ paginaActualDisplay }}" />
+    <button
+      (click)="irAPagina()"
+      [disabled]="isLoading"
+      class="px-4 py-1.5 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-lg text-sm font-medium transition-all duration-300 shadow-md hover:shadow-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed">
+      Ir
+    </button>
   </div>
 </div>
