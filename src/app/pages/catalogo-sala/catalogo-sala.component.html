@@ -76,10 +76,21 @@
         </div>
 
         <!-- Botón para limpiar todos los filtros -->
+
+        <button
+          id="btnAceptar"
+          class="w-full bg-gray-700/50 hover:bg-gray-600/60 text-white py-3 rounded-xl transition-all duration-300 backdrop-blur-sm border border-gray-600/30 hover:border-gray-500/50"
+          (click)="aplicarFiltros()"
+        >
+          Aceptar
+        </button>
+
         <button (click)="limpiarTodosFiltros()"
-                class="w-full bg-gray-700/50 hover:bg-gray-600/60 text-white py-3 rounded-xl transition-all duration-300 backdrop-blur-sm border border-gray-600/30 hover:border-gray-500/50">
+                class="w-full bg-gray-700/50 hover:bg-gray-600/60 text-white py-3 rounded-xl transition-all duration-300 backdrop-blur-sm border border-gray-600/30 hover:border-gray-500/50 mt-4"
+        >
           Limpiar Filtros
         </button>
+
 
 
         <div class="mt-6 p-4 bg-gradient-to-r from-customBurbundy/50 to-red-900/30 rounded-xl  ">

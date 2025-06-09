@@ -35,12 +35,24 @@
         <h3 class="text-white text-4xl font-medula">Filtros avanzados</h3>
       </div>
 
+      <label for="generoSelect" class="block text-m font-medium text-gray-300 mb-1"
+      >
+        <i class="fa fa-search mr-2"></i> Buscador
+      </label>
+      <input type="text"
+             [(ngModel)]="filtro.texto"
+             (input)="actualizarBusquedaTexto()"
+             placeholder="Buscar por nombre o descripción..."
+             class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-white" >
+
+
       <!-- Género musical -->
-      <label for="generoSelect" class="block mb-2 text-lg font-semibold text-white">
+      <label for="generoSelect"  class="block text-m font-medium text-gray-300 mb-1"
+      >
         <i class="fa fa-music mr-2"></i>Género musical
       </label>
       <select id="generoSelect" [(ngModel)]="generoSeleccionado"
-              class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-white"
               aria-label="Seleccionar género musical"
       >
         <option value="">Todos</option>
@@ -48,52 +60,62 @@
       </select>
 
       <!-- Fecha desde -->
-      <label for="fechaDesde" class="block mb-2 text-lg font-semibold text-white">
+      <label for="fechaDesde" class="block text-m font-medium text-gray-300 mb-1"
+      >
         <i class="fa fa-calendar mr-2"></i>Fecha (desde)
       </label>
       <input type="date" id="fechaDesde" [(ngModel)]="fechaDesde"
-             class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+             class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-white"
              aria-label="Fecha desde"
       />
 
       <!-- Fecha hasta -->
-      <label for="fechaHasta" class="block mb-2 text-lg font-semibold text-white">
+      <label for="fechaHasta" class="block text-m font-medium text-gray-300 mb-1"
+      >
         <i class="fa fa-calendar-check-o mr-2"></i>Fecha (hasta)
       </label>
       <input type="date" id="fechaHasta" [(ngModel)]="fechaHasta"
-             class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+             class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-white"
              aria-label="Fecha hasta"
       />
 
       <!-- Estado del evento -->
-      <label for="estadoSelect" class="block mb-2 text-lg font-semibold text-white">
+      <label for="estadoSelect" class="block text-m font-medium text-gray-300 mb-1"
+      >
         <i class="fa fa-info-circle mr-2"></i>Estado del evento
       </label>
       <select id="estadoSelect" [(ngModel)]="estadoSeleccionado"
-              class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-white"
               aria-label="Seleccionar estado del evento"
       >
         <option value="">-- Todos los estados --</option>
         <option *ngFor="let estado of estados" [value]="estado">{{ estado | titlecase }}</option>
       </select>
 
+
       <!-- Botón de Aceptar -->
       <button
         id="btnAceptar"
-        class="bg-red-600 hover:bg-red-700 text-white w-full p-2 rounded mt-2"
+        class="w-full bg-gray-700/50 hover:bg-gray-600/60 text-white py-3 rounded-xl transition-all duration-300 backdrop-blur-sm border border-gray-600/30 hover:border-gray-500/50"
         (click)="aplicarFiltros()"
       >
         Aceptar
       </button>
+
+      <button (click)="limpiarTodosFiltros()"
+              class="w-full bg-gray-700/50 hover:bg-gray-600/60 text-white py-3 rounded-xl transition-all duration-300 backdrop-blur-sm border border-gray-600/30 hover:border-gray-500/50 mt-4"
+      >
+        Limpiar Filtros
+      </button>
+
+
     </div>
 
     <div class="w-full lg:w-3/4 space-y-6">
       <!-- Buscador por nombre/descripción -->
-      <input type="text"
-             [(ngModel)]="filtro.texto"
-             (input)="actualizarBusquedaTexto()"
-             placeholder="Buscar por nombre o descripción..."
-             class="w-full px-4 py-2 rounded-full bg-customGrisOscurso bg-opacity-50 text-customBlanco shadow-md" />
+
+
+
 
       <div *ngIf="hayFiltrosActivos()" class="bg-black bg-opacity-40 p-3 rounded-lg">
         <div class="flex flex-wrap gap-2">
@@ -175,22 +197,9 @@
           </button>
         </ng-template>
 
-        <!-- Corazón de seguir -->
-        <button
-          class="text-3xl transition duration-300 ease-in-out"
-          [ngClass]="{
-            'text-red-500': evento.seguido,
-            'text-gray-400': !evento.seguido
-          }"
-          (click)="seguirEvento(evento)"
-          [disabled]="!usuarioLogueado"
-          aria-label="Seguir evento"
-        >
-          <i class="fa" [ngClass]="evento.seguido ? 'fa-heart' : 'fa-heart-o'"></i>
-        </button>
+
       </div>
 
-      <!-- Paginador centrado -->
       <!-- Paginación mejorada -->
       <div class="flex flex-col items-center mt-8 space-y-4" *ngIf="totalPaginas > 1">
         <!-- Información de página actual -->

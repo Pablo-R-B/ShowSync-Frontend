@@ -137,6 +137,7 @@
             </svg>
             Buscar Artistas
           </button>
+
           <button (click)="limpiarBusqueda()"
                   class="w-full bg-gray-700/50 hover:bg-gray-600/60 text-white py-3 rounded-xl transition-all duration-300 backdrop-blur-sm border border-gray-600/30 hover:border-gray-500/50">
             Limpiar Filtros
@@ -222,7 +223,7 @@
             <div class="text-sm text-gray-300 text-center">
               Mostrando {{ artistasLista.length }} de {{ totalItems }} artistas (Página {{ paginaActualDisplay }} de {{ totalPaginas }})
             </div>
-            
+
 
             <!-- Controles de paginación -->
             <nav class="flex items-center" aria-label="Paginación">
