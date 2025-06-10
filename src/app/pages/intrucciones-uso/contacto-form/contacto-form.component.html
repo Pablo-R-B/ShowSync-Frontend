@@ -1,7 +1,9 @@
 
+<!-- Estructura HTML mejorada -->
+<div class="main-container">
   <!-- Fondo con overlay -->
 
-  <!-- Notas musicales flotantes -->
+  <!-- Notas musicales flotantes optimizadas -->
   <div class="floating-notes">
     <div class="musical-note" style="top: 10%; left: 15%;">♪</div>
     <div class="musical-note" style="top: 20%; left: 85%;">♫</div>
@@ -9,112 +11,138 @@
     <div class="musical-note" style="top: 80%; left: 90%;">♫</div>
     <div class="musical-note" style="top: 40%; left: 75%;">♪</div>
     <div class="musical-note" style="top: 70%; left: 25%;">♫</div>
+    <div class="musical-note" style="top: 30%; left: 50%;">♪</div>
+    <div class="musical-note" style="top: 90%; left: 60%;">♫</div>
   </div>
 
-  <!-- Partículas de fondo -->
+  <!-- Partículas de fondo optimizadas -->
   <div class="particles-container">
     <div class="particle" style="left: 20%; animation-delay: 0s; width: 4px; height: 4px;"></div>
     <div class="particle" style="left: 40%; animation-delay: 2s; width: 6px; height: 6px;"></div>
     <div class="particle" style="left: 60%; animation-delay: 4s; width: 3px; height: 3px;"></div>
     <div class="particle" style="left: 80%; animation-delay: 6s; width: 5px; height: 5px;"></div>
+    <div class="particle" style="left: 10%; animation-delay: 1s; width: 5px; height: 5px;"></div>
+    <div class="particle" style="left: 90%; animation-delay: 3s; width: 4px; height: 4px;"></div>
   </div>
 
-  <!-- Contenedor principal del formulario -->
+  <!-- Contenedor principal del formulario mejorado -->
   <div class="instrucciones-container">
-    <div class="glass-card">
-      <!-- Título principal -->
-      <h1 class="text-customBlanco text-center font-medula" style="font-size: 3rem;">Contacto Musical</h1>
-      <p class="subtitle">
-        Comparte tus dudas, sugerencias o solicitudes especiales.
-        Estamos aquí para hacer de tu evento una experiencia musical inolvidable.
-      </p>
+    <div class="content-wrapper">
+      <section class="intro-section">
+        <img src="assets/images/logo_1.png" alt="Logo Berrintxe Producciones" class="logo-image" />
+        <p class="contact-text text-justify">
+          En ShowSync, nos especializamos en la producción de eventos musicales y estamos aquí para ayudarte a crear una experiencia única y memorable.
+          <br /><br />
+          ¿Dispones de una <strong>  SALA  </strong>  o un <strong>  ESPACIO  </strong> y quieres organizar un evento musical? ¿Tienes una BANDA o un <strong> GRUPO </strong>  y quieres que te ayudemos a promocionarte? ¿Quieres que te ayudemos a encontrar un lugar para tocar?  ¡Nosotros podemos ayudarte!
+          <br /><br />
 
-      <!-- Formulario -->
-      <form
-        (ngSubmit)="enviarMensaje()"
-        #formulario="ngForm"
-        class="contact-form"
-      >
-        <!-- Campo Nombre -->
-        <div class="form-group form-element">
-          <label class="form-label">
-            <span class="label-icon">👤</span>
-            Tu nombre
-          </label>
-          <input
-            type="text"
-            name="nombre"
-            [(ngModel)]="form.nombre"
-            required
-            placeholder="Escribe tu nombre completo"
-            class="form-input"
-          />
-        </div>
 
-        <!-- Campo Email -->
-        <div class="form-group form-element">
-          <label class="form-label">
-            <span class="label-icon">📧</span>
-            Correo electrónico
-          </label>
-          <input
-            type="email"
-            name="email"
-            [(ngModel)]="form.email"
-            required
-            placeholder="tu@email.com"
-            class="form-input"
-          />
-        </div>
+          Ponte en contacto con nosotros a través de este correo <a href="mailto:showsync.empresa@gmail.com">showsync.empresa&#64;gmail.com</a> o rellenando nuestro formulario de contacto.
+        </p>
+      </section>
 
-        <!-- Campo Mensaje -->
-        <div class="form-group form-element">
-          <label class="form-label">
-            <span class="label-icon">💬</span>
-            Tu mensaje
-          </label>
-          <textarea
-            name="mensaje"
-            [(ngModel)]="form.mensaje"
-            required
-            rows="5"
-            placeholder="Cuéntanos sobre tu evento, dudas o solicitudes especiales..."
-            class="form-textarea"
-          ></textarea>
-        </div>
+      <div class="glass-card" style="max-width: 600px;">
+        <!-- Título principal -->
+        <h1 class="main-title">Contacto Musical</h1>
+        <p class="subtitle">
+          Comparte tus dudas, sugerencias o solicitudes especiales.
+          Estamos aquí para hacer de tu evento una experiencia musical inolvidable.
+        </p>
 
-        <!-- Botón de envío -->
-        <div class="form-group form-element">
-          <button
-            type="submit"
-            [disabled]="formulario.invalid || cargando"
-            class="submit-button"
-            [class.loading]="cargando"
-          >
-            <span class="button-icon" *ngIf="!cargando">🎵</span>
-            <span class="loading-spinner" *ngIf="cargando"></span>
-            {{ cargando ? 'Enviando melodía...' : 'Enviar mensaje' }}
-          </button>
-        </div>
-
-        <!-- Mensaje de éxito -->
-        <div *ngIf="enviado" class="message-alert success-alert form-element">
-          <div class="alert-icon">✅</div>
-          <div class="alert-content">
-            <h4>¡Mensaje enviado con éxito!</h4>
-            <p *ngIf="mensajeExito">{{ mensajeExito }}</p>
-            <p *ngIf="!mensajeExito">Gracias por contactarnos. Te responderemos pronto.</p>
+        <!-- Formulario mejorado -->
+        <form (ngSubmit)="enviarMensaje()" #formulario="ngForm" class="contact-form">
+          <!-- Campo Nombre -->
+          <div class="form-group form-element">
+            <label for="nombre" class="form-label">
+              <span class="label-icon text-red">👤</span>
+              Tu nombre
+            </label>
+            <input
+              type="text"
+              id="nombre"
+              name="nombre"
+              [(ngModel)]="form.nombre"
+              required
+              placeholder="Escribe tu nombre completo"
+              class="form-input"
+              aria-describedby="nombre-help"
+            />
+            <small id="nombre-help" class="sr-only">Por favor ingresa tu nombre completo</small>
           </div>
-        </div>
 
-        <!-- Mensaje de error -->
-        <div *ngIf="error" class="message-alert error-alert form-element">
-          <div class="alert-icon">❌</div>
-          <div class="alert-content">
-            <h4>Oops, algo salió mal</h4>
-            <p>{{ mensajeError || 'Ocurrió un error al enviar el mensaje. Intenta más tarde.' }}</p>
+          <!-- Campo Email -->
+          <div class="form-group form-element">
+            <label for="email" class="form-label">
+              <span class="label-icon">📧</span>
+              Correo electrónico
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              [(ngModel)]="form.email"
+              required
+              placeholder="tu@email.com"
+              class="form-input"
+              aria-describedby="email-help"
+            />
+            <small id="email-help" class="sr-only">Por favor ingresa un correo electrónico válido</small>
           </div>
-        </div>
-      </form>
+
+          <!-- Campo Mensaje -->
+          <div class="form-group form-element">
+            <label for="mensaje" class="form-label">
+              <span class="label-icon">💬</span>
+              Tu mensaje
+            </label>
+            <textarea
+              id="mensaje"
+              name="mensaje"
+              [(ngModel)]="form.mensaje"
+              required
+              rows="5"
+              placeholder="Cuéntanos sobre tu evento, dudas o solicitudes especiales..."
+              class="form-textarea"
+              aria-describedby="mensaje-help"
+            ></textarea>
+            <small id="mensaje-help" class="sr-only">Por favor describe tu consulta o solicitud</small>
+          </div>
+
+          <!-- Botón de envío -->
+          <div class="form-group form-element">
+            <button
+              type="submit"
+              [disabled]="formulario.invalid || cargando"
+              class="submit-button"
+              [class.loading]="cargando"
+              aria-live="polite"
+            >
+              <span class="button-icon" *ngIf="!cargando">🎵</span>
+              <span class="loading-spinner" *ngIf="cargando"></span>
+              {{ cargando ? 'Enviando melodía...' : 'Enviar mensaje' }}
+            </button>
+          </div>
+
+          <!-- Mensaje de éxito -->
+          <div *ngIf="enviado" class="message-alert success-alert form-element" role="alert">
+            <div class="alert-icon">✅</div>
+            <div class="alert-content">
+              <h4>¡Mensaje enviado con éxito!</h4>
+              <p *ngIf="mensajeExito">{{ mensajeExito }}</p>
+              <p *ngIf="!mensajeExito">Gracias por contactarnos. Te responderemos pronto.</p>
+            </div>
+          </div>
+
+          <!-- Mensaje de error -->
+          <div *ngIf="error" class="message-alert error-alert form-element" role="alert">
+            <div class="alert-icon">❌</div>
+            <div class="alert-content">
+              <h4>Oops, algo salió mal</h4>
+              <p>{{ mensajeError || 'Ocurrió un error al enviar el mensaje. Intenta más tarde.' }}</p>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
+</div>

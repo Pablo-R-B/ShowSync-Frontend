@@ -1,5 +1,5 @@
-<div class="main-container" style="margin-top: 5vw;">
-  <!-- Fondo con overlay -->
+<div class="main-container" style="margin-top: 5vw; background-image: url('assets/images/fondo_1.png'); background-size: cover; background-position: center;">
+<!-- Fondo con overlay -->
   <div class="background-overlay"></div>
 
   <!-- Notas musicales flotantes -->
@@ -27,7 +27,7 @@
     </div>
   </div>
 
-  <section class="instrucciones-container">
+  <section class="instrucciones-container" style="display: flex; flex-direction: column;">
     <div class="glass-card">
       <h1 class="main-title font-medula">¿Cómo funciona ShowSync?</h1>
       <p class="subtitle">
@@ -64,9 +64,10 @@
       </div>
 
       <!-- Sección de contacto -->
-      <div class="contact-section form-element">
-        <app-contacto-form></app-contacto-form>
-      </div>
+
+    </div>
+    <div class="contact-section form-element">
+      <app-contacto-form></app-contacto-form>
     </div>
   </section>
 </div>
