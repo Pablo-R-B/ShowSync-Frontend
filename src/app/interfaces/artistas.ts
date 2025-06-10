@@ -7,4 +7,6 @@ export interface Artistas {
   biografia: string;
   musicUrl?:string
   generosMusicales: string[] | GeneroMusical[];
+  numeroEventos?: number;
+
 }
