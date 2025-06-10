@@ -1,6 +1,6 @@
 import {AfterViewInit, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
-import {DatePipe, NgForOf, NgIf, SlicePipe} from '@angular/common';
+import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {PromotoresService} from '../../servicios/promotores.service';
 import {EventoDTO} from '../../interfaces/EventoDTO';
 import {Promotor} from '../../interfaces/Promotor';
@@ -22,7 +22,7 @@ import {FormsModule} from '@angular/forms';
     NgIf,
     DatePipe,
     FormsModule,
-    SlicePipe
+
   ],
   providers: [DatePipe],
   templateUrl: './perfil-promotores.component.html',
