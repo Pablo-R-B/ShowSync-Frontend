@@ -1,44 +1,46 @@
-<div *ngIf="sala" class="p-6 bg-customNegro rounded-2xl shadow-md mx-4 lg:mx-16" style="background-image: url('/assets/images/fondo_4.png'), linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));">  <div class="flex flex-col items-center justify-center text-center">
-    <!-- Header -->
-    <div class="text-center mb-12 relative z-10">
-      <div class="inline-block">
-        <h1 class="text-5xl md:text-7xl lg:text-8xl text-transparent bg-clip-text bg-gradient-to-r from-customBurbundy via-red-500 to-customBurbundy font-medula mb-4 animate-pulse">
-          {{ sala.nombre }}
-        </h1>
-        <div class="h-1 bg-gradient-to-r from-transparent via-customBurbundy to-transparent rounded-full"></div>
-      </div>
-      <p class="subtitle mt-4 text-customGrisClaro2">
+<div class="container mx-auto px-4 max-w-screen-xl">
+
+  <div *ngIf="sala" class="bg-cover bg-center text-white" style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.1)), url('/assets/images/fondo_1.png');">
+    <div class="flex flex-col items-center justify-center text-center py-16 px-4 md:px-12">
+    <!-- Título -->
+    <div class="mb-10 relative z-10">
+      <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-transparent bg-clip-text bg-gradient-to-r from-customBurbundy via-red-500 to-customBurbundy font-medula animate-pulse drop-shadow-lg">
+        {{ sala.nombre }}
+      </h1>
+      <p class="text-lg md:text-xl text-gray-300 max-w-4xl mx-auto mt-6 leading-relaxed">
         {{ sala.descripcion }}
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 w-full">
-      <div class="bg-customBlanco p-4 rounded-lg shadow">
+    <!-- Información rápida -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full px-2 md:px-6">
+      <div class="bg-customBlanco p-5 rounded-xl shadow-lg transition-all hover:ring hover:ring-red-200">
         <p class="font-bold text-customBurbundy">Capacidad</p>
         <p class="text-customBurbundy">{{ sala.capacidad }} personas</p>
       </div>
-      <div class="bg-customBlanco p-4 rounded-lg shadow">
+      <div class="bg-customBlanco p-5 rounded-xl shadow-lg transition-all hover:ring hover:ring-red-200">
         <p class="font-bold text-customBurbundy">Ubicación</p>
         <p class="text-customBurbundy">{{ sala.direccion }}</p>
       </div>
-      <div class="bg-customBlanco p-4 rounded-lg shadow">
+      <div class="bg-customBlanco p-5 rounded-xl shadow-lg transition-all hover:ring hover:ring-red-200">
         <p class="font-bold text-customBurbundy">Ciudad</p>
         <p class="text-customBurbundy">{{ sala.ciudad }}</p>
       </div>
-      <div class="bg-customBlanco p-4 rounded-lg shadow">
+      <div class="bg-customBlanco p-5 rounded-xl shadow-lg transition-all hover:ring hover:ring-red-200 text-center">
         <p class="font-bold text-customBurbundy mb-2">Fotos</p>
-        <button (click)="abrirImagen()" class="text-customGrisOscurso hover:text-blue-800 cursor-pointer">
-          Imágenes (+)
+        <button (click)="abrirImagen()" class="text-customGrisOscurso hover:text-blue-800 underline">
+          Ver imágenes
         </button>
       </div>
+    </div>
 
       <!-- Modal de imagen -->
-      <div *ngIf="mostrarModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-4 max-w-xl max-h-[90vh] overflow-auto relative">
-          <button (click)="cerrarModal()" class="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-xl">
+      <div *ngIf="mostrarModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 backdrop-blur-sm">
+        <div class="bg-white rounded-xl p-6 max-w-xl max-h-[90vh] overflow-auto relative shadow-lg">
+          <button (click)="cerrarModal()" class="absolute top-3 right-4 text-gray-600 hover:text-black text-2xl font-bold">
             &times;
           </button>
-          <img [src]="sala.imagen" alt="Imagen de {{ sala.nombre }}" class="max-w-full max-h-[80vh] rounded" />
+          <img [src]="sala.imagen" alt="Imagen de {{ sala.nombre }}" class="rounded-lg max-w-full max-h-[80vh]" />
         </div>
       </div>
     </div>
@@ -46,7 +48,7 @@
     <!-- Calendario de disponibilidad -->
     <div class="calendario-container w-full mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-4 bg-white rounded-lg shadow-lg">
       <div class="calendario-header flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
-        <h2 class="text-2xl font-bold text-customNegro flex items-center">
+        <h2 class="text-2xl font-bold text-white flex items-center">
           <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2z" />
@@ -77,46 +79,55 @@
     <!-- Dialog Crear Evento -->
     <p-dialog
       [(visible)]="mostrarFormularioEvento"
-      [style]="{ width: '50vw' }"
+      header="Crear nuevo evento"
       [modal]="true"
       [draggable]="false"
-      header="Crear nuevo evento"
+      [styleClass]="'custom-dialog w-[95%] sm:w-[80%] md:w-[65%] lg:w-[50%]'"
       (onHide)="cancelarEvento()"
     >
-      <form (ngSubmit)="enviarEvento()" #eventoForm="ngForm" class="p-4">
-        <div class="mb-4">
-          <label class="block text-customBurbundy font-medium mb-2">Nombre del evento *</label>
+
+    <form
+        (ngSubmit)="enviarEvento()"
+        #eventoForm="ngForm"
+        class="p-4 bg-black border-4 border-white rounded-lg space-y-4 text-white"
+      >
+        <!-- Nombre -->
+        <div>
+          <label class="block text-customRed font-medium mb-1">Nombre del evento *</label>
           <input
             type="text"
             pInputText
             name="nombre"
             [(ngModel)]="nuevoEvento.nombre"
-            class="w-full"
+            class="w-full p-inputtext-sm"
             required
             placeholder="Nombre del evento"
           />
         </div>
 
-        <div class="mb-4">
-          <label class="block text-customBurbundy font-medium mb-2">Descripción *</label>
+        <!-- Descripción -->
+        <div>
+          <label class="block text-customRed font-medium mb-1">Descripción *</label>
           <textarea
             pInputTextarea
             name="descripcion"
             [(ngModel)]="nuevoEvento.descripcion"
-            class="w-full"
+            class="w-full p-inputtextarea-sm"
             required
             rows="3"
             placeholder="Descripción del evento"
           ></textarea>
         </div>
 
-        <div class="mb-4 p-3 bg-customGrisClaro rounded-lg">
-          <p class="font-medium text-customBurbundy">Fecha seleccionada:</p>
-          <p class="font-semibold">{{ fechaSeleccionada | date:'fullDate':'':'es' }}</p>
+        <!-- Fecha -->
+        <div class="p-3 bg-customGrisClaro rounded-lg">
+          <p class="font-medium text-customRed">Fecha seleccionada:</p>
+          <p class="font-semibold text-black">{{ fechaSeleccionada | date: 'fullDate':'':'es' }}</p>
         </div>
 
-        <div class="mb-4">
-          <label class="block text-customBurbundy font-medium mb-2">Géneros musicales *</label>
+        <!-- Géneros -->
+        <div>
+          <label class="block text-customRed font-medium mb-1">Géneros musicales *</label>
           <p-multiSelect
             [options]="generosDisponibles"
             [(ngModel)]="generosSeleccionados"
@@ -124,11 +135,13 @@
             [showToggleAll]="false"
             placeholder="Selecciona géneros"
             required
+            class="w-full"
           ></p-multiSelect>
         </div>
 
-        <div class="mb-4">
-          <label class="block text-customBurbundy font-medium mb-2">Imagen del evento</label>
+        <!-- Imagen -->
+        <div>
+          <label class="block text-customRed font-medium mb-1">Imagen del evento</label>
           <p-fileUpload
             #fileUpload
             mode="basic"
@@ -140,37 +153,41 @@
             class="w-full"
           ></p-fileUpload>
 
-          <!-- Indicador de carga -->
+          <!-- Cargando -->
           <div *ngIf="imagenCargando" class="mt-2 text-center">
-            <i class="pi pi-spin pi-spinner text-customBurbundy"></i>
-            <span class="ml-2 text-customBurbundy">Cargando imagen...</span>
+            <i class="pi pi-spin pi-spinner text-customRed"></i>
+            <span class="ml-2 text-customRed">Cargando imagen...</span>
           </div>
 
           <!-- Vista previa -->
           <div *ngIf="nuevoEvento.imagenEvento && !imagenCargando" class="mt-4">
             <div class="flex justify-between items-center mb-2">
-              <p class="text-customBurbundy font-semibold">Vista previa:</p>
+              <p class="text-customRed font-semibold">Vista previa:</p>
               <button
                 type="button"
                 (click)="eliminarImagen()"
-                class="text-red-500 hover:text-red-700 text-sm flex items-center"
+                class="text-red-400 hover:text-red-600 text-sm flex items-center"
               >
-                <i class="pi pi-times mr-1"></i>
-                Eliminar
+                <i class="pi pi-times mr-1"></i> Eliminar
               </button>
             </div>
-            <img [src]="nuevoEvento.imagenEvento" alt="Vista previa" class="max-h-60 rounded shadow" />
+            <img
+              [src]="nuevoEvento.imagenEvento"
+              alt="Vista previa"
+              class="max-h-60 rounded shadow-lg border border-white"
+            />
           </div>
         </div>
 
-        <div class="flex justify-end gap-2 mt-4">
+        <!-- Botones -->
+        <div class="flex flex-col sm:flex-row justify-end gap-2 pt-2">
           <button
             pButton
             type="button"
             label="Cancelar"
             icon="pi pi-times"
             (click)="cancelarEvento()"
-            class="p-button-outlined p-button-secondary"
+            class="p-button-outlined p-button-secondary w-full sm:w-auto"
           ></button>
           <button
             pButton
@@ -179,9 +196,13 @@
             icon="pi pi-check"
             [disabled]="!nuevoEvento.nombre || !nuevoEvento.descripcion || generosSeleccionados.length === 0 || cargando"
             [loading]="cargando"
+            class="w-full sm:w-auto"
           ></button>
         </div>
       </form>
     </p-dialog>
+
+
   </div>
 </div>
+

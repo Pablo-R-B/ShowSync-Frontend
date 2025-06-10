@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SalasService } from '../../servicios/salas.service';
 import { AuthService } from '../../servicios/auth.service';
@@ -22,6 +22,8 @@ import {SharedModule} from '../../shared/shared.module';
 import {EventosService} from '../../servicios/eventos.service';
 
 @Component({
+  encapsulation: ViewEncapsulation.None,
+
   selector: 'app-perfil-sala',
   standalone: true,
   imports: [
