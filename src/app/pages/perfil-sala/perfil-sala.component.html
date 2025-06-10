@@ -1,10 +1,9 @@
-<div class="container mx-auto px-4 max-w-screen-xl">
 
-  <div *ngIf="sala" class="bg-cover bg-center text-white" style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.1)), url('/assets/images/fondo_1.png');">
-    <div class="flex flex-col items-center justify-center text-center py-16 px-4 md:px-12">
+  <div *ngIf="sala" class="bg-cover bg-center text-white " style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.1)), url('/assets/images/fondo_1.png');">
+    <div class="flex flex-col items-center justify-center text-center py-16 px-4 md:px-12" >
     <!-- Título -->
     <div class="mb-10 relative z-10">
-      <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-transparent bg-clip-text bg-gradient-to-r from-customBurbundy via-red-500 to-customBurbundy font-medula animate-pulse drop-shadow-lg">
+      <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-transparent bg-clip-text bg-gradient-to-r from-customBurbundy via-red-500 to-customBurbundy font-medula  drop-shadow-lg">
         {{ sala.nombre }}
       </h1>
       <p class="text-lg md:text-xl text-gray-300 max-w-4xl mx-auto mt-6 leading-relaxed">
@@ -46,8 +45,8 @@
     </div>
 
     <!-- Calendario de disponibilidad -->
-    <div class="calendario-container w-full mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-4 bg-white rounded-lg shadow-lg">
-      <div class="calendario-header flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
+    <div class="calendario-container w-full mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-8 bg-white rounded-lg shadow-lg">
+      <div class="calendario-header flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
         <h2 class="text-2xl font-bold text-white flex items-center">
           <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -68,7 +67,7 @@
         </div>
       </div>
 
-      <div class="calendario-wrapper">
+      <div class="calendario-wrapper ">
         <full-calendar #calendar [options]="calendarOptions"></full-calendar>
       </div>
     </div>
@@ -204,5 +203,4 @@
 
 
   </div>
-</div>
 
