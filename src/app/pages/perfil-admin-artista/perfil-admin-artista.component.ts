@@ -32,6 +32,7 @@ export class PerfilAdminArtistaComponent implements OnInit{
   artista:Artistas | undefined;
   usuarioRol!:string | null;
   eventos: EventoDTO[] = [];
+  logoUrl: string = '../../../assets/images/logo_1.png';
 
   constructor(private postulacionService: PostulacionEventoService, private authService: AuthService,
               private artistaService: ArtistasService,) {
