@@ -18,11 +18,6 @@ import {ArtistaEvento} from '../../interfaces/ArtistaEvento';
 import {PromotoresService} from '../../servicios/promotores.service';
 import {Promotor} from '../../interfaces/Promotor';
 
-
-
-
-
-
 @Component({
   selector: 'app-editar-eventos',
   standalone: true,
@@ -43,7 +38,7 @@ export class EditarEventosComponent implements OnInit{
   artistasDisponibles: Artistas[] = [];
   generosMusicalesDisponibles: GeneroMusicalDTO[] = [];
 
-  artistasAsignados: ArtistaEvento[] = []; // Artists currently assigned to this event
+  artistasAsignados: ArtistaEvento[] = [];
   dropdownVisible: boolean = false;
 
   selectedGenreIds: number[] = [];
@@ -51,6 +46,7 @@ export class EditarEventosComponent implements OnInit{
   loading = true;
   idEvento!: number;
   promotorId!: number;
+  salaOriginalId!: number; // Nueva variable para almacenar el ID original de la sala
 
   imagenPreviaUrl: string | null = null;
   archivoImagen: File | null = null;
@@ -71,13 +67,13 @@ export class EditarEventosComponent implements OnInit{
     this.editarEventoForm = this.fb.group({
       nombreEvento: ['', Validators.required],
       descripcion: ['', Validators.required],
-      idSala: ['', Validators.required],
+      idSala: [{value: '', disabled: true}, Validators.required], // Campo deshabilitado
       estado: ['', Validators.required],
     });
   }
+
   ngOnInit(): void {
-    // Paso 1: Obtener el ID del USUARIO autenticado (el 24)
-    const authenticatedUserId = parseInt(localStorage.getItem('userId') ?? '0', 10); // O this.authService.userId; si ya lo tienes accesible
+    const authenticatedUserId = parseInt(localStorage.getItem('userId') ?? '0', 10);
 
     if (!authenticatedUserId || authenticatedUserId === 0) {
       this.errorMensaje = 'No se pudo obtener el ID del usuario autenticado. Por favor, inicie sesión.';
@@ -86,20 +82,18 @@ export class EditarEventosComponent implements OnInit{
       return;
     }
 
-    // Paso 2: Usar el ID del USUARIO para obtener el objeto Promotor completo, y de ahí su ID_PROMOTOR (el 7)
     this.promotoresService.getPromotorPorIdUsuario(authenticatedUserId).subscribe({
-      next: (promotor: Promotor) => { // Asegúrate de que Promotor está bien tipado
+      next: (promotor: Promotor) => {
         if (promotor && promotor.id) {
-          this.promotorId = promotor.id; // <--- ¡AQUÍ ESTÁ LA CLAVE! Guardamos el ID_PROMOTOR correcto
+          this.promotorId = promotor.id;
           console.log('ID de usuario autenticado:', authenticatedUserId);
           console.log('Promotor recibido (id_promotor: ' + promotor.id + ', usuarioId: ' + promotor.id+ '):', promotor);
-          console.log('ID del promotor para operaciones (el que se usará en la URL):', this.promotorId);
+          console.log('ID del promotor para operaciones:', this.promotorId);
 
-          // Paso 3: Una vez que tenemos el ID del promotor, podemos cargar el formulario del evento
           const eventoParam = this.route.snapshot.paramMap.get('idEvento');
           if (eventoParam) {
             this.idEvento = +eventoParam;
-            this.cargarTodoElFormulario(); // Tu método para cargar el formulario del evento
+            this.cargarTodoElFormulario();
           } else {
             console.error('Falta el ID del evento en la ruta');
             this.errorMensaje = 'No se encontró el evento para editar.';
@@ -118,8 +112,6 @@ export class EditarEventosComponent implements OnInit{
     });
   }
 
-
-
   private cargarTodoElFormulario(): void {
     this.loading = true;
     this.errorMensaje = null;
@@ -127,68 +119,61 @@ export class EditarEventosComponent implements OnInit{
     forkJoin({
       estados: this.estadoService.getEstados() as Observable<string[]>,
       salas: this.salaService.obtenerTodas() as Observable<Sala[]>,
-      // Asegúrate de que `artistasPorPromotor` devuelve los objetos `Artistas` completos (con ID, nombre, imagen)
       artistasPromotor: this.artistasService.artistasPorPromotor(this.promotorId) as Observable<Artistas[]>,
       generos: this.generosMusicalesService.listarGeneros() as Observable<GeneroMusicalDTO[]>,
-      // Cambiamos el tipo de `evento` a `any` para manejar el formato mixto del backend
       evento: this.eventoService.obtenerEventoDetalleParaEdicion(this.idEvento) as Observable<any>
     }).subscribe({
       next: ({ estados, salas, artistasPromotor, generos, evento }) => {
         this.estados = estados;
         this.salas = salas;
-        this.artistasDisponibles = artistasPromotor; // Esta lista ya contiene objetos completos
+        this.artistasDisponibles = artistasPromotor;
         this.generosMusicalesDisponibles = generos;
-        console.log('Géneros disponibles (todos):', this.generosMusicalesDisponibles);
-        console.log('Géneros del evento (del backend):', evento.generosMusicales);
+
+        // Guardamos el ID original de la sala
+        this.salaOriginalId = evento.idSala;
+
+        // Buscamos el nombre de la sala correspondiente al ID original
+        const salaOriginal = this.salas.find(s => s.id === this.salaOriginalId);
+        const nombreSalaOriginal = salaOriginal ? salaOriginal.nombre: 'Sala no encontrada';
 
         this.editarEventoForm.patchValue({
           nombreEvento: evento.nombreEvento,
           descripcion: evento.descripcion,
-          idSala: evento.idSala,
+          idSala: nombreSalaOriginal, // Mostramos el nombre de la sala en lugar del ID
           estado: evento.estado,
         });
 
         this.imagenPreviaUrl = evento.imagenEvento || null;
 
-        // *** LA MODIFICACIÓN CRÍTICA: Convertir strings de artistas a objetos ArtistaEvento completos ***
         if (evento.artistasAsignados && Array.isArray(evento.artistasAsignados) && evento.artistasAsignados.length > 0) {
           this.artistasAsignados = evento.artistasAsignados.map((item: string | ArtistaEvento) => {
-            // Si el item ya es un objeto (por si tu backend cambia su comportamiento o si la interfaz de artista es diferente), lo usamos directamente
             if (typeof item === 'object' && item !== null && 'id' in item && 'nombreArtista' in item) {
               return item as ArtistaEvento;
             }
-            // Si es un string (que es tu caso actual, ej. "Farruco")
             else if (typeof item === 'string') {
               const nombreArtistaDelBackend = item;
               const artistaCompleto = this.artistasDisponibles.find(
                 a => a.nombreArtista === nombreArtistaDelBackend
               );
               if (artistaCompleto) {
-                // Si lo encontramos en la lista de artistas disponibles, devolvemos el objeto completo
                 return {
                   id: artistaCompleto.id,
                   nombreArtista: artistaCompleto.nombreArtista,
                   imagenPerfil: artistaCompleto.imagenPerfil
                 } as ArtistaEvento;
               } else {
-                // Si el artista del evento no se encuentra en la lista de disponibles,
-                // loggeamos una advertencia y creamos un objeto básico para evitar errores en la UI.
-                // Esto podría indicar un artista inactivo o un dato inconsistente en la DB.
                 console.warn(`Artista "${nombreArtistaDelBackend}" del evento (ID: ${this.idEvento}) no encontrado en la lista de artistas disponibles.`);
                 return { id: 0, nombreArtista: nombreArtistaDelBackend, imagenPerfil: 'https://via.placeholder.com/50?text=No+Img' } as ArtistaEvento;
               }
             }
-            // En caso de un formato inesperado, devolvemos un objeto por defecto
             console.warn(`Formato inesperado para artista asignado: ${item}`);
             return { id: 0, nombreArtista: 'Desconocido', imagenPerfil: 'https://via.placeholder.com/50?text=Error' } as ArtistaEvento;
           });
-          // Opcional: Asegúrate de que los artistas asignados se muestren ordenados
           this.artistasAsignados.sort((a, b) => a.nombreArtista.localeCompare(b.nombreArtista));
         } else {
-          this.artistasAsignados = []; // Si no hay artistas o el array es vacío, inicializa vacío
+          this.artistasAsignados = [];
         }
 
-        // Géneros musicales: esto ya lo manejas bien, ya que el backend te los da como objetos con ID
         this.selectedGenreIds = evento.generosMusicales?.map((g: any) => g.id) || [];
 
         this.loading = false;
@@ -209,10 +194,10 @@ export class EditarEventosComponent implements OnInit{
     if (!this.artistasAsignados.some(a => a.id === artist.id)) {
       this.artistasAsignados.push({
         id: artist.id,
-        nombreArtista: artist.nombreArtista, // <-- Use nombreArtista
+        nombreArtista: artist.nombreArtista,
         imagenPerfil: artist.imagenPerfil
       });
-      this.artistasAsignados.sort((a, b) => a.nombreArtista.localeCompare(b.nombreArtista)); // <-- Use nombreArtista for sorting
+      this.artistasAsignados.sort((a, b) => a.nombreArtista.localeCompare(b.nombreArtista));
     }
   }
 
@@ -240,17 +225,34 @@ export class EditarEventosComponent implements OnInit{
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      this.archivoImagen = input.files[0];
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.imagenPreviaUrl = reader.result as string;
-      };
-      reader.readAsDataURL(this.archivoImagen);
-    } else {
-      this.archivoImagen = null;
+    if (!input.files?.length) return;
+
+    const file = input.files[0];
+
+    // Validar tipo
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      alert('Tipo de archivo no permitido. Solo se aceptan JPG, PNG o WEBP.');
+      return;
     }
+
+    // Validar tamaño
+    const maxSizeMB = 5;
+    if (file.size > maxSizeMB * 1024 * 1024) {
+      alert(`El archivo supera el tamaño máximo de ${maxSizeMB}MB.`);
+      return;
+    }
+
+    this.archivoImagen = file;
+
+    // Previsualización
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagenPreviaUrl = reader.result as string;
+    };
+    reader.readAsDataURL(file);
   }
+
 
   onSubmit() {
     this.editarEventoForm.markAllAsTouched();
@@ -271,30 +273,23 @@ export class EditarEventosComponent implements OnInit{
     this.loading = true;
     this.errorMensaje = null;
 
-    // 1. Construct the EventoActualizado object
     const eventoAEnviar: EventoActualizado = {
-      // It's good practice to send the ID if your DTO has it,
-      // even if the backend primarily uses the @PathVariable.
       id: this.idEvento,
       nombreEvento: this.editarEventoForm.get('nombreEvento')?.value,
       descripcion: this.editarEventoForm.get('descripcion')?.value,
-      idSala: this.editarEventoForm.get('idSala')?.value,
+      idSala: this.salaOriginalId, // Usamos el ID original de la sala guardado
       estado: this.editarEventoForm.get('estado')?.value,
-      // If you're not using FormData for image upload, you'll send the image URL here.
-      // Ensure `this.imagenPreviaUrl` holds the current (or new if set by other means) URL.
       imagenEvento: this.imagenPreviaUrl || '',
       artistasAsignados: this.artistasAsignados,
       generosMusicalesIds: this.selectedGenreIds
     };
 
-    // 2. Remove all FormData related logic
-    // Removed:
-    // const formData = new FormData();
-    // if (this.archivoImagen) { ... } else if (this.imagenPreviaUrl) { ... } else { ... }
-    // formData.append('evento', new Blob([JSON.stringify(eventoEditado)], { type: 'application/json' }));
-
-    // 3. Call the service method, passing the JSON object directly
-    this.eventoService.actualizarEvento(this.promotorId, this.idEvento, eventoAEnviar).subscribe({
+    this.eventoService.actualizarEvento(
+      this.promotorId,
+      this.idEvento,
+      eventoAEnviar,
+      this.archivoImagen ?? undefined // <- esto es lo que faltaba
+    ).subscribe({
       next: () => {
         this.loading = false;
         alert('Evento editado correctamente.');
@@ -306,8 +301,15 @@ export class EditarEventosComponent implements OnInit{
         console.error('Error al actualizar el evento:', error);
       }
     });
+
+
   }
+
   navigateToPerfilPromotores(): void {
     this.router.navigate(['/perfil-promotores']);
+  }
+
+  mostrarMensajeSala() {
+    alert('No puedes modificar la sala');
   }
 }

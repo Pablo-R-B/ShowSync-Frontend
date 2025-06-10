@@ -2,7 +2,7 @@
   class="min-h-screen bg-cover bg-center flex items-center justify-center"
   style="background-image: url('../../../assets/images/img_4.png');"
 >
-  <div class="bg-black bg-opacity-80 p-8 rounded-3xl max-w-md w-full shadow-lg">
+  <div class="bg-black border-4 border-gray-300 p-8 rounded-3xl max-w-md w-full shadow-lg">
     <h2 class="font-medula text-white text-5xl mb-6 text-center">Editar Evento</h2>
     <hr class="border-gray-600 mb-6" />
 
@@ -41,19 +41,13 @@
 
       <div class="mb-4">
         <label for="idSala" class="block text-gray-300 text-sm font-bold mb-2">Sala:</label>
-        <select
+        <p
           id="idSala"
-          formControlName="idSala"
-          class="w-full p-3 rounded-full bg-gray-200 text-gray-800
-            focus:outline-none hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 transition duration-300"
-          [ngClass]="{ 'border-red-500 border-2': hasError('idSala', 'required') && editarEventoForm.get('idSala')?.touched }"
+          class="w-full p-3 rounded-full bg-gray-200 text-gray-800 focus:outline-none select-none cursor-pointer"
+          (click)="mostrarMensajeSala()"
         >
-          <option value="" disabled>--Selecciona sala--</option>
-          <option *ngFor="let sala of salas" [value]="sala.id">{{ sala.nombre }}</option>
-        </select>
-        <div *ngIf="hasError('idSala', 'required') && editarEventoForm.get('idSala')?.touched" class="text-red-500 text-sm mt-1">
-          La sala es obligatoria.
-        </div>
+          {{ editarEventoForm.get('idSala')?.value }}
+        </p>
       </div>
 
       <div class="mb-4">
@@ -127,7 +121,7 @@
             </a>
           </div>
         </div>
-        <div *ngIf="artistasAsignados.length === 0 && editarEventoForm.touched" class="text-red-500 text-sm mt-1">
+        <div *ngIf="artistasAsignados.length === 0" class="text-red-500 text-sm mt-1">
           Debe seleccionar al menos un artista.
         </div>
       </div>

@@ -179,12 +179,13 @@ export class PerfilPromotoresComponent implements OnInit,AfterViewInit {
 
   // New method to filter events by status
   filterEventsByStatus(): void {
-    this.eventosConfirmados = this.eventos.filter(evento => evento.estado === 'confirmado');
-    this.eventosEnRevision = this.eventos.filter(evento => evento.estado === 'en_revision')
+    this.eventosConfirmados = this.eventos
+      .filter(evento => evento.estado === 'confirmado')
+      .sort((a, b) => new Date(b.fechaEvento).getTime() - new Date(a.fechaEvento).getTime());
 
-
-
-
+    this.eventosEnRevision = this.eventos
+      .filter(evento => evento.estado === 'en_revision')
+      .sort((a, b) => new Date(b.fechaEvento).getTime() - new Date(a.fechaEvento).getTime());
   }
 
 

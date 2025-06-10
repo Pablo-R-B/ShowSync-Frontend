@@ -67,9 +67,16 @@ export class EventosService {
   }
 
   // Actualizar un evento existente
-  actualizarEvento(promotorId: number, idEvento: number, eventoActualizado: EventoActualizado): Observable<string> {
+  actualizarEvento(promotorId: number, idEvento: number, eventoActualizado: EventoActualizado, imagenArchivo?: File): Observable<string> {
     const url = `${this.apiUrl}/eventos/promotor/${promotorId}/evento/${idEvento}/editar`;
-    return this.http.put(url, eventoActualizado, {
+
+    const formData = new FormData();
+    formData.append('evento', JSON.stringify(eventoActualizado));
+    if (imagenArchivo) {
+      formData.append('imagen', imagenArchivo);
+    }
+
+    return this.http.put(url, formData, {
       observe: 'response',
       responseType: 'text'
     }).pipe(
@@ -77,7 +84,6 @@ export class EventosService {
         if (response.body !== null) {
           return response.body;
         } else {
-
           console.warn('Backend returned a successful response with a null body.');
           return '';
         }
