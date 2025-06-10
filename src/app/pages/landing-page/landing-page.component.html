@@ -13,18 +13,27 @@
 
   <!-- Botón centrado -->
   <ng-container *ngIf="!usuarioLogueado">
-    <button class="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-red-600 text-white font-bold px-8 py-3 rounded-lg hover:bg-red-700 transition-all duration-300 shadow-lg hover:shadow-red-500/50 transform hover:scale-105 border-2 border-red-500 z-20" [routerLink]="['/auth/registro']" aria-label="Regístrate Ahora">
+    <button class="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-red-600 text-white font-bold px-8 py-3 rounded-lg hover:bg-red-700 transition-all duration-300 shadow-lg hover:shadow-red-500/50  hover:scale-105 border-2 border-red-500 z-20" [routerLink]="['/auth/registro']" aria-label="Regístrate Ahora">
       Regístrate Ahora
     </button>
   </ng-container>
 </div>
 
 <!-- INFO -->
-<div class="text-center py-12 px-6 bg-gradient-to-b from-black to-gray-900">
+<div class="text-center py-12 px-6 bg-black">
   <div class="space-y-6">
-    <p class="text-2xl md:text-3xl font-bold"><i class="fa-solid fa-bolt font-medula fa-spin text-yellow-400"></i> Regístrate y promociona tu música.</p>
-    <p class="text-2xl md:text-3xl font-bold"><i class="fa-solid fa-bolt font-medula fa-spin text-yellow-400"></i> Encuentra talento para tus eventos.</p>
-    <p class="text-2xl md:text-3xl font-bold"><i class="fa-solid fa-bolt font-medula fa-spin text-yellow-400"></i> Descubre y sigue a tus artistas favoritos.</p>
+    <p class="text-xl md:text-2xl font-semibold text-gray-300">
+      <i class="fas fa-bolt text-yellow-300 animate-pulse"></i>
+    Regístrate y  <span class="animate-bounce text-yellow-500 font-bold">promociona </span> tu música.    </p>
+    <p class="text-xl md:text-2xl font-semibold text-gray-300">
+
+      Encuentra  <span class="animate-bounce text-yellow-400 font-bold">talento</span> para tus eventos.
+      <i class="fas fa-bolt text-yellow-800 animate-pulse"></i>
+    </p>
+    <p class="text-xl md:text-2xl font-semibold text-gray-300">
+      <i class="fas fa-bolt text-yellow-400 animate-pulse"></i>
+      Descubre y sigue a tus <span class="animate-bounce text-yellow-300 font-bold">artistas favoritos</span>.
+    </p>
   </div>
 </div>
 
@@ -34,63 +43,75 @@
   <div class="text-center mb-20 relative">
     <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-32 h-32 bg-red-500/20 rounded-full blur-3xl animate-pulse"></div>
     <h2 class="text-4xl md:text-6xl font-medula inline-block relative tracking-wide">
-      Nuestro Catalogo
-      <span class="text-red-500 animate-bounce inline-block"> muy </span>
-      <span class="relative inline-block group">
-          interactivo
-          <span class="absolute left-0 bottom-0 h-1 w-full bg-red-500 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500"></span>
-        </span>
+      Tus oportunidaes para <span class="text-red-500 animate-bounce inline-block"> brillar </span>
+
     </h2>
   </div>
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
     <div class="text-center transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
-      <h2 class="text-4xl md:text-6x inline-block relative tracking-wide">
+      <h2 class="text-4xl md:text-6xl font-medula inline-block relative tracking-wide mb-4 ">
         <span class="text-white inline-block"> Salas </span>
       </h2>
       <ng-container *ngIf="usuarioLogueado; else accesoDenegadoSalas">
         <a [routerLink]="['/catalogo-salas']">
           <img [src]="sala?.imagen || '/assets/images/salas.png'" alt="Sala {{ sala?.nombre }}" class="w-full h-56 object-contain rounded-lg shadow-lg mb-4">
-          <h1 class="text-3xl font-medula">Espacios listos para vibrar con música en vivo</h1>
+          <h1 class=" text-xl">
+            Espacios listos para  <strong> <em>vibrar</em> </strong> con  <span class="animate-bounce text-gray-100 font-bold"> música </span> en<span class="animate-bounce text-gray-50 font-bold"> vivo </span>
+          </h1>
         </a>
       </ng-container>
       <ng-template #accesoDenegadoSalas>
         <div class="cursor-not-allowed">
           <img [src]="sala?.imagen || '/assets/images/salas.png'" alt="Sala {{ sala?.nombre }}" class="w-full h-56 object-contain rounded-lg shadow-lg mb-4">
-          <h1 class="text-3xl font-medula">Espacios listos para vibrar con música en vivo</h1>
+          <h1 class=" text-xl">
+            Espacios listos para  <strong> <em>vibrar</em> </strong> con  <span class="animate-bounce text-gray-100 font-bold"> música </span> en<span class="animate-bounce text-gray-50 font-bold"> vivo </span>
+          </h1>
         </div>
       </ng-template>
     </div>
     <div class="text-center transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
-      <h2 class="text-4xl md:text-6xl font-medula inline-block relative tracking-wide">
+      <h2 class="text-4xl md:text-6xl font-medula inline-block relative tracking-wide mb-4 ">
         <span class="text-white  inline-block"> Artistas </span>
       </h2>
       <ng-container *ngIf="usuarioLogueado; else accesoDenegadoArtistas">
         <a [routerLink]="['/catalogo-artistas']">
           <img [src]="artista?.imagenPerfil || '/assets/images/artistas.jpg'" alt="Artista {{ artista?.nombreArtista }}" class="w-full h-56 object-contain rounded-lg shadow-lg mb-4">
-          <h1 class="text-3xl font-medula">Sube al escenario que te mereces. ¡Haz crecer tu carrera musical!</h1>
+          <h1 class=" text-xl">
+            <p>Sube al <strong> escenario </strong> que te mereces.</p>
+            <p><em>¡Haz crecer tu carrera musical!</em></p>
+          </h1>
         </a>
       </ng-container>
       <ng-template #accesoDenegadoArtistas>
         <div class="cursor-not-allowed">
           <img [src]="artista?.imagenPerfil || '/assets/images/artistas.jpg'" alt="Artista {{ artista?.nombreArtista }}" class="w-full h-56 object-contain rounded-lg shadow-lg mb-4">
-          <h1 class="text-3xl font-medula">Sube al escenario que te mereces. ¡Haz crecer tu carrera musical!</h1>
+          <h1 class=" text-xl">
+            <p>Sube al <strong> escenario </strong> que te mereces.</p>
+            <p><em>¡Haz crecer tu carrera musical!</em></p>
+          </h1>
         </div>
       </ng-template>
     </div>
     <div class="text-center transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
-      <h2 class="text-4xl md:text-6xl font-medula inline-block relative tracking-wide">
+      <h2 class="text-4xl md:text-6xl font-medula inline-block relative tracking-wide mb-4 ">
         <span class="text-white  inline-block"> Promotores </span>
       </h2>
       <ng-container *ngIf="usuarioLogueado; else accesoDenegadoEventos">
         <a [routerLink]="['/busqueda-eventos']">
           <img [src]="promotor?.imagenPerfil || '/assets/images/promotores.png'" alt="Promotor {{ promotor?.nombrePromotor }}" class="w-full h-56 object-contain rounded-lg shadow-lg mb-4">
-          <h1 class="text-3xl font-medula">Organiza eventos con talento garantizado. Crea experiencias únicas en salas disponibles</h1>
+          <h1 class=" text-xl">
+            <p> Organiza eventos con talento garantizado, </p>
+            <p> y <strong><em>crea experiencias únicas </em></strong> en salas disponibles. </p>
+          </h1>
         </a>
       </ng-container>
       <ng-template #accesoDenegadoEventos>
         <div class="cursor-not-allowed">
           <img [src]="promotor?.imagenPerfil || '/assets/images/promotores.png'" alt="Promotor {{ promotor?.nombrePromotor }}" class="w-full h-56 object-contain rounded-lg shadow-lg mb-4">
-          <h1 class="text-3xl font-medula">Organiza eventos con talento garantizado. Crea experiencias únicas en salas disponibles</h1>
+          <h1 class=" text-xl">
+            <p> Organiza eventos con talento garantizado, </p>
+            <p> y <strong><em>crea experiencias únicas </em></strong> en salas disponibles. </p>
+          </h1>
         </div>
       </ng-template>
     </div>
@@ -101,7 +122,7 @@
 <section class="py-16 bg-gradient-to-b from-gray-900 to-black">
   <div class="container mx-auto text-center px-6">
     <h2 class="text-4xl md:text-6xl font-medula inline-block relative tracking-wide">
-      <span class="text-white animate-bounce inline-block"> Nuestros Eventos </span>
+      <span class="text-white animate-bounce inline-block mb-2"> Nuestros Eventos </span>
     </h2>
     <div #carousel class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-7xl mx-auto justify-items-center">
       <div *ngFor="let evento of eventos.slice(0,3)" class="w-[300px] h-[400px] relative group transition-transform duration-300 hover:scale-105">
@@ -119,7 +140,8 @@
       </div>
     </div>
     <div class="mt-10">
-      <button class="bg-gradient-to-r from-customBurbundy to-customBurbundy text-white font-bold text-lg px-8 py-3 rounded-full hover:from-customRed hover:to-customBurbundy transition-all duration-300 shadow-lg hover:shadow-customBurbundy transform hover:scale-105 border-2 border-transparent hover:border-red-950" [routerLink]="['/busqueda-eventos']">
+      <button class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-600 to-red-900 text-white font-semibold rounded-xl shadow-lg
+        hover:from-red-900 hover:to-red-600 transform hover:-translate-y-1 transition-all duration-300 mx-auto" [routerLink]="['/busqueda-eventos']">
         Ver más Eventos
       </button>
     </div>
