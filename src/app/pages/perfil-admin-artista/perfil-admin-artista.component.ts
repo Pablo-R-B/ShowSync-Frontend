@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {RouterLink} from '@angular/router';
-import {DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
+import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
 import {Postulacion} from '../../interfaces/postulacion';
 import {Artistas} from '../../interfaces/artistas';
@@ -15,7 +15,6 @@ import {ArtistasService} from '../../servicios/artistas.service';
     DatePipe,
     NgForOf,
     NgIf,
-    NgClass
   ],
   templateUrl: './perfil-admin-artista.component.html',
   standalone: true,
@@ -68,6 +67,7 @@ export class PerfilAdminArtistaComponent implements OnInit{
   }
 
   cargarPostulaciones(): void {
+    const hoy = new Date();
     this.postulacionService.listarPorArtista(this.artistaId).subscribe({
       next: (lista) => {
         // Separar por tipo y estado
