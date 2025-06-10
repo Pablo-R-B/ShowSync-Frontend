@@ -1,5 +1,5 @@
-<div class="min-h-screen bg-cover bg-center flex items-center justify-center custom-bg-image">
-  <div class="bg-customNegro border-4 border-customGrisOscurso p-8 rounded-3xl max-w-md w-full shadow-2xl">
+<div class="min-h-screen bg-cover bg-center flex items-center justify-center custom-bg-image p-4">
+  <div class="bg-customNegro border-4 border-customGrisOscurso p-8 rounded-3xl w-full max-w-4xl shadow-2xl">
     <h2 class="font-medula text-customBlanco text-5xl mb-6 text-center">Editar Evento</h2>
     <hr class="border-customGrisOscurso mb-6" />
 
@@ -19,164 +19,176 @@
     </div>
 
     <form [formGroup]="editarEventoForm" (ngSubmit)="onSubmit()" *ngIf="!loading && !errorMensaje">
-      <div class="mb-4">
-        <label for="nombreEvento" class="block text-customGrisClaro text-sm font-bold mb-2">Nombre del Evento:</label>
-        <input
-          id="nombreEvento"
-          type="text"
-          placeholder="Nombre del Evento"
-          formControlName="nombreEvento"
-          class="w-full p-3 rounded-full bg-customGrisClaro2 text-customNegro placeholder-customGrisMedio
-                 focus:outline-none focus:ring-2 focus:ring-customRed transition duration-300 custom-input"
-          [ngClass]="{ 'border-customRed border-2': hasError('nombreEvento', 'required') }"
-        />
-        <div *ngIf="hasError('nombreEvento', 'required')" class="text-customRed text-sm mt-1">
-          El nombre del evento es obligatorio.
-        </div>
-      </div>
-
-      <div class="mb-4">
-        <label for="descripcion" class="block text-customGrisClaro text-sm font-bold mb-2">Descripción:</label>
-        <textarea
-          id="descripcion"
-          placeholder="Descripción"
-          formControlName="descripcion"
-          rows="4"
-          class="w-full p-3 rounded-lg bg-customGrisClaro2 text-customNegro placeholder-customGrisMedio
-                 focus:outline-none focus:ring-2 focus:ring-customRed transition duration-300 custom-textarea"
-          [ngClass]="{ 'border-customRed border-2': hasError('descripcion', 'required') }"
-        ></textarea>
-        <div *ngIf="hasError('descripcion', 'required')" class="text-customRed text-sm mt-1">
-          La descripción es obligatoria.
-        </div>
-      </div>
-
-      <div class="mb-4">
-        <label for="idSala" class="block text-customGrisClaro text-sm font-bold mb-2">Sala:</label>
-        <p
-          id="idSala"
-          class="w-full p-3 rounded-full bg-customGrisOscurso text-customGrisClaro cursor-not-allowed select-none opacity-80"
-          title="La sala no puede ser modificada una vez que el evento ha sido creado."
-        >
-          {{ editarEventoForm.get('idSala')?.value }}
-        </p>
-      </div>
-
-      <div class="mb-4">
-        <label for="estado" class="block text-customGrisClaro text-sm font-bold mb-2">Estado:</label>
-        <select
-          id="estado"
-          formControlName="estado"
-          class="w-full p-3 rounded-full bg-customGrisClaro2 text-customNegro
-                 focus:outline-none focus:ring-2 focus:ring-customRed transition duration-300 custom-select"
-          [ngClass]="{ 'border-customRed border-2': hasError('estado', 'required') }"
-        >
-          <option value="" disabled>Selecciona el estado</option>
-          <option *ngFor="let est of estados" [value]="est">{{ est }}</option>
-        </select>
-        <div *ngIf="hasError('estado', 'required')" class="text-customRed text-sm mt-1">
-          El estado es obligatorio.
-        </div>
-      </div>
-
-      <div class="mb-6">
-        <label for="imagenEventoFile" class="block text-customGrisClaro text-sm font-bold mb-2">Imagen del Evento:</label>
-        <input
-          type="file"
-          id="imagenEventoFile"
-          (change)="onFileSelected($event)"
-          class="block w-full text-sm text-customGrisMedio
-                 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0
-                 file:text-sm file:font-semibold file:bg-customGrisClaro file:text-customNegro
-                 hover:file:bg-customGrisClaro2 focus:outline-none cursor-pointer"
-        />
-        <div *ngIf="imagenPreviaUrl" class="mt-4 text-center">
-          <p class="text-customGrisMedio text-sm mb-2">Previsualización de la imagen actual:</p>
-          <img [src]="imagenPreviaUrl" alt="Previsualización" class="max-w-[150px] max-h-[150px] h-auto rounded-lg shadow-md border border-customGrisOscurso inline-block object-cover" />
-        </div>
-        <p class="text-customGrisMedio text-xs mt-2 text-center">Sube una nueva imagen (JPG, PNG, WEBP, máx. 5MB) o deja vacío para mantener la actual.</p>
-      </div>
-
-      <div class="mb-6 relative">
-        <label class="block text-customGrisClaro text-lg font-semibold mb-2">Artistas Asignados:</label>
-
-        <button id="dropdownArtistasButton" (click)="toggleDropdown()" type="button"
-                class="inline-flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-customNegro bg-customGrisClaro2 border border-customGrisMedio rounded-lg
-                       hover:bg-customGrisClaro focus:ring-4 focus:outline-none focus:ring-customGrisMedio transition-all duration-300">
-          Añadir/Seleccionar Artistas
-          <svg class="w-2.5 h-2.5 ms-3 transition-transform duration-300" [ngClass]="{'rotate-180': dropdownVisible}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-          </svg>
-        </button>
-
-        <div *ngIf="dropdownVisible" class="z-10 absolute bg-customNegro rounded-lg shadow-xl w-full mt-2 max-h-60 overflow-y-auto custom-scrollbar border border-customGrisOscurso">
-          <ul class="py-2 text-customGrisClaro">
-            <li *ngIf="artistasDisponibles.length === 0" class="px-4 py-2 text-customGrisMedio">No hay artistas disponibles.</li>
-            <li *ngFor="let artista of artistasDisponibles"
-                class="flex items-center px-4 py-2 hover:bg-customGrisOscurso cursor-pointer transition-colors duration-200"
-                (click)="addArtist(artista)">
-              <img class="w-8 h-8 me-2 rounded-full object-cover border border-customGrisMedio" [src]="artista.imagenPerfil || 'https://placehold.co/50x50/customGrisOscurso/customBlanco?text=No+Img'" alt="Artista" />
-              {{ artista.nombreArtista }}
-            </li>
-          </ul>
-        </div>
-
-        <div class="mt-4 bg-customGrisOscurso rounded-lg p-4 max-h-48 overflow-y-auto custom-scrollbar border border-customGrisMedio">
-          <div *ngIf="artistasAsignados.length === 0" class="text-customGrisMedio">Ningún artista asignado aún.</div>
-          <div *ngFor="let artista of artistasAsignados"
-               class="flex items-center justify-between px-4 py-2 bg-customNegro rounded-md mb-2 shadow-sm">
-            <div class="flex items-center">
-              <img class="w-8 h-8 me-2 rounded-full object-cover border border-customGrisMedio" [src]="artista.imagenPerfil || 'https://placehold.co/50x50/customGrisOscurso/customBlanco?text=No+Img'" alt="Artista" />
-              <span class="text-customGrisClaro">{{ artista.nombreArtista }}</span>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+        <div>
+          <div class="mb-4">
+            <label for="nombreEvento" class="block text-customGrisClaro text-sm font-bold mb-2">Nombre del Evento:</label>
+            <input
+              id="nombreEvento"
+              type="text"
+              placeholder="Nombre del Evento"
+              formControlName="nombreEvento"
+              class="w-full p-3 rounded-full bg-customGrisClaro2 text-customNegro placeholder-customGrisMedio
+                     focus:outline-none focus:ring-2 focus:ring-customRed transition duration-300 custom-input"
+              [ngClass]="{ 'border-customRed border-2': hasError('nombreEvento', 'required') }"
+            />
+            <div *ngIf="hasError('nombreEvento', 'required')" class="text-customRed text-sm mt-1">
+              El nombre del evento es obligatorio.
             </div>
-            <button type="button" (click)="removeArtist(artista.id)"
-                    class="text-customRed hover:text-customBurbundy focus:outline-none transition-colors duration-200 p-1 rounded-full hover:bg-customGrisOscurso">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </div>
+
+          <div class="mb-4">
+            <label for="descripcion" class="block text-customGrisClaro text-sm font-bold mb-2">Descripción:</label>
+            <textarea
+              id="descripcion"
+              placeholder="Descripción"
+              formControlName="descripcion"
+              rows="4"
+              class="w-full p-3 rounded-lg bg-customGrisClaro2 text-customNegro placeholder-customGrisMedio
+                     focus:outline-none focus:ring-2 focus:ring-customRed transition duration-300 custom-textarea"
+              [ngClass]="{ 'border-customRed border-2': hasError('descripcion', 'required') }"
+            ></textarea>
+            <div *ngIf="hasError('descripcion', 'required')" class="text-customRed text-sm mt-1">
+              La descripción es obligatoria.
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label for="idSala" class="block text-customGrisClaro text-sm font-bold mb-2">Sala:</label>
+            <p
+              id="idSala"
+              class="w-full p-3 rounded-full bg-customGrisOscurso text-customGrisClaro cursor-not-allowed select-none opacity-80"
+              title="La sala no puede ser modificada una vez que el evento ha sido creado."
+            >
+              {{ editarEventoForm.get('idSala')?.value }}
+            </p>
+          </div>
+
+          <div class="mb-6">
+            <label for="estado" class="block text-customGrisClaro text-sm font-bold mb-2">Estado:</label>
+            <select
+              id="estado"
+              formControlName="estado"
+              class="w-full p-3 rounded-full bg-customGrisClaro2 text-customNegro
+                     focus:outline-none focus:ring-2 focus:ring-customRed transition duration-300 custom-select"
+              [ngClass]="{ 'border-customRed border-2': hasError('estado', 'required') }"
+            >
+              <option value="" disabled>Selecciona el estado</option>
+              <option *ngFor="let est of estados" [value]="est">{{ est }}</option>
+            </select>
+            <div *ngIf="hasError('estado', 'required')" class="text-customRed text-sm mt-1">
+              El estado es obligatorio.
+            </div>
+          </div>
+
+         <div>
+           <img src="../../../assets/images/logo_1.png" alt="Imagen del evento" class="w-full h-auto rounded-lg shadow-md " />
+         </div>
+        </div>
+
+        <div>
+          <div class="mb-6">
+            <label for="imagenEventoFile" class="block text-customGrisClaro text-sm font-bold mb-2">Imagen del Evento:</label>
+            <input
+              type="file"
+              id="imagenEventoFile"
+              (change)="onFileSelected($event)"
+              class="block w-full text-sm text-customGrisMedio
+                     file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0
+                     file:text-sm file:font-semibold file:bg-customGrisClaro file:text-customNegro
+                     hover:file:bg-customGrisClaro2 focus:outline-none cursor-pointer"
+            />
+            <div *ngIf="imagenPreviaUrl" class="mt-4 text-center">
+              <p class="text-customGrisMedio text-sm mb-2">Previsualización de la imagen actual:</p>
+              <img [src]="imagenPreviaUrl" alt="Previsualización" class="max-w-[150px] max-h-[150px] h-auto rounded-lg shadow-md border border-customGrisOscurso inline-block object-cover" />
+            </div>
+            <p class="text-customGrisMedio text-xs mt-2 text-center">Sube una nueva imagen (JPG, PNG, WEBP, máx. 5MB) o deja vacío para mantener la actual.</p>
+          </div>
+
+          <div class="mb-6 relative">
+            <label class="block text-customGrisClaro text-lg font-semibold mb-2">Artistas Asignados:</label>
+
+            <button id="dropdownArtistasButton" (click)="toggleDropdown()" type="button"
+                    class="inline-flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-customNegro bg-customGrisClaro2 border border-customGrisMedio rounded-lg
+                           hover:bg-customGrisClaro focus:ring-4 focus:outline-none focus:ring-customGrisMedio transition-all duration-300">
+              Añadir/Seleccionar Artistas
+              <svg class="w-2.5 h-2.5 ms-3 transition-transform duration-300" [ngClass]="{'rotate-180': dropdownVisible}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
               </svg>
             </button>
+
+            <div *ngIf="dropdownVisible" class="z-10 absolute bg-customNegro rounded-lg shadow-xl w-full mt-2 max-h-40 overflow-y-auto custom-scrollbar border border-customGrisOscurso">
+              <ul class="py-2 text-customGrisClaro">
+                <li *ngIf="artistasDisponibles.length === 0" class="px-4 py-2 text-customGrisMedio">No hay artistas disponibles.</li>
+                <li *ngFor="let artista of artistasDisponibles"
+                    class="flex items-center px-4 py-2 hover:bg-customGrisOscurso cursor-pointer transition-colors duration-200"
+                    (click)="addArtist(artista)">
+                  <img class="w-8 h-8 me-2 rounded-full object-cover border border-customGrisMedio" [src]="artista.imagenPerfil || 'https://placehold.co/50x50/customGrisOscurso/customBlanco?text=No+Img'" alt="Artista" />
+                  {{ artista.nombreArtista }}
+                </li>
+              </ul>
+            </div>
+
+            <div class="mt-4 bg-customGrisOscurso rounded-lg p-4 max-h-40 overflow-y-auto custom-scrollbar border border-customGrisMedio">
+              <div *ngIf="artistasAsignados.length === 0" class="text-customGrisMedio">Ningún artista asignado aún.</div>
+              <div *ngFor="let artista of artistasAsignados"
+                   class="flex items-center justify-between px-4 py-2 bg-customNegro rounded-md mb-2 shadow-sm">
+                <div class="flex items-center">
+                  <img class="w-8 h-8 me-2 rounded-full object-cover border border-customGrisMedio" [src]="artista.imagenPerfil || 'https://placehold.co/50x50/customGrisOscurso/customBlanco?text=No+Img'" alt="Artista" />
+                  <span class="text-customGrisClaro">{{ artista.nombreArtista }}</span>
+                </div>
+                <button type="button" (click)="removeArtist(artista.id)"
+                        class="text-customRed hover:text-customBurbundy focus:outline-none transition-colors duration-200 p-1 rounded-full hover:bg-customGrisOscurso">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div *ngIf="artistasAsignados.length === 0 && (editarEventoForm.touched || editarEventoForm.dirty)" class="text-customRed text-sm mt-1">
+              Debe seleccionar al menos un artista.
+            </div>
           </div>
-        </div>
-        <div *ngIf="artistasAsignados.length === 0 " class="text-customRed text-sm mt-1">
-          Debe seleccionar al menos un artista.
+
+          <div class="mb-6">
+            <label class="block text-customNegro text-lg font-semibold mb-2">Géneros Musicales:</label>
+            <div class="bg-customBlanco  rounded-lg p-4 max-h-40 overflow-y-auto custom-scrollbar border border-customGrisMedio">
+              <div *ngIf="generosMusicalesDisponibles.length === 0" class="text-customNegro">No hay géneros musicales disponibles.</div>
+              <div *ngFor="let genero of generosMusicalesDisponibles" class="flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  [id]="'genero-' + genero.id"
+                  [checked]="isGenreSelected(genero.id)"
+                  (change)="onGenreCheckboxChange($event, genero.id)"
+                  class="form-checkbox h-5 w-5 text-customRed bg-customGrisMedio border-customGrisMedio rounded cursor-pointer transition-colors duration-200 checked:bg-customRed checked:border-customRed focus:ring-customRed focus:ring-offset-customNegro"
+                />
+                <label [for]="'genero-' + genero.id" class="ml-2 text-customNegro cursor-pointer  transition-colors duration-200">{{ genero.nombre }}</label>
+              </div>
+            </div>
+            <div *ngIf="selectedGenreIds.length === 0 && (editarEventoForm.touched || editarEventoForm.dirty)" class="text-customRed text-sm mt-1">
+              Debe seleccionar al menos un género musical.
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="mb-6">
-        <label class="block text-customGrisClaro text-lg font-semibold mb-2">Géneros Musicales:</label>
-        <div class="bg-customGrisOscurso rounded-lg p-4 max-h-48 overflow-y-auto custom-scrollbar border border-customGrisMedio">
-          <div *ngIf="generosMusicalesDisponibles.length === 0" class="text-customGrisMedio">No hay géneros musicales disponibles.</div>
-          <div *ngFor="let genero of generosMusicalesDisponibles" class="flex items-center mb-2">
-            <input
-              type="checkbox"
-              [id]="'genero-' + genero.id"
-              [checked]="isGenreSelected(genero.id)"
-              (change)="onGenreCheckboxChange($event, genero.id)"
-              class="form-checkbox h-5 w-5 text-customRed bg-customGrisOscurso border-customGrisMedio rounded cursor-pointer transition-colors duration-200 checked:bg-customRed checked:border-customRed focus:ring-customRed focus:ring-offset-customNegro"
-            />
-            <label [for]="'genero-' + genero.id" class="ml-2 text-customGrisClaro cursor-pointer hover:text-customBlanco transition-colors duration-200">{{ genero.nombre }}</label>
-          </div>
-        </div>
-        <div *ngIf="selectedGenreIds.length === 0 " class="text-customRed text-sm mt-1">
-          Debe seleccionar al menos un género musical.
-        </div>
+      <div class="mt-6">
+        <button
+          type="submit"
+          [disabled]="editarEventoForm.invalid || loading || artistasAsignados.length === 0 || selectedGenreIds.length === 0"
+          class="w-full bg-customRed hover:bg-customBurbundy text-customBlanco py-3 rounded-full
+                 text-lg font-semibold transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+        >
+          {{ loading ? 'Guardando...' : 'Guardar Cambios' }}
+        </button>
+
+        <button
+          type="button"
+          class="w-full mt-4 bg-customGrisMedio hover:bg-customGrisOscurso text-customBlanco py-3 rounded-full text-lg font-semibold transition duration-300 shadow-lg hover:shadow-xl"
+          (click)="navigateToPerfilPromotores()"
+        > Salir
+        </button>
       </div>
-
-      <button
-        type="submit"
-        [disabled]="editarEventoForm.invalid || loading || artistasAsignados.length === 0 || selectedGenreIds.length === 0"
-        class="w-full bg-customRed hover:bg-customBurbundy text-customBlanco py-3 rounded-full
-               text-lg font-semibold transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
-      >
-        {{ loading ? 'Guardando...' : 'Guardar Cambios' }}
-      </button>
-
-      <button
-        type="button"
-        class="w-full mt-4 bg-customGrisMedio hover:bg-customGrisOscurso text-customBlanco py-3 rounded-full text-lg font-semibold transition duration-300 shadow-lg hover:shadow-xl"
-        (click)="navigateToPerfilPromotores()"
-      > Salir
-      </button>
     </form>
   </div>
 </div>
