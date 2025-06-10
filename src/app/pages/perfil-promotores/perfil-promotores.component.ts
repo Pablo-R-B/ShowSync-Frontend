@@ -1,6 +1,6 @@
 import {AfterViewInit, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
-import {DatePipe, NgForOf, NgIf, SlicePipe} from '@angular/common';
+import {DatePipe, NgClass, NgForOf, NgIf, SlicePipe} from '@angular/common';
 import {PromotoresService} from '../../servicios/promotores.service';
 import {EventoDTO} from '../../interfaces/EventoDTO';
 import {Promotor} from '../../interfaces/Promotor';
@@ -22,7 +22,8 @@ import {FormsModule} from '@angular/forms';
     NgIf,
     DatePipe,
     FormsModule,
-    SlicePipe
+    SlicePipe,
+    NgClass,
   ],
   providers: [DatePipe],
   templateUrl: './perfil-promotores.component.html',
@@ -50,6 +51,11 @@ export class PerfilPromotoresComponent implements OnInit,AfterViewInit {
   postulacionesAceptadas: Postulacion[] = [];
   ofertasPendientes: Postulacion[] = [];
   ofertasAceptadas: Postulacion[] = [];
+  modalVisible: boolean = false;
+  modalTipo: 'exito' | 'error' | null = null;
+  modalMensaje: string = '';
+  modalTitulo: string = '';
+
 
   usuarioRol!:string | null;
 
@@ -305,26 +311,40 @@ export class PerfilPromotoresComponent implements OnInit,AfterViewInit {
       this.eventosService.aceptarPostulacion(postulacion.id).subscribe({
         next: () => {
           postulacion.estado = 'aceptado'; // Actualiza el estado localmente
-          alert('Postulación aceptada exitosamente');
+          this.mostrarModal('exito', 'Enhorabuena', 'Postulación aceptada exitosamente')
         },
         error: (err) => {
           console.error('Error al aceptar la postulación', err);
-          alert('Ocurrió un error al aceptar la postulación');
+          this.mostrarModal('error', 'Lo sentimos', 'Ocurrió un error al aceptar la postulación');
         }
       });
     } else if (estado === 'rechazado') {
       this.postulacionService.actualizarEstadoSolicitud(postulacion.id, estado).subscribe({
         next: () => {
           postulacion.estado = 'rechazado'; // Actualiza el estado localmente
-          alert('Postulación rechazada exitosamente');
+          this.mostrarModal('exito', 'Enhorabuena', 'Postulación rechazada exitosamente')
         },
         error: (err) => {
           console.error('Error al rechazar la postulación', err);
-          alert('Ocurrió un error al rechazar la postulación');
+          this.mostrarModal('error', 'Lo sentimos', 'Ocurrió un error al rechazar la postulación');
         }
       });
     }
   }
+
+  mostrarModal(tipo: 'exito' | 'error', titulo: string, mensaje: string): void {
+    this.modalTipo = tipo;
+    this.modalTitulo = titulo;
+    this.modalMensaje = mensaje;
+    this.modalVisible = true;
+  }
+
+  cerrarModalYRecargar(): void {
+    this.modalVisible = false;
+  }
+
+
+
 
 
 }

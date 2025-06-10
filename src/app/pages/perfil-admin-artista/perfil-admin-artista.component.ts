@@ -1,12 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {RouterLink} from '@angular/router';
-import {DatePipe, NgForOf, NgIf} from '@angular/common';
+import {DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
 import {Postulacion} from '../../interfaces/postulacion';
 import {Artistas} from '../../interfaces/artistas';
 import {EventoDTO} from '../../interfaces/EventoDTO';
 import {AuthService} from '../../servicios/auth.service';
 import {ArtistasService} from '../../servicios/artistas.service';
+import {EventosService} from '../../servicios/eventos.service';
 
 @Component({
   selector: 'app-perfil-admin-artista',
@@ -15,6 +16,7 @@ import {ArtistasService} from '../../servicios/artistas.service';
     DatePipe,
     NgForOf,
     NgIf,
+    NgClass,
   ],
   templateUrl: './perfil-admin-artista.component.html',
   standalone: true,
@@ -32,9 +34,14 @@ export class PerfilAdminArtistaComponent implements OnInit{
   artista:Artistas | undefined;
   usuarioRol!:string | null;
   eventos: EventoDTO[] = [];
+  modalVisible: boolean = false;
+  modalTipo: 'exito' | 'error' | null = null;
+  modalMensaje: string = '';
+  modalTitulo: string = '';
+
 
   constructor(private postulacionService: PostulacionEventoService, private authService: AuthService,
-              private artistaService: ArtistasService,) {
+              private artistaService: ArtistasService, private eventosService: EventosService) {
   }
 
   ngOnInit() {
@@ -91,16 +98,43 @@ export class PerfilAdminArtistaComponent implements OnInit{
     });
   }
 
-  respuestaSolicitud(post: Postulacion, estado: 'aceptado' | 'rechazado') {
-    this.postulacionService.actualizarEstadoSolicitud(post.id, estado)
-      .subscribe(() => {
-        post.estado = estado;
-
-        if (estado === 'rechazado') {
-          this.postulaciones = this.postulaciones.filter(p => p.id !== post.id);
-          this.ofertas = this.ofertas.filter(p => p.id !== post.id);
+  respuestaSolicitud(postulacion: Postulacion, estado: 'aceptado' | 'rechazado'): void {
+    if (estado === 'aceptado') {
+      this.eventosService.aceptarPostulacion(postulacion.id).subscribe({
+        next: () => {
+          postulacion.estado = 'aceptado'; // Actualiza el estado localmente
+          this.mostrarModal('exito', 'Enhorabuena', 'Oferta aceptada exitosamente');
+        },
+        error: (err) => {
+          console.error('Error al aceptar la postulación', err);
+          this.mostrarModal('error', 'Lo sentimos', 'Ocurrió un error al aceptar la oferta');
         }
       });
+    } else if (estado === 'rechazado') {
+      this.postulacionService.actualizarEstadoSolicitud(postulacion.id, estado).subscribe({
+        next: () => {
+          postulacion.estado = 'rechazado'; // Actualiza el estado localmente
+          this.mostrarModal('exito', 'Enhorabuena', 'Oferta rchazada exitosamente');
+        },
+        error: (err) => {
+          console.error('Error al rechazar la postulación', err);
+          this.mostrarModal('error', 'Lo sentimos', 'Ocurrió un error al rechazar la oferta');
+        }
+      });
+    }
   }
+
+  mostrarModal(tipo: 'exito' | 'error', titulo: string, mensaje: string): void {
+    this.modalTipo = tipo;
+    this.modalTitulo = titulo;
+    this.modalMensaje = mensaje;
+    this.modalVisible = true;
+  }
+
+  cerrarModalYRecargar(): void {
+    this.modalVisible = false;
+  }
+
+
 
 }
