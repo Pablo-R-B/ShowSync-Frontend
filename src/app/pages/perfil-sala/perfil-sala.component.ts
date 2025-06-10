@@ -271,6 +271,11 @@ export class PerfilSalaComponent implements OnInit {
       return;
     }
 
+    if (!this.imagenArchivo) {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Es obligatorio subir una imagen' });
+      return;
+    }
+
     this.cargando = true;
 
     // Construir el DTO con los datos que espera tu backend
@@ -288,9 +293,7 @@ export class PerfilSalaComponent implements OnInit {
     formData.append('dto', new Blob([JSON.stringify(eventoDTO)], { type: 'application/json' }));
 
     // Agregas la imagen con la clave que espera el backend "imagenArchivo"
-    if (this.imagenArchivo) {
-      formData.append('imagenArchivo', this.imagenArchivo);
-    }
+    formData.append('imagenArchivo', this.imagenArchivo);
 
     this.eventosService.crearEventoEnRevision(formData).subscribe({
       next: () => {
