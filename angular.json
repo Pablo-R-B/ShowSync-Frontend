@@ -14,7 +14,8 @@
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
             "allowedCommonJsDependencies": [
-              "sweetalert2"
+              "sweetalert2",
+              "sockjs-client"
             ],
             "customWebpackConfig": {
               "path": "./extra-webpack.config.js"
@@ -22,9 +23,7 @@
             "main": "src/main.ts",
             "outputPath": "dist/show-sync-frontend",
             "index": "src/index.html",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/assets",

@@ -62,9 +62,6 @@ export class PerfilPromotoresComponent implements OnInit,AfterViewInit {
 
 
 
-
-
-
   constructor(
     private promotoresService: PromotoresService,
     private salasService: SalasService,

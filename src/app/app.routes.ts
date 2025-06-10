@@ -21,6 +21,8 @@ import {PerfilCompletoGuard} from './guards/PerfilCompletoGuard';
 import {RegistroPromotorComponent} from './pages/registro-promotor/registro-promotor.component';
 import {RegistroArtistaComponent} from './pages/registro-artista/registro-artista.component';
 import {PerfilAdminArtistaComponent} from './pages/perfil-admin-artista/perfil-admin-artista.component';
+import {WebsocketComponent} from './websocket/websocket.component';
+import {ChatComponent} from './chat/chat.component';
 
 export const routes: Routes = [
   // Rutas de autenticación
@@ -32,9 +34,9 @@ export const routes: Routes = [
   { path:'datos-artista', component:RegistroArtistaComponent},
   { path: 'landing-page', component: LandingPageComponent },
 
-
-
-  // Rutas de eventos
+// Nueva ruta para el componente WebSocket
+  { path: 'websocket', component: WebsocketComponent },
+  { path: 'chat', component: ChatComponent },
   { path: '', redirectTo: 'landing-page', pathMatch: 'full' },
 
   {
