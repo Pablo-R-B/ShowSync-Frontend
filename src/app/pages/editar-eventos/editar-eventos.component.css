@@ -1,0 +1,59 @@
+/* Custom scrollbar for better aesthetics */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: white; /* Color de respaldo si --customNegro no está definido */
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: white; /* Color of the scrollbar thumb */
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: grey; /* Color when hovered */
+}
+
+/* Fallback for Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: grey black;
+}
+
+/* Custom background image - defined directly in the component for easier maintenance */
+.custom-bg-image {
+  background-image: url('../../../assets/images/img_4.png');
+}
+
+/* Loader Styles */
+.loader {
+  border: 4px solid white;
+  border-top: 4px solid red; /* Rojo */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* General input/select/textarea focus and hover states using custom colors */
+.custom-input:hover,
+.custom-textarea:hover,
+.custom-select:hover {
+  background-color: lightgrey; /* Lighter gray on hover */
+}
+
+.custom-input:focus,
+.custom-textarea:focus,
+.custom-select:focus {
+  border-color: red; /* Red border on focus */
+  box-shadow: 0 0 0 2px rgba(191, 13, 34, 0.5); /* Red ring on focus */
+}

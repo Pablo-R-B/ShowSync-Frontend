@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule, FormControl } from '@angular/forms';
-import {CommonModule, NgForOf, NgIf} from '@angular/common';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonModule, NgForOf, NgIf } from '@angular/common';
 import { EstadoService } from '../../servicios/estado.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EventosService } from '../../servicios/eventos.service';
@@ -8,15 +8,16 @@ import { SalasService } from '../../servicios/salas.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Sala } from '../../interfaces/sala';
 import { EventoActualizado } from '../../interfaces/EventoActualizado';
-import {Artistas} from '../../interfaces/artistas';
-import {ArtistasService} from '../../servicios/artistas.service';
-import {GenerosMusicalesService} from '../../servicios/generos-musicales.service';
-import {AuthService} from '../../servicios/auth.service';
-import {forkJoin, Observable} from 'rxjs';
-import {GeneroMusicalDTO} from '../../interfaces/GeneroMusicalDTO';
-import {ArtistaEvento} from '../../interfaces/ArtistaEvento';
-import {PromotoresService} from '../../servicios/promotores.service';
-import {Promotor} from '../../interfaces/Promotor';
+import { Artistas } from '../../interfaces/artistas';
+import { ArtistasService } from '../../servicios/artistas.service';
+import { GenerosMusicalesService } from '../../servicios/generos-musicales.service';
+import { AuthService } from '../../servicios/auth.service';
+import { forkJoin, Observable } from 'rxjs';
+import { GeneroMusicalDTO } from '../../interfaces/GeneroMusicalDTO';
+import { ArtistaEvento } from '../../interfaces/ArtistaEvento';
+import { PromotoresService } from '../../servicios/promotores.service';
+import { Promotor } from '../../interfaces/Promotor';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms'; // Ensure these are imported
 
 @Component({
   selector: 'app-editar-eventos',
@@ -31,7 +32,7 @@ import {Promotor} from '../../interfaces/Promotor';
   templateUrl: './editar-eventos.component.html',
   styleUrls: ['./editar-eventos.component.css']
 })
-export class EditarEventosComponent implements OnInit{
+export class EditarEventosComponent implements OnInit {
   editarEventoForm!: FormGroup;
   salas: Sala[] = [];
   estados: string[] = [];
@@ -60,14 +61,14 @@ export class EditarEventosComponent implements OnInit{
     private artistasService: ArtistasService,
     private promotoresService: PromotoresService,
     private generosMusicalesService: GenerosMusicalesService,
-    private authService: AuthService,
+    private authService: AuthService, // Inyecta AuthService
     private route: ActivatedRoute,
     private router: Router
   ) {
     this.editarEventoForm = this.fb.group({
       nombreEvento: ['', Validators.required],
       descripcion: ['', Validators.required],
-      idSala: [{value: '', disabled: true}, Validators.required], // Campo deshabilitado
+      idSala: [{ value: '', disabled: true }, Validators.required], // Campo deshabilitado
       estado: ['', Validators.required],
     });
   }
@@ -87,7 +88,7 @@ export class EditarEventosComponent implements OnInit{
         if (promotor && promotor.id) {
           this.promotorId = promotor.id;
           console.log('ID de usuario autenticado:', authenticatedUserId);
-          console.log('Promotor recibido (id_promotor: ' + promotor.id + ', usuarioId: ' + promotor.id+ '):', promotor);
+          console.log('Promotor recibido (id_promotor: ' + promotor.id + ', usuarioId: ' + promotor.id + '):', promotor);
           console.log('ID del promotor para operaciones:', this.promotorId);
 
           const eventoParam = this.route.snapshot.paramMap.get('idEvento');
@@ -134,7 +135,7 @@ export class EditarEventosComponent implements OnInit{
 
         // Buscamos el nombre de la sala correspondiente al ID original
         const salaOriginal = this.salas.find(s => s.id === this.salaOriginalId);
-        const nombreSalaOriginal = salaOriginal ? salaOriginal.nombre: 'Sala no encontrada';
+        const nombreSalaOriginal = salaOriginal ? salaOriginal.nombre : 'Sala no encontrada';
 
         this.editarEventoForm.patchValue({
           nombreEvento: evento.nombreEvento,
@@ -229,30 +230,35 @@ export class EditarEventosComponent implements OnInit{
 
     const file = input.files[0];
 
-    // Validar tipo
+    // Validate type
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
       alert('Tipo de archivo no permitido. Solo se aceptan JPG, PNG o WEBP.');
+      input.value = ''; // Clear the input
+      this.archivoImagen = null;
+      this.imagenPreviaUrl = null;
       return;
     }
 
-    // Validar tamaño
+    // Validate size
     const maxSizeMB = 5;
     if (file.size > maxSizeMB * 1024 * 1024) {
       alert(`El archivo supera el tamaño máximo de ${maxSizeMB}MB.`);
+      input.value = ''; // Clear the input
+      this.archivoImagen = null;
+      this.imagenPreviaUrl = null;
       return;
     }
 
     this.archivoImagen = file;
 
-    // Previsualización
+    // Preview
     const reader = new FileReader();
     reader.onload = () => {
       this.imagenPreviaUrl = reader.result as string;
     };
     reader.readAsDataURL(file);
   }
-
 
   onSubmit() {
     this.editarEventoForm.markAllAsTouched();
@@ -279,7 +285,7 @@ export class EditarEventosComponent implements OnInit{
       descripcion: this.editarEventoForm.get('descripcion')?.value,
       idSala: this.salaOriginalId, // Usamos el ID original de la sala guardado
       estado: this.editarEventoForm.get('estado')?.value,
-      imagenEvento: this.imagenPreviaUrl || '',
+      imagenEvento: this.imagenPreviaUrl || '', // This will be used if no new file is uploaded
       artistasAsignados: this.artistasAsignados,
       generosMusicalesIds: this.selectedGenreIds
     };
@@ -288,7 +294,7 @@ export class EditarEventosComponent implements OnInit{
       this.promotorId,
       this.idEvento,
       eventoAEnviar,
-      this.archivoImagen ?? undefined // <- esto es lo que faltaba
+      this.archivoImagen ?? undefined
     ).subscribe({
       next: () => {
         this.loading = false;
@@ -301,15 +307,11 @@ export class EditarEventosComponent implements OnInit{
         console.error('Error al actualizar el evento:', error);
       }
     });
-
-
   }
 
   navigateToPerfilPromotores(): void {
     this.router.navigate(['/perfil-promotores']);
   }
 
-  mostrarMensajeSala() {
-    alert('No puedes modificar la sala');
-  }
+  // Removed mostrarMensajeSala as it's not needed with the tooltip and disabled appearance
 }
