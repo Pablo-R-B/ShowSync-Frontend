@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {DatePipe,NgIf} from '@angular/common';
-import {EventosService} from '../../servicios/eventos.service';
-import {AuthService} from '../../servicios/auth.service';
-import {ArtistasService} from '../../servicios/artistas.service';
-import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
+import { DatePipe, NgIf } from '@angular/common';
+import { EventosService } from '../../servicios/eventos.service';
+import { AuthService } from '../../servicios/auth.service';
+import { ArtistasService } from '../../servicios/artistas.service';
+import { PostulacionEventoService } from '../../servicios/postulacion-evento.service';
 import Swal from 'sweetalert2';
-
 
 @Component({
   selector: 'app-eventos',
@@ -21,17 +20,17 @@ import Swal from 'sweetalert2';
 export class EventosComponent implements OnInit {
   evento: any;
   artistaId!: number;
-  idEvento!:number;
-
+  idEvento!: number;
+  eventoPasado: boolean = false;
+  mostrarModal: boolean = false;
 
   constructor(
     private eventosService: EventosService,
     protected authService: AuthService,
     private artistasService: ArtistasService,
-    private postulacionService:PostulacionEventoService,
+    private postulacionService: PostulacionEventoService,
     private route: ActivatedRoute,
     private routeTo: Router
-
   ) {}
 
   ngOnInit(): void {
@@ -65,6 +64,16 @@ export class EventosComponent implements OnInit {
     this.eventosService.getEventoPorId(eventoId).subscribe(
       (data) => {
         this.evento = data;
+        // Convertir fecha a objeto Date si no lo es
+        this.evento.fechaEvento = new Date(this.evento.fechaEvento);
+
+        // Comparar fechas sin considerar la hora
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+        const fechaEvento = new Date(this.evento.fechaEvento);
+        fechaEvento.setHours(0, 0, 0, 0);
+
+        this.eventoPasado = fechaEvento < hoy;
       },
       (error) => {
         console.error('Error al cargar el evento', error);
@@ -91,17 +100,13 @@ export class EventosComponent implements OnInit {
     });
   }
 
-
   enviarOferta() {
     if (this.authService.userRole === 'ADMINISTRADOR' || this.authService.userRole === 'PROMOTOR') {
       this.mostrarToast('error', 'Solo los artistas pueden postularse a eventos.');
       return;
     }
-    const fechaEvento = new Date(this.evento.fecha);
-    const hoy = new Date();
-    hoy.setHours(0, 0, 0, 0);
 
-    if (fechaEvento < hoy) {
+    if (this.eventoPasado) {
       this.mostrarToast('error', 'No puedes postularte a un evento pasado.');
       return;
     }
@@ -135,8 +140,6 @@ export class EventosComponent implements OnInit {
     this.routeTo.navigate(['/busqueda-eventos']);
   }
 
-  mostrarModal: boolean = false;
-
   abrirModal() {
     this.mostrarModal = true;
   }
@@ -144,5 +147,4 @@ export class EventosComponent implements OnInit {
   cerrarModal() {
     this.mostrarModal = false;
   }
-
 }
