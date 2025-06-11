@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Artistas} from '../../interfaces/artistas';
 import {ArtistasService} from '../../servicios/artistas.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {AuthService} from '../../servicios/auth.service';
@@ -32,11 +32,13 @@ export class PerfilArtistaComponent implements OnInit{
   generos: GeneroMusical[] = [];
   usuarioRol!:string | null;
   artistaId!: number;
+  imagenExpandida: any;
 
 
   constructor(private artistasService:ArtistasService, private route: ActivatedRoute,
               private promotoresService: PromotoresService, private authService: AuthService,
-              private postulacionService:PostulacionEventoService) {
+              private postulacionService:PostulacionEventoService,     private routeTo: Router
+  ) {
   }
 
   ngOnInit() {
@@ -138,6 +140,10 @@ export class PerfilArtistaComponent implements OnInit{
           this.mostrarToast('error', `Error en la solicitud: ${msg}`);
         }
       });
+  }
+
+  volver(): void {
+    this.routeTo.navigate(['/catalogo-artistas']);
   }
 
 

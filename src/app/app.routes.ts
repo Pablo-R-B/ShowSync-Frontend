@@ -69,6 +69,7 @@ export const routes: Routes = [
 
   //Ruta de instrucciones
    {path: 'instrucciones', loadComponent: () => import('./pages/intrucciones-uso/intrucciones-uso.component').then(m => m.InstruccionesUsoComponent)},
+  {path: 'condiciones', loadComponent: () => import('./pages/condiciones/condiciones.component').then(m => m.CondicionesComponent)},
 
 
 

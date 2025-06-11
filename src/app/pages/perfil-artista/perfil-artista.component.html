@@ -1,129 +1,171 @@
-<section class="py-10 my-auto dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-800">
-  <div class="lg:w-[80%] md:w-[90%] w-[96%] mx-auto flex gap-4">
-    <div class="sm:p-12 dark:bg-gray-800 dark:text-gray-100 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl">
-      <!-- Header Artista -->
-      <div *ngIf="artista" class="relative overflow-hidden rounded-t-xl">
-        <div class="absolute inset-0 bg-cover bg-center opacity-10" [style.backgroundImage]="'url(' + artista.imagenPerfil + ')'"></div>
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
-        <div class="relative img-artista flex flex-col md:flex-row items-center md:items-start gap-6 p-10">
-          <img class="w-40 h-40 border-4 border-blue-500 rounded-full shadow-lg object-cover transition-transform duration-300 hover:scale-105"
-               [src]="artista.imagenPerfil || 'https://via.placeholder.com/160'"
-               alt="Perfil del artista">
+<section class="min-h-screen bg-cover bg-center relative pt-4 pb-8 " style="background-image: linear-gradient(to bottom, black, rgba(255, 255, 255, 0.1)), url('assets/images/fondo_3.jpg');" >
+  <div class="max-w-6xl mx-auto my-8 px-4">
+    <!-- Tarjeta principal del artista -->
+    <div class="bg-black/90 rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl">
 
-          <div class="flex flex-col items-center md:items-start text-center md:text-left">
-            <h4 class="text-2xl font-bold tracking-tight mb-2">{{artista.nombreArtista}}</h4>
-            <div class="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 px-4 py-2 rounded-full">
-              <span class="text-2xl font-extrabold">22</span>
-              <span class="text-sm text-blue-600 dark:text-blue-400">Amigos</span>
-            </div>
+      <!-- Banner con efecto parallax -->
+      <div class="relative h-48 md:h-64 bg-gradient-to-r from-gray-600/20 to-gray-600 overflow-hidden">
+
+        <!-- Botón Volver -->
+        <div class="absolute top-4 left-4 z-10">
+          <button (click)="volver()" class="flex items-center gap-2 text-customGrisClaro hover:text-white transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            <span class="font-semibold">Volver a la búsqueda</span>
+          </button>
+        </div>
+
+        <div class="absolute inset-0 bg-cover opacity-20"
+          [style.background-image]="'url(' + artista?.imagenPerfil + ')'"
+          [style.background-position]="'center '">
+
+        </div>
+
+        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+
+        <!-- Avatar del artista -->
+        <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2">
+          <div class="relative group cursor-pointer" (click)="imagenExpandida = !imagenExpandida">
+            <img [class]="imagenExpandida ? 'w-48 h-48 md:w-56 md:h-56' : 'w-32 h-32 md:w-40 md:h-40'"
+                 class="rounded-full border-4 border-white shadow-xl object-cover transition-transform duration-500 group-hover:scale-110"
+                 [src]="artista?.imagenPerfil || 'assets/images/default-avatar.png'"
+                 alt="Foto de perfil de {{artista?.nombreArtista}}">
+            <div class="absolute inset-0 rounded-full border-4 border-transparent group-hover:border-red-500 transition-all duration-300"></div>
           </div>
         </div>
       </div>
 
-      <!-- Contenido Principal -->
-      <div *ngIf="artista" class="mt-12 pt-10 border-t border-blueGray-200 dark:border-gray-700">
-        <div class="flex flex-col lg:flex-row gap-8">
-          <!-- Izquierda -->
-          <div class="w-full lg:w-1/3 flex flex-col items-center text-center">
-            <img class="w-40 h-40 border-4 border-purple-500 rounded-full shadow-md object-cover mb-6 transition-transform duration-300 hover:rotate-3"
-                 [src]="artista.imagenPerfil"
-                 alt="Perfil profesional">
+      <!-- Contenido principal -->
+      <div class="pt-10 pb-8 px-6 md:px-10 relative z-0">
+        <!-- Información del artista -->
+        <div class="text-center mb-10">
+          <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">{{artista?.nombreArtista}}</h1>
 
-            <div class="flex flex-col items-center space-y-4 mt-4">
-              <!-- Botón Música -->
-              <a [href]="artista.musicUrl" target="_blank"
-                 class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium
-                        hover:from-purple-600 hover:to-pink-600 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
-                </svg>
-                Escuchar mi música
-              </a>
-
-              <!-- Redes Sociales -->
-              <div class="flex gap-3 mt-2">
-                <a href="#" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-purple-200 dark:hover:bg-purple-900/30 transition-colors">
-                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.668-.072-4.948-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0z"/>
-                    <path d="M12 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8z"/>
-                    <circle cx="18.406" cy="5.594" r="1.44"/>
-                  </svg>
-                </a>
-                <a href="#" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-blue-200 dark:hover:bg-blue-900/30 transition-colors">
-                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M22 4.37v15.276A2.357 2.357 0 0119.634 22H4.366A2.357 2.357 0 012 19.645V4.37A2.357 2.357 0 014.366 2h15.268A2.357 2.357 0 0122 4.37z"/>
-                    <path d="M15.41 9.63a.5.5 0 00-.71-.15l-3.16 2.26-3.15-2.26a.5.5 0 00-.71.15.486.486 0 00-.15.35v4.04c0 .13.05.26.15.35a.5.5 0 00.71-.15l2.79-3.16 3.15 2.26a.5.5 0 00.71-.15.486.486 0 00.15-.35v-4a.486.486 0 00-.15-.34z"/>
-                  </svg>
-                </a>
-              </div>
-
-              <!-- Géneros -->
-              <div class="flex flex-wrap justify-center gap-2 mt-4">
-                <div *ngFor="let genero of generos"
-                     class="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 rounded-full text-sm font-medium">
-                  {{ genero.nombre }}
-                </div>
-              </div>
+          <!-- Estadísticas -->
+          <div class="flex justify-center gap-4 mb-6">
+            <div class="flex items-center gap-2 bg-gray-700/50 px-4 py-2 rounded-full">
+              <i class="fas fa-users text-purple-400"></i>
+              <span class="font-medium">22 <span class="text-gray-400 text-sm">Seguidores</span></span>
+            </div>
+            <div class="flex items-center gap-2 bg-gray-700/50 px-4 py-2 rounded-full">
+              <i class="fas fa-music text-blue-400"></i>
+              <span class="font-medium">15 <span class="text-gray-400 text-sm">Eventos</span></span>
             </div>
           </div>
 
-          <!-- Derecha -->
-          <div class="w-full lg:w-2/3 px-4 mt-10 lg:mt-0 text-center lg:text-left">
-            <p class="mb-6 text-lg leading-relaxed text-blueGray-600 dark:text-gray-300">
-              {{artista.biografia}}
-            </p>
+          <!-- Botón principal -->
+          <div class="flex justify-center mb-8">
+            <a [href]="artista?.musicUrl" target="_blank"
+               class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-600 to-red-900 text-white font-semibold rounded-xl shadow-lg
+                      hover:from-red-900 hover:to-red-600 transform hover:-translate-y-1 transition-all duration-300">
+              <i class="fas fa-play"></i> Escuchar mi música
+            </a>
+          </div>
+        </div>
+        <div class="flex flex-col md:flex-row gap-10">
+          <!-- Sección de biografía -->
+          <div class="flex-1">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <i class="fas fa-user-circle text-red-600"></i> Sobre mí
+            </h2>
+            <p class="text-white leading-relaxed">{{artista?.biografia || 'Este artista aún no ha compartido su biografía.'}}</p>
+          </div>
 
-            <!-- Botón Contratar -->
-            <div *ngIf="usuarioRol === 'PROMOTOR'" class="flex justify-center mt-12 mb-[75px]">
-              <button (click)="mostrarModal = true"
-                      class="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold rounded-lg shadow-lg
-                             hover:from-green-600 hover:to-emerald-700 transform hover:-translate-y-0.5 transition-all duration-300">
-                Contratar artista
-              </button>
+          <!-- Géneros musicales -->
+          <div class="flex-1">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <i class="fas fa-tags text-gray-300"></i> Géneros musicales
+            </h2>
+            <div class="flex flex-wrap justify-center gap-2">
+              <div *ngFor="let genero of generos"
+                   class="px-4 py-2 bg-gradient-to-r from-customBurbundy/50 to-gray-700/50 text-white rounded-full font-medium flex items-center gap-2">
+                <i class="fas fa-music text-sm"></i> {{ genero.nombre }}
+              </div>
+              <div *ngIf="!generos.length" class="text-gray-400 italic">
+                No se han especificado géneros musicales
+              </div>
             </div>
           </div>
         </div>
+
+        <!-- Redes sociales -->
+        <div class="mb-10 mt-6 ">
+          <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <i class="fas fa-share-alt text-amber-400"></i> Conecta conmigo
+          </h2>
+          <div class="flex justify-center gap-4">
+            <a href="#" class="w-12 h-12 flex items-center justify-center bg-gray-700 hover:bg-gradient-to-br from-purple-600 to-pink-600 rounded-full transition-all duration-300 transform hover:-translate-y-1">
+              <i class="fab fa-instagram text-xl"></i>
+            </a>
+            <a href="#" class="w-12 h-12 flex items-center justify-center bg-gray-700 hover:bg-gradient-to-br from-blue-500 to-blue-700 rounded-full transition-all duration-300 transform hover:-translate-y-1">
+              <i class="fab fa-twitter text-xl"></i>
+            </a>
+            <a href="#" class="w-12 h-12 flex items-center justify-center bg-gray-700 hover:bg-gradient-to-br from-red-500 to-red-700 rounded-full transition-all duration-300 transform hover:-translate-y-1">
+              <i class="fab fa-youtube text-xl"></i>
+            </a>
+            <a href="#" class="w-12 h-12 flex items-center justify-center bg-gray-700 hover:bg-gradient-to-br from-green-500 to-green-700 rounded-full transition-all duration-300 transform hover:-translate-y-1">
+              <i class="fab fa-spotify text-xl"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Botón de contratación (solo para promotores) -->
+        <div *ngIf="usuarioRol === 'PROMOTOR'" class="flex justify-center mt-8">
+          <button (click)="mostrarModal = true"
+                  class="px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl shadow-lg
+                         hover:from-green-600 hover:to-emerald-700 transform hover:scale-105 transition-all duration-300">
+            <i class="fas fa-handshake mr-2"></i> CONTRATAR ARTISTA
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de contratación -->
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4" *ngIf="mostrarModal">
+    <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" (click)="cerrarModal()"></div>
+
+    <div class="relative bg-black rounded-2xl shadow-2xl max-w-md w-full mx-4 animate-fadeIn border border-white">
+      <!-- Encabezado -->
+      <div class="p-6 border-b border-gray-700">
+        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+          <i class="fas fa-handshake text-emerald-400"></i> Contratar Artista
+        </h2>
+        <p class="text-gray-400 mt-1">Selecciona un evento para invitar a {{artista?.nombreArtista}}</p>
       </div>
 
-      <!-- Modal -->
-      <div class="modal fixed inset-0 z-50 flex items-center justify-center" *ngIf="mostrarModal">
-        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm"></div>
+      <!-- Contenido del modal -->
+      <div class="p-6">
+        <div *ngIf="!eventos.length" class="bg-amber-900/20 p-4 rounded-lg text-amber-300 mb-6 flex items-start gap-3">
+          <i class="fas fa-exclamation-circle mt-1"></i>
+          <p>No tienes eventos disponibles para ofrecer. Crea un evento primero.</p>
+        </div>
 
-        <div class="relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 md:p-8 max-w-md w-full mx-4 animate-fadeIn">
-          <h2 class="text-2xl font-bold mb-4">Vas a contratar a un artista</h2>
-          <hr class="mb-6 border-gray-200 dark:border-gray-700">
-
-          <p class="mb-4">Selecciona un evento:</p>
-
-          <div *ngIf="!eventos.length" class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg text-yellow-800 dark:text-yellow-300 mb-6">
-            <p>No tienes eventos disponibles para ofrecer.</p>
-          </div>
-
-          <select id="eventSelect" [(ngModel)]="eventoSeleccionado" name="eventoSeleccionado"
-                  class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent mb-6">
+        <div *ngIf="eventos.length" class="mb-6">
+          <label class="block text-gray-300 mb-2">Selecciona un evento:</label>
+          <select [(ngModel)]="eventoSeleccionado"
+                  class="w-full p-3 bg-white border border-gray-600 rounded-lg text-black focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
             <option *ngFor="let evento of eventos" [value]="evento.id">
               {{ evento.nombreEvento }}
             </option>
           </select>
+        </div>
 
-          <div class="flex justify-end gap-4">
-            <button (click)="cerrarModal()"
-                    class="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg transition-colors">
-              Cancelar
-            </button>
-            <button (click)="enviarOferta(); cerrarModal()"
-                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all">
-              Aceptar
-            </button>
-          </div>
+        <div class="flex justify-end gap-3">
+          <button (click)="cerrarModal()"
+                  class="px-5 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors">
+            Cancelar
+          </button>
+          <button (click)="enviarOferta(); cerrarModal()" [disabled]="!eventoSeleccionado"
+                  class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+            Enviar oferta
+          </button>
         </div>
       </div>
     </div>
   </div>
 </section>
-
-<!--ññññññññññññññññññññññññññññññññññññññññññññññññññññññññññññññññññññññññññññññññññññññññ-->
-
-
-
-

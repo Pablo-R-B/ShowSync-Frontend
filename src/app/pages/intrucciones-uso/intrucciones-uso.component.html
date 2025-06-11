@@ -1,4 +1,4 @@
-<div class="main-container" style="margin-top: 5vw;">
+<div class="main-container" style="background-image: url('assets/images/fondo_1.png'); background-size: cover; background-position: center;">
   <!-- Fondo con overlay -->
   <div class="background-overlay"></div>
 
@@ -27,7 +27,7 @@
     </div>
   </div>
 
-  <section class="instrucciones-container">
+  <section class="instrucciones-container" style="display: flex; flex-direction: column;">
     <div class="glass-card">
       <h1 class="main-title font-medula">¿Cómo funciona ShowSync?</h1>
       <p class="subtitle">
@@ -35,7 +35,7 @@
         Aquí te explicamos cómo usarla según tu rol.
       </p>
 
-      <div class="grid-container">
+      <div class="grid-container ">
         <!-- Artistas -->
         <div class="card form-element"
              (mouseenter)="onCardHover($event)"
@@ -64,9 +64,10 @@
       </div>
 
       <!-- Sección de contacto -->
-      <div class="contact-section form-element">
-        <app-contacto-form></app-contacto-form>
-      </div>
+
+    </div>
+    <div class="contact-section form-element">
+      <app-contacto-form></app-contacto-form>
     </div>
   </section>
 </div>

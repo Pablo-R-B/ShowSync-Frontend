@@ -1,302 +1,289 @@
 <!-- Font Awesome -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
-<div class="bg-[#7e001b] min-h-screen text-white font-sans pt-[80px] pb-[60px] px-[10%]">
-
+<div class="min-h-screen text-white font-sans-serif pt-[80px] pb-[60px] px-[10%]" style="background-size: contain; background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('assets/images/img.png') repeat-y center;">
   <!-- Info del Promotor -->
-  <div class="p-8 flex items-center gap-8 px-6 sm:ml-[10%] bg-[#4c0012] rounded-lg shadow-lg">
-    <img [src]="promotor?.imagenPerfil || logoUrl"
-         [alt]="promotor?.nombrePromotor"
-         class="w-24 h-24 rounded-full border-4 border-white shadow-md object-cover" />
-    <div>
-      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-wide drop-shadow-lg">{{ promotor?.nombrePromotor }}</h1>
-      <p class="mt-2 max-w-lg text-lg text-gray-300 leading-relaxed">{{ promotor?.descripcion }}</p>
+  <!-- Contenedor principal -->
+  <div class="max-w-7xl mx-auto space-y-12">
+
+    <!-- Sección de información del promotor -->
+    <div class="p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 bg-gradient-to-r to-black/50 from-customBurbundy/50 rounded-xl shadow-2xl">
+      <img [src]="promotor?.imagenPerfil || logoUrl"
+           [alt]="promotor?.nombrePromotor"
+           class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white shadow-lg object-cover" />
+      <div class="text-center md:text-left">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">{{ promotor?.nombrePromotor }}</h1>
+        <p class="mt-2 text-lg text-rose-100 max-w-2xl">{{ promotor?.descripcion }}</p>
+      </div>
     </div>
-  </div>
 
-  <!-- Botón Editar Mi Perfil -->
-  <div class="flex justify-center mt-12 mb-[75px]">
-    <button class="bg-[#e4e4e4] text-black px-10 py-4 text-2xl rounded-2xl shadow-md hover:bg-[#d4d4d4] transition font-semibold"
-            [routerLink]="['/datos-promotor']">
-      EDITAR MI PERFIL <i class="fas fa-user-edit ml-2"></i>
-    </button>
-  </div>
+    <!-- Botón de edición -->
+    <div class="flex justify-center space-x-4">
+      <button class="bg-white hover:bg-gray-100 text-gray-800 font-bold py-3 px-8 text-xl rounded-xl shadow-md transition-all duration-200 transform hover:scale-105"
+              [routerLink]="['/datos-promotor']">
+        <i class="fas fa-user-edit mr-2"></i> EDITAR PERFIL
+      </button>
 
+    <!-- Botón de gestión de salas -->
 
+      <button class="bg-white hover:bg-gray-100 text-gray-800 font-bold py-3 px-8 text-xl rounded-xl shadow-md transition-all duration-200 transform hover:scale-105"
+              [routerLink]="['/catalogo-salas']">
+        <i class="fas fa-book mr-2"></i> RESERVAR SALAS
+      </button>
+    </div>
 
-  <!-- Panel de Gestión -->
+    <!-- Panel de gestión -->
+    <div class="space-y-8">
 
-  <div class="grid md:grid-cols-1 gap-8 mb-10 pb-6">
+      <!-- Sección de solicitudes -->
+      <div class="grid md:grid-cols-2 gap-6">
 
+        <!-- Solicitudes de artista -->
+        <div class="bg-black p-6 rounded-xl shadow-lg border border-white">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="p-3 bg-rose-600 rounded-lg">
+              <i class="fas fa-microphone text-white text-xl"></i>
+            </div>
+            <h2 class="text-xl font-bold">SOLICITUDES DE ARTISTA</h2>
+          </div>
 
+          <!-- Acordeón de postulaciones -->
+          <div class="space-y-4">
 
-
-    <div class="grid md:grid-cols-2 gap-8">
-
-      <!-- Solicitud de Artista -->
-      <div class="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-semibold flex items-center gap-2">
-            <i class="fas fa-microphone text-white"></i> SOLICITUDES DE ARTISTA
-          </h2>
-        </div>
-
-        <!-- COLUMNA 1: Postulaciones -->
-        <div class="flex flex-col gap-6">
-
-          <!-- Postulaciones Pendientes -->
-          <label class="w-full">
-            <input class="peer/showLabel absolute scale-0" type="checkbox" />
-            <span class="block max-h-14 overflow-hidden rounded-lg bg-emerald-100 px-4 py-0 text-cyan-800 shadow-lg transition-all duration-300 peer-checked/showLabel:max-h-[600px]">
-          <h3 class="flex h-14 cursor-pointer items-center font-bold px-4">🎤 Postulaciones Pendientes</h3>
-
-          <div class="max-h-[500px] overflow-y-auto" *ngIf="postulacionesPendientes.length > 0; else noPostPend">
-            <div class="grid gap-4 p-4">
-              <div *ngFor="let post of postulacionesPendientes" class="flex flex-col md:flex-row gap-4 p-4 bg-white rounded-xl shadow-md items-start md:items-center">
-                <img [src]="post.eventoImagen" alt="Evento" class="w-24 h-24 object-cover rounded-lg shrink-0" />
-                <div class="flex-1">
-                  <h4 class="font-bold text-lg">{{ post.eventoNombre }}</h4>
-                  <p><span class="font-semibold">Artista:</span> {{ post.artistaNombre }}</p>
-                  <p><span class="font-semibold">Sala:</span> {{ post.salaNombre }}</p>
-                  <p><span class="font-semibold">Fecha Postulación:</span> {{ post.fechaPostulacion | date }}</p>
-                  <div class="flex gap-2 mt-3" *ngIf="post.estado === 'pendiente'">
-                    <button class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-full font-semibold" (click)="respuestaSolicitud(post, 'aceptado')">Aceptar</button>
-                    <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-full font-semibold" (click)="respuestaSolicitud(post, 'rechazado')">Rechazar</button>
+            <!-- Postulaciones pendientes -->
+            <div class="bg-white rounded-lg overflow-hidden">
+              <input type="checkbox" id="post-pendientes" class="hidden peer">
+              <label for="post-pendientes" class="flex justify-between items-center p-4 bg-gradient-to-r from-emerald-800 to-emerald-700 cursor-pointer">
+                <h3 class="font-semibold flex items-center gap-2">
+                  <i class="fas fa-clock"></i> Postulaciones Pendientes
+                </h3>
+                <i class="fas fa-chevron-down transition-transform duration-300 peer-checked:rotate-180"></i>
+              </label>
+              <div class="max-h-0 overflow-hidden transition-all duration-300 peer-checked:max-h-[500px]">
+                <div *ngIf="postulacionesPendientes.length > 0; else noPostPend" class="p-4 space-y-4">
+                  <div *ngFor="let post of postulacionesPendientes" class="flex flex-col sm:flex-row gap-4 p-4 bg-gray-700 rounded-lg">
+                    <img [src]="post.eventoImagen" alt="Evento" class="w-20 h-20 object-cover rounded-lg" />
+                    <div class="flex-1">
+                      <h4 class="font-bold">{{ post.eventoNombre }}</h4>
+                      <p class="text-sm text-gray-300"><span class="font-medium">Artista:</span> {{ post.artistaNombre }}</p>
+                      <p class="text-sm text-gray-300"><span class="font-medium">Sala:</span> {{ post.salaNombre }}</p>
+                      <p class="text-sm text-gray-300"><span class="font-medium">Fecha:</span> {{ post.fechaPostulacion | date }}</p>
+                      <div class="flex gap-2 mt-2">
+                        <button class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm"
+                                (click)="respuestaSolicitud(post, 'aceptado')">
+                          Aceptar
+                        </button>
+                        <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm"
+                                (click)="respuestaSolicitud(post, 'rechazado')">
+                          Rechazar
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
+                <ng-template #noPostPend>
+                  <p class="p-4 text-gray-400 text-sm">No hay postulaciones pendientes</p>
+                </ng-template>
+              </div>
+            </div>
+
+            <!-- Postulaciones aceptadas -->
+            <div class="bg-white rounded-lg overflow-hidden">
+              <input type="checkbox" id="post-aceptadas" class="hidden peer">
+              <label for="post-aceptadas" class="flex justify-between items-center p-4 bg-gradient-to-r from-green-800 to-green-700 cursor-pointer">
+                <h3 class="font-semibold flex items-center gap-2">
+                  <i class="fas fa-check-circle"></i> Postulaciones Aceptadas
+                </h3>
+                <i class="fas fa-chevron-down transition-transform duration-300 peer-checked:rotate-180"></i>
+              </label>
+              <div class="max-h-0 overflow-hidden transition-all duration-300 peer-checked:max-h-[500px]">
+                <div *ngIf="postulacionesAceptadas.length > 0; else noPostAcept" class="p-4 space-y-4">
+                  <div *ngFor="let post of postulacionesAceptadas" class="flex flex-col sm:flex-row gap-4 p-4 bg-gray-700 rounded-lg">
+                    <img [src]="post.eventoImagen" alt="Evento" class="w-20 h-20 object-cover rounded-lg" />
+                    <div>
+                      <h4 class="font-bold">{{ post.eventoNombre }}</h4>
+                      <p class="text-sm text-gray-300"><span class="font-medium">Artista:</span> {{ post.artistaNombre }}</p>
+                      <p class="text-sm text-gray-300"><span class="font-medium">Sala:</span> {{ post.salaNombre }}</p>
+                      <p class="text-sm text-gray-300"><span class="font-medium">Fecha:</span> {{ post.fechaPostulacion | date }}</p>
+                    </div>
+                  </div>
+                </div>
+                <ng-template #noPostAcept>
+                  <p class="p-4 text-gray-400 text-sm">No hay postulaciones aceptadas</p>
+                </ng-template>
               </div>
             </div>
           </div>
-          <ng-template #noPostPend>
-            <p class="px-4 py-2 text-sm italic">No hay postulaciones pendientes.</p>
-          </ng-template>
-        </span>
-          </label>
-
-          <!-- Postulaciones Aceptadas -->
-          <label class="w-full">
-            <input class="peer/showLabel absolute scale-0" type="checkbox" />
-            <span class="block max-h-14 overflow-hidden rounded-lg bg-green-100 px-4 py-0 text-green-800 shadow-lg transition-all duration-300 peer-checked/showLabel:max-h-[1000px]">
-          <h3 class="flex h-14 cursor-pointer items-center font-bold px-4">✅ Postulaciones Aceptadas</h3>
-          <div *ngIf="postulacionesAceptadas.length > 0; else noPostAcept" class="grid gap-4 p-4 max-h-[500px] overflow-y-auto">
-            <div *ngFor="let post of postulacionesAceptadas" class="flex gap-4 p-4 bg-white rounded-xl shadow-md">
-              <img [src]="post.eventoImagen" alt="Evento" class="w-24 h-24 object-cover rounded-lg" />
-              <div>
-                <h4 class="font-bold text-lg">{{ post.eventoNombre }}</h4>
-                <p><span class="font-semibold">Artista:</span> {{ post.artistaNombre }}</p>
-                <p><span class="font-semibold">Sala:</span> {{ post.salaNombre }}</p>
-                <p><span class="font-semibold">Fecha Postulación:</span> {{ post.fechaPostulacion | date }}</p>
-              </div>
-            </div>
-          </div>
-          <ng-template #noPostAcept>
-            <p class="px-4 py-2 text-sm italic">No hay postulaciones aceptadas.</p>
-          </ng-template>
-        </span>
-          </label>
-
         </div>
 
+        <!-- Solicitudes de promotor -->
+        <div class="bg-black p-6 rounded-xl shadow-lg border border-white">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="p-3 bg-blue-600 rounded-lg">
+              <i class="fas fa-user-tie text-white text-xl"></i>
+            </div>
+            <h2 class="text-xl font-bold">SOLICITUDES DE PROMOTOR</h2>
+          </div>
 
+          <!-- Acordeón de ofertas -->
+          <div class="space-y-4">
+
+            <!-- Ofertas pendientes -->
+            <div class="bg-white rounded-lg overflow-hidden">
+              <input type="checkbox" id="ofertas-pendientes" class="hidden peer">
+              <label for="ofertas-pendientes" class="flex justify-between items-center p-4 bg-gradient-to-r from-amber-700 to-amber-600 cursor-pointer">
+                <h3 class="font-semibold flex items-center gap-2">
+                  <i class="fas fa-envelope"></i> Ofertas Pendientes
+                </h3>
+                <i class="fas fa-chevron-down transition-transform duration-300 peer-checked:rotate-180"></i>
+              </label>
+              <div class="max-h-0 overflow-hidden transition-all duration-300 peer-checked:max-h-[500px]">
+                <div *ngIf="ofertasPendientes.length > 0; else noOfertasPend" class="p-4 space-y-4">
+                  <div *ngFor="let oferta of ofertasPendientes" class="flex flex-col sm:flex-row gap-4 p-4 bg-gray-700 rounded-lg">
+                    <img [src]="oferta.eventoImagen" alt="Evento" class="w-20 h-20 object-cover rounded-lg" />
+                    <div>
+                      <h4 class="font-bold">{{ oferta.eventoNombre }}</h4>
+                      <p class="text-sm text-gray-300"><span class="font-medium">Artista:</span> {{ oferta.artistaNombre }}</p>
+                      <p class="text-sm text-gray-300"><span class="font-medium">Sala:</span> {{ oferta.salaNombre }}</p>
+                      <p class="text-sm text-gray-300"><span class="font-medium">Fecha:</span> {{ oferta.fechaPostulacion | date }}</p>
+                    </div>
+                  </div>
+                </div>
+                <ng-template #noOfertasPend>
+                  <p class="p-4 text-gray-400 text-sm">No hay ofertas pendientes</p>
+                </ng-template>
+              </div>
+            </div>
+
+            <!-- Ofertas aceptadas -->
+            <div class="bg-white rounded-lg overflow-hidden">
+              <input type="checkbox" id="ofertas-aceptadas" class="hidden peer">
+              <label for="ofertas-aceptadas" class="flex justify-between items-center p-4 bg-gradient-to-r from-blue-700 to-blue-600 cursor-pointer">
+                <h3 class="font-semibold flex items-center gap-2">
+                  <i class="fas fa-check-double"></i> Ofertas Aceptadas
+                </h3>
+                <i class="fas fa-chevron-down transition-transform duration-300 peer-checked:rotate-180"></i>
+              </label>
+              <div class="max-h-0 overflow-hidden transition-all duration-300 peer-checked:max-h-[500px]">
+                <div *ngIf="ofertasAceptadas.length > 0; else noOfertasAcept" class="p-4 space-y-4">
+                  <div *ngFor="let oferta of ofertasAceptadas" class="flex flex-col sm:flex-row gap-4 p-4 bg-gray-700 rounded-lg">
+                    <img [src]="oferta.eventoImagen" alt="Evento" class="w-20 h-20 object-cover rounded-lg" />
+                    <div>
+                      <h4 class="font-bold">{{ oferta.eventoNombre }}</h4>
+                      <p class="text-sm text-gray-300"><span class="font-medium">Artista:</span> {{ oferta.artistaNombre }}</p>
+                      <p class="text-sm text-gray-300"><span class="font-medium">Sala:</span> {{ oferta.salaNombre }}</p>
+                      <p class="text-sm text-gray-300"><span class="font-medium">Fecha:</span> {{ oferta.fechaPostulacion | date }}</p>
+                    </div>
+                  </div>
+                </div>
+                <ng-template #noOfertasAcept>
+                  <p class="p-4 text-gray-400 text-sm">No hay ofertas aceptadas</p>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Solicitud de Promotor -->
-      <div class="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-semibold flex items-center gap-2">
-            <i class="fas fa-user-tie text-white"></i> SOLICITUDES DE PROMOTOR
-          </h2>
+      <!-- Gestión de eventos -->
+      <div class="bg-black p-6 rounded-xl shadow-lg border border-white">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="p-3 bg-purple-600 rounded-lg">
+            <i class="fas fa-ticket-alt text-white text-xl"></i>
+          </div>
+          <h2 class="text-xl font-bold">GESTIÓN DE EVENTOS</h2>
         </div>
 
-        <!-- COLUMNA 2: Ofertas -->
-        <div class="flex flex-col gap-6">
-
-          <!-- Ofertas Pendientes -->
-          <label class="w-full">
-            <input class="peer/showLabel absolute scale-0" type="checkbox" />
-            <span class="block max-h-14 overflow-hidden rounded-lg bg-yellow-100 px-4 py-0 text-yellow-800 shadow-lg transition-all duration-300 peer-checked/showLabel:max-h-[1000px]">
-          <h3 class="flex h-14 cursor-pointer items-center font-bold px-4">📨 Ofertas Pendientes</h3>
-          <div *ngIf="ofertasPendientes.length > 0; else noOfertasPend" class="grid gap-4 p-4 max-h-[500px] overflow-y-auto">
-            <div *ngFor="let oferta of ofertasPendientes" class="flex gap-4 p-4 bg-white rounded-xl shadow-md">
-              <img [src]="oferta.eventoImagen" alt="Evento" class="w-24 h-24 object-cover rounded-lg" />
-              <div>
-                <h4 class="font-bold text-lg">{{ oferta.eventoNombre }}</h4>
-                <p><span class="font-semibold">Artista:</span> {{ oferta.artistaNombre }}</p>
-                <p><span class="font-semibold">Sala:</span> {{ oferta.salaNombre }}</p>
-                <p><span class="font-semibold">Fecha Postulación:</span> {{ oferta.fechaPostulacion | date }}</p>
-              </div>
-            </div>
-          </div>
-          <ng-template #noOfertasPend>
-            <p class="px-4 py-2 text-sm italic">No hay ofertas pendientes.</p>
-          </ng-template>
-        </span>
-          </label>
-
-          <!-- Ofertas Aceptadas -->
-          <label class="w-full">
-            <input class="peer/showLabel absolute scale-0" type="checkbox" />
-            <span class="block max-h-14 overflow-hidden rounded-lg bg-blue-100 px-4 py-0 text-blue-800 shadow-lg transition-all duration-300 peer-checked/showLabel:max-h-[1000px]">
-          <h3 class="flex h-14 cursor-pointer items-center font-bold px-4">🎉 Ofertas Aceptadas</h3>
-          <div *ngIf="ofertasAceptadas.length > 0; else noOfertasAcept" class="grid gap-4 p-4 max-h-[500px] overflow-y-auto">
-            <div *ngFor="let oferta of ofertasAceptadas" class="flex gap-4 p-4 bg-white rounded-xl shadow-md">
-              <img [src]="oferta.eventoImagen" alt="Evento" class="w-24 h-24 object-cover rounded-lg" />
-              <div>
-                <h4 class="font-bold text-lg">{{ oferta.eventoNombre }}</h4>
-                <p><span class="font-semibold">Artista:</span> {{ oferta.artistaNombre }}</p>
-                <p><span class="font-semibold">Sala:</span> {{ oferta.salaNombre }}</p>
-                <p><span class="font-semibold">Fecha Postulación:</span> {{ oferta.fechaPostulacion | date }}</p>
-              </div>
-            </div>
-          </div>
-          <ng-template #noOfertasAcept>
-            <p class="px-4 py-2 text-sm italic">No hay ofertas aceptadas.</p>
-          </ng-template>
-        </span>
-          </label>
-
+        <!-- Pestañas -->
+        <div class="border-b border-gray-700 mb-6">
+          <ul class="flex flex-wrap -mb-px">
+            <li class="mr-2">
+              <button (click)="selectTab('Confirmado')"
+                      [class.text-purple-400]="selectedTab === 'Confirmado'"
+                      [class.border-purple-400]="selectedTab === 'Confirmado'"
+                      class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-300 hover:border-gray-300">
+                Confirmados
+              </button>
+            </li>
+            <li class="mr-2">
+              <button (click)="selectTab('En Revisión')"
+                      [class.text-purple-400]="selectedTab === 'En Revisión'"
+                      [class.border-purple-400]="selectedTab === 'En Revisión'"
+                      class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-300 hover:border-gray-300">
+                En Revisión
+              </button>
+            </li>
+          </ul>
         </div>
 
+        <!-- Lista de eventos -->
+        <div class="max-h-[500px] overflow-y-auto pr-2">
+          <ul class="space-y-3">
+            <ng-container *ngIf="selectedTab === 'Confirmado'">
+              <li *ngFor="let evento of eventosConfirmados" class="bg-gray-800 p-4 rounded-lg hover:bg-gray-850 transition">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h3 class="font-bold">{{ evento.nombreEvento }}</h3>
+                    <div class="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-sm text-gray-400">
+                      <p><i class="far fa-calendar-alt mr-1"></i> {{ evento.fechaEvento | date:'dd/MM/yyyy' }}</p>
+                      <p><i class="fas fa-map-marker-alt mr-1"></i> {{ evento.nombreSala }}</p>
+                      <p class="text-green-400"><i class="fas fa-check-circle mr-1"></i></p>
+                    </div>
+                  </div>
+                  <div class="flex gap-2">
+                    <button [routerLink]="['/promotores', promotor?.id, 'eventos', evento.id, 'editar']"
+                            class="p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition">
+                      <i class="fas fa-pencil-alt"></i>
+                    </button>
+                    <button *ngIf="evento.estado !== 'confirmado'"
+                            (click)="confirmarEvento(evento.id)"
+                            class="p-2 text-green-400 hover:text-green-300 hover:bg-gray-700 rounded-lg transition">
+                      <i class="fas fa-check"></i>
+                    </button>
+                    <button (click)="eliminarEvento(evento.id)"
+                            class="p-2 text-red-400 hover:text-red-300 hover:bg-gray-700 rounded-lg transition">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </div>
+                </div>
+              </li>
+              <li *ngIf="eventosConfirmados.length === 0" class="text-center py-8 text-gray-500">
+                No hay eventos confirmados
+              </li>
+            </ng-container>
 
-
+            <ng-container *ngIf="selectedTab === 'En Revisión'">
+              <li *ngFor="let evento of eventosEnRevision" class="bg-gray-800 p-4 rounded-lg hover:bg-gray-850 transition">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h3 class="font-bold">{{ evento.nombreEvento }}</h3>
+                    <div class="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-sm text-gray-400">
+                      <p><i class="far fa-calendar-alt mr-1"></i> {{ evento.fechaEvento | date:'dd/MM/yyyy' }}</p>
+                      <p><i class="fas fa-map-marker-alt mr-1"></i> {{ evento.nombreSala }}</p>
+                      <p class="text-yellow-400"><i class="fas fa-hourglass-half mr-1"></i> </p>
+                    </div>
+                  </div>
+                  <div class="flex gap-2">
+                    <button (click)="confirmarEvento(evento.id)"
+                            class="p-2 text-green-400 hover:text-green-300 hover:bg-gray-700 rounded-lg transition">
+                      <i class="fas fa-check"></i>
+                    </button>
+                    <button (click)="eliminarEvento(evento.id)"
+                            class="p-2 text-red-400 hover:text-red-300 hover:bg-gray-700 rounded-lg transition">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </div>
+                </div>
+              </li>
+              <li *ngIf="eventosEnRevision.length === 0" class="text-center py-8 text-gray-500">
+                No hay eventos en revisión
+              </li>
+            </ng-container>
+          </ul>
+        </div>
       </div>
-
 
 
     </div>
-
-
-
-
-
-
-    <!-- Gestión de Eventos -->
-    <div class="bg-[#1f1f1f] p-6 rounded-2xl shadow-lg">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-semibold flex items-center gap-2">
-          <i class="fas fa-ticket-alt text-white"></i> EVENTOS
-        </h2>
-      </div>
-
-      <ul
-        class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 mb-4"
-      >
-        <li class="me-2">
-          <button
-            (click)="selectTab('Confirmado')"
-            [class.text-blue-600]="selectedTab === 'Confirmado'"
-            [class.bg-gray-100]="selectedTab === 'Confirmado'"
-            [class.dark:bg-gray-800]="selectedTab === 'Confirmado'"
-            [class.dark:text-blue-500]="selectedTab === 'Confirmado'"
-            class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
-          >
-            Confirmado
-          </button>
-        </li>
-        <li class="me-2">
-          <button
-            (click)="selectTab('En Revisión')"
-            [class.text-blue-600]="selectedTab === 'En Revisión'"
-            [class.bg-gray-100]="selectedTab === 'En Revisión'"
-            [class.dark:bg-gray-800]="selectedTab === 'En Revisión'"
-            [class.dark:text-blue-500]="selectedTab === 'En Revisión'"
-            class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
-          >
-            En revisión
-          </button>
-        </li>
-      </ul>
-
-      <!-- Contenedor con scroll -->
-      <div class="max-h-[600px] overflow-y-auto">
-        <ul class="space-y-4">
-          <ng-container *ngIf="selectedTab === 'Confirmado'">
-            <li
-              *ngFor="let evento of eventosConfirmados | slice:0:50"
-              class="bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center"
-            >
-              <div>
-                <h3 class="font-semibold text-lg">{{ evento.nombreEvento }}</h3>
-                <p class="text-sm text-gray-400">
-                  {{ evento.fechaEvento | date : 'dd/MM/yyyy' }}
-                </p>
-                <p class="text-sm text-gray-400">{{ evento.nombreSala }}</p>
-                <p class="text-lg text-gray-100">{{ evento.estado }}</p>
-              </div>
-              <div class="flex gap-3">
-                <button
-                  class="text-yellow-400 hover:text-yellow-300 text-xl flex items-center"
-                  [routerLink]="['/promotores', promotor?.id, 'eventos', evento.id, 'editar']"
-                >
-                  <i class="fas fa-pencil-alt"></i>
-                </button>
-                <button
-                  *ngIf="evento.estado !== 'confirmado'"
-                  class="text-green-400 hover:text-green-300 text-xl flex items-center"
-                  (click)="confirmarEvento(evento.id)"
-                >
-                  <i class="fas fa-check"></i>
-                </button>
-                <button
-                  class="text-red-500 hover:text-red-400 text-xl flex items-center"
-                  (click)="eliminarEvento(evento.id)"
-                >
-                  <i class="fas fa-trash-alt"></i>
-                </button>
-              </div>
-            </li>
-            <li *ngIf="eventosConfirmados.length === 0" class="text-gray-400">
-              No hay eventos confirmados para mostrar.
-            </li>
-          </ng-container>
-
-          <ng-container *ngIf="selectedTab === 'En Revisión'">
-            <li
-              *ngFor="let evento of eventosEnRevision | slice:0:50"
-              class="bg-[#2b2b2b] p-4 rounded-xl shadow flex justify-between items-center"
-            >
-              <div>
-                <h3 class="font-semibold text-lg">{{ evento.nombreEvento }}</h3>
-                <p class="text-sm text-gray-400">
-                  {{ evento.fechaEvento | date : 'dd/MM/yyyy' }}
-                </p>
-                <p class="text-sm text-gray-400">{{ evento.nombreSala }}</p>
-                <p class="text-lg text-gray-100">{{ evento.estado }}</p>
-              </div>
-              <div class="flex gap-3">
-                <button
-                  class="text-green-400 hover:text-green-300 text-xl flex items-center"
-                  (click)="confirmarEvento(evento.id)"
-                >
-                  <i class="fas fa-check"></i>
-                </button>
-                <button
-                  class="text-red-500 hover:text-red-400 text-xl flex items-center"
-                  (click)="eliminarEvento(evento.id)"
-                >
-                  <i class="fas fa-trash-alt"></i>
-                </button>
-              </div>
-            </li>
-            <li *ngIf="eventosEnRevision.length === 0" class="text-gray-400">
-              No hay eventos en revisión para mostrar.
-            </li>
-          </ng-container>
-        </ul>
-      </div>
-
-
-
-
-      <!-- Botón Gestionar Salas -->
-      <div class="flex justify-center mt-4 mb-4">
-        <button class="bg-[#e4e4e4] text-black px-10 py-4 text-2xl rounded-2xl shadow-md hover:bg-[#d4d4d4] transition font-semibold"
-                [routerLink]="['/catalogo-salas']">
-          SALAS<i class="fas fa-book ml-2"></i>
-        </button>
-      </div>
   </div>
-
 </div>
-
-
