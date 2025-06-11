@@ -1,9 +1,9 @@
 /* Contenedor principal del calendario */
 .calendario-container {
-  margin: 0.25rem auto; /* Margen muy reducido */
+  margin: 0.25rem auto 1rem; /* Margen muy reducido con margen inferior */
   background: rgba(14, 12, 12, 0.83); /* Gris oscuro en lugar de negro puro */
   border-radius: 12px; /* Bordes menos redondeados */
-  padding: 1rem; /* Padding muy reducido */
+  padding: 2rem; /* Padding muy reducido */
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
   border: 2px solid white; /* Borde gris oscuro más sutil */
   width: 100%;

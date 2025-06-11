@@ -23,9 +23,4 @@
 .disabled\:bg-customGrisMedio:disabled {
   background-color: #555555;
 }
-.background-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, transparent 50%, rgba(0,0,0,0.8) 100%);
-  backdrop-filter: blur(20px);
-}
+
