@@ -1,6 +1,9 @@
-<div class="bg-[#7e001b] min-h-screen text-white font-sans pt-[60px] sm:pt-[70px] flex flex-col">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
-  <!-- Header Promotor mejorado -->
+
+<div class="bg-[black] bg-cover min-h-screen text-white font-sans pt-[60px] sm:pt-[70px] flex flex-col"  style="background-image: linear-gradient(to bottom, black, rgba(255, 255, 255, 0.1)), url('assets/images/fondo_2.png');" >>
+
+  <!-- Header Promotor -->
   <div class="p-6 sm:p-8 flex items-center gap-6 sm:ml-[10%]">
     <img [src]="promotor?.imagenPerfil || logoUrl"
          [alt]="promotor?.nombrePromotor"
@@ -11,29 +14,53 @@
     </div>
   </div>
 
+  <!-- Evento Destacado -->
+  <div class="flex justify-center mt-4 px-4 sm:px-0" *ngIf="eventoDestacado" (click)="verDetallesEvento(eventoDestacado.id)">
+    <div class="relative group w-full sm:w-[80%] cursor-pointer">
+      <img
+        [src]="eventoDestacado.imagenEvento || logoUrl"
+        alt="Evento Destacado"
+        class="w-full h-[220px] sm:h-[400px] object-cover rounded-xl shadow-xl transition-all duration-300 cursor-pointer hover:brightness-90"
 
-  <!-- Evento destacado -->
-  <div class="flex justify-center mt-4 px-4 sm:px-0" *ngIf="eventoDestacado">
-    <img [src]="eventoDestacado.imagenEvento || logoUrl"
-         alt="Evento Destacado"
-         class="w-full sm:w-[80%] h-[220px] sm:h-[400px] object-cover rounded-xl shadow-xl transition-all duration-300" />
+      />
+
+      <!-- Nombre visible siempre -->
+      <p class="absolute inset-0 flex items-center justify-center text-white text-3xl sm:text-6xl font-bold drop-shadow-lg">
+        {{ eventoDestacado?.nombreEvento || 'Evento destacado' }}
+      </p>
+
+      <!-- Fondo oscuro que aparece solo al hover -->
+      <div
+        class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all duration-300 rounded-xl"
+      ></div>
+
+      <!-- Información adicional solo visible al hover -->
+      <div
+        class="absolute inset-0 flex flex-col justify-center items-center top-[65%] opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"
+      >
+        <p class="text-gray-300 font-bold text-2xl">
+          {{ eventoDestacado.nombreSala }} - {{ eventoDestacado.fechaEvento | date:'dd/MM/yyyy' }}
+        </p>
+      </div>
+    </div>
+
   </div>
+
+  <!-- Modal Selección Evento -->
   <div class="flex justify-center sm:justify-end mt-2 px-4 sm:mr-[10%]" *ngIf="eventoDestacado">
-    <button (click)="verDetallesEvento(eventoDestacado.id)"
-            class="bg-[#7e001b] hover:bg-[#a30027] text-white px-4 py-2 rounded-full border border-white mt-2">
-      Más información
-    </button>
-
-
     <div *ngIf="isModalOpen && promotor" class="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60">
-      <div  class="relative m-4 p-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white shadow-sm">
+      <div class="relative m-4 p-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white shadow-sm">
         <div class="flex items-center pb-4 text-xl font-medium text-slate-800">
           Selecciona un Evento
         </div>
 
         <!-- Input desplegable -->
         <div *ngIf="eventos?.length" class="py-4">
-          <select id="evento" [(ngModel)]="eventoSeleccionado" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          <select
+            id="evento"
+            [(ngModel)]="eventoSeleccionado"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          >
             <option class="text-blue-500" *ngFor="let e of eventos" [ngValue]="e.id">
               {{ e.nombreEvento }}
             </option>
@@ -43,15 +70,11 @@
     </div>
   </div>
 
-
-
   <!-- Galería de eventos -->
-  <div class="bg-gray-800 mt-6 p-4 mx-4 sm:mx-[10%] rounded-xl shadow-lg">
-    <div class="flex justify-between items-center mb-4">
-      <div *ngIf="promotor">
-        <h2 class="text-lg font-semibold text-white">Eventos de {{ promotor.nombrePromotor }}</h2>
-        <p class="text-sm text-gray-400">Total: {{ eventos.length }}</p>
-      </div>
+  <div class="bg-black/70 mt-6 p-4 mx-4 sm:mx-[10%] rounded-xl shadow-lg">
+    <div class="flex justify-between items-center mb-4" *ngIf="promotor">
+      <h2 class="text-lg font-semibold text-white">Eventos de {{ promotor.nombrePromotor }}</h2>
+      <p class="text-sm text-gray-400">Total: {{ eventos.length }}</p>
     </div>
 
     <ng-container *ngIf="eventos.length > 0; else noEvents">
@@ -62,33 +85,30 @@
         [pagination]="{ clickable: true }"
         [navigation]="true"
         [breakpoints]="{
-          '640': {
-            slidesPerView: 2,
-            spaceBetween: 30
-          },
-          '768': {
-            slidesPerView: 3,
-            spaceBetween: 30
-          },
-          '1024': {
-            slidesPerView: 4,
-            spaceBetween: 30
-          },
-          '1280': {
-            slidesPerView: 5,
-            spaceBetween: 30
-          }
+          '640': { slidesPerView: 2, spaceBetween: 30 },
+          '768': { slidesPerView: 3, spaceBetween: 30 },
+          '1024': { slidesPerView: 4, spaceBetween: 30 },
+          '1280': { slidesPerView: 5, spaceBetween: 30 }
         }"
         [loop]="false"
       >
         <swiper-slide *ngFor="let e of eventos">
-          <div class="bg-gray-900 rounded-lg overflow-hidden shadow-md h-full flex flex-col cursor-pointer transition-shadow duration-300 hover:shadow-lg">
-            <img [src]="e.imagenEvento" [alt]="e.nombreEvento" class="w-full h-40 object-cover rounded-t-lg" (click)="verDetallesEvento(e.id)" />
+          <div
+            class="bg-black rounded-lg overflow-hidden shadow-md h-full flex flex-col cursor-pointer transition-shadow duration-300 hover:shadow-lg hover:scale-105 hover:border-r-2  transform border-t-1 border-l-1 border-r-1 border-b-0 border-white"
+          >
+            <img
+              [src]="e.imagenEvento"
+              [alt]="e.nombreEvento"
+              class="w-full h-40 object-cover rounded-t-lg border border-white border-l-0 border-r-1 border-b-0 border-t-0"
+              (click)="verDetallesEvento(e.id)"
+            />
             <div class="p-3 flex flex-col justify-between flex-grow">
               <div>
-                <p class="font-semibold text-white text-base truncate">{{ e.nombreEvento }}</p>
-                <p class="text-gray-400 text-xs">{{ e.fechaEvento | date:'dd/MM/yyyy' }}</p>
-                <p class="text-400 text-xs">{{ e.nombreSala }}</p>
+                <p class="font-bold text-white text-base truncate">{{ e.nombreEvento }}</p>
+                <div class="text-right">
+                  <p class="text-white text-xs">{{ e.fechaEvento | date:'dd/MM/yyyy' }}</p>
+                  <p class="text-white text-xs">{{ e.nombreSala }}</p>
+                </div>
               </div>
             </div>
           </div>
@@ -105,16 +125,24 @@
 
   <!-- Próximos eventos y artistas -->
   <div class="flex flex-col md:flex-row justify-center gap-6 mt-10 px-4 sm:px-[10%] mb-16">
-
     <!-- Artistas -->
-    <div class="bg-gray-800 rounded-xl p-4 w-full md:w-1/2 shadow-lg">
-      <h2 class="text-lg font-semibold mb-4">Artistas 🎤</h2>
+    <div class="bg-black/70 rounded-xl p-4 w-full md:w-1/2 shadow-lg">
+      <h2 class="text-lg font-semibold mb-4 text-bold">Artistas 🎤</h2>
       <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <li *ngFor="let artista of artistas" class="bg-gray-900 p-3 rounded-lg shadow flex flex-col gap-2">
+        <li
+          *ngFor="let artista of artistas"
+          class="bg-black p-3 rounded-lg shadow flex flex-col gap-2 border border-gray-600 hover:border-red-600 transition-colors duration-200 cursor-pointer"
+        >
           <div class="flex items-center gap-3">
-            <img [src]="artista.imagenPerfil" alt="Foto de {{ artista.nombre }}" class="w-10 h-10 rounded-full object-cover border-2 border-gray-600">
-            <p class="font-bold text-white cursor-pointer hover:text-blue-400 transition-colors duration-200"
-               (click)="navigateToArtistaProfile(artista.id)">
+            <img
+              [src]="artista.imagenPerfil"
+              alt="Foto de {{ artista.nombre }}"
+              class="w-10 h-10 rounded-full object-cover border-2 border-gray-600"
+            />
+            <p
+              class="font-bold text-white cursor-pointer hover:text-red-600 transition-colors duration-200"
+              (click)="navigateToArtistaProfile(artista.id)"
+            >
               {{ artista.nombre }}
             </p>
           </div>
@@ -123,12 +151,12 @@
       </ul>
     </div>
 
-  <!-- Eventos -->
-    <div class="bg-gray-800 rounded-xl p-4 w-full md:w-1/2 shadow-lg">
-      <h2 class="text-lg font-semibold mb-4">Eventos 🎫</h2>
+    <!-- Eventos Próximos -->
+    <div class="bg-black/70 rounded-xl p-4 w-full md:w-1/2 shadow-lg">
+      <h2 class="text-lg font-semibold mb-4 text-bold "> Eventos 🎫</h2>
       <ul>
         <li *ngFor="let ep of eventosProximos" class="mb-2 flex items-center gap-2">
-          <span class="bg-gray-500 text-white px-2 py-1 rounded text-xs">📅</span>
+          <span class="bg-gray-400 text-white px-2 py-1 rounded text-xs"> <i class="fas fa-calendar"></i></span>
           {{ ep.fecha }} -- {{ ep.lugar }} -- {{ ep.nombre }}
         </li>
       </ul>
