@@ -1,27 +1,30 @@
-import {Component} from '@angular/core';
-import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
-import {filter} from 'rxjs';
-import {ButtonModule} from 'primeng/button';
-import {NgIf, registerLocaleData} from '@angular/common';
-import {HeaderComponent} from './componentes/header/header.component';
-import {FooterComponent} from './componentes/footer/footer.component';
-import {SharedModule} from 'primeng/api';
+import { Component } from '@angular/core';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router'; // <-- Importa RouterOutlet aquí
+import { filter } from 'rxjs';
+import { ButtonModule } from 'primeng/button';
+import { NgIf, registerLocaleData } from '@angular/common';
+import { HeaderComponent } from './componentes/header/header.component';
+import { FooterComponent } from './componentes/footer/footer.component';
+import { SharedModule } from 'primeng/api';
 import localeEs from '@angular/common/locales/es';
+import { MusicPlayerComponent } from './componentes/music-player/music-player.component';
+import { ReproductorComponent } from './componentes/reproductor/reproductor.component';
 
-// Importa el locale de español
 registerLocaleData(localeEs, 'es');
 
-// @ts-ignore
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
     ButtonModule,
-    RouterOutlet,
+    NgIf,
     HeaderComponent,
     FooterComponent,
-    SharedModule, // Importa el módulo compartido
-    NgIf],
+    SharedModule,
+    MusicPlayerComponent,
+    ReproductorComponent,
+    RouterOutlet  // <-- Agrega aquí RouterOutlet
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
@@ -29,16 +32,14 @@ export class AppComponent {
   title = 'ShowSync-Frontend';
   mostrarHeader = true;
   showFooter = true;
+  mostrarReproductor = true;
 
-  // Rutas en las que se ocultan header y footer
   private readonly hiddenRoutes = [
-
     '/auth/login',
     '/auth/registro',
     '/auth/restablecer',
     '/auth/recuperar',
     '/auth/restablecer'
-
   ];
 
   constructor(private router: Router) {
@@ -48,9 +49,7 @@ export class AppComponent {
       const ocultar = this.hiddenRoutes.some(route => event.urlAfterRedirects.startsWith(route));
       this.mostrarHeader = !ocultar;
       this.showFooter = !ocultar;
+      this.mostrarReproductor = !ocultar;
     });
   }
-
-
-
 }
