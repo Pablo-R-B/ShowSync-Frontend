@@ -170,5 +170,10 @@ export class EventosService {
     });
   }
 
+  getEventosConfirmadosPorArtistaId(artistaId: number): Observable<EventoConfirmado[]> {
+    return this.http.get<EventoConfirmado[]>(`${this.apiUrl}/eventos/artista/${artistaId}/eventos-confirmados`);
+  }
+
+
 
 }

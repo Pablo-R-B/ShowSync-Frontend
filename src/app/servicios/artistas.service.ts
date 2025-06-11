@@ -6,6 +6,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { environment } from '../../environments/environment';
 import { catchError } from 'rxjs/operators';
 import {GeneroMusical} from '../interfaces/GeneroMusical';
+import {EventoConfirmado} from '../interfaces/EventoConfirmado';
 
 @Injectable({
   providedIn: 'root'
@@ -97,6 +98,7 @@ export class ArtistasService {
   getArtistaConNumeroEventos(id: number): Observable<Artistas> {
     return this.http.get<Artistas>(`${this.apiUrl}/artista/${id}/total-eventos`);
   }
+
 
 
   private handleError(error: HttpErrorResponse): Observable<never> {

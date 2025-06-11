@@ -56,7 +56,7 @@
                 </h3>
                 <i class="fas fa-chevron-down transition-transform duration-300 peer-checked:rotate-180"></i>
               </label>
-              <div class="max-h-0 overflow-hidden transition-all duration-300 peer-checked:max-h-[500px]">
+              <div class="max-h-0 overflow-hidden transition-all duration-300 peer-checked:max-h-[500px] peer-checked:overflow-y-auto">
                 <div *ngIf="ofertasPendientes.length > 0; else noOfertasPend" class="p-4 space-y-4">
                   <div *ngFor="let oferta of ofertasPendientes" class="flex flex-col sm:flex-row gap-4 p-4 bg-gray-700 rounded-lg">
                     <img [src]="oferta.eventoImagen" alt="Evento" class="w-20 h-20 object-cover rounded-lg" />
@@ -93,7 +93,7 @@
                 </h3>
                 <i class="fas fa-chevron-down transition-transform duration-300 peer-checked:rotate-180"></i>
               </label>
-              <div class="max-h-0 overflow-hidden transition-all duration-300 peer-checked:max-h-[500px]">
+              <div class="max-h-0 overflow-hidden transition-all duration-300 peer-checked:max-h-[500px] peer-checked:overflow-y-auto">
                 <div *ngIf="ofertasAceptadas.length > 0; else noOfertasAcept" class="p-4 space-y-4">
                   <div *ngFor="let oferta of ofertasAceptadas" class="flex flex-col sm:flex-row gap-4 p-4 bg-gray-700 rounded-lg">
                     <img [src]="oferta.eventoImagen" alt="Evento" class="w-20 h-20 object-cover rounded-lg" />
@@ -134,7 +134,7 @@
                 </h3>
                 <i class="fas fa-chevron-down transition-transform duration-300 peer-checked:rotate-180"></i>
               </label>
-              <div class="max-h-0 overflow-hidden transition-all duration-300 peer-checked:max-h-[500px]">
+              <div class="max-h-0 overflow-hidden transition-all duration-300 peer-checked:max-h-[500px] peer-checked:overflow-y-auto">
                 <div *ngIf="postulacionesPendientes.length > 0; else noPostPend" class="p-4 space-y-4">
                   <div *ngFor="let post of postulacionesPendientes" class="flex flex-col sm:flex-row gap-4 p-4 bg-gray-700 rounded-lg">
                     <img [src]="post.eventoImagen" alt="Evento" class="w-20 h-20 object-cover rounded-lg" />
@@ -161,7 +161,7 @@
                 </h3>
                 <i class="fas fa-chevron-down transition-transform duration-300 peer-checked:rotate-180"></i>
               </label>
-              <div class="max-h-0 overflow-hidden transition-all duration-300 peer-checked:max-h-[500px]">
+              <div class="max-h-0 overflow-hidden transition-all duration-300 peer-checked:max-h-[500px] peer-checked:overflow-y-auto">
                 <div *ngIf="postulacionesAceptadas.length > 0; else noPostAcept" class="p-4 space-y-4">
                   <div *ngFor="let post of postulacionesAceptadas" class="flex flex-col sm:flex-row gap-4 p-4 bg-gray-700 rounded-lg">
                     <img [src]="post.eventoImagen" alt="Evento" class="w-20 h-20 object-cover rounded-lg" />
@@ -194,7 +194,7 @@
         <!-- Lista de eventos -->
         <div class="max-h-[500px] overflow-y-auto pr-2">
           <ul class="space-y-3">
-            <li *ngFor="let evento of eventos" class="bg-gray-800 p-4 rounded-lg hover:bg-gray-850 transition">
+            <li *ngFor="let evento of eventosConfirmados" class="bg-gray-800 p-4 rounded-lg hover:bg-gray-850 transition">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <h3 class="font-bold">{{ evento.nombreEvento }}</h3>
@@ -204,14 +204,9 @@
                     <p class="text-green-400"><i class="fas fa-music mr-1"></i></p>
                   </div>
                 </div>
-                <div class="flex gap-2">
-                  <button class="p-2 text-blue-400 hover:text-blue-300 hover:bg-gray-700 rounded-lg transition">
-                    <i class="fas fa-eye"></i>
-                  </button>
-                </div>
               </div>
             </li>
-            <li *ngIf="eventos.length === 0" class="text-center py-8 text-gray-500">
+            <li *ngIf="eventosConfirmados.length === 0" class="text-center py-8 text-gray-500">
               No hay eventos para mostrar
             </li>
           </ul>

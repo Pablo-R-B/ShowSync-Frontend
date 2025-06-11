@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {RouterLink} from '@angular/router';
-import {DatePipe, NgForOf, NgIf} from '@angular/common';
+
 import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
 import {Postulacion} from '../../interfaces/postulacion';
 import {Artistas} from '../../interfaces/artistas';
@@ -8,14 +7,18 @@ import {EventoDTO} from '../../interfaces/EventoDTO';
 import {AuthService} from '../../servicios/auth.service';
 import {ArtistasService} from '../../servicios/artistas.service';
 import {EventosService} from '../../servicios/eventos.service';
+import {EventoConfirmado} from '../../interfaces/EventoConfirmado';
+import {DatePipe, NgForOf, NgIf} from '@angular/common';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-perfil-admin-artista',
   imports: [
-    RouterLink,
     DatePipe,
+    RouterLink,
     NgForOf,
     NgIf
+
   ],
   templateUrl: './perfil-admin-artista.component.html',
   standalone: true,
@@ -37,6 +40,8 @@ export class PerfilAdminArtistaComponent implements OnInit{
   modalTipo: 'exito' | 'error' | null = null;
   modalMensaje: string = '';
   modalTitulo: string = '';
+  eventosConfirmados: EventoConfirmado[] = [];
+
 
 
   constructor(private postulacionService: PostulacionEventoService, private authService: AuthService,
@@ -45,13 +50,13 @@ export class PerfilAdminArtistaComponent implements OnInit{
 
   ngOnInit() {
     const userId = this.authService.userId;
-    console.log(userId);
+    console.log('User ID:', userId);
+
     if (userId) {
       this.artistaService.getArtistaIdPorUsuario(userId).subscribe({
         next: (id) => {
           this.artistaId = id;
-
-          console.log("Admin id artista", this.artistaId);
+          console.log("Admin id artista:", this.artistaId);
 
           // Obtener información del artista
           this.artistaService.artistaPorId(id).subscribe({
@@ -62,8 +67,15 @@ export class PerfilAdminArtistaComponent implements OnInit{
             error: (err) => console.error('Error al obtener artista:', err)
           });
 
-          // Cargar postulaciones
-          // this.cargarPostulaciones();
+          // Obtener eventos confirmados
+          this.eventosService.getEventosConfirmadosPorArtistaId(id).subscribe({
+            next: (eventos) => {
+              this.eventosConfirmados = eventos;
+              console.log('Eventos confirmados:', this.eventosConfirmados);
+            },
+            error: (err) => console.error('Error al obtener eventos confirmados:', err)
+          });
+
         },
         error: (err) => console.error('Error al obtener artistaId:', err)
       });
