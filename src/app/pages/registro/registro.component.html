@@ -14,7 +14,7 @@
   </div>
 
   <div class="class= relative z-10 backdrop-blur-xl bg-customNegro/80 border border-customRed/40 text-customBlanco pt-8 pb-12 px-12 rounded-3xl w-full max-w-lg shadow-2xl shadow-customBurbundy/60 transform hover:scale-[1.02] transition-all duration-500">
-    <h2 class="text-5xl text-center font-medula bg-gradient-to-r from-customRed via-customGrisClaro to-customRed bg-clip-text text-transparent tracking-wide  drop-shadow-lg">
+    <h2 class="text-5xl text-center font-medula text-white bg-clip-text text-transparent tracking-wide  drop-shadow-lg mb-2">
       Registro, ¿quién eres?</h2>
     <hr class="border-gray-600 mb-6">
 
@@ -26,7 +26,7 @@
           type="text"
           placeholder="Nombre de usuario"
           formControlName="nombreUsuario"
-          class="w-full pl-8 pr-4 py-4 rounded-2xl bg-customGrisClaro backdrop-blur-sm border border-customGrisClaro/30  text-customNegro   placeholder:text-customGrisOscurso    focus:outline-none focus:ring-2 focus:ring-customRed focus:border-transparent transition-all duration-300 hover:bg-customGrisClaro/80"
+          class="w-full pl-8 pr-4 py-3 rounded-2xl bg-customGrisClaro backdrop-blur-sm border border-customGrisClaro/30  text-customNegro   placeholder:text-customGrisOscurso    focus:outline-none focus:ring-2 focus:ring-customRed focus:border-transparent transition-all duration-300 hover:bg-customGrisClaro/80"
 
         />
         <div *ngIf="registroForm.get('nombreUsuario')?.touched && registroForm.get('nombreUsuario')?.hasError('required')" class="text-red-500 text-sm pt-1 ">
@@ -55,7 +55,7 @@
         <input
           type="email"
           placeholder="Correo electrónico"
-          class="w-full pl-8 pr-4 py-4 rounded-2xl bg-customGrisClaro backdrop-blur-sm border border-customGrisClaro/30  text-customNegro   placeholder:text-customGrisOscurso    focus:outline-none focus:ring-2 focus:ring-customRed focus:border-transparent transition-all duration-300 hover:bg-customGrisClaro/80"
+          class="w-full pl-8 pr-4 py-3 rounded-2xl bg-customGrisClaro backdrop-blur-sm border border-customGrisClaro/30  text-customNegro   placeholder:text-customGrisOscurso    focus:outline-none focus:ring-2 focus:ring-customRed focus:border-transparent transition-all duration-300 hover:bg-customGrisClaro/80"
           formControlName="email"
 
         />
@@ -76,7 +76,7 @@
         <input
           type="date"
           placeholder="Fecha de nacimiento"
-          class="w-full pl-8 pr-4 py-4 rounded-2xl bg-customGrisClaro backdrop-blur-sm border border-customGrisClaro/30  text-customNegro   placeholder:text-customGrisOscurso    focus:outline-none focus:ring-2 focus:ring-customRed focus:border-transparent transition-all duration-300 hover:bg-customGrisClaro/80"
+          class="w-full pl-8 pr-4 py-3 rounded-2xl bg-customGrisClaro backdrop-blur-sm border border-customGrisClaro/30  text-customNegro   placeholder:text-customGrisOscurso    focus:outline-none focus:ring-2 focus:ring-customRed focus:border-transparent transition-all duration-300 hover:bg-customGrisClaro/80"
           formControlName="fechaNacimiento"
           max="9999-12-31"
 
@@ -96,7 +96,7 @@
         <input
           type="password"
           placeholder="Contraseña"
-          class="w-full pl-8 pr-4 py-4 rounded-2xl bg-customGrisClaro backdrop-blur-sm border border-customGrisClaro/30  text-customNegro   placeholder:text-customGrisOscurso    focus:outline-none focus:ring-2 focus:ring-customRed focus:border-transparent transition-all duration-300 hover:bg-customGrisClaro/80"
+          class="w-full pl-8 pr-4 py-3 rounded-2xl bg-customGrisClaro backdrop-blur-sm border border-customGrisClaro/30  text-customNegro   placeholder:text-customGrisOscurso    focus:outline-none focus:ring-2 focus:ring-customRed focus:border-transparent transition-all duration-300 hover:bg-customGrisClaro/80"
           formControlName="contrasena"
 
         />
@@ -114,7 +114,7 @@
         <input
           type="password"
           placeholder="Repetir contraseña"
-          class="w-full pl-8 pr-4 py-4 rounded-2xl bg-customGrisClaro backdrop-blur-sm border border-customGrisClaro/30  text-customNegro   placeholder:text-customGrisOscurso    focus:outline-none focus:ring-2 focus:ring-customRed focus:border-transparent transition-all duration-300 hover:bg-customGrisClaro/80"
+          class="w-full pl-8 pr-4 py-3 rounded-2xl bg-customGrisClaro backdrop-blur-sm border border-customGrisClaro/30  text-customNegro   placeholder:text-customGrisOscurso    focus:outline-none focus:ring-2 focus:ring-customRed focus:border-transparent transition-all duration-300 hover:bg-customGrisClaro/80"
           formControlName="repetirContrasena"
 
         />
@@ -153,7 +153,7 @@
             formControlName="terminos"
 
           />
-          Acepto todos los términos y condiciones de uso.
+          Acepto los <a href="/condiciones" class="text-customRed hover:text-customBurbundy underline ml-2">términos y condiciones.</a>
         </label>
         <div *ngIf="(registroForm.get('terminos')?.hasError('requiredTrue') && (registroForm.get('terminos')?.touched || submitted))" class="text-red-500 text-sm">          Debes aceptar los términos y condiciones.
         </div>

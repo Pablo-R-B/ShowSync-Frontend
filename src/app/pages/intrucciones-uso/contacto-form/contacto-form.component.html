@@ -108,20 +108,34 @@
             <small id="mensaje-help" class="sr-only">Por favor describe tu consulta o solicitud</small>
           </div>
 
-          <!-- Botón de envío -->
-          <div class="form-group form-element">
-            <button
-              type="submit"
-              [disabled]="formulario.invalid || cargando"
-              class="submit-button"
-              [class.loading]="cargando"
-              aria-live="polite"
-            >
-              <span class="button-icon" *ngIf="!cargando">🎵</span>
-              <span class="loading-spinner" *ngIf="cargando"></span>
-              {{ cargando ? 'Enviando melodía...' : 'Enviar mensaje' }}
-            </button>
+          <div>
+            <label class="flex items-center gap-2 text-customGrisClaro">
+              <input
+                type="checkbox"
+                name="aceptarTerminos"
+                [(ngModel)]="form.aceptarTerminos"
+                required class="form-checkbox text-customRed h-5 w-5 rounded focus:ring-customRed"
+              >
+              Acepto los <a href="/condiciones" class="text-customRed hover:text-customBurbundy underline">términos y condiciones.</a>
+            </label>
+           <div *ngIf="formulario.submitted && !form.aceptarTerminos && !enviado" class="text-red-400 text-sm mt-1 ml-3">
+             Debe aceptar los términos y condiciones para enviar el formulario.
+           </div>
           </div>
+
+
+          <!-- Botón de envío -->
+          <button
+            type="submit"
+            [disabled]="formulario.invalid || cargando || !form.aceptarTerminos"
+            class="submit-button"
+            [class.loading]="cargando"
+            aria-live="polite"
+          >
+            <span class="button-icon" *ngIf="!cargando">🎵</span>
+            <span class="loading-spinner" *ngIf="cargando"></span>
+            {{ cargando ? 'Enviando melodía...' : 'Enviar mensaje' }}
+          </button>
 
           <!-- Mensaje de éxito -->
           <div *ngIf="enviado" class="message-alert success-alert form-element" role="alert">
