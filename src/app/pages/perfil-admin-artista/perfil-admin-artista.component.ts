@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {RouterLink} from '@angular/router';
-import {DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
+import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
 import {Postulacion} from '../../interfaces/postulacion';
 import {Artistas} from '../../interfaces/artistas';
@@ -15,7 +15,6 @@ import {ArtistasService} from '../../servicios/artistas.service';
     DatePipe,
     NgForOf,
     NgIf,
-    NgClass
   ],
   templateUrl: './perfil-admin-artista.component.html',
   standalone: true,
@@ -25,10 +24,15 @@ export class PerfilAdminArtistaComponent implements OnInit{
 
   postulaciones: Postulacion[] = [];
   ofertas: Postulacion[] = [];
+  postulacionesPendientes: Postulacion[] = [];
+  postulacionesAceptadas: Postulacion[] = [];
+  ofertasPendientes: Postulacion[] = [];
+  ofertasAceptadas: Postulacion[] = [];
   artistaId!: number;
   artista:Artistas | undefined;
   usuarioRol!:string | null;
   eventos: EventoDTO[] = [];
+  logoUrl: string = '../../../assets/images/logo_1.png';
 
   constructor(private postulacionService: PostulacionEventoService, private authService: AuthService,
               private artistaService: ArtistasService,) {
@@ -48,12 +52,13 @@ export class PerfilAdminArtistaComponent implements OnInit{
           this.artistaService.artistaPorId(id).subscribe({
             next: (artista) => {
               this.artista = artista; // contiene nombreArtista e imagenPerfil
+              this.cargarPostulaciones();
             },
             error: (err) => console.error('Error al obtener artista:', err)
           });
 
           // Cargar postulaciones
-          this.cargarPostulaciones();
+          // this.cargarPostulaciones();
         },
         error: (err) => console.error('Error al obtener artistaId:', err)
       });
@@ -63,14 +68,25 @@ export class PerfilAdminArtistaComponent implements OnInit{
   }
 
   cargarPostulaciones(): void {
+    const hoy = new Date();
     this.postulacionService.listarPorArtista(this.artistaId).subscribe({
       next: (lista) => {
         // Separar por tipo y estado
-        this.postulaciones = lista.filter(post => post.tipoSolicitud === 'postulacion' && post.estado !== 'rechazado');
-        this.ofertas = lista.filter(post => post.tipoSolicitud === 'oferta' && post.estado !== 'rechazado');
+        this.postulacionesPendientes = lista.filter(
+          post => post.tipoSolicitud === 'postulacion' && post.estado === 'pendiente'
+        );
 
-        console.log("Postulaciones:", this.postulaciones);
-        console.log("Ofertas:", this.ofertas);
+        this.postulacionesAceptadas = lista.filter(
+          post => post.tipoSolicitud === 'postulacion' && post.estado === 'aceptado'
+        );
+
+        this.ofertasPendientes = lista.filter(
+          post => post.tipoSolicitud === 'oferta' && post.estado === 'pendiente'
+        );
+
+        this.ofertasAceptadas = lista.filter(
+          post => post.tipoSolicitud === 'oferta' && post.estado === 'aceptado'
+        );
       },
       error: (err) => console.error('Error cargando postulaciones:', err)
     });

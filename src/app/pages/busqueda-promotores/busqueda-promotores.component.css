@@ -1,0 +1,277 @@
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Hero animado */
+h2 span.group {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  color: #fff;
+}
+
+h2 span.group span::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100%;
+  background: linear-gradient(to right, #ff416c, #ff4b2b);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s ease;
+}
+
+h2 span.group:hover span::after {
+  transform: scaleX(1);
+}
+
+/* Animación vibrante para "organizan" */
+.bounce-text {
+  animation: popText 2.5s infinite;
+}
+
+@keyframes popText {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+/* Barras de frecuencia estilo profesional */
+.frequency-bars {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 3rem;
+}
+
+.freq-bar {
+  width: 4px;
+  height: 30px;
+  background: linear-gradient(to top, #ff4b2b, #ff416c);
+  animation: bounce 1s infinite ease-in-out;
+  border-radius: 4px;
+  opacity: 0.8;
+}
+
+.freq-bar:nth-child(1) { height: 20px; animation-delay: 0s; }
+.freq-bar:nth-child(2) { height: 35px; animation-delay: 0.1s; }
+.freq-bar:nth-child(3) { height: 50px; animation-delay: 0.2s; }
+.freq-bar:nth-child(4) { height: 40px; animation-delay: 0.3s; }
+.freq-bar:nth-child(5) { height: 60px; animation-delay: 0.4s; }
+.freq-bar:nth-child(6) { height: 30px; animation-delay: 0.5s; }
+.freq-bar:nth-child(7) { height: 45px; animation-delay: 0.6s; }
+.freq-bar:nth-child(8) { height: 25px; animation-delay: 0.7s; }
+.freq-bar:nth-child(9) { height: 55px; animation-delay: 0.8s; }
+.freq-bar:nth-child(10) { height: 35px; animation-delay: 0.9s; }
+.freq-bar:nth-child(11) { height: 50px; animation-delay: 1s; }
+.freq-bar:nth-child(12) { height: 40px; animation-delay: 1.1s; }
+.freq-bar:nth-child(13) { height: 60px; animation-delay: 1.2s; }
+.freq-bar:nth-child(14) { height: 30px; animation-delay: 1.3s; }
+.freq-bar:nth-child(15) { height: 45px; animation-delay: 1.4s; }
+.freq-bar:nth-child(16) { height: 25px; animation-delay: 1.5s; }
+.freq-bar:nth-child(17) { height: 55px; animation-delay: 1.6s; }
+.freq-bar:nth-child(18) { height: 35px; animation-delay: 1.7s; }
+.freq-bar:nth-child(19) { height: 50px; animation-delay: 1.8s; }
+.freq-bar:nth-child(20) { height: 40px; animation-delay: 1.9s; }
+
+@keyframes bounce {
+  0%, 100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1.5);
+  }
+}
+
+/* Pulsación del fondo circular detrás del texto */
+.animate-pulse-glow {
+  animation: pulse-glow 3s infinite;
+}
+
+@keyframes pulse-glow {
+  0% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.15);
+  }
+  100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+}
+
+/* Efectos hover para las tarjetas */
+
+
+
+.promotor-image {
+  transition: all 0.3s ease;
+}
+
+/* Efectos para botones */
+.btn-musical {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-musical::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-musical:hover::before {
+  left: 100%;
+}
+
+.btn-musical:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4);
+}
+
+/* Animación de entrada para las tarjetas */
+.fade-in-up {
+  animation: fadeInUp 0.6s ease forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Delay escalonado para las tarjetas */
+.promotor-card:nth-child(1) { animation-delay: 0.1s; }
+.promotor-card:nth-child(2) { animation-delay: 0.2s; }
+.promotor-card:nth-child(3) { animation-delay: 0.3s; }
+.promotor-card:nth-child(4) { animation-delay: 0.4s; }
+.promotor-card:nth-child(5) { animation-delay: 0.5s; }
+.promotor-card:nth-child(6) { animation-delay: 0.6s; }
+.promotor-card:nth-child(7) { animation-delay: 0.7s; }
+.promotor-card:nth-child(8) { animation-delay: 0.8s; }
+
+/* Estilos para el paginador */
+.paginator-container {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Efecto de loading */
+.loading-spinner {
+  border: 3px solid rgba(239, 68, 68, 0.3);
+  border-radius: 50%;
+  border-top: 3px solid #ef4444;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg);
+  }  }
+
+
+/* Agrega estas clases CSS a tu archivo de estilos */
+
+/* Opción 1: Altura uniforme automática (recomendada) */
+.uniform-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.uniform-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 250px; /* Altura mínima uniforme */
+}
+
+.uniform-card-image {
+  width: 100%;
+  height: 200px; /* Altura fija para todas las imágenes */
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.uniform-card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.uniform-card-body {
+  flex: 1;
+}
+
+.uniform-card-footer {
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+/* Opción 2: Para layout horizontal con imágenes uniformes */
+@media (min-width: 640px) {
+  .horizontal-uniform-card {
+    display: flex;
+    height: 220px; /* Altura fija para cards horizontales */
+  }
+
+  .horizontal-uniform-image {
+    width: 40%;
+    height: 100%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .horizontal-uniform-content {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+}
+
+/* Opción 3: Grid con alturas calculadas dinámicamente */
+.dynamic-height-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  grid-auto-rows: minmax(250px, auto);
+}
+
+.dynamic-height-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Para filas pares, asegurar que ambas cards tengan la misma altura */
+.row-pair {
+  display: contents;
+}
+
+.row-pair .dynamic-height-card {
+  height: 100%;
+}

@@ -3,6 +3,8 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {Promotor} from '../interfaces/Promotor';
 import {EventoDTO} from '../interfaces/EventoDTO'
+import {PromotoresDTO} from '../interfaces/PromotoresDTO';
+import {Page} from '../interfaces/Page';
 
 
 
@@ -87,10 +89,16 @@ export class PromotoresService {
 
   }
 
-  obtenerPromotorasPaginadas(paginaActual: number, pageSize: number): Observable<any> {
-    const params = new HttpParams()
-      .set('page', paginaActual.toString())
-      .set('size', pageSize.toString());
-    return this.http.get<any>(`${this.apiUrl}/promotores/listar/promotores`, { params });
+  // promotores.service.ts
+  obtenerPromotoresPaginados(pagina: number, size: number, nombre?: string): Observable<Page<Promotor>> {
+    let params = new HttpParams()
+      .set('page', pagina.toString())
+      .set('size', size.toString());
+
+    if (nombre) {
+      params = params.set('nombrePromotor', nombre); // Asegúrate que coincide con el backend
+    }
+
+    return this.http.get<Page<Promotor>>(`${this.apiUrl}/promotores/listar/promotores`, { params });
   }
 }

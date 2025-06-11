@@ -24,6 +24,7 @@ import {PerfilAdminArtistaComponent} from './pages/perfil-admin-artista/perfil-a
 import {WebsocketComponent} from './websocket/websocket.component';
 import {ChatComponent} from './chat/chat.component';
 
+
 export const routes: Routes = [
   // Rutas de autenticación
   { path: 'auth/registro', component: RegistroComponent },
@@ -70,6 +71,7 @@ export const routes: Routes = [
 
   //Ruta de instrucciones
    {path: 'instrucciones', loadComponent: () => import('./pages/intrucciones-uso/intrucciones-uso.component').then(m => m.InstruccionesUsoComponent)},
+  {path: 'condiciones', loadComponent: () => import('./pages/condiciones/condiciones.component').then(m => m.CondicionesComponent)},
 
 
 

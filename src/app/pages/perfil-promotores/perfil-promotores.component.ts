@@ -1,6 +1,6 @@
 import {AfterViewInit, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
-import {DatePipe, NgForOf, NgIf, SlicePipe} from '@angular/common';
+import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {PromotoresService} from '../../servicios/promotores.service';
 import {EventoDTO} from '../../interfaces/EventoDTO';
 import {Promotor} from '../../interfaces/Promotor';
@@ -22,7 +22,7 @@ import {FormsModule} from '@angular/forms';
     NgIf,
     DatePipe,
     FormsModule,
-    SlicePipe
+
   ],
   providers: [DatePipe],
   templateUrl: './perfil-promotores.component.html',
@@ -176,12 +176,13 @@ export class PerfilPromotoresComponent implements OnInit,AfterViewInit {
 
   // New method to filter events by status
   filterEventsByStatus(): void {
-    this.eventosConfirmados = this.eventos.filter(evento => evento.estado === 'confirmado');
-    this.eventosEnRevision = this.eventos.filter(evento => evento.estado === 'en_revision')
+    this.eventosConfirmados = this.eventos
+      .filter(evento => evento.estado === 'confirmado')
+      .sort((a, b) => new Date(b.fechaEvento).getTime() - new Date(a.fechaEvento).getTime());
 
-
-
-
+    this.eventosEnRevision = this.eventos
+      .filter(evento => evento.estado === 'en_revision')
+      .sort((a, b) => new Date(b.fechaEvento).getTime() - new Date(a.fechaEvento).getTime());
   }
 
 
@@ -268,6 +269,7 @@ export class PerfilPromotoresComponent implements OnInit,AfterViewInit {
 
 
   cargarSolicitudes() {
+    const hoy = new Date();
     this.postulacionService.listarPorPromotor(this.idPromotor).subscribe({
       next: (lista) => {
         console.log("Lista completa:", lista);

@@ -1,218 +1,332 @@
-<!-- Fuente de iconos FontAwesome -->
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-/>
-
-<!-- Hero Section con animación mejorada -->
-<div class="text-center mb-20 relative pt-[60px] sm:pt-[70px]">
-  <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-32 h-32 bg-red-500/20 rounded-full blur-3xl animate-pulse"></div>
-  <h2 class="text-4xl md:text-6xl font-medula inline-block relative tracking-wide">
-    ¿En busca de los conciertos y
-    <span class="text-red-500 animate-bounce inline-block"> festivales  </span>
-    <span class="relative inline-block group">
-          de tus artistas favoritos?
-          <span class="absolute left-0 bottom-0 h-1 w-full bg-red-500 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500"></span>
-        </span>
-  </h2>
-</div>
-
-<!-- CONTENEDOR PRINCIPAL -->
-<div
-  class="min-h-screen bg-black text-white p-6"
-  style="background-image: url('../../../assets/images/img_1.png'); background-size: cover; background-position: center;"
->
-  <div class="flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-6">
-
-    <!-- FILTROS -->
-    <div class="bg-zinc-900 p-6 rounded-xl border border-zinc-700 w-full md:w-1/4">
-      <h2 class="text-xl font-bold mb-4 text-center">FILTROS</h2>
-
-      <!-- Género musical -->
-      <label for="generoSelect" class="block mb-2 text-lg font-semibold text-white">
-        <i class="fa fa-music mr-2"></i>Género musical
-      </label>
-      <select id="generoSelect" [(ngModel)]="generoSeleccionado"
-              class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              aria-label="Seleccionar género musical"
-      >
-        <option value="">Todos</option>
-        <option *ngFor="let genero of generos" [value]="genero">{{ genero }}</option>
-      </select>
-
-      <!-- Fecha desde -->
-      <label for="fechaDesde" class="block mb-2 text-lg font-semibold text-white">
-        <i class="fa fa-calendar mr-2"></i>Fecha (desde)
-      </label>
-      <input type="date" id="fechaDesde" [(ngModel)]="fechaDesde"
-             class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-             aria-label="Fecha desde"
+      <!-- Fuente de iconos FontAwesome -->
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
       />
 
-      <!-- Fecha hasta -->
-      <label for="fechaHasta" class="block mb-2 text-lg font-semibold text-white">
-        <i class="fa fa-calendar-check-o mr-2"></i>Fecha (hasta)
-      </label>
-      <input type="date" id="fechaHasta" [(ngModel)]="fechaHasta"
-             class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-             aria-label="Fecha hasta"
-      />
+      <!-- Hero Section con animación mejorada -->
+      <div class=" bg-cover bg-center" style="background-image: linear-gradient(to bottom, black, rgba(255, 255, 255, 0.1)), url('/assets/images/fondo_2.png');">
+          <div class="pt-16 pb-32 px-4 md:px-20 text-white">
 
-      <!-- Estado del evento -->
-      <label for="estadoSelect" class="block mb-2 text-lg font-semibold text-white">
-        <i class="fa fa-info-circle mr-2"></i>Estado del evento
-      </label>
-      <select id="estadoSelect" [(ngModel)]="estadoSeleccionado"
-              class="w-full mb-4 p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              aria-label="Seleccionar estado del evento"
-      >
-        <option value="">-- Todos los estados --</option>
-        <option *ngFor="let estado of estados" [value]="estado">{{ estado | titlecase }}</option>
-      </select>
+            <div class="text-center mb-16">
+              <h2 class="text-4xl md:text-6xl font-medula inline-block relative tracking-wide">
+                Explora los
+                <span class="text-red-500 animate-bounce inline-block"> Eventos </span>
+                <span class="relative inline-block group">
+                  y encuentra tu próxima oportunidad
+                  <span class="absolute left-0 bottom-0 h-1 w-full bg-red-500 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500"></span>
+                </span>
+              </h2>
+              <p class="text-lg md:text-xl text-gray-300 max-w-4xl mx-auto mt-6 leading-relaxed">
+                Aquí tienes una lista de eventos disponibles para artistas que buscan escenarios y promotores que quieren descubrir nuevos talentos y proyectos emocionantes. ¡Conecta y crea!
+              </p>
+            </div>
 
-      <!-- Botón de Aceptar -->
-      <button
-        id="btnAceptar"
-        class="bg-red-600 hover:bg-red-700 text-white w-full p-2 rounded mt-2"
-        (click)="aplicarFiltros()"
-      >
-        Aceptar
-      </button>
-    </div>
 
-    <div class="w-full lg:w-3/4 space-y-6">
-      <!-- Buscador por nombre/descripción -->
-      <input type="text"
-             [(ngModel)]="filtro.texto"
-             (input)="actualizarBusquedaTexto()"
-             placeholder="Buscar por nombre o descripción..."
-             class="w-full px-4 py-2 rounded-full bg-customGrisOscurso bg-opacity-50 text-customBlanco shadow-md" />
+        <!-- CONTENEDOR PRINCIPAL -->
 
-      <div *ngIf="hayFiltrosActivos()" class="bg-black bg-opacity-40 p-3 rounded-lg">
-        <div class="flex flex-wrap gap-2">
-          <div *ngIf="filtro.texto" class="bg-gray-700 px-2 py-1 rounded-full text-sm flex items-center">
-            Texto: {{ filtro.texto }}
-            <button (click)="limpiarFiltro('filtro.texto')" class="ml-2 text-gray-400 hover:text-white">×</button>
+            <div class="flex flex-col lg:flex-row gap-6 gap-y-8">
+
+            <!-- FILTROS -->
+              <div class="bg-black bg-opacity-60 p-4 rounded-lg w-full lg:w-1/4 ">
+              <div class="flex items-center  mb-4">
+                <div class="w-8 h-8 bg-gradient-to-r from-red-500 to-customGrisOscurso rounded-lg mr-3 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                  </svg>
+                </div>
+                <h3 class="text-white text-4xl font-medula">Filtros avanzados</h3>
+              </div>
+
+              <label for="generoSelect" class="block text-m font-medium text-gray-300 mb-2"
+              >
+                <i class="fa fa-search mr-2"></i> Buscador
+              </label>
+              <input type="text"
+                     [(ngModel)]="filtro.texto"
+                     (input)="actualizarBusquedaTexto()"
+                     placeholder="Buscar por nombre o descripción..."
+                     class="w-full mb-4 p-3 rounded-lg bg-customNegro text-white  border border-gray-600 focus:outline-none focus:ring-2 focus:ring-white"
+              >
+
+
+              <!-- Género musical -->
+              <label for="generoSelect"  class="block text-m font-medium text-gray-300 mb-2"
+              >
+                <i class="fa fa-music mr-2"></i>Género musical
+              </label>
+              <select id="generoSelect" [(ngModel)]="generoSeleccionado"
+                      class="w-full mb-4 p-3 rounded-lg bg-customNegro text-white  border border-gray-600 focus:outline-none focus:ring-2 focus:ring-white"
+                      aria-label="Seleccionar género musical"
+              >
+                <option value="">Todos</option>
+                <option *ngFor="let genero of generos" [value]="genero">{{ genero }}</option>
+              </select>
+
+              <!-- Fecha desde -->
+              <label for="fechaDesde" class="block text-m font-medium text-gray-300 mb-2"
+              >
+                <i class="fa fa-calendar mr-2"></i>Fecha (desde)
+              </label>
+              <input type="date" id="fechaDesde" [(ngModel)]="fechaDesde"
+                     class="w-full mb-4 p-3 rounded-lg bg-customNegro text-white  border border-gray-600 focus:outline-none focus:ring-2 focus:ring-white"
+                     aria-label="Fecha desde"
+              />
+
+              <!-- Fecha hasta -->
+              <label for="fechaHasta" class="block text-m font-medium text-gray-300 mb-2"
+              >
+                <i class="fa fa-calendar-check-o mr-2"></i>Fecha (hasta)
+              </label>
+              <input type="date" id="fechaHasta" [(ngModel)]="fechaHasta"
+                     class="w-full mb-4 p-3 rounded-lg bg-customNegro text-white  border border-gray-600 focus:outline-none focus:ring-2 focus:ring-white"
+                     aria-label="Fecha hasta"
+              />
+
+              <!-- Estado del evento -->
+              <label for="estadoSelect" class="block text-m font-medium text-gray-300 mb-2"
+              >
+                <i class="fa fa-info-circle mr-2"></i>Estado del evento
+              </label>
+              <select id="estadoSelect" [(ngModel)]="estadoSeleccionado"
+                      class="w-full mb-4 p-3 rounded-lg bg-customNegro text-white  border border-gray-600 focus:outline-none focus:ring-2 focus:ring-white"
+                      aria-label="Seleccionar estado del evento"
+              >
+                <option value="">-- Todos los estados --</option>
+                <option *ngFor="let estado of estados" [value]="estado">{{ estado | titlecase }}</option>
+              </select>
+
+
+              <!-- Botón de Aceptar -->
+              <button
+                id="btnAceptar"
+                (click)="aplicarFiltros()"
+                class="w-full bg-gradient-to-r from-customBurbundy to-red-600 hover:from-red-600 hover:to-red-700 text-white py-3 rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-red-500/25 transform hover:scale-105 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+
+                Aplicar
+              </button>
+
+              <button (click)="limpiarTodosFiltros()"
+                      class="w-full bg-gray-700/50 hover:bg-gray-600/60 text-white py-3 rounded-xl transition-all duration-300 backdrop-blur-sm border border-gray-600/30 hover:border-gray-500/50 mt-4"
+              >
+                Limpiar Filtros
+              </button>
+
+
+            </div>
+
+              <div class="w-full lg:w-3/4 flex flex-col gap-4">
+
+              <div *ngIf="hayFiltrosActivos()" class="bg-black bg-opacity-40 p-3 rounded-lg">
+                <div class="flex flex-wrap gap-2">
+                  <div *ngIf="filtro.texto" class="bg-gray-700 px-2 py-1 rounded-full text-sm flex items-center">
+                    Texto: {{ filtro.texto }}
+                    <button (click)="limpiarFiltro('filtro.texto')" class="ml-2 text-gray-400 hover:text-white">×</button>
+                  </div>
+                  <div *ngIf="generoSeleccionado" class="bg-gray-700 px-2 py-1 rounded-full text-sm flex items-center">
+                    Género: {{ generoSeleccionado }}
+                    <button (click)="limpiarFiltro('generoSeleccionado')" class="ml-2 text-gray-400 hover:text-white">×</button>
+                  </div>
+                  <div *ngIf="estadoSeleccionado" class="bg-gray-700 px-2 py-1 rounded-full text-sm flex items-center">
+                    Estado: {{ estadoSeleccionado }}
+                    <button (click)="limpiarFiltro('estadoSeleccionado')" class="ml-2 text-gray-400 hover:text-white">×</button>
+                  </div>
+                  <div *ngIf="fechaDesde" class="bg-gray-700 px-2 py-1 rounded-full text-sm flex items-center">
+                    Desde: {{ fechaDesde }}
+                    <button (click)="limpiarFiltro('fechaDesde')" class="ml-2 text-gray-400 hover:text-white">×</button>
+                  </div>
+                  <div *ngIf="fechaHasta" class="bg-gray-700 px-2 py-1 rounded-full text-sm flex items-center">
+                    Hasta: {{ fechaHasta }}
+                    <button (click)="limpiarFiltro('fechaHasta')" class="ml-2 text-gray-400 hover:text-white">×</button>
+                  </div>
+                  <button
+                    *ngIf="hayFiltrosActivos()"
+                    (click)="limpiarTodosFiltros()"
+                    class="bg-red-600 hover:bg-red-700 px-2 py-1 rounded-full text-sm ml-auto">
+                    Limpiar filtros
+                  </button>
+                </div>
+              </div>
+
+
+              <!-- EVENTOS -->
+
+                <div class="w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 justify-items-stretch items-stretch">
+
+                <!-- Sin resultados -->
+              <div *ngIf="eventosPaginados.length === 0" class="bg-zinc-800 p-6 rounded-xl text-center text-lg text-white border border-zinc-700">
+                No se encontraron eventos con los filtros seleccionados.
+              </div>
+
+              <!-- Lista de eventos -->
+                <div
+                  *ngFor="let evento of eventosPaginados"
+                  class="  group w-full max-w-[28rem] h-full min-h-[22rem] relative flex flex-col justify-between bg-zinc-900 rounded-xl border overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-300 group border-white/10 hover:border-red-500/60 hover:shadow-red-500/10"
+                  (click)="usuarioLogueado ? verInfo(evento) : null"
+                >
+
+                <!-- Imagen de fondo -->
+                  <div
+                    class="absolute inset-0 bg-cover bg-center opacity-40 group-hover:opacity-90 transition-opacity duration-300"
+                    [style.background-image]="'url(' + evento.imagenEvento + ')'"
+                  ></div>
+
+                <!-- Overlay gradient -->
+                <div class="absolute inset-0 bg-gradient-to-r from-black/20 via-black/10 to-black/20"></div>
+                <!-- Contenido -->
+                  <div class="relative z-10 flex flex-col md:flex-row items-center p-6 space-y-4 md:space-y-0 md:space-x-6 group-hover:text-lg transition-transform duration-300">
+                    <!-- Información del evento -->
+                  <div class="flex-1 w-full text-center md:text-left">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-white group-hover:shadow-black group-hover:scale-105 transition-transform transition-colors" style="text-shadow: 4px 4px 8px rgba(0, 0, 0, 1);">{{ evento.nombreEvento }}</h3>
+                    <div class="text-gray-200 text-sm mb-2 flex items-center justify-center md:justify-start group-hover:text-white group-hover:text-bold group-hover:shadow-black transition-colors" style="text-shadow: 6px 6px 12px rgba(0, 0, 0, 1);">
+                      <i class="fa fa-map-signs mr-2 text-customGrisClaro2" ></i>
+                      <span >{{ evento.nombreSala }}</span>
+                    </div>
+                    <div class="text-gray-200 text-sm mb-2 flex items-center justify-center md:justify-start group-hover:text-white group-hover:text-bold group-hover:shadow-black transition-colors" style="text-shadow: 6px 6px 12px rgba(0, 0, 0, 1);">
+                    <i class="fa fa-calendar mr-2 text-customGrisClaro2"></i>
+                      <span>{{ formatearFecha(evento.fechaEvento) }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Botón + info -->
+                  <ng-container *ngIf="usuarioLogueado; else accesoDenegado">
+                    <button
+                      class="bg-customRed hover:bg-customGrisOscurso text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 "
+                      (click)="verInfo(evento); $event.stopPropagation()"
+                      aria-label="Ver más información del evento"
+                    >
+                      <i class="fa fa-arrow-right"></i>
+                    </button>
+                  </ng-container>
+                  <ng-template #accesoDenegado>
+                    <button
+                      class="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold opacity-60 cursor-not-allowed flex items-center space-x-2"
+                      disabled
+                      aria-disabled="true"
+                    >
+                      <i class="fa fa-lock"></i>
+                    </button>
+                  </ng-template>
+                </div>
+              </div>
+              </div>
+
+            <!-- MODAL DE ADVERTENCIA -->
+            <div
+              *ngIf="mostrarModal"
+              class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+              tabindex="-1"
+              (keydown.escape)="cerrarModal()"
+            >
+              <div class="bg-white text-black p-6 rounded shadow-lg w-80 text-center transition duration-300 ease-in-out transform scale-100">
+                <h2 class="text-xl font-semibold mb-4">Acción no permitida</h2>
+                <p class="mb-4">Debes iniciar sesión o registrarte para realizar esta acción.</p>
+                <button
+                  (click)="cerrarModal()"
+                  class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                >
+                  Cerrar
+                </button>
+              </div>
+            </div>
           </div>
-          <div *ngIf="generoSeleccionado" class="bg-gray-700 px-2 py-1 rounded-full text-sm flex items-center">
-            Género: {{ generoSeleccionado }}
-            <button (click)="limpiarFiltro('generoSeleccionado')" class="ml-2 text-gray-400 hover:text-white">×</button>
-          </div>
-          <div *ngIf="estadoSeleccionado" class="bg-gray-700 px-2 py-1 rounded-full text-sm flex items-center">
-            Estado: {{ estadoSeleccionado }}
-            <button (click)="limpiarFiltro('estadoSeleccionado')" class="ml-2 text-gray-400 hover:text-white">×</button>
-          </div>
-          <div *ngIf="fechaDesde" class="bg-gray-700 px-2 py-1 rounded-full text-sm flex items-center">
-            Desde: {{ fechaDesde }}
-            <button (click)="limpiarFiltro('fechaDesde')" class="ml-2 text-gray-400 hover:text-white">×</button>
-          </div>
-          <div *ngIf="fechaHasta" class="bg-gray-700 px-2 py-1 rounded-full text-sm flex items-center">
-            Hasta: {{ fechaHasta }}
-            <button (click)="limpiarFiltro('fechaHasta')" class="ml-2 text-gray-400 hover:text-white">×</button>
-          </div>
-          <button
-            *ngIf="hayFiltrosActivos()"
-            (click)="limpiarTodosFiltros()"
-            class="bg-red-600 hover:bg-red-700 px-2 py-1 rounded-full text-sm ml-auto">
-            Limpiar filtros
-          </button>
         </div>
+
+            <!-- Paginación mejorada -->
+
+
+
+
+            <div class="flex flex-col items-center justify-center mt-8 space-y-4" *ngIf="totalPaginas > 1">
+              <!-- Información de página actual -->
+              <div class="text-sm text-gray-300 text-center">
+                Página {{ paginaActualDisplay }} de {{ totalPaginas }}
+              </div>
+
+              <!-- Controles de paginación -->
+              <nav class="flex items-center" aria-label="Paginación">
+                <!-- Botón Primera página -->
+                <button
+                  (click)="cambiarPagina(0)"
+                  [disabled]="esPrimeraPagina"
+                  [class.opacity-50]="esPrimeraPagina"
+                  [class.cursor-not-allowed]="esPrimeraPagina"
+                  class="px-3 py-2 rounded-l bg-gray-800 hover:bg-gray-700 text-white text-xs">
+                  Primera
+                </button>
+
+                <!-- Botón Anterior -->
+                <button
+                  (click)="paginaAnterior()"
+                  [disabled]="esPrimeraPagina"
+                  [class.opacity-50]="esPrimeraPagina"
+                  [class.cursor-not-allowed]="esPrimeraPagina"
+                  class="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-white flex items-center border-l border-gray-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+
+                <!-- Números de página -->
+                <ng-container *ngFor="let pagina of obtenerRangoPaginas()">
+                  <button
+                    (click)="cambiarPagina(pagina)"
+                    [class.bg-red-600]="pagina === paginaActual"
+                    [class.bg-gray-800]="pagina !== paginaActual"
+                    [class.hover:bg-red-700]="pagina === paginaActual"
+                    [class.hover:bg-gray-700]="pagina !== paginaActual"
+                    [class.text-white]="pagina === paginaActual"
+                    [class.text-gray-300]="pagina !== paginaActual"
+                    class="px-3 py-2 transition-colors duration-300 border-l border-gray-600">
+                    {{ pagina + 1 }}
+                  </button>
+                </ng-container>
+
+                <!-- Botón Siguiente -->
+                <button
+                  (click)="paginaSiguiente()"
+                  [disabled]="esUltimaPagina"
+                  [class.opacity-50]="esUltimaPagina"
+                  [class.cursor-not-allowed]="esUltimaPagina"
+                  class="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-white flex items-center border-l border-gray-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+
+                <!-- Botón Última página -->
+                <button
+                  (click)="cambiarPagina(totalPaginas - 1)"
+                  [disabled]="esUltimaPagina"
+                  [class.opacity-50]="esUltimaPagina"
+                  [class.cursor-not-allowed]="esUltimaPagina"
+                  class="px-3 py-2 rounded-r bg-gray-800 hover:bg-gray-700 text-white text-xs border-l border-gray-600">
+                  Última
+                </button>
+              </nav>
+
+              <!-- Navegación rápida -->
+              <div class="flex items-center gap-2 text-sm">
+                <span class="text-gray-300">Ir a página:</span>
+                <input
+                  type="number"
+                  [min]="1"
+                  [max]="totalPaginas"
+                  [(ngModel)]="paginaNavegacion"
+                  (keydown.enter)="irAPagina()"
+                  class="w-16 px-2 py-1 bg-gray-800 border border-gray-600 text-white rounded text-center text-sm"
+                  placeholder="{{ paginaActualDisplay }}" />
+                <button
+                  (click)="irAPagina()"
+                  class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">
+                  Ir
+                </button>
+              </div>
+            </div>
+          </div>
+
       </div>
 
-
-      <!-- EVENTOS -->
-    <div class="w-full md:w-3/4 flex flex-col space-y-6">
-
-      <!-- Sin resultados -->
-      <div *ngIf="eventosPaginados.length === 0" class="bg-zinc-800 p-6 rounded-xl text-center text-lg text-white border border-zinc-700">
-        No se encontraron eventos con los filtros seleccionados.
-      </div>
-
-      <!-- Lista de eventos -->
-      <div
-        *ngFor="let evento of eventosPaginados"
-        class="bg-zinc-900 rounded-xl border border-zinc-700 flex flex-col md:flex-row items-center p-4 space-y-4 md:space-y-0 md:space-x-4"
-      >
-        <!-- Imagen del evento -->
-        <img
-          [src]="evento.imagenEvento"
-          (error)="evento.imagenEvento = 'assets/images/default-evento.jpg'"
-          alt="Imagen del evento"
-          class="w-full md:w-1/4 h-32 object-cover rounded"
-        />
-
-        <!-- Información del evento -->
-        <div class="flex-1 w-full text-center md:text-left">
-          <h3 class="text-xl font-semibold">{{ evento.nombreEvento }}</h3>
-          <div class="text-sm mt-1">📍 {{ evento.nombreSala }}</div>
-          <div class="text-sm mt-1">📅 {{ formatearFecha(evento.fechaEvento) }}</div>
-        </div>
-
-        <!-- Botón + info -->
-        <ng-container *ngIf="usuarioLogueado; else accesoDenegado">
-          <button
-            class="bg-slate-500 hover:bg-slate-600 text-white px-3 py-1 rounded"
-            (click)="verInfo(evento)"
-            aria-label="Ver más información del evento"
-          >
-            + info
-          </button>
-        </ng-container>
-        <ng-template #accesoDenegado>
-          <button
-            class="bg-gray-600 text-white px-3 py-1 rounded opacity-60 cursor-not-allowed"
-            disabled
-            aria-disabled="true"
-          >
-            + info
-          </button>
-        </ng-template>
-
-        <!-- Corazón de seguir -->
-        <button
-          class="text-3xl transition duration-300 ease-in-out"
-          [ngClass]="{
-            'text-red-500': evento.seguido,
-            'text-gray-400': !evento.seguido
-          }"
-          (click)="seguirEvento(evento)"
-          [disabled]="!usuarioLogueado"
-          aria-label="Seguir evento"
-        >
-          <i class="fa" [ngClass]="evento.seguido ? 'fa-heart' : 'fa-heart-o'"></i>
-        </button>
-      </div>
-
-      <!-- Paginador centrado -->
-      <div class="card flex justify-center">
-        <p-paginator
-          [rows]="pageSize"
-          [totalRecords]="totalItems"
-          [rowsPerPageOptions]="[6, 10, 12]"
-          (onPageChange)="onPageChange($event)">
-        </p-paginator>
-      </div>
-    </div>
-
-    </div>
-
-    <!-- MODAL DE ADVERTENCIA -->
-    <div
-      *ngIf="mostrarModal"
-      class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
-      tabindex="-1"
-      (keydown.escape)="cerrarModal()"
-    >
-      <div class="bg-white text-black p-6 rounded shadow-lg w-80 text-center transition duration-300 ease-in-out transform scale-100">
-        <h2 class="text-xl font-semibold mb-4">Acción no permitida</h2>
-        <p class="mb-4">Debes iniciar sesión o registrarte para realizar esta acción.</p>
-        <button
-          (click)="cerrarModal()"
-          class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-        >
-          Cerrar
-        </button>
-      </div>
-    </div>
-  </div>
-</div>

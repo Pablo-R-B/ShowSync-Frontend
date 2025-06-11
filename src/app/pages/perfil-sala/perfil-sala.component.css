@@ -1,136 +1,205 @@
-/* Estilos base del calendario */
+/* Contenedor principal del calendario */
 .calendario-container {
-  margin: 1rem auto;
-  background: linear-gradient(135deg,
-  #801c1c 0%,
-  #2d2d2d 100%);
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 0.25rem auto; /* Margen muy reducido */
+  background: rgba(14, 12, 12, 0.83); /* Gris oscuro en lugar de negro puro */
+  border-radius: 12px; /* Bordes menos redondeados */
+  padding: 1rem; /* Padding muy reducido */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  border: 2px solid white; /* Borde gris oscuro más sutil */
   width: 100%;
-  max-width: 1000px;
+  max-width: 800px; /* Ancho máximo reducido */
+  transition: box-shadow 0.3s ease;
 }
 
+.calendario-container:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* Wrapper con fondo oscuro coherente */
 .calendario-wrapper {
-  background: rgba(14, 12, 12, 0.83);
+  background: rgba(14, 12, 12, 0.83); /* Tono más oscuro y coherente */
   border-radius: 8px;
-  padding: 1rem;
-  border: 1px solid rgb(87, 81, 81);
-  min-height: 400px;
-  max-height: 650px;
+  padding: 0.3rem; /* Padding muy reducido */
+  border: 2px solid rgba(14, 12, 12, 0.83); /* Borde más sutil */
+  min-height: 200px; /* Altura mínima muy reducida */
+  max-height: 400px; /* Altura máxima reducida */
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #6c1e23 transparent;
 }
 
+/* Scrollbar personalizado para Webkit */
+.calendario-wrapper::-webkit-scrollbar {
+  width: 6px; /* Scrollbar más delgado */
+}
+.calendario-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+.calendario-wrapper::-webkit-scrollbar-thumb {
+  background-color: #bf0d22;
+  border-radius: 6px;
+  border: 1px solid transparent;
+}
+
+/* Eventos simples */
 .calendario-wrapper ::ng-deep .evento-simple {
-  font-size: 1.2rem !important;
+  font-size: 1rem !important; /* Tamaño reducido */
   background: transparent !important;
   border: none !important;
   text-align: center;
+  font-weight: 600;
+  color: #ff4757; /* Rojo más vibrante y legible */
+  text-shadow: 0 0 3px rgba(255, 71, 87, 0.5);
 }
-/* Estilo para eventos de fondo */
+
+/* Eventos de fondo */
 .calendario-wrapper ::ng-deep .fc-daygrid-bg-harness .fc-event.evento-fondo {
-  font-size: 1rem !important;
+  font-size: 0.8rem !important; /* Tamaño reducido */
   opacity: 0.7;
+  filter: brightness(0.85);
+  border-radius: 4px;
 }
 
-/* Para eventos normales (sin display: background) */
+/* Eventos normales */
 .calendario-wrapper ::ng-deep .fc-event.evento-fondo:not(.fc-daygrid-bg-harness *) {
-  font-size: 0.9rem;
-  padding: 0.3rem;
+  font-size: 0.6rem; /* Tamaño muy pequeño */
+  padding: 0.15rem 0.3rem; /* Padding muy reducido */
+  border-radius: 6px;
+  background: #bf0d22 !important; /* Color rojo principal consistente */
+  color: #fff !important;
+  box-shadow: 0 1px 4px rgba(191, 13, 34, 0.5);
+  font-weight: 600;
 }
 
-/* Estilos para FullCalendar */
+/* Fuente de FullCalendar */
 .calendario-wrapper ::ng-deep .fc {
-  font-family: inherit;
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Cabeceras de día */
 .calendario-wrapper ::ng-deep .fc-col-header-cell {
-  background: rgba(255, 255, 255, 0.05);
-  color:
-    #d1d5db;
-  padding: 0.5rem;
-  font-size: 0.75rem;
+  background: black; /* Fondo más sutil */
+  color: #cbd5e1; /* Gris claro para mejor legibilidad */
+  padding: 0.4rem 0.3rem; /* Padding reducido */
+  font-size: 0.7rem; /* Fuente más pequeña */
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgb(255, 255, 255);
 }
 
 /* Celdas de día */
 .calendario-wrapper ::ng-deep .fc-daygrid-day {
-  background: rgba(255, 255, 255, 0.02);
-  transition: background 0.2s;
+  background: black; /* Fondo muy sutil */
+  height: 45px; /* Altura muy reducida */
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+  border-radius: 6px;
+  margin: 1px; /* Margen muy pequeño */
 }
 
 .calendario-wrapper ::ng-deep .fc-daygrid-day:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(191, 13, 34, 0.1); /* Hover con color tema coherente */
+  box-shadow: 0 0 6px rgba(191, 13, 34, 0.3);
 }
 
 /* Número del día */
 .calendario-wrapper ::ng-deep .fc-daygrid-day-number {
-  color:
-    #d1d5db;
-  padding: 0.3rem;
-  font-size: 0.8rem;
+  color: black !important; /* Gris más claro para mejor contraste */
+  padding: 0.1rem; /* Padding muy reducido */
+  font-size: 0.65rem; /* Fuente muy pequeña */
+  font-weight: 600;
+  user-select: none;
 }
 
 /* Día actual */
 .calendario-wrapper ::ng-deep .fc-day-today {
-  background: rgba(191, 13, 34, 0.1) !important;
+  background: rgba(191, 13, 34, 0.12) !important; /* Fondo coherente con tema */
+  box-shadow: 0 0 8px rgba(191, 13, 34, 0.4);
+  border-radius: 8px;
 }
 
 .calendario-wrapper ::ng-deep .fc-day-today .fc-daygrid-day-number {
-  background: linear-gradient(135deg,
-  #BF0D22,
-  #dc2626);
+  background: linear-gradient(135deg, #bf0d22, #ff4757); /* Gradiente coherente */
   color: white;
   border-radius: 50%;
-  width: 1.8rem;
-  height: 1.8rem;
+  width: 1.5rem; /* Tamaño reducido */
+  height: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0.25rem;
+  margin: 0.2rem auto; /* Margen reducido */
+  font-weight: 700;
+  box-shadow: 0 0 6px rgba(191, 13, 34, 0.6);
 }
 
 /* Eventos */
 .calendario-wrapper ::ng-deep .fc-event {
-  font-size: 0.7rem;
-  padding: 0.1rem 0.3rem;
-  margin: 0.1rem;
+  font-size: 0.6rem; /* Fuente muy pequeña */
+  padding: 0.2rem 0.3rem; /* Padding muy reducido */
+  margin: 0.1rem 0.15rem; /* Margen muy pequeño */
+  border-radius: 6px;
   border: none;
   cursor: pointer;
+  background: #bf0d22 !important; /* Color principal coherente */
+  color: #fff !important;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(191, 13, 34, 0.6);
+  transition: all 0.3s ease;
+}
+
+.calendario-wrapper ::ng-deep .fc-event:hover {
+  background: #ff4757 !important; /* Hover más vibrante */
+  box-shadow: 0 2px 6px rgba(255, 71, 87, 0.7);
+  transform: translateY(-1px); /* Efecto de elevación sutil */
 }
 
 /* Toolbar */
 .calendario-wrapper ::ng-deep .fc-toolbar-title {
-  color:
-    #f3f4f6;
-  font-size: 1.2rem;
+  color: #f8fafc; /* Blanco más puro */
+  font-size: 1.2rem; /* Tamaño reducido */
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-shadow: 0 0 6px rgba(191, 13, 34, 0.5);
 }
 
+/* Botones del toolbar */
 .calendario-wrapper ::ng-deep .fc-button {
-  background: rgba(55, 65, 81, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color:
-    #f9fafb;
-  padding: 0.4rem 0.8rem;
-  font-size: 0.8rem;
+  background: rgba(42, 26, 31, 0.8); /* Fondo coherente con wrapper */
+  border: 1px solid rgba(191, 13, 34, 0.3); /* Borde con color tema */
+  color: #e2e8f0;
+  padding: 0.3rem 0.7rem; /* Padding reducido */
+  font-size: 0.75rem; /* Fuente más pequeña */
+  font-weight: 600;
+  border-radius: 6px;
+  transition: all 0.3s ease;
 }
 
-/* Responsive */
+.calendario-wrapper ::ng-deep .fc-button:hover,
+.calendario-wrapper ::ng-deep .fc-button:focus {
+  background: #bf0d22; /* Color principal coherente */
+  border-color: #ff4757;
+  color: white;
+  box-shadow: 0 0 8px rgba(191, 13, 34, 0.5);
+}
+
+/* Responsive - Tamaños aún más compactos en móvil */
 @media (max-width: 768px) {
   .calendario-container {
-    padding: 1rem;
+    padding: 0.2rem;
     margin: 0.5rem auto;
+    max-width: 95%;
   }
 
   .calendario-wrapper {
-    min-height: 400px;
-    padding: 0.5rem;
+    min-height: 180px; /* Muy compacto en móvil */
+    padding: 0.2rem;
   }
 
   .calendario-wrapper ::ng-deep .fc-toolbar {
     flex-direction: column;
     gap: 0.5rem;
+    align-items: center;
   }
 
   .calendario-wrapper ::ng-deep .fc-toolbar-title {
@@ -139,47 +208,25 @@
   }
 
   .calendario-wrapper ::ng-deep .fc-col-header-cell {
-    font-size: 0.65rem;
-    padding: 0.3rem;
+    font-size: 0.6rem;
+    padding: 0.3rem 0.2rem;
+  }
+
+  .calendario-wrapper ::ng-deep .fc-daygrid-day {
+    height: 35px; /* Muy compacto */
   }
 
   .calendario-wrapper ::ng-deep .fc-daygrid-day-number {
+    font-size: 0.6rem;
+  }
+
+  .calendario-wrapper ::ng-deep .fc-button {
     font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
   }
 
-  @media (max-width: 768px) {
-    .calendario-container {
-      padding: 0.75rem;
-      margin: 0.5rem auto;
-    }
-
-    .calendario-wrapper {
-      min-height: 300px;
-      padding: 0.5rem;
-    }
-
-    .calendario-wrapper ::ng-deep .fc-toolbar {
-      flex-direction: column;
-      align-items: start;
-      gap: 0.5rem;
-    }
-
-    .calendario-wrapper ::ng-deep .fc-toolbar-title {
-      font-size: 1rem;
-    }
-
-    .calendario-wrapper ::ng-deep .fc-button {
-      font-size: 0.75rem;
-      padding: 0.25rem 0.5rem;
-    }
+  .calendario-wrapper ::ng-deep .fc-event {
+    font-size: 0.55rem;
+    padding: 0.15rem 0.25rem;
   }
-
-  .subtitle {
-    font-size: 1.125rem;
-    margin-bottom: 2rem;
-    text-align: center;
-    line-height: 1.6;
-
-  }
-
 }

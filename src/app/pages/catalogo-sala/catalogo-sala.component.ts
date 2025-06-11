@@ -33,7 +33,17 @@ export class CatalogoSalaComponent implements OnInit {
   // Variable para navegación rápida
   paginaNavegacion: number = 1;
 
-  // Filtros
+  totalItems: number = 0;
+
+  // Filtros aplicados (los que realmente se usan en la búsqueda)
+  filtrosAplicados: FiltrosSala = {
+    texto: '',
+    ciudad: '',
+    provincia: '',
+    capacidadMin: 0
+  };
+
+  // Filtros temporales (los que se muestran en el formulario)
   filtros: FiltrosSala = {
     texto: '',
     ciudad: '',
@@ -54,21 +64,20 @@ export class CatalogoSalaComponent implements OnInit {
     { valor: 'capacidad-desc', texto: 'Capacidad (Mayor)' }
   ];
 
-  // Control de tipo de filtro activo
-  tipoFiltroActivo: 'general' | 'capacidad' | 'ciudad' | 'provincia' = 'general';
-
-  // Búsqueda con debounce
+  // Búsqueda con debounce para el buscador principal
   private searchSubject = new Subject<string>();
 
   constructor(
     private salasService: SalasService,
     private router: Router
   ) {
+    // Configurar debounce para búsqueda por texto
     this.searchSubject.pipe(
-      debounceTime(300),
+      debounceTime(800),
       distinctUntilChanged()
     ).subscribe(searchTerm => {
-      this.buscarConDebounce(searchTerm);
+      this.filtrosAplicados.texto = searchTerm;
+      this.buscarConTexto();
     });
   }
 
@@ -88,22 +97,18 @@ export class CatalogoSalaComponent implements OnInit {
       size: this.itemsPorPagina,
       sortField: sortField,
       sortDirection: sortDirection.toUpperCase(),
-      termino: this.filtros.texto || undefined
+      termino: this.filtrosAplicados.texto || undefined
     };
 
-    switch (this.tipoFiltroActivo) {
-      case 'general':
-        this.cargarSalasGenerales(params);
-        break;
-      case 'capacidad':
-        this.cargarSalasPorCapacidad(params);
-        break;
-      case 'ciudad':
-        this.cargarSalasPorCiudad(params);
-        break;
-      case 'provincia':
-        this.cargarSalasPorProvincia(params);
-        break;
+    // Determinar qué tipo de búsqueda realizar basado en los filtros aplicados
+    if (this.filtrosAplicados.capacidadMin > 0) {
+      this.cargarSalasPorCapacidad(params);
+    } else if (this.filtrosAplicados.ciudad.trim()) {
+      this.cargarSalasPorCiudad(params);
+    } else if (this.filtrosAplicados.provincia.trim()) {
+      this.cargarSalasPorProvincia(params);
+    } else {
+      this.cargarSalasGenerales(params);
     }
   }
 
@@ -120,105 +125,111 @@ export class CatalogoSalaComponent implements OnInit {
   }
 
   private cargarSalasPorCapacidad(params: PaginationParams): void {
-    if (this.filtros.capacidadMin > 0) {
-      this.salasService.filtrarPorCapacidadPaginado(
-        this.filtros.capacidadMin,
-        999999, // Capacidad máxima muy alta para incluir todas las salas mayores al mínimo
-        params
-      ).subscribe({
-        next: (respuesta) => {
-          this.actualizarDatosPaginacion(respuesta);
-          this.cargando = false;
-        },
-        error: (err) => {
-          this.manejarError('Error al filtrar por capacidad', err);
-        }
-      });
-    }
+    this.salasService.filtrarPorCapacidadPaginado(
+      this.filtrosAplicados.capacidadMin,
+      999999,
+      params
+    ).subscribe({
+      next: (respuesta) => {
+        this.actualizarDatosPaginacion(respuesta);
+        this.cargando = false;
+      },
+      error: (err) => {
+        this.manejarError('Error al filtrar por capacidad', err);
+      }
+    });
   }
 
   private cargarSalasPorCiudad(params: PaginationParams): void {
-    if (this.filtros.ciudad.trim()) {
-      this.salasService.buscarSalasPorCiudadPaginadas(this.filtros.ciudad, params).subscribe({
-        next: (respuesta) => {
-          this.actualizarDatosPaginacion(respuesta);
-          this.cargando = false;
-        },
-        error: (err) => {
-          this.manejarError('Error al buscar por ciudad', err);
-        }
-      });
-    }
+    this.salasService.buscarSalasPorCiudadPaginadas(this.filtrosAplicados.ciudad, params).subscribe({
+      next: (respuesta) => {
+        this.actualizarDatosPaginacion(respuesta);
+        this.cargando = false;
+      },
+      error: (err) => {
+        this.manejarError('Error al buscar por ciudad', err);
+      }
+    });
   }
 
   private cargarSalasPorProvincia(params: PaginationParams): void {
-    if (this.filtros.provincia.trim()) {
-      this.salasService.buscarSalasPorProvinciaPaginadas(this.filtros.provincia, params).subscribe({
-        next: (respuesta) => {
-          this.actualizarDatosPaginacion(respuesta);
-          this.cargando = false;
-        },
-        error: (err) => {
-          this.manejarError('Error al buscar por provincia', err);
-        }
-      });
-    }
+    this.salasService.buscarSalasPorProvinciaPaginadas(this.filtrosAplicados.provincia, params).subscribe({
+      next: (respuesta) => {
+        this.actualizarDatosPaginacion(respuesta);
+        this.cargando = false;
+      },
+      error: (err) => {
+        this.manejarError('Error al buscar por provincia', err);
+      }
+    });
   }
 
   private actualizarDatosPaginacion(respuesta: RespuestaPaginada<Sala>): void {
     this.salas = respuesta.items;
     this.totalSalas = respuesta.totalItems;
+    this.totalItems = respuesta.totalItems;
     this.totalPaginas = respuesta.totalPages;
-    this.paginaNavegacion = respuesta.currentPage + 1; // Actualizar navegación rápida
+    this.paginaNavegacion = respuesta.currentPage + 1;
   }
 
-  // Métodos de filtrado
+  // Método para búsqueda por texto (con debounce)
   actualizarBusquedaTexto(): void {
-    this.searchSubject.next(this.filtros.texto);
+    this.filtrosAplicados.texto = this.filtros.texto;
   }
 
-  private buscarConDebounce(termino: string): void {
-    this.tipoFiltroActivo = 'general';
+  buscarPorBoton(): void {
     this.paginaActual = 0;
-    this.limpiarFiltrosAvanzados();
     this.cargarSalas();
   }
 
-  aplicarFiltroCapacidad(): void {
-    if (this.filtros.capacidadMin > 0) {
-      this.tipoFiltroActivo = 'capacidad';
-      this.paginaActual = 0;
-      this.cargarSalas();
-    }
+  private buscarConTexto(): void {
+
+    this.paginaActual = 0;
+    this.cargarSalas();
   }
 
-  aplicarFiltroCiudad(): void {
-    if (this.filtros.ciudad.trim()) {
-      this.tipoFiltroActivo = 'ciudad';
-      this.paginaActual = 0;
-      this.cargarSalas();
+  // Método para aplicar todos los filtros avanzados
+  aplicarFiltros(): void {
+    // Copiar los filtros temporales a los aplicados
+    this.filtrosAplicados = {
+      texto: this.filtrosAplicados.texto, // Mantener la búsqueda por texto
+      ciudad: this.filtros.ciudad.trim(),
+      provincia: this.filtros.provincia.trim(),
+      capacidadMin: this.filtros.capacidadMin
+    };
+
+    // Validar que solo se aplique un filtro avanzado a la vez
+    if (this.filtrosAplicados.ciudad && this.filtrosAplicados.provincia) {
+      // Si ambos están llenos, dar preferencia a ciudad
+      this.filtrosAplicados.provincia = '';
+      this.filtros.provincia = '';
     }
+
+    if ((this.filtrosAplicados.ciudad || this.filtrosAplicados.provincia) && this.filtrosAplicados.capacidadMin > 0) {
+      // Si hay filtro de ubicación y capacidad, dar preferencia a ubicación
+      this.filtrosAplicados.capacidadMin = 0;
+      this.filtros.capacidadMin = 0;
+    }
+
+    this.paginaActual = 0;
+    this.cargarSalas();
   }
 
-  aplicarFiltroProvincia(): void {
-    if (this.filtros.provincia.trim()) {
-      this.tipoFiltroActivo = 'provincia';
-      this.paginaActual = 0;
-      this.cargarSalas();
-    }
-  }
-
+  // Limpiar un filtro específico
   limpiarFiltro(filtro: keyof FiltrosSala): void {
     if (filtro === 'capacidadMin') {
       this.filtros[filtro] = 0;
+      this.filtrosAplicados[filtro] = 0;
     } else {
       this.filtros[filtro] = '';
+      this.filtrosAplicados[filtro] = '';
     }
-    this.tipoFiltroActivo = 'general';
+
     this.paginaActual = 0;
     this.cargarSalas();
   }
 
+  // Limpiar todos los filtros
   limpiarTodosFiltros(): void {
     this.filtros = {
       texto: '',
@@ -226,22 +237,22 @@ export class CatalogoSalaComponent implements OnInit {
       provincia: '',
       capacidadMin: 0
     };
-    this.limpiarFiltrosAvanzados();
-    this.tipoFiltroActivo = 'general';
+
+    this.filtrosAplicados = {
+      texto: '',
+      ciudad: '',
+      provincia: '',
+      capacidadMin: 0
+    };
+
     this.paginaActual = 0;
     this.cargarSalas();
-  }
-
-  private limpiarFiltrosAvanzados(): void {
-    this.filtros.capacidadMin = 0;
-    this.filtros.ciudad = '';
-    this.filtros.provincia = '';
   }
 
   // Métodos de ordenación
   cambiarOrden(nuevoOrden: string): void {
     this.ordenActual = nuevoOrden;
-    this.paginaActual = 0; // Resetear a primera página al cambiar orden
+    this.paginaActual = 0;
     this.cargarSalas();
   }
 
@@ -281,6 +292,10 @@ export class CatalogoSalaComponent implements OnInit {
   }
 
   // Métodos auxiliares para la vista
+  trackBySalaId(index: number, sala: Sala) {
+    return sala.id;
+  }
+
   get paginaActualDisplay(): number {
     return this.paginaActual + 1;
   }
@@ -309,10 +324,10 @@ export class CatalogoSalaComponent implements OnInit {
   }
 
   hayFiltrosActivos(): boolean {
-    return this.filtros.ciudad !== '' ||
-      this.filtros.provincia !== '' ||
-      this.filtros.capacidadMin > 0 ||
-      this.filtros.texto !== '';
+    return this.filtrosAplicados.ciudad !== '' ||
+      this.filtrosAplicados.provincia !== '' ||
+      this.filtrosAplicados.capacidadMin > 0 ||
+      this.filtrosAplicados.texto !== '';
   }
 
   irAReservarSala(salaId: number): void {
@@ -323,5 +338,10 @@ export class CatalogoSalaComponent implements OnInit {
     console.error(mensaje, error);
     this.errorMessage = `${mensaje}. Por favor, intente nuevamente.`;
     this.cargando = false;
+    this.totalItems = 0;
+  }
+
+  get totalSalasDisponibles(): number {
+    return this.totalItems || 0;
   }
 }
