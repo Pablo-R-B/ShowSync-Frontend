@@ -7,6 +7,7 @@ import {Artistas} from '../../interfaces/artistas';
 import {EventoDTO} from '../../interfaces/EventoDTO';
 import {AuthService} from '../../servicios/auth.service';
 import {ArtistasService} from '../../servicios/artistas.service';
+import {EventosService} from '../../servicios/eventos.service';
 
 @Component({
   selector: 'app-perfil-admin-artista',
@@ -14,8 +15,7 @@ import {ArtistasService} from '../../servicios/artistas.service';
     RouterLink,
     DatePipe,
     NgForOf,
-    NgIf,
-    NgClass,
+    NgIf
   ],
   templateUrl: './perfil-admin-artista.component.html',
   standalone: true,
