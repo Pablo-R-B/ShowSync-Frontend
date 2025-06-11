@@ -1,39 +1,25 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-reproductor',
   standalone: true,
+  imports: [NgIf], // 👈 Añadir aquí
+
   templateUrl: './reproductor.component.html',
-  styleUrl: './reproductor.component.css'
+  styleUrls: ['./reproductor.component.css']
 })
-export class ReproductorComponent {
-  @Input() previewUrl: string | null = null;
-  audio: HTMLAudioElement | null = null;
-  isPlaying = false;
+export class ReproductorComponent implements OnChanges {
+  @Input() musicUrl?: string;
+  embedUrl?: SafeResourceUrl;
 
-  togglePlay() {
-    if (!this.previewUrl) return;
+  constructor(private sanitizer: DomSanitizer) {}
 
-    if (!this.audio) {
-      this.audio = new Audio(this.previewUrl);
-      console.log('Cargando preview:', this.previewUrl);
-    }
-
-
-    if (this.isPlaying) {
-      this.audio.pause();
-    } else {
-      this.audio.play();
-    }
-
-    this.isPlaying = !this.isPlaying;
-  }
-
-  stop() {
-    if (this.audio) {
-      this.audio.pause();
-      this.audio.currentTime = 0;
-      this.isPlaying = false;
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['musicUrl'] && this.musicUrl) {
+      // Opcional: Puedes validar que sea un link Spotify embed válido
+      this.embedUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.musicUrl);
     }
   }
 }

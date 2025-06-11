@@ -7,7 +7,6 @@ import { HeaderComponent } from './componentes/header/header.component';
 import { FooterComponent } from './componentes/footer/footer.component';
 import { SharedModule } from 'primeng/api';
 import localeEs from '@angular/common/locales/es';
-import { MusicPlayerComponent } from './componentes/music-player/music-player.component';
 import { ReproductorComponent } from './componentes/reproductor/reproductor.component';
 
 registerLocaleData(localeEs, 'es');
@@ -21,7 +20,6 @@ registerLocaleData(localeEs, 'es');
     HeaderComponent,
     FooterComponent,
     SharedModule,
-    MusicPlayerComponent,
     ReproductorComponent,
     RouterOutlet  // <-- Agrega aquí RouterOutlet
   ],

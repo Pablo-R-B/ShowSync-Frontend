@@ -6,16 +6,12 @@
   <!-- Este main ocupa el espacio disponible -->
   <main [class.pt-20]="mostrarHeader" class="flex-grow">
     <router-outlet></router-outlet>
-    <iframe
+    <app-reproductor
       *ngIf="mostrarReproductor"
-      title="Spotify Playlist"
-      src="https://open.spotify.com/embed/playlist/1rxdRujbcd8RupxAymnaDT?utm_source=generator&theme=0"
-      width="100%"
-      height="380"
-      frameborder="0"
-      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-      loading="lazy">
-    </iframe>
+      [musicUrl]="'https://open.spotify.com/embed/playlist/1rxdRujbcd8RupxAymnaDT?utm_source=generator&theme=0'">
+    </app-reproductor>
+
+
 
 
   </main>

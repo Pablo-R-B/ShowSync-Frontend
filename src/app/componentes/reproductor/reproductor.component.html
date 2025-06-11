@@ -1,9 +1,11 @@
-<div class="reproductor">
-  <button class="play-btn" (click)="togglePlay()">
-    {{ isPlaying ? '❚❚' : '▶' }}
-  </button>
-  <div class="song-info">
-    <span class="text-sm text-white">Preview de canción</span>
-    <span class="text-xs text-gray-400">{{ previewUrl ? '30 segundos disponibles' : 'No disponible' }}</span>
-  </div>
-</div>
+<iframe
+  *ngIf="embedUrl"
+  [src]="embedUrl"
+  title="Spotify Playlist"
+  width="100%"
+  height="380"
+  frameborder="0"
+  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+  loading="lazy"
+  class="bg-black">
+</iframe>
