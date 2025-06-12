@@ -1,0 +1,30 @@
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+<div class="min-h-screen text-white font-sans-serif pt-[80px] pb-[60px] px-[10%]" style="background-size: contain; background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('assets/images/img.png') repeat-y center;">
+  <div class="max-w-4xl mx-auto p-6 bg-black/70 rounded-xl shadow-2xl">
+    <h1 class="text-3xl font-bold text-center mb-8">Elige con quién chatear</h1>
+
+    <div *ngIf="loading" class="text-center text-gray-400">Cargando contactos...</div>
+    <div *ngIf="error" class="text-center text-red-400">{{ error }}</div>
+
+    <div *ngIf="!loading && !error && chatPartners.length === 0" class="text-center text-gray-400">
+      No hay {{ currentUserRole === 'artista' ? 'promotores' : 'artistas' }} disponibles para chatear.
+    </div>
+
+    <div *ngIf="!loading && !error && chatPartners.length > 0" class="space-y-4">
+      <div *ngFor="let partner of chatPartners"
+           class="flex items-center gap-4 p-4 bg-gray-800 rounded-lg shadow-md hover:bg-gray-700 transition-colors duration-200 cursor-pointer"
+           [routerLink]="getChatRoute(partner)">
+        <img [src]="getPartnerImage(partner)"
+             [alt]="getPartnerName(partner)"
+             class="w-16 h-16 rounded-full object-cover border-2 border-purple-500" />
+        <div class="flex-1">
+          <h2 class="text-xl font-semibold">{{ getPartnerName(partner) }}</h2>
+          <p class="text-gray-400 text-sm">{{ currentUserRole === 'artista' ? 'Promotor' : 'Artista' }}</p>
+        </div>
+        <i class="fas fa-comment-dots text-purple-400 text-2xl"></i>
+      </div>
+    </div>
+  </div>
+</div>
