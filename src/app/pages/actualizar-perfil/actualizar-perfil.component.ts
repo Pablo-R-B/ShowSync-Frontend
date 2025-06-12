@@ -75,9 +75,18 @@ export class ActualizarPerfilComponent {
 
   // Método alternativo para navegar (opcional)
   salir(): void {
-    console.log('Intentando navegar a admin-artista...');
-    this.router.navigate(['/admin-artista'])
-      .then(success => console.log('Navegación exitosa:', success))
-      .catch(error => console.log('Error en navegación:', error));
+    const rol = this.perfilService.userRole;
+
+    if (rol === 'ARTISTA') {
+      this.router.navigate(['/admin-artista']);
+    } else if (rol === 'PROMOTOR') {
+      this.router.navigate(['/perfil-promotores']);
+    } else if (rol === 'ADMINISTRADOR') {
+      this.router.navigate(['/adm']);
+    } else {
+      console.warn('Rol desconocido:', rol);
+      this.router.navigate(['/']); // Ruta por defecto
+    }
   }
+
 }
