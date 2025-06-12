@@ -1,1 +1,26 @@
 
+.bg-customNegro {
+  background-color: #0d0d0d;
+}
+.text-customRed {
+  color: #e63946;
+}
+.border-customGrisMedio {
+  border-color: #444444;
+}
+.text-customGrisClaro {
+  color: #c0c0c0;
+}
+.text-customGrisClaro2 {
+  color: white;
+}
+.text-customGrisMedio {
+  color: #a0a0a0;
+}
+.bg-customRed {
+  background-color: #e63946;
+}
+.disabled\:bg-customGrisMedio:disabled {
+  background-color: #555555;
+}
+

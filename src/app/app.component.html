@@ -1,12 +1,23 @@
+
 <div class="min-h-screen flex flex-col bg-black">
+
   <app-header *ngIf="mostrarHeader"></app-header>
 
   <!-- Este main ocupa el espacio disponible -->
   <main [class.pt-20]="mostrarHeader" class="flex-grow">
     <router-outlet></router-outlet>
+    <app-reproductor
+      *ngIf="mostrarReproductor"
+      [musicUrl]="'https://open.spotify.com/embed/playlist/1rxdRujbcd8RupxAymnaDT?utm_source=generator&theme=0'">
+    </app-reproductor>
+
+
+
+
   </main>
 
   <app-footer *ngIf="showFooter"></app-footer>
+
 </div>
 
 

@@ -1,0 +1,10 @@
+<div *ngIf="embedUrl" class="w-full bg-black border-t border-gray-700">
+  <iframe
+    [src]="embedUrl"
+    title="Reproductor"
+    class="w-full h-20"
+    frameborder="0"
+    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+    loading="lazy">
+  </iframe>
+</div>

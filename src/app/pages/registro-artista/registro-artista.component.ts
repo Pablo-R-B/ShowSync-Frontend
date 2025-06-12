@@ -12,8 +12,6 @@ import {FileUploadModule} from 'primeng/fileupload';
 import {ToastModule} from 'primeng/toast';
 import {MessageService} from 'primeng/api';
 
-
-
 @Component({
   selector: 'app-registro-artista',
   providers: [MessageService],
@@ -26,7 +24,6 @@ import {MessageService} from 'primeng/api';
     FileUploadModule,
     NgClass,
     ToastModule,
-
   ],
   templateUrl: './registro-artista.component.html',
   standalone: true,
@@ -50,13 +47,8 @@ export class RegistroArtistaComponent implements OnInit {
   cuentaAtrasModal = 5;
   private modalCerradoCallback: (() => void) | null = null;
 
-
-
-
-
-
   constructor(private fb: FormBuilder, private artistaService: ArtistasService, private authService: AuthService,
-              protected router: Router, private generosService: GenerosMusicalesService,   private messageService: MessageService
+              protected router: Router, private generosService: GenerosMusicalesService, private messageService: MessageService
   ) {
     this.registroArtistaForm = this.fb.group({
       nombreArtista: ['', [Validators.required, Validators.maxLength(100)]],
@@ -64,7 +56,6 @@ export class RegistroArtistaComponent implements OnInit {
       musicUrl: ['', [Validators.pattern('https?://.+')]],
       imagenPerfil: [''],
       generosMusicales: this.fb.array([], Validators.required),
-
     });
   }
 
@@ -89,8 +80,9 @@ export class RegistroArtistaComponent implements OnInit {
             nombreArtista: artista.nombreArtista,
             biografia: artista.biografia,
             musicUrl: artista.musicUrl,
-            imagenPerfil: artista.imagenPerfil // si necesitas enviarla aunque no se vea
+            imagenPerfil: artista.imagenPerfil
           });
+
           // Guardar valores originales para comparación
           this.originalFormValue = this.registroArtistaForm.getRawValue();
           this.originalImagenPreview = artista.imagenPerfil;
@@ -109,11 +101,13 @@ export class RegistroArtistaComponent implements OnInit {
           const formArray = this.fb.array([]);
           selectedGeneroIds.forEach(id => formArray.push(this.fb.control(id)));
           this.registroArtistaForm.setControl('generosMusicales', formArray);
+
+          // Actualizar valor original después de cargar géneros
+          this.originalFormValue = this.registroArtistaForm.getRawValue();
         });
       });
     }
   }
-
 
   hasError(controlName: string, errorCode: string): boolean {
     const control = this.registroArtistaForm.get(controlName);
@@ -123,7 +117,7 @@ export class RegistroArtistaComponent implements OnInit {
   abrirModalConCallback(callback: () => void) {
     this.isOpen = true;
     this.modalCerradoCallback = callback;
-    this.startCountdown(); // cuenta regresiva de cierre automático
+    this.startCountdown();
   }
 
   closeModal() {
@@ -131,7 +125,7 @@ export class RegistroArtistaComponent implements OnInit {
     this.cuentaAtrasModal = 5;
 
     if (this.modalCerradoCallback) {
-      this.modalCerradoCallback(); // ejecutar la acción pendiente
+      this.modalCerradoCallback();
       this.modalCerradoCallback = null;
     }
   }
@@ -141,11 +135,10 @@ export class RegistroArtistaComponent implements OnInit {
       this.cuentaAtrasModal--;
       if (this.cuentaAtrasModal <= 0) {
         clearInterval(interval);
-        this.closeModal(); // cierra modal automáticamente
+        this.closeModal();
       }
     }, 1000);
   }
-
 
   onSubmit() {
     if (this.registroArtistaForm.valid) {
@@ -172,7 +165,6 @@ export class RegistroArtistaComponent implements OnInit {
       if (this.imagenSeleccionada) {
         formData.append('imagenArchivo', this.imagenSeleccionada);
       }
-
 
       this.artistaService.guardarPerfilArtista(usuarioId, formData).subscribe({
         next: (response) => {
@@ -203,7 +195,6 @@ export class RegistroArtistaComponent implements OnInit {
             detail: error.error?.mensaje || 'Hubo un problema al guardar el perfil',
             life: 4000,
           });
-
         }
       });
 
@@ -215,7 +206,7 @@ export class RegistroArtistaComponent implements OnInit {
 
   onCheckboxChange(event: any) {
     const formArray: FormArray = this.registroArtistaForm.get('generosMusicales') as FormArray;
-    const value = +event.target.value; // Convertimos a number para consistencia
+    const value = +event.target.value;
 
     if (event.target.checked) {
       if (!formArray.value.includes(value)) {
@@ -229,12 +220,6 @@ export class RegistroArtistaComponent implements OnInit {
     }
   }
 
-
-
-
-
-
-
   subirImagen(event: any): void {
     const archivo = event.files?.[0];
     if (archivo) {
@@ -247,30 +232,63 @@ export class RegistroArtistaComponent implements OnInit {
     }
   }
 
+  // Método para verificar si el formulario ha sido modificado
+  get hasChanges(): boolean {
+    if (!this.originalFormValue) return false;
+
+    // Comparar valores del formulario
+    const currentFormValue = this.registroArtistaForm.getRawValue();
+    const formChanged = JSON.stringify(currentFormValue) !== JSON.stringify(this.originalFormValue);
+
+    // Comparar imagen
+    const imageChanged = this.imagenPreview !== this.originalImagenPreview || this.imagenSeleccionada !== null;
+
+    return formChanged || imageChanged;
+  }
+
+  // Método para verificar si el formulario está completo y válido
+  get isFormCompleteAndValid(): boolean {
+    if (this.registroArtistaForm.invalid) return false;
+
+    const { nombreArtista, biografia, musicUrl, generosMusicales } = this.registroArtistaForm.value;
+
+    // Verificar campos obligatorios
+    const hasRequiredFields = nombreArtista?.trim() &&
+      biografia?.trim() &&
+      musicUrl?.trim() &&
+      generosMusicales?.length > 0;
+
+    if (!hasRequiredFields) return false;
+
+    // Para nuevos registros, requiere imagen
+    if (!this.perfilCompleto) {
+      return this.imagenSeleccionada !== null || this.imagenPreview !== null;
+    }
+
+    return true;
+  }
+
+  // Método principal para determinar si se puede guardar
+  get canSave(): boolean {
+    if (this.loading) return false;
+    if (!this.isFormCompleteAndValid) return false;
+
+    // En modo edición, solo permitir guardar si hay cambios
+    if (this.perfilCompleto) {
+      return this.hasChanges;
+    }
+
+    // En modo registro, permitir guardar si está completo
+    return true;
+  }
+
+  // Método heredado para compatibilidad (puedes eliminarlo gradualmente)
   formularioModificado(): boolean {
-    return JSON.stringify(this.registroArtistaForm.getRawValue()) !== JSON.stringify(this.originalFormValue)
-      || this.imagenPreview !== this.originalImagenPreview;
+    return this.hasChanges;
   }
 
-
-puedeGuardar(): boolean {
-  if (this.loading) return false;
-  if (this.registroArtistaForm.invalid) return false;
-
-  const { nombreArtista, biografia, musicUrl, generosMusicales } = this.registroArtistaForm.value;
-
-  if (!nombreArtista || !biografia || !musicUrl || generosMusicales.length === 0) {
-    return false;
+  // Método heredado para compatibilidad (puedes eliminarlo gradualmente)
+  puedeGuardar(): boolean {
+    return this.canSave;
   }
-
-  if (this.perfilCompleto) {
-    return this.formularioModificado() || this.imagenSeleccionada !== null;
-  }
-
-  return this.imagenSeleccionada !== null;
-}
-
-
-
-
 }

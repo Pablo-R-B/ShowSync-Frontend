@@ -24,6 +24,7 @@ import {PerfilAdminArtistaComponent} from './pages/perfil-admin-artista/perfil-a
 import {WebsocketComponent} from './webSocket/websocket/websocket.component';
 import {ChatComponent} from './webSocket/chat/chat.component';
 import {ElegirChatComponent} from './webSocket/elegir-chat/elegir-chat.component';
+import {ActualizarPerfilComponent} from './pages/actualizar-perfil/actualizar-perfil.component';
 
 
 export const routes: Routes = [
@@ -35,6 +36,7 @@ export const routes: Routes = [
   { path: 'datos-promotor', component: RegistroPromotorComponent },
   { path:'datos-artista', component:RegistroArtistaComponent},
   { path: 'landing-page', component: LandingPageComponent },
+  { path: 'usuario/editar', component: ActualizarPerfilComponent},
 
 // Nueva ruta para el componente WebSocket
   { path: 'websocket', component: WebsocketComponent },
@@ -72,7 +74,7 @@ export const routes: Routes = [
   },
 
   //Ruta de instrucciones
-   {path: 'instrucciones', loadComponent: () => import('./pages/intrucciones-uso/intrucciones-uso.component').then(m => m.InstruccionesUsoComponent)},
+  {path: 'instrucciones', loadComponent: () => import('./pages/intrucciones-uso/intrucciones-uso.component').then(m => m.InstruccionesUsoComponent)},
   {path: 'condiciones', loadComponent: () => import('./pages/condiciones/condiciones.component').then(m => m.CondicionesComponent)},
 
 

@@ -9,7 +9,7 @@
            class="h-16 w-auto drop-shadow-md max-w-[180px] object-contain" height="375" width="666">
 
       <!-- Enlaces navegación - RESTRINGIDOS SEGÚN AUTENTICACIÓN -->
-      <div class="hidden md:flex space-x-14 font-medula text-4xl">
+      <div class="hidden md:flex space-x-14 font-medula text-3xl">
         <a routerLink="landing-page" class="hover:text-customGrisMedio transition">Inicio</a>
 
         <!-- Enlaces solo visibles para usuarios logueados -->
@@ -41,7 +41,10 @@
     <!-- Icono de usuario con menú -->
     <div *ngIf="estaLogueado" class="relative hidden md:flex items-center space-x-4">
       <span class="text-white font-medium text-lg saludo-oculto">¡Hola, {{ username }}!</span>
-      <button (click)="toggleMenuPerfil()" class="hover:text-customGrisMedio transition">
+      <button (click)="toggleMenuPerfil()"
+              class="hover:text-customGrisMedio transition"
+              [attr.aria-expanded]="mostrarMenuPerfil"
+              data-menu-perfil-button>
 
         <!-- Mostrar imagen si es administrador -->
         <img *ngIf="esAdministrador()"
@@ -64,17 +67,14 @@
 
       <!-- Menú desplegable -->
       <div *ngIf="mostrarMenuPerfil"
-           class="absolute right-0 top-full mt-2 w-48 bg-white text-black rounded-lg shadow-lg z-50">
+           class="absolute right-0 top-full mt-2 w-48 bg-white text-black rounded-lg shadow-lg z-50"
+           data-menu-perfil>
 
         <!-- Enlaces solo visibles cuando el perfil está completo -->
         <ng-container *ngIf="perfilCompleto">
           <a [routerLink]="getRutaPerfil()"
              class="block px-4 py-2 hover:bg-gray-100 transition">Perfil</a>
-          <a *ngIf="rolUsuario === 'ARTISTA'"
-             routerLink="/datos-artista"
-             class="block px-4 py-2 hover:bg-gray-100 transition font-medium rounded-lg">
-            Editar mi perfil
-          </a>
+
         </ng-container>
 
         <!-- Botón cerrar sesión - SIEMPRE VISIBLE -->

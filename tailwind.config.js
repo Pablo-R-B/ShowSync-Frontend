@@ -21,6 +21,9 @@ module.exports = {
       fontFamily: {
         medula: ['"Medula One"', 'sans-serif'],
       },
+      backdropBlur: {
+        '20': '20px',
+      },
     },
 
   },

@@ -1,0 +1,9 @@
+:host {
+  display: block;
+  background-color: black;
+  padding: 0;
+}
+iframe {
+  border: none;
+  background-color: black;
+}

@@ -1,0 +1,10 @@
+<div class="music-player-container" *ngIf="safeUrl">
+  <iframe
+    [src]="safeUrl"
+    allow="autoplay"
+    allowfullscreen
+    scrolling="no"
+    frameborder="no"
+    loading="lazy"
+  ></iframe>
+</div>
