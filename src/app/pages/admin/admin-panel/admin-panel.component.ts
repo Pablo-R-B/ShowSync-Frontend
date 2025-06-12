@@ -18,5 +18,10 @@ export class AdminPanelComponent {
 
   }
 
+  irAEditarPerfil(): void {
+    this.router.navigate(['/actualizar-perfil']);
+  }
+
+
 
 }

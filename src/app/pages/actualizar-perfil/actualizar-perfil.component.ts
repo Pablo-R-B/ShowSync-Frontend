@@ -82,7 +82,7 @@ export class ActualizarPerfilComponent {
     } else if (rol === 'PROMOTOR') {
       this.router.navigate(['/perfil-promotores']);
     } else if (rol === 'ADMINISTRADOR') {
-      this.router.navigate(['/adm']);
+      this.router.navigate(['/admin/resumen']);
     } else {
       console.warn('Rol desconocido:', rol);
       this.router.navigate(['/']); // Ruta por defecto

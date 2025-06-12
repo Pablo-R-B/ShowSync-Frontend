@@ -7,7 +7,12 @@
     <button class="btn-tab" (click)="navigateTo('usuarios')">Usuarios</button>
     <button class="btn-tab" (click)="navigateTo('eventos')">Eventos</button>
     <button class="btn-tab" (click)="navigateTo('generos')">Géneros</button>
-  </div>
+
+    <!-- 👉 Nuevo botón de editar perfil -->
+    <button class="bg-white hover:bg-gray-100 text-gray-800 font-bold py-3 px-8 text-l rounded-xl shadow-md transition-all duration-200 transform hover:scale-105"
+            [routerLink]="['/usuario/editar']">
+      <i class="fas fa-user-edit mr-2"></i> EDITAR USUARIO
+    </button>  </div>
 
   <div class="admin-content">
     <router-outlet></router-outlet>
