@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Component, OnInit, OnDestroy, ElementRef, HostListener} from '@angular/core';
 import {Router, RouterLink, NavigationEnd, ActivatedRoute} from '@angular/router';
 import { NgIf, NgOptimizedImage } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -22,12 +22,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
   mostrarMenuPerfil = false;
   username = '';
   rolUsuario = '';
-  artistaId: number | undefined;
-  private routerSubscription?: Subscription;
-  usuarioId!: number;
   perfilCompleto = false; // Nueva propiedad
 
-  constructor(private router: Router, private artistaService:ArtistasService, private authService:AuthService) {}
+
+  private routerSubscription?: Subscription;
+
+
+  constructor(private router: Router,
+              private elementRef: ElementRef
+  ) {}
+
 
   ngOnInit() {
     this.actualizarEstadoUsuario();
@@ -61,6 +65,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   // MÉTODO MODIFICADO: Ahora el menú se abre siempre cuando el usuario está logueado
   toggleMenuPerfil() {
     this.mostrarMenuPerfil = !this.mostrarMenuPerfil;
+    if (this.mostrarMenuPerfil) {
+      this.menuAbierto = false; // Asegurarse de cerrar el menú principal si está abierto
+    }
   }
 
   cerrarSesion() {
@@ -118,42 +125,23 @@ export class HeaderComponent implements OnInit, OnDestroy {
     return this.rolUsuario === 'ADMINISTRADOR';
   }
 
-  // Métodos para controlar visibilidad de enlaces específicos
-  puedeVerEventos(): boolean {
-    return this.estaLogueado;
-  }
 
-  puedeVerSalas(): boolean {
-    return this.estaLogueado && this.rolUsuario !== 'ARTISTA';
-  }
 
-  puedeVerArtistas(): boolean {
-    return this.estaLogueado;
-  }
+  @HostListener('document:click', ['$event'])
+  onClickFuera(event: Event) {
+    const target = event.target as HTMLElement;
 
-  puedeVerPromotores(): boolean {
-    return this.estaLogueado;
-  }
+    // Buscar el botón del menú perfil
+    const botonMenuPerfil = this.elementRef.nativeElement.querySelector('[data-menu-perfil-button]');
+    const menuPerfil = this.elementRef.nativeElement.querySelector('[data-menu-perfil]');
 
-  // Método para restricciones más específicas por rol
-  tieneAccesoA(seccion: string): boolean {
-    if (!this.estaLogueado) {
-      // Solo páginas públicas para usuarios no logueados
-      return ['inicio', 'instrucciones'].includes(seccion);
-    }
-
-    // Lógica específica por rol si es necesario
-    switch (this.rolUsuario) {
-      case 'ADMINISTRADOR':
-        return true; // Admin tiene acceso a todo
-      case 'PROMOTOR':
-        return ['inicio', 'eventos', 'salas', 'artistas', 'instrucciones'].includes(seccion);
-      case 'SALA':
-        return ['inicio', 'eventos', 'artistas', 'promotores', 'instrucciones'].includes(seccion);
-      case 'ARTISTA':
-        return ['inicio', 'eventos', 'artistas', 'promotores', 'instrucciones'].includes(seccion);
-      default:
-        return ['inicio', 'instrucciones'].includes(seccion);
+    if (this.mostrarMenuPerfil && botonMenuPerfil && menuPerfil) {
+      // Solo cerrar si el clic NO fue en el botón NI en el menú
+      if (!botonMenuPerfil.contains(target) && !menuPerfil.contains(target)) {
+        this.mostrarMenuPerfil = false;
+      }
     }
   }
+
+
 }
