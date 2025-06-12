@@ -34,7 +34,6 @@ export class UsuarioService {
       httpParams = httpParams.set('rol', params.rol);
     }
 
-    console.log('Parámetros enviados:', httpParams.toString()); // Para depuración
 
     return this.http.get<RespuestaPaginada<Usuario>>(this.apiUrl, {
       params: httpParams,
