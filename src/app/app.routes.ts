@@ -21,8 +21,9 @@ import {PerfilCompletoGuard} from './guards/PerfilCompletoGuard';
 import {RegistroPromotorComponent} from './pages/registro-promotor/registro-promotor.component';
 import {RegistroArtistaComponent} from './pages/registro-artista/registro-artista.component';
 import {PerfilAdminArtistaComponent} from './pages/perfil-admin-artista/perfil-admin-artista.component';
-import {WebsocketComponent} from './websocket/websocket.component';
-import {ChatComponent} from './chat/chat.component';
+import {WebsocketComponent} from './webSocket/websocket/websocket.component';
+import {ChatComponent} from './webSocket/chat/chat.component';
+import {ElegirChatComponent} from './webSocket/elegir-chat/elegir-chat.component';
 
 
 export const routes: Routes = [
@@ -37,7 +38,8 @@ export const routes: Routes = [
 
 // Nueva ruta para el componente WebSocket
   { path: 'websocket', component: WebsocketComponent },
-  { path: 'chat', component: ChatComponent },
+  { path: 'chat/:artistaId/:promotorId', component: ChatComponent },
+  { path: 'elegir-chat' ,component:ElegirChatComponent},
   { path: '', redirectTo: 'landing-page', pathMatch: 'full' },
 
   {

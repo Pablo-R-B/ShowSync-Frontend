@@ -10,9 +10,9 @@
     <!-- Cabecera del chat -->
     <nav class="h-10 bg-gray-900 rounded-t-2xl flex items-center justify-between px-2">
       <div class="flex items-center">
-        <img src="https://i.imgur.com/IAgGUYF.jpg" class="w-6 h-6 rounded-full mr-1" />
+        <!-- Imagen del usuario en la cabecera (ya funciona con imagenUsuario) -->
+        <img [src]="imagenUsuario" class="w-6 h-6 rounded-full mr-1" />
         <span class="text-xs font-medium text-gray-300">{{ nombreUsuario }}</span>
-
       </div>
       <div class="flex items-center space-x-2 text-gray-300 text-base">
         <i class="mdi mdi-video"></i>
@@ -25,23 +25,27 @@
     <div class="flex-1 overflow-y-auto px-1 py-1" id="journal-scroll">
       <div
         *ngFor="let msg of mensajes"
-        [ngClass]="msg.tipo === 'artista' ? 'flex items-center pr-10 pt-1' : 'flex justify-end pt-2 pl-10'"
+        [ngClass]="msg.tipo === 'artista' || msg.tipo === 'bot' ? 'flex items-center pr-10 pt-1' : 'flex justify-end pt-2 pl-10'"
       >
-        <!-- Mensaje del artista -->
-        <ng-container *ngIf="msg.tipo === 'artista'">
-          <img src="https://i.imgur.com/IAgGUYF.jpg" class="w-4 h-4 rounded-full shadow mr-1" />
+        <!-- Mensaje de artista o bot (alineado a la izquierda) -->
+        <ng-container *ngIf="msg.tipo === 'artista' || msg.tipo === 'bot'">
+          <!-- ¡CORREGIDO! Usa la URL dinámica msg.imagen -->
+          <img [src]="msg.imagen" class="w-4 h-4 rounded-full shadow mr-1" />
           <span class="bg-gray-900 text-gray-200 text-xs rounded px-2 py-1 flex items-end space-x-1">
             <span>{{ msg.texto }}</span>
             <span class="text-gray-400 text-[8px]">{{ msg.hora }}</span>
           </span>
         </ng-container>
 
-        <!-- Mensaje del promotor -->
+        <!-- Mensaje del promotor (alineado a la derecha) -->
         <ng-container *ngIf="msg.tipo === 'promotor'">
           <span class="bg-green-900 text-gray-200 text-xs rounded px-2 py-1 flex items-end space-x-1">
             <span>{{ msg.texto }}</span>
             <span class="text-gray-400 text-[8px]">{{ msg.hora }}</span>
           </span>
+          <!-- ¡CORREGIDO! Usa la URL dinámica msg.imagen para el promotor,
+               y colócala después del mensaje para alineación a la derecha. -->
+          <img [src]="msg.imagen" class="w-4 h-4 rounded-full shadow ml-1" />
         </ng-container>
       </div>
     </div>

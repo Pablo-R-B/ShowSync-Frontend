@@ -134,5 +134,12 @@ export class ArtistasService {
     return this.http.get<GeneroMusical[]>(`${this.apiUrl}/artista/${id}/generos`);
   }
 
+  getArtistas(): Observable<Artistas[]> {
+    return this.http.get<Artistas[]>(`${this.apiUrl}/todos`)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
 
 }
