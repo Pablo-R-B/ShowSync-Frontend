@@ -39,14 +39,20 @@
 
   <!-- Filtros principales -->
   <div class="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-    <div class="w-full md:w-1/3">
+    <div class="w-full md:w-1/3 flex gap-2"> <!-- Añadido flex y gap para el botón -->
       <input
         type="text"
         placeholder="Buscar sala..."
         [(ngModel)]="filtro"
-        (input)="onFiltroChange()"
-        class="border border-gray-600 rounded p-2 w-full bg-customNegro text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+        (keydown.enter)="aplicarFiltroGeneral()"
+      class="border border-gray-600 rounded p-2 w-full bg-customNegro text-white focus:outline-none focus:ring-2 focus:ring-red-500"
       />
+      <button
+        (click)="aplicarFiltroGeneral()"
+      class="bg-customRed text-white px-4 py-2 rounded hover:bg-customBurbundy transition-colors whitespace-nowrap"
+      >
+      Buscar
+      </button>
     </div>
 
     <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto">
@@ -292,66 +298,66 @@
           Ir
         </button>
       </div>
-    <nav class="flex items-center space-x-1" aria-label="Paginación">
-      <!-- Botón Anterior -->
-      <button
-        (click)="paginaAnterior()"
-        [disabled]="esPrimeraPagina"
-        [class.opacity-50]="esPrimeraPagina"
-        [class.cursor-not-allowed]="esPrimeraPagina"
-        class="px-3 py-2 rounded-l bg-gray-800 hover:bg-gray-700 text-white flex items-center transition-colors"
-        title="Página anterior"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-        </svg>
-      </button>
+      <nav class="flex items-center space-x-1" aria-label="Paginación">
+        <!-- Botón Anterior -->
+        <button
+          (click)="paginaAnterior()"
+          [disabled]="esPrimeraPagina"
+          [class.opacity-50]="esPrimeraPagina"
+          [class.cursor-not-allowed]="esPrimeraPagina"
+          class="px-3 py-2 rounded-l bg-gray-800 hover:bg-gray-700 text-white flex items-center transition-colors"
+          title="Página anterior"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+        </button>
 
-      <!-- Botones de páginas -->
-      <button
-        *ngFor="let pagina of obtenerRangoPaginas()"
-        (click)="cambiarPagina(pagina)"
-        [class.bg-customRed]="pagina === paginaActual"
-        [class.text-white]="pagina === paginaActual"
-        [class.bg-gray-800]="pagina !== paginaActual"
-        [class.text-gray-300]="pagina !== paginaActual"
-        [class.hover:bg-customBurbundy]="pagina === paginaActual"
-        [class.hover:bg-gray-700]="pagina !== paginaActual"
-        class="px-3 py-2 transition-colors duration-200 font-medium"
-      >
-        {{ pagina + 1 }}
-      </button>
+        <!-- Botones de páginas -->
+        <button
+          *ngFor="let pagina of obtenerRangoPaginas()"
+          (click)="cambiarPagina(pagina)"
+          [class.bg-customRed]="pagina === paginaActual"
+          [class.text-white]="pagina === paginaActual"
+          [class.bg-gray-800]="pagina !== paginaActual"
+          [class.text-gray-300]="pagina !== paginaActual"
+          [class.hover:bg-customBurbundy]="pagina === paginaActual"
+          [class.hover:bg-gray-700]="pagina !== paginaActual"
+          class="px-3 py-2 transition-colors duration-200 font-medium"
+        >
+          {{ pagina + 1 }}
+        </button>
 
-      <!-- Botón Siguiente -->
-      <button
-        (click)="paginaSiguiente()"
-        [disabled]="esUltimaPagina"
-        [class.opacity-50]="esUltimaPagina"
-        [class.cursor-not-allowed]="esUltimaPagina"
-        class="px-3 py-2 rounded-r bg-gray-800 hover:bg-gray-700 text-white flex items-center transition-colors"
-        title="Página siguiente"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-        </svg>
-      </button>
-    </nav>
-  </div>
-
-  <!-- Mensaje cuando no hay resultados -->
-  <div *ngIf="!isLoading && totalSalas === 0" class="text-center py-12 text-gray-400">
-    <div class="flex flex-col items-center">
-      <svg class="h-16 w-16 text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-      </svg>
-      <h3 class="text-lg font-medium text-gray-300 mb-2">No se encontraron salas</h3>
-      <p class="text-gray-500">
-        {{ tipoFiltroActivo !== 'general' ? 'Intenta ajustar los filtros aplicados' : 'Comienza creando una nueva sala' }}
-      </p>
+        <!-- Botón Siguiente -->
+        <button
+          (click)="paginaSiguiente()"
+          [disabled]="esUltimaPagina"
+          [class.opacity-50]="esUltimaPagina"
+          [class.cursor-not-allowed]="esUltimaPagina"
+          class="px-3 py-2 rounded-r bg-gray-800 hover:bg-gray-700 text-white flex items-center transition-colors"
+          title="Página siguiente"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </nav>
     </div>
+
+    <!-- Mensaje cuando no hay resultados -->
+    <div *ngIf="!isLoading && totalSalas === 0" class="text-center py-12 text-gray-400">
+      <div class="flex flex-col items-center">
+        <svg class="h-16 w-16 text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+        </svg>
+        <h3 class="text-lg font-medium text-gray-300 mb-2">No se encontraron salas</h3>
+        <p class="text-gray-500">
+          {{ tipoFiltroActivo !== 'general' ? 'Intenta ajustar los filtros aplicados' : 'Comienza creando una nueva sala' }}
+        </p>
+      </div>
+    </div>
+
+
+
   </div>
-
-
-
-</div>
 </div>
