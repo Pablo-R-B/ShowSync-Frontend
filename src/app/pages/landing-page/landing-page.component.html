@@ -41,8 +41,8 @@
   <!-- Hero Section con animación mejorada -->
   <div class="text-center mb-20 relative">
     <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-32 h-32 bg-red-500/20 rounded-full blur-3xl animate-pulse"></div>
-    <h2 class="text-4xl md:text-6xl font-medula inline-block relative tracking-wide">
-      Tus oportunidaes para <span class="text-red-500 animate-bounce inline-block"> brillar </span>
+    <h2 class="text-4xl md:text-6xl font-medula inline-block relative tracking-wide text-white">
+      Tus oportunidades para <span class="text-red-500 animate-bounce inline-block"> brillar </span>
 
     </h2>
   </div>
@@ -54,7 +54,7 @@
       <ng-container *ngIf="usuarioLogueado; else accesoDenegadoSalas">
         <a [routerLink]="['/catalogo-salas']">
           <img [src]="sala?.imagen || '/assets/images/salas.png'" alt="Sala {{ sala?.nombre }}" class="w-full h-56 object-contain rounded-lg shadow-lg mb-4">
-          <h1 class=" text-xl">
+          <h1 class=" text-xl tex-white text-white">
             Espacios listos para  <strong> <em>vibrar</em> </strong> con  <span class="animate-bounce text-gray-100 font-bold"> música </span> en<span class="animate-bounce text-gray-50 font-bold"> vivo </span>
           </h1>
         </a>
@@ -62,7 +62,7 @@
       <ng-template #accesoDenegadoSalas>
         <div class="cursor-not-allowed">
           <img [src]="sala?.imagen || '/assets/images/salas.png'" alt="Sala {{ sala?.nombre }}" class="w-full h-56 object-contain rounded-lg shadow-lg mb-4">
-          <h1 class=" text-xl">
+          <h1 class=" text-xl text-white">
             Espacios listos para  <strong> <em>vibrar</em> </strong> con  <span class="animate-bounce text-gray-100 font-bold"> música </span> en<span class="animate-bounce text-gray-50 font-bold"> vivo </span>
           </h1>
         </div>
@@ -75,7 +75,7 @@
       <ng-container *ngIf="usuarioLogueado; else accesoDenegadoArtistas">
         <a [routerLink]="['/catalogo-artistas']">
           <img [src]="artista?.imagenPerfil || '/assets/images/artistas.jpg'" alt="Artista {{ artista?.nombreArtista }}" class="w-full h-56 object-contain rounded-lg shadow-lg mb-4">
-          <h1 class=" text-xl">
+          <h1 class=" text-xl text-white">
             <p>Sube al <strong> escenario </strong> que te mereces.</p>
             <p><em>¡Haz crecer tu carrera musical!</em></p>
           </h1>
@@ -84,7 +84,7 @@
       <ng-template #accesoDenegadoArtistas>
         <div class="cursor-not-allowed">
           <img [src]="artista?.imagenPerfil || '/assets/images/artistas.jpg'" alt="Artista {{ artista?.nombreArtista }}" class="w-full h-56 object-contain rounded-lg shadow-lg mb-4">
-          <h1 class=" text-xl">
+          <h1 class=" text-xl text-white">
             <p>Sube al <strong> escenario </strong> que te mereces.</p>
             <p><em>¡Haz crecer tu carrera musical!</em></p>
           </h1>
@@ -98,7 +98,7 @@
       <ng-container *ngIf="usuarioLogueado; else accesoDenegadoEventos">
         <a [routerLink]="['/busqueda-promotores']">
           <img [src]="promotor?.imagenPerfil || '/assets/images/promotores.png'" alt="Promotor {{ promotor?.nombrePromotor }}" class="w-full h-56 object-contain rounded-lg shadow-lg mb-4">
-          <h1 class=" text-xl">
+          <h1 class=" text-xl text-white">
             <p> Organiza eventos con talento garantizado, </p>
             <p> y <strong><em>crea experiencias únicas </em></strong> en salas disponibles. </p>
           </h1>
@@ -107,7 +107,7 @@
       <ng-template #accesoDenegadoEventos>
         <div class="cursor-not-allowed">
           <img [src]="promotor?.imagenPerfil || '/assets/images/promotores.png'" alt="Promotor {{ promotor?.nombrePromotor }}" class="w-full h-56 object-contain rounded-lg shadow-lg mb-4">
-          <h1 class=" text-xl">
+          <h1 class=" text-xl text-white">
             <p> Organiza eventos con talento garantizado, </p>
             <p> y <strong><em>crea experiencias únicas </em></strong> en salas disponibles. </p>
           </h1>
