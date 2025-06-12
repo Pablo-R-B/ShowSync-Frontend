@@ -1,11 +1,10 @@
-<iframe
-  *ngIf="embedUrl"
-  [src]="embedUrl"
-  title="Spotify Playlist"
-  width="100%"
-  height="380"
-  frameborder="0"
-  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-  loading="lazy"
-  class="bg-black">
-</iframe>
+<div *ngIf="embedUrl" class="w-full bg-black border-t border-gray-700">
+  <iframe
+    [src]="embedUrl"
+    title="Reproductor"
+    class="w-full h-20"
+    frameborder="0"
+    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+    loading="lazy">
+  </iframe>
+</div>
