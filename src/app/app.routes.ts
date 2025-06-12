@@ -21,6 +21,7 @@ import {PerfilCompletoGuard} from './guards/PerfilCompletoGuard';
 import {RegistroPromotorComponent} from './pages/registro-promotor/registro-promotor.component';
 import {RegistroArtistaComponent} from './pages/registro-artista/registro-artista.component';
 import {PerfilAdminArtistaComponent} from './pages/perfil-admin-artista/perfil-admin-artista.component';
+import {ActualizarPerfilComponent} from './pages/actualizar-perfil/actualizar-perfil.component';
 
 
 export const routes: Routes = [
@@ -32,6 +33,7 @@ export const routes: Routes = [
   { path: 'datos-promotor', component: RegistroPromotorComponent },
   { path:'datos-artista', component:RegistroArtistaComponent},
   { path: 'landing-page', component: LandingPageComponent },
+  { path: 'usuario/editar', component: ActualizarPerfilComponent},
 
 
 
@@ -68,7 +70,7 @@ export const routes: Routes = [
   },
 
   //Ruta de instrucciones
-   {path: 'instrucciones', loadComponent: () => import('./pages/intrucciones-uso/intrucciones-uso.component').then(m => m.InstruccionesUsoComponent)},
+  {path: 'instrucciones', loadComponent: () => import('./pages/intrucciones-uso/intrucciones-uso.component').then(m => m.InstruccionesUsoComponent)},
   {path: 'condiciones', loadComponent: () => import('./pages/condiciones/condiciones.component').then(m => m.CondicionesComponent)},
 
 

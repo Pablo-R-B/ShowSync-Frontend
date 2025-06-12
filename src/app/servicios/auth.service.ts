@@ -58,4 +58,13 @@ export class AuthService {
   }
 
 
+  // Método para actualizar el perfil del usuario
+  updateProfile(profileData: any): Observable<any> {
+    const url = `http://localhost:8081/auth/account/update`;
+    return this.http.put(url, profileData);
+  }
+
+
+
+
 }
