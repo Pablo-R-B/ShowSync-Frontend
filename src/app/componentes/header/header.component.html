@@ -70,11 +70,7 @@
         <ng-container *ngIf="perfilCompleto">
           <a [routerLink]="getRutaPerfil()"
              class="block px-4 py-2 hover:bg-gray-100 transition">Perfil</a>
-          <a *ngIf="rolUsuario === 'ARTISTA'"
-             routerLink="/datos-artista"
-             class="block px-4 py-2 hover:bg-gray-100 transition font-medium rounded-lg">
-            Editar mi perfil
-          </a>
+
         </ng-container>
 
         <!-- Botón cerrar sesión - SIEMPRE VISIBLE -->
