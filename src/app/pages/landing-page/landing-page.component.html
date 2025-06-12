@@ -96,7 +96,7 @@
         <span class="text-white  inline-block"> Promotores </span>
       </h2>
       <ng-container *ngIf="usuarioLogueado; else accesoDenegadoEventos">
-        <a [routerLink]="['/busqueda-eventos']">
+        <a [routerLink]="['/busqueda-promotores']">
           <img [src]="promotor?.imagenPerfil || '/assets/images/promotores.png'" alt="Promotor {{ promotor?.nombrePromotor }}" class="w-full h-56 object-contain rounded-lg shadow-lg mb-4">
           <h1 class=" text-xl">
             <p> Organiza eventos con talento garantizado, </p>
