@@ -5,7 +5,7 @@ import { EventosService } from '../../servicios/eventos.service';
 import { AuthService } from '../../servicios/auth.service';
 import { ArtistasService } from '../../servicios/artistas.service';
 import { PostulacionEventoService } from '../../servicios/postulacion-evento.service';
-import Swal from 'sweetalert2';
+import Swal, {SweetAlertIcon} from 'sweetalert2';
 
 @Component({
   selector: 'app-eventos',
@@ -85,27 +85,82 @@ export class EventosComponent implements OnInit {
     );
   }
 
-  mostrarToast(tipo: 'success' | 'error', mensaje: string) {
-    // Opción 1: Usar SweetAlert2 (como lo tienes actualmente)
+  mostrarToast(tipo: 'success' | 'error' | 'warning' | 'info', mensaje: string) {
+    const config = {
+      success: {
+        background: 'linear-gradient(135deg, #4CAF50, #2E7D32)',
+        icon: 'success',
+        iconColor: '#ffffff',
+        progressBarColor: 'rgba(255,255,255,0.5)',
+        animation: 'fadeInUp 0.5s ease-out',
+        backdropFilter: 'blur(10px)'
+      },
+      error: {
+        background: 'linear-gradient(135deg, #F44336, #C62828)',
+        icon: 'error',
+        iconColor: '#ffffff',
+        progressBarColor: 'rgba(255,255,255,0.5)',
+        animation: 'fadeInUp 0.5s ease-out',
+        backdropFilter: 'blur(10px)'
+      },
+      warning: {
+        background: 'linear-gradient(135deg, #FFC107, #FF8F00)',
+        icon: 'warning',
+        iconColor: '#ffffff',
+        progressBarColor: 'rgba(255,255,255,0.5)',
+        animation: 'fadeInUp 0.5s ease-out',
+        backdropFilter: 'blur(10px)'
+      },
+      info: {
+        background: 'linear-gradient(135deg, #2196F3, #1565C0)',
+        icon: 'info',
+        iconColor: '#ffffff',
+        progressBarColor: 'rgba(255,255,255,0.5)',
+        animation: 'fadeInUp 0.5s ease-out',
+        backdropFilter: 'blur(10px)'
+      }
+    };
+
     const Toast = Swal.mixin({
       toast: true,
-      position: 'top-end',
-      iconColor: 'white',
-      customClass: {
-        popup: 'colored-toast',
-      },
+      position: 'center',
       showConfirmButton: false,
-      timer: 2000,
+      timer: 1000,
       timerProgressBar: true,
+      backdrop: false,
+      animation: true,
+      customClass: {
+        container: 'animated-toast-container',
+        popup: 'animated-toast',
+        title: 'toast-title',
+        closeButton: 'toast-close-btn',
+        icon: tipo,
+        image: 'toast-image',
+        input: 'toast-input',
+        actions: 'toast-actions',
+        confirmButton: 'toast-confirm-btn',
+        cancelButton: 'toast-cancel-btn',
+      },
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer);
+        toast.addEventListener('mouseleave', Swal.resumeTimer);
+      }
     });
 
     Toast.fire({
-      icon: tipo,
       title: mensaje,
+      icon: config[tipo].icon as SweetAlertIcon,
+      background: config[tipo].background,
+      color: '#ffffff',
+      iconColor: config[tipo].iconColor,
+      timerProgressBar: true,
+      showClass: {
+        popup: 'animate__animated animate__fadeInDown animate__faster'
+      },
+      hideClass: {
+        popup: 'animate__animated animate__fadeOutUp animate__faster'
+      }
     });
-
-    // Opción 2: Usar nuestro sistema personalizado
-    // this.showCustomToast(tipo, mensaje);
   }
 
   enviarOferta() {

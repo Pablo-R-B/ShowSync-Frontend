@@ -125,7 +125,7 @@ export class LoginComponent implements OnInit {
         this.isLoading = false;
 
         if (err.status === 401) {
-          this.error = 'Credenciales incorrectas. Verifica tu email y contraseña.';
+          this.error = 'Credenciales incorrectas. Verifica tu email y/o contraseña.';
         } else if (err.status === 403) {
           this.error = err.error?.mensaje || 'Cuenta bloqueada o sin permisos. ¿Has confirmado su cuenta?';
         } else if (err.status === 0) {
