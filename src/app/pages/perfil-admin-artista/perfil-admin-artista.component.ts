@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-
 import {PostulacionEventoService} from '../../servicios/postulacion-evento.service';
 import {Postulacion} from '../../interfaces/postulacion';
 import {Artistas} from '../../interfaces/artistas';
@@ -18,7 +17,6 @@ import {RouterLink} from '@angular/router';
     RouterLink,
     NgForOf,
     NgIf
-
   ],
   templateUrl: './perfil-admin-artista.component.html',
   standalone: true,
@@ -41,8 +39,6 @@ export class PerfilAdminArtistaComponent implements OnInit{
   modalMensaje: string = '';
   modalTitulo: string = '';
   eventosConfirmados: EventoConfirmado[] = [];
-
-
 
   constructor(private postulacionService: PostulacionEventoService, private authService: AuthService,
               private artistaService: ArtistasService, private eventosService: EventosService) {
@@ -68,14 +64,7 @@ export class PerfilAdminArtistaComponent implements OnInit{
           });
 
           // Obtener eventos confirmados
-          this.eventosService.getEventosConfirmadosPorArtistaId(id).subscribe({
-            next: (eventos) => {
-              this.eventosConfirmados = eventos;
-              console.log('Eventos confirmados:', this.eventosConfirmados);
-            },
-            error: (err) => console.error('Error al obtener eventos confirmados:', err)
-          });
-
+          this.cargarEventosConfirmados();
         },
         error: (err) => console.error('Error al obtener artistaId:', err)
       });
@@ -109,11 +98,37 @@ export class PerfilAdminArtistaComponent implements OnInit{
     });
   }
 
+  cargarEventosConfirmados(): void {
+    this.eventosService.getEventosConfirmadosPorArtistaId(this.artistaId).subscribe({
+      next: (eventos) => {
+        this.eventosConfirmados = eventos;
+        console.log('Eventos confirmados:', this.eventosConfirmados);
+      },
+      error: (err) => console.error('Error al obtener eventos confirmados:', err)
+    });
+  }
+
   respuestaSolicitud(postulacion: Postulacion, estado: 'aceptado' | 'rechazado'): void {
     if (estado === 'aceptado') {
       this.eventosService.aceptarPostulacion(postulacion.id).subscribe({
         next: () => {
-          postulacion.estado = 'aceptado'; // Actualiza el estado localmente
+          // Actualizar el estado localmente
+          postulacion.estado = 'aceptado';
+
+          // Mover la postulación a la lista correspondiente
+          if (postulacion.tipoSolicitud === 'oferta') {
+            this.ofertasPendientes = this.ofertasPendientes.filter(p => p.id !== postulacion.id);
+            this.ofertasAceptadas.push(postulacion);
+          } else {
+            this.postulacionesPendientes = this.postulacionesPendientes.filter(p => p.id !== postulacion.id);
+            this.postulacionesAceptadas.push(postulacion);
+          }
+
+          // Recargar eventos confirmados si es una oferta aceptada
+          if (postulacion.tipoSolicitud === 'oferta') {
+            this.cargarEventosConfirmados();
+          }
+
           this.mostrarModal('exito', 'Enhorabuena', 'Oferta aceptada exitosamente');
         },
         error: (err) => {
@@ -124,8 +139,17 @@ export class PerfilAdminArtistaComponent implements OnInit{
     } else if (estado === 'rechazado') {
       this.postulacionService.actualizarEstadoSolicitud(postulacion.id, estado).subscribe({
         next: () => {
-          postulacion.estado = 'rechazado'; // Actualiza el estado localmente
-          this.mostrarModal('exito', 'Enhorabuena', 'Oferta rchazada exitosamente');
+          // Actualizar el estado localmente
+          postulacion.estado = 'rechazado';
+
+          // Eliminar de la lista correspondiente
+          if (postulacion.tipoSolicitud === 'oferta') {
+            this.ofertasPendientes = this.ofertasPendientes.filter(p => p.id !== postulacion.id);
+          } else {
+            this.postulacionesPendientes = this.postulacionesPendientes.filter(p => p.id !== postulacion.id);
+          }
+
+          this.mostrarModal('exito', 'Enhorabuena', 'Oferta rechazada exitosamente');
         },
         error: (err) => {
           console.error('Error al rechazar la postulación', err);
@@ -142,10 +166,7 @@ export class PerfilAdminArtistaComponent implements OnInit{
     this.modalVisible = true;
   }
 
-  cerrarModalYRecargar(): void {
+  cerrarModal(): void {
     this.modalVisible = false;
   }
-
-
-
 }

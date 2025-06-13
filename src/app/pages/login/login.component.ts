@@ -116,7 +116,6 @@ export class LoginComponent implements OnInit {
           this.redirectByRole(decoded.rol);
 
         } catch (error) {
-          console.error('Error al procesar el token:', error);
           this.error = 'Error interno. Por favor, inténtalo de nuevo.';
         } finally {
           this.isLoading = false;
@@ -126,7 +125,7 @@ export class LoginComponent implements OnInit {
         this.isLoading = false;
 
         if (err.status === 401) {
-          this.error = 'Credenciales incorrectas. Verifica tu email y contraseña.';
+          this.error = 'Credenciales incorrectas. Verifica tu email y/o contraseña.';
         } else if (err.status === 403) {
           this.error = err.error?.mensaje || 'Cuenta bloqueada o sin permisos. ¿Has confirmado su cuenta?';
         } else if (err.status === 0) {

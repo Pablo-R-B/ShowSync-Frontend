@@ -9,7 +9,7 @@ import {PostulacionEventoService} from '../../servicios/postulacion-evento.servi
 import {EventoDTO} from '../../interfaces/EventoDTO';
 import {PromotoresService} from '../../servicios/promotores.service';
 import {GeneroMusical} from '../../interfaces/GeneroMusical';
-import Swal from 'sweetalert2';
+import Swal, {SweetAlertIcon} from 'sweetalert2';
 
 
 @Component({
@@ -98,22 +98,81 @@ export class PerfilArtistaComponent implements OnInit{
     this.mostrarModal = false;
   }
 
-  mostrarToast(tipo: 'success' | 'error', mensaje: string) {
+  mostrarToast(tipo: 'success' | 'error' | 'warning' | 'info', mensaje: string) {
+    const config = {
+      success: {
+        background: 'linear-gradient(135deg, #4CAF50, #2E7D32)',
+        icon: 'success',
+        iconColor: '#ffffff',
+        progressBarColor: 'rgba(255,255,255,0.5)',
+        animation: 'fadeInUp 0.5s ease-out',
+        backdropFilter: 'blur(10px)'
+      },
+      error: {
+        background: 'linear-gradient(135deg, #F44336, #C62828)',
+        icon: 'error',
+        iconColor: '#ffffff',
+        progressBarColor: 'rgba(255,255,255,0.5)',
+        animation: 'fadeInUp 0.5s ease-out',
+        backdropFilter: 'blur(10px)'
+      },
+      warning: {
+        background: 'linear-gradient(135deg, #FFC107, #FF8F00)',
+        icon: 'warning',
+        iconColor: '#ffffff',
+        progressBarColor: 'rgba(255,255,255,0.5)',
+        animation: 'fadeInUp 0.5s ease-out',
+        backdropFilter: 'blur(10px)'
+      },
+      info: {
+        background: 'linear-gradient(135deg, #2196F3, #1565C0)',
+        icon: 'info',
+        iconColor: '#ffffff',
+        progressBarColor: 'rgba(255,255,255,0.5)',
+        animation: 'fadeInUp 0.5s ease-out',
+        backdropFilter: 'blur(10px)'
+      }
+    };
+
     const Toast = Swal.mixin({
       toast: true,
       position: 'center',
-      iconColor: 'white',
-      customClass: {
-        popup: 'colored-toast',
-      },
       showConfirmButton: false,
-      timer: 1500,
+      timer: 1000,
       timerProgressBar: true,
+      backdrop: false,
+      animation: true,
+      customClass: {
+        container: 'animated-toast-container',
+        popup: 'animated-toast',
+        title: 'toast-title',
+        closeButton: 'toast-close-btn',
+        icon: tipo,
+        image: 'toast-image',
+        input: 'toast-input',
+        actions: 'toast-actions',
+        confirmButton: 'toast-confirm-btn',
+        cancelButton: 'toast-cancel-btn',
+      },
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer);
+        toast.addEventListener('mouseleave', Swal.resumeTimer);
+      }
     });
 
     Toast.fire({
-      icon: tipo,
       title: mensaje,
+      icon: config[tipo].icon as SweetAlertIcon,
+      background: config[tipo].background,
+      color: '#ffffff',
+      iconColor: config[tipo].iconColor,
+      timerProgressBar: true,
+      showClass: {
+        popup: 'animate__animated animate__fadeInDown animate__faster'
+      },
+      hideClass: {
+        popup: 'animate__animated animate__fadeOutUp animate__faster'
+      }
     });
   }
 

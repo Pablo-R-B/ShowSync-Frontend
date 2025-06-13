@@ -17,7 +17,7 @@ import { GeneroMusicalDTO } from '../../interfaces/GeneroMusicalDTO';
 import { ArtistaEvento } from '../../interfaces/ArtistaEvento';
 import { PromotoresService } from '../../servicios/promotores.service';
 import { Promotor } from '../../interfaces/Promotor';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms'; // Ensure these are imported
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-editar-eventos',
@@ -40,18 +40,23 @@ export class EditarEventosComponent implements OnInit {
   generosMusicalesDisponibles: GeneroMusicalDTO[] = [];
 
   artistasAsignados: ArtistaEvento[] = [];
+  artistasOriginales: ArtistaEvento[] = [];
   dropdownVisible: boolean = false;
 
   selectedGenreIds: number[] = [];
+  originalGenreIds: number[] = [];
 
   loading = true;
   idEvento!: number;
   promotorId!: number;
-  salaOriginalId!: number; // Nueva variable para almacenar el ID original de la sala
+  salaOriginalId!: number;
 
   imagenPreviaUrl: string | null = null;
   archivoImagen: File | null = null;
   errorMensaje: string | null = null;
+  showNotification = false;
+  notificationMessage = '';
+  notificationType: 'success' | 'error' = 'success';
 
   constructor(
     private fb: FormBuilder,
@@ -61,14 +66,14 @@ export class EditarEventosComponent implements OnInit {
     private artistasService: ArtistasService,
     private promotoresService: PromotoresService,
     private generosMusicalesService: GenerosMusicalesService,
-    private authService: AuthService, // Inyecta AuthService
+    private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router
   ) {
     this.editarEventoForm = this.fb.group({
       nombreEvento: ['', Validators.required],
       descripcion: ['', Validators.required],
-      idSala: [{ value: '', disabled: true }, Validators.required], // Campo deshabilitado
+      idSala: [{ value: '', disabled: true }, Validators.required],
       estado: ['', Validators.required],
     });
   }
@@ -77,7 +82,7 @@ export class EditarEventosComponent implements OnInit {
     const authenticatedUserId = parseInt(localStorage.getItem('userId') ?? '0', 10);
 
     if (!authenticatedUserId || authenticatedUserId === 0) {
-      this.errorMensaje = 'No se pudo obtener el ID del usuario autenticado. Por favor, inicie sesión.';
+      this.showErrorNotification('No se pudo obtener el ID del usuario. Por favor, inicie sesión.');
       this.loading = false;
       this.router.navigate(['/login']);
       return;
@@ -87,27 +92,21 @@ export class EditarEventosComponent implements OnInit {
       next: (promotor: Promotor) => {
         if (promotor && promotor.id) {
           this.promotorId = promotor.id;
-          console.log('ID de usuario autenticado:', authenticatedUserId);
-          console.log('Promotor recibido (id_promotor: ' + promotor.id + ', usuarioId: ' + promotor.id + '):', promotor);
-          console.log('ID del promotor para operaciones:', this.promotorId);
-
           const eventoParam = this.route.snapshot.paramMap.get('idEvento');
           if (eventoParam) {
             this.idEvento = +eventoParam;
             this.cargarTodoElFormulario();
           } else {
-            console.error('Falta el ID del evento en la ruta');
-            this.errorMensaje = 'No se encontró el evento para editar.';
+            this.showErrorNotification('No se encontró el evento para editar.');
             this.loading = false;
           }
         } else {
-          this.errorMensaje = 'El usuario autenticado no tiene un perfil de promotor asociado.';
+          this.showErrorNotification('El usuario no tiene un perfil de promotor asociado.');
           this.loading = false;
         }
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Error al obtener el perfil del promotor:', error);
-        this.errorMensaje = error.error?.message || error.message || 'Error desconocido al cargar el perfil del promotor.';
+        this.showErrorNotification(error.error?.message || error.message || 'Error al cargar el perfil del promotor.');
         this.loading = false;
       }
     });
@@ -129,62 +128,87 @@ export class EditarEventosComponent implements OnInit {
         this.salas = salas;
         this.artistasDisponibles = artistasPromotor;
         this.generosMusicalesDisponibles = generos;
-
-        // Guardamos el ID original de la sala
         this.salaOriginalId = evento.idSala;
 
-        // Buscamos el nombre de la sala correspondiente al ID original
         const salaOriginal = this.salas.find(s => s.id === this.salaOriginalId);
         const nombreSalaOriginal = salaOriginal ? salaOriginal.nombre : 'Sala no encontrada';
 
         this.editarEventoForm.patchValue({
           nombreEvento: evento.nombreEvento,
           descripcion: evento.descripcion,
-          idSala: nombreSalaOriginal, // Mostramos el nombre de la sala en lugar del ID
+          idSala: nombreSalaOriginal,
           estado: evento.estado,
         });
 
         this.imagenPreviaUrl = evento.imagenEvento || null;
 
-        if (evento.artistasAsignados && Array.isArray(evento.artistasAsignados) && evento.artistasAsignados.length > 0) {
-          this.artistasAsignados = evento.artistasAsignados.map((item: string | ArtistaEvento) => {
-            if (typeof item === 'object' && item !== null && 'id' in item && 'nombreArtista' in item) {
-              return item as ArtistaEvento;
-            }
-            else if (typeof item === 'string') {
-              const nombreArtistaDelBackend = item;
-              const artistaCompleto = this.artistasDisponibles.find(
-                a => a.nombreArtista === nombreArtistaDelBackend
-              );
-              if (artistaCompleto) {
-                return {
-                  id: artistaCompleto.id,
-                  nombreArtista: artistaCompleto.nombreArtista,
-                  imagenPerfil: artistaCompleto.imagenPerfil
-                } as ArtistaEvento;
-              } else {
-                console.warn(`Artista "${nombreArtistaDelBackend}" del evento (ID: ${this.idEvento}) no encontrado en la lista de artistas disponibles.`);
-                return { id: 0, nombreArtista: nombreArtistaDelBackend, imagenPerfil: 'https://via.placeholder.com/50?text=No+Img' } as ArtistaEvento;
-              }
-            }
-            console.warn(`Formato inesperado para artista asignado: ${item}`);
-            return { id: 0, nombreArtista: 'Desconocido', imagenPerfil: 'https://via.placeholder.com/50?text=Error' } as ArtistaEvento;
-          });
-          this.artistasAsignados.sort((a, b) => a.nombreArtista.localeCompare(b.nombreArtista));
-        } else {
-          this.artistasAsignados = [];
+        if (evento.artistasAsignados && Array.isArray(evento.artistasAsignados)) {
+          this.artistasAsignados = this.processArtistas(evento.artistasAsignados);
+          this.artistasOriginales = [...this.artistasAsignados];
         }
 
         this.selectedGenreIds = evento.generosMusicales?.map((g: any) => g.id) || [];
+        this.originalGenreIds = [...this.selectedGenreIds];
 
         this.loading = false;
       },
       error: (err: HttpErrorResponse) => {
-        console.error('Error al cargar datos del formulario:', err);
-        this.errorMensaje = err.error?.message || err.error?.detail || JSON.stringify(err.error) || 'Error desconocido al cargar la información necesaria para editar el evento.';
+        this.showErrorNotification(err.error?.message || 'Error al cargar los datos del evento.');
         this.loading = false;
       }
     });
+  }
+
+  private processArtistas(artistas: any[]): ArtistaEvento[] {
+    return artistas.map((item: string | ArtistaEvento) => {
+      if (typeof item === 'object' && item !== null && 'id' in item && 'nombreArtista' in item) {
+        return item as ArtistaEvento;
+      } else if (typeof item === 'string') {
+        const artistaCompleto = this.artistasDisponibles.find(a => a.nombreArtista === item);
+        if (artistaCompleto) {
+          return {
+            id: artistaCompleto.id,
+            nombreArtista: artistaCompleto.nombreArtista,
+            imagenPerfil: artistaCompleto.imagenPerfil
+          };
+        }
+        return { id: 0, nombreArtista: item, imagenPerfil: 'https://placehold.co/50?text=No+Img' };
+      }
+      return { id: 0, nombreArtista: 'Desconocido', imagenPerfil: 'https://placehold.co/50?text=Error' };
+    }).sort((a, b) => a.nombreArtista.localeCompare(b.nombreArtista));
+  }
+
+  hasChanges(): boolean {
+    // Verificar cambios en campos del formulario
+    const formValues = this.editarEventoForm.value;
+    const formChanged = this.editarEventoForm.dirty;
+
+    // Verificar cambios en artistas
+    const artistasChanged = JSON.stringify(this.artistasAsignados.map(a => a.id)) !==
+      JSON.stringify(this.artistasOriginales.map(a => a.id));
+
+    // Verificar cambios en géneros
+    const generosChanged = JSON.stringify(this.selectedGenreIds.sort()) !==
+      JSON.stringify(this.originalGenreIds.sort());
+
+    // Verificar cambios en imagen
+    const imagenChanged = this.archivoImagen !== null;
+
+    return formChanged || artistasChanged || generosChanged || imagenChanged;
+  }
+
+  showSuccessNotification(message: string): void {
+    this.notificationMessage = message;
+    this.notificationType = 'success';
+    this.showNotification = true;
+    setTimeout(() => this.showNotification = false, 5000);
+  }
+
+  showErrorNotification(message: string): void {
+    this.notificationMessage = message;
+    this.notificationType = 'error';
+    this.showNotification = true;
+    setTimeout(() => this.showNotification = false, 5000);
   }
 
   toggleDropdown(): void {
@@ -229,30 +253,22 @@ export class EditarEventosComponent implements OnInit {
     if (!input.files?.length) return;
 
     const file = input.files[0];
-
-    // Validate type
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    const maxSizeMB = 5;
+
     if (!allowedTypes.includes(file.type)) {
-      alert('Tipo de archivo no permitido. Solo se aceptan JPG, PNG o WEBP.');
-      input.value = ''; // Clear the input
-      this.archivoImagen = null;
-      this.imagenPreviaUrl = null;
+      this.showErrorNotification('Solo se aceptan imágenes JPG, PNG o WEBP.');
+      input.value = '';
       return;
     }
 
-    // Validate size
-    const maxSizeMB = 5;
     if (file.size > maxSizeMB * 1024 * 1024) {
-      alert(`El archivo supera el tamaño máximo de ${maxSizeMB}MB.`);
-      input.value = ''; // Clear the input
-      this.archivoImagen = null;
-      this.imagenPreviaUrl = null;
+      this.showErrorNotification(`El archivo supera el tamaño máximo de ${maxSizeMB}MB.`);
+      input.value = '';
       return;
     }
 
     this.archivoImagen = file;
-
-    // Preview
     const reader = new FileReader();
     reader.onload = () => {
       this.imagenPreviaUrl = reader.result as string;
@@ -264,15 +280,15 @@ export class EditarEventosComponent implements OnInit {
     this.editarEventoForm.markAllAsTouched();
 
     if (this.artistasAsignados.length === 0) {
-      this.errorMensaje = 'Debe seleccionar al menos un artista.';
+      this.showErrorNotification('Debe seleccionar al menos un artista.');
       return;
     }
     if (this.selectedGenreIds.length === 0) {
-      this.errorMensaje = 'Debe seleccionar al menos un género musical.';
+      this.showErrorNotification('Debe seleccionar al menos un género musical.');
       return;
     }
     if (this.editarEventoForm.invalid) {
-      this.errorMensaje = 'Por favor, complete todos los campos requeridos.';
+      this.showErrorNotification('Complete todos los campos requeridos.');
       return;
     }
 
@@ -283,9 +299,9 @@ export class EditarEventosComponent implements OnInit {
       id: this.idEvento,
       nombreEvento: this.editarEventoForm.get('nombreEvento')?.value,
       descripcion: this.editarEventoForm.get('descripcion')?.value,
-      idSala: this.salaOriginalId, // Usamos el ID original de la sala guardado
+      idSala: this.salaOriginalId,
       estado: this.editarEventoForm.get('estado')?.value,
-      imagenEvento: this.imagenPreviaUrl || '', // This will be used if no new file is uploaded
+      imagenEvento: this.imagenPreviaUrl || '',
       artistasAsignados: this.artistasAsignados,
       generosMusicalesIds: this.selectedGenreIds
     };
@@ -298,13 +314,12 @@ export class EditarEventosComponent implements OnInit {
     ).subscribe({
       next: () => {
         this.loading = false;
-        alert('Evento editado correctamente.');
-        this.router.navigate(['/perfil-promotores']);
+        this.showSuccessNotification('Evento editado correctamente.');
+        setTimeout(() => this.router.navigate(['/perfil-promotores']), 1500);
       },
       error: (error: HttpErrorResponse) => {
         this.loading = false;
-        this.errorMensaje = error.error?.message || error.error?.detail || JSON.stringify(error.error) || 'Error desconocido al editar el evento.';
-        console.error('Error al actualizar el evento:', error);
+        this.showErrorNotification(error.error?.message || 'Error al editar el evento.');
       }
     });
   }
@@ -312,6 +327,4 @@ export class EditarEventosComponent implements OnInit {
   navigateToPerfilPromotores(): void {
     this.router.navigate(['/perfil-promotores']);
   }
-
-  // Removed mostrarMensajeSala as it's not needed with the tooltip and disabled appearance
 }

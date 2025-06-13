@@ -3,7 +3,7 @@ import { EventosService } from '../../../servicios/eventos.service';
 import {DatePipe, NgClass, NgForOf, NgIf, TitleCasePipe} from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EventoDTO } from '../../../interfaces/EventoDTO';
-import {debounceTime, distinctUntilChanged, Subject} from 'rxjs';
+
 import {Router} from '@angular/router';
 
 @Component({
@@ -38,25 +38,10 @@ export class PanelEventosComponent implements OnInit {
   totalPaginas: number = 0;
   totalEventos: number = 0;
 
-
-  // Búsqueda con debounce
-  private searchSubject = new Subject<string>();
-
   constructor(private eventoService: EventosService,
               private router: Router
   ) {
-    // Configurar debounce para búsqueda
-    this.searchSubject.pipe(
-      debounceTime(300),
-      distinctUntilChanged()
-    ).subscribe(searchTerm => {
-      this.buscarConDebounce(searchTerm);
-    });
-  }
-
-  private buscarConDebounce(termino: string): void {
-    this.filtro = termino;
-    this.filtrarEventos();
+    // La configuración de debounce para búsqueda se elimina, ya que no se usa la búsqueda automática
   }
 
   ngOnInit(): void {
@@ -70,7 +55,7 @@ export class PanelEventosComponent implements OnInit {
     this.eventoService.getTodosLosEventos().subscribe({
       next: (eventos) => {this.eventos = eventos.sort((a, b) => new Date(b.fechaEvento).getTime() - new Date(a.fechaEvento).getTime());
         this.totalEventos = this.eventos.length; // Calcular el total de eventos
-        this.filtrarEventos();
+        this.filtrarEventos(); // Al cargar los eventos, aplicamos los filtros iniciales
         this.cargando = false;
       },
       error: (err) => {
@@ -80,6 +65,21 @@ export class PanelEventosComponent implements OnInit {
     });
   }
 
+  // Este método ahora se llama directamente cuando se quiere aplicar el filtro de búsqueda
+  aplicarFiltroBusqueda(): void {
+    this.paginaActual = 0; // Resetear a la primera página al aplicar un nuevo filtro
+    this.filtrarEventos();
+  }
+
+  // Nuevo método para limpiar la búsqueda
+  limpiarBusqueda(): void {
+    this.filtro = ''; // Limpiar el texto del filtro
+    this.filtroEstado = 'TODOS'; // Opcional: reiniciar también el filtro de estado
+    this.paginaActual = 0; // Volver a la primera página
+    this.filtrarEventos(); // Volver a cargar todos los eventos sin filtro
+  }
+
+
   filtrarEventos(): void {
     let filtrados = this.eventos;
 
@@ -87,6 +87,7 @@ export class PanelEventosComponent implements OnInit {
       filtrados = filtrados.filter(evento => evento.estado === this.filtroEstado);
     }
 
+    // Este filtro se aplica ahora solo cuando se llama a aplicarFiltroBusqueda() o se cambia el estado
     if (this.filtro.trim()) {
       const filtroLower = this.filtro.toLowerCase();
       filtrados = filtrados.filter(evento =>
@@ -108,7 +109,6 @@ export class PanelEventosComponent implements OnInit {
     this.paginaNavegacion = this.paginaActual + 1;
 
     this.actualizarEventosPaginados();
-
   }
 
   actualizarEventosPaginados(): void {
@@ -138,9 +138,9 @@ export class PanelEventosComponent implements OnInit {
     });
   }
 
-  // Métodos de filtrado
   onFiltroChange(): void {
-    this.searchSubject.next(this.filtro);
+    // Este método se mantiene pero no tiene la lógica de debounce.
+    // La acción de filtrar ahora la disparará el botón o la tecla Enter.
   }
 
   // Métodos de paginación

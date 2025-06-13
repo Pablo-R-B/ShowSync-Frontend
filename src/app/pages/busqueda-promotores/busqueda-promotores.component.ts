@@ -23,7 +23,7 @@ export class BusquedaPromotoresComponent implements OnInit {
   nombrePromotorSeleccionado: string = '';
   totalPaginas: number = 0;
   paginaActual: number = 0;
-  pageSize: number = 6;
+  pageSize: number = 8;
   totalItems: number = 0;
   paginaNavegacion: number = 1;
   isLoading: boolean = true;

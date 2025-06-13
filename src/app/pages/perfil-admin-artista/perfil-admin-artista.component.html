@@ -224,6 +224,34 @@
         </div>
       </div>
 
+
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div *ngIf="modalVisible" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold">{{ modalTitulo }}</h3>
+        <button (click)="cerrarModal()" class="text-gray-400 hover:text-white">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="mb-6">
+        <p>{{ modalMensaje }}</p>
+      </div>
+
+      <div class="flex justify-end">
+        <button
+          (click)="cerrarModal()"
+          [class]="modalTipo === 'exito' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'"
+          class="text-white px-4 py-2 rounded"
+        >
+          Aceptar
+        </button>
+      </div>
     </div>
   </div>
 </div>
+

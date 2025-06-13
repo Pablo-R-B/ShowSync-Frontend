@@ -33,9 +33,10 @@ export class PanelUsuariosComponent implements OnInit {
   totalUsuarios: number = 0;
   totalPaginas: number = 1;
 
-  private searchSubject = new Subject<string>();
 
   constructor(private usuarioService: UsuarioService) {
+
+
     this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -45,6 +46,8 @@ export class PanelUsuariosComponent implements OnInit {
       this.cargarUsuarios();
     });
   }
+
+  private searchSubject = new Subject<string>();
 
   ngOnInit(): void {
     this.cargarUsuarios();
@@ -102,9 +105,20 @@ export class PanelUsuariosComponent implements OnInit {
     });
   }
 
-  onFiltroTextoChange(): void {
-    this.searchSubject.next(this.filtro.toLowerCase());
+  buscarUsuarios(): void {
+    this.resetearPaginacion();
+    this.cargarUsuarios();
   }
+
+  limpiarFiltros(): void {
+    this.filtro = '';
+    this.filtroRol = 'TODOS';
+    this.resetearPaginacion();
+    this.cargarUsuarios();
+  }
+
+
+
 
   onFiltroRolChange(): void {
     this.resetearPaginacion();

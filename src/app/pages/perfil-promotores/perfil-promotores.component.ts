@@ -31,9 +31,6 @@ import {FormsModule} from '@angular/forms';
 })
 export class PerfilPromotoresComponent implements OnInit,AfterViewInit {
 
-
-
-
   promotor: Promotor | null = null;
   logoUrl: string = '../../../assets/images/logo_1.png';
   salas: Sala[] = [];
@@ -45,8 +42,6 @@ export class PerfilPromotoresComponent implements OnInit,AfterViewInit {
 
   idUsuario!: number;
   idPromotor!: number;
-  postulaciones: Postulacion[] = [];
-  ofertas: Postulacion[] = [];
   postulacionesPendientes: Postulacion[] = [];
   postulacionesAceptadas: Postulacion[] = [];
   ofertasPendientes: Postulacion[] = [];
@@ -306,8 +301,19 @@ export class PerfilPromotoresComponent implements OnInit,AfterViewInit {
     if (estado === 'aceptado') {
       this.eventosService.aceptarPostulacion(postulacion.id).subscribe({
         next: () => {
-          postulacion.estado = 'aceptado'; // Actualiza el estado localmente
-          this.mostrarModal('exito', 'Enhorabuena', 'Postulación aceptada exitosamente')
+          // Actualizar el estado localmente
+          postulacion.estado = 'aceptado';
+
+          // Mover la postulación a la lista correspondiente
+          if (postulacion.tipoSolicitud === 'postulacion') {
+            this.postulacionesPendientes = this.postulacionesPendientes.filter(p => p.id !== postulacion.id);
+            this.postulacionesAceptadas = [...this.postulacionesAceptadas, postulacion]; // Usar spread para inmutabilidad
+          } else if (postulacion.tipoSolicitud === 'oferta') {
+            this.ofertasPendientes = this.ofertasPendientes.filter(p => p.id !== postulacion.id);
+            this.ofertasAceptadas = [...this.ofertasAceptadas, postulacion]; // Usar spread para inmutabilidad
+          }
+
+          this.mostrarModal('exito', 'Enhorabuena', 'Postulación aceptada exitosamente');
         },
         error: (err) => {
           console.error('Error al aceptar la postulación', err);
@@ -317,8 +323,17 @@ export class PerfilPromotoresComponent implements OnInit,AfterViewInit {
     } else if (estado === 'rechazado') {
       this.postulacionService.actualizarEstadoSolicitud(postulacion.id, estado).subscribe({
         next: () => {
-          postulacion.estado = 'rechazado'; // Actualiza el estado localmente
-          this.mostrarModal('exito', 'Enhorabuena', 'Postulación rechazada exitosamente')
+          // Actualizar el estado localmente
+          postulacion.estado = 'rechazado';
+
+          // Eliminar de la lista correspondiente
+          if (postulacion.tipoSolicitud === 'postulacion') {
+            this.postulacionesPendientes = this.postulacionesPendientes.filter(p => p.id !== postulacion.id);
+          } else if (postulacion.tipoSolicitud === 'oferta') {
+            this.ofertasPendientes = this.ofertasPendientes.filter(p => p.id !== postulacion.id);
+          }
+
+          this.mostrarModal('exito', 'Enhorabuena', 'Postulación rechazada exitosamente');
         },
         error: (err) => {
           console.error('Error al rechazar la postulación', err);
@@ -335,8 +350,18 @@ export class PerfilPromotoresComponent implements OnInit,AfterViewInit {
     this.modalVisible = true;
   }
 
-  cerrarModalYRecargar(): void {
+  cerrarModal(): void {
     this.modalVisible = false;
+    // Limpiar los valores del modal si es necesario
+    this.modalTipo = null;
+    this.modalTitulo = '';
+    this.modalMensaje = '';
+  }
+
+  cerrarModalYRecargar(): void {
+    this.cerrarModal();
+    // Si realmente necesitas recargar en algún caso específico
+    // window.location.reload(); // Solo si es absolutamente necesario
   }
 
 

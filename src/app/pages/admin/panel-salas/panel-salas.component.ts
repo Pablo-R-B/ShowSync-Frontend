@@ -4,7 +4,7 @@ import { CommonModule, NgFor, NgForOf, NgIf } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Sala } from '../../../interfaces/sala';
-import { debounceTime, distinctUntilChanged, Observable, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs'; // Eliminamos 'debounceTime', 'distinctUntilChanged'
 import { ReservasPorSala } from '../../../interfaces/ReservasPorSala';
 import { Chart, registerables } from 'chart.js';
 import { ReservaRaw } from '../../../interfaces/ReservaRaw';
@@ -59,8 +59,8 @@ export class PanelSalasComponent implements OnInit {
   // Variable para navegación rápida
   paginaNavegacion: number = 1;
 
-  // Búsqueda con debounce
-  private searchSubject = new Subject<string>();
+  // Ya no es necesario el searchSubject para la búsqueda con debounce
+  // private searchSubject = new Subject<string>();
 
   // Configuración de SweetAlert
   readonly SWAL_CONFIG = {
@@ -78,12 +78,7 @@ export class PanelSalasComponent implements OnInit {
     private router: Router
   ) {
     Chart.register(...registerables);
-    this.searchSubject.pipe(
-      debounceTime(300),
-      distinctUntilChanged()
-    ).subscribe(searchTerm => {
-      this.buscarConDebounce(searchTerm);
-    });
+    // Se elimina la suscripción a searchSubject, ya que no se usará el debounce para la búsqueda principal
   }
 
   ngOnInit(): void {
@@ -99,7 +94,7 @@ export class PanelSalasComponent implements OnInit {
     const params: PaginationParams = {
       page: this.paginaActual,
       size: this.itemsPorPagina,
-      termino: this.filtro || undefined
+      termino: this.filtro || undefined // El término se usa solo si el filtro activo es 'general'
     };
 
     switch (this.tipoFiltroActivo) {
@@ -182,18 +177,27 @@ export class PanelSalasComponent implements OnInit {
     this.totalPaginas = respuesta.totalPages;
   }
 
-  // Métodos de filtrado
-  onFiltroChange(): void {
-    this.searchSubject.next(this.filtro);
-  }
-
-  private buscarConDebounce(termino: string): void {
-    this.filtro = termino;
+  // Nuevo método para aplicar el filtro general al hacer clic o presionar Enter
+  aplicarFiltroGeneral(): void {
     this.tipoFiltroActivo = 'general';
     this.paginaActual = 0;
-    this.limpiarFiltrosAvanzados();
+    this.limpiarFiltrosAvanzados(); // Limpiar filtros avanzados al usar el filtro general
     this.cargarSalas();
   }
+
+  // Se elimina el método onFiltroChange() ya que no se usa el debounce
+  // onFiltroChange(): void {
+  //   this.searchSubject.next(this.filtro);
+  // }
+
+  // El método buscarConDebounce se reemplaza por aplicarFiltroGeneral
+  // private buscarConDebounce(termino: string): void {
+  //   this.filtro = termino;
+  //   this.tipoFiltroActivo = 'general';
+  //   this.paginaActual = 0;
+  //   this.limpiarFiltrosAvanzados();
+  //   this.cargarSalas();
+  // }
 
   filtrarPorCapacidad(): void {
     if (this.filtroCapacidadMin !== null && this.filtroCapacidadMax !== null) {

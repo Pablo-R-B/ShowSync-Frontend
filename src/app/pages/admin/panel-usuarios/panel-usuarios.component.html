@@ -17,15 +17,27 @@
       </select>
     </div>
 
-    <div class="w-full md:w-1/3">
+    <div class="w-full md:w-1/3 flex gap-2">
       <input
         type="text"
         placeholder="Buscar usuario..."
         [(ngModel)]="filtro"
-        (ngModelChange)="onFiltroTextoChange()"
         class="border border-gray-600 rounded p-2 w-full bg-customNegro text-white focus:outline-none focus:ring-2 focus:ring-red-500"
       />
+      <button
+        (click)="buscarUsuarios()"
+        class="bg-customRed text-white px-3 py-2 rounded hover:bg-customBurbundy"
+      >
+        Buscar
+      </button>
+      <button
+        (click)="limpiarFiltros()"
+        class="bg-gray-700 text-white px-3 py-2 rounded hover:bg-gray-600"
+      >
+        Limpiar
+      </button>
     </div>
+
   </div>
 
   <div *ngIf="cargando" class="flex justify-center items-center py-12">

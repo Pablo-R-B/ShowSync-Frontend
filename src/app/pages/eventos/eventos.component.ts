@@ -5,7 +5,7 @@ import { EventosService } from '../../servicios/eventos.service';
 import { AuthService } from '../../servicios/auth.service';
 import { ArtistasService } from '../../servicios/artistas.service';
 import { PostulacionEventoService } from '../../servicios/postulacion-evento.service';
-import Swal from 'sweetalert2';
+import Swal, {SweetAlertIcon} from 'sweetalert2';
 
 @Component({
   selector: 'app-eventos',
@@ -23,6 +23,10 @@ export class EventosComponent implements OnInit {
   idEvento!: number;
   eventoPasado: boolean = false;
   mostrarModal: boolean = false;
+  errorMessage: string = '';
+  showError: boolean = false;
+  successMessage: string = '';
+  showSuccess: boolean = false;
 
   constructor(
     private eventosService: EventosService,
@@ -81,28 +85,90 @@ export class EventosComponent implements OnInit {
     );
   }
 
-  mostrarToast(tipo: 'success' | 'error', mensaje: string) {
+  mostrarToast(tipo: 'success' | 'error' | 'warning' | 'info', mensaje: string) {
+    const config = {
+      success: {
+        background: 'linear-gradient(135deg, #4CAF50, #2E7D32)',
+        icon: 'success',
+        iconColor: '#ffffff',
+        progressBarColor: 'rgba(255,255,255,0.5)',
+        animation: 'fadeInUp 0.5s ease-out',
+        backdropFilter: 'blur(10px)'
+      },
+      error: {
+        background: 'linear-gradient(135deg, #F44336, #C62828)',
+        icon: 'error',
+        iconColor: '#ffffff',
+        progressBarColor: 'rgba(255,255,255,0.5)',
+        animation: 'fadeInUp 0.5s ease-out',
+        backdropFilter: 'blur(10px)'
+      },
+      warning: {
+        background: 'linear-gradient(135deg, #FFC107, #FF8F00)',
+        icon: 'warning',
+        iconColor: '#ffffff',
+        progressBarColor: 'rgba(255,255,255,0.5)',
+        animation: 'fadeInUp 0.5s ease-out',
+        backdropFilter: 'blur(10px)'
+      },
+      info: {
+        background: 'linear-gradient(135deg, #2196F3, #1565C0)',
+        icon: 'info',
+        iconColor: '#ffffff',
+        progressBarColor: 'rgba(255,255,255,0.5)',
+        animation: 'fadeInUp 0.5s ease-out',
+        backdropFilter: 'blur(10px)'
+      }
+    };
+
     const Toast = Swal.mixin({
       toast: true,
       position: 'center',
-      iconColor: 'white',
-      customClass: {
-        popup: 'colored-toast',
-      },
       showConfirmButton: false,
-      timer: 2000,
+      timer: 1000,
       timerProgressBar: true,
+      backdrop: false,
+      animation: true,
+      customClass: {
+        container: 'animated-toast-container',
+        popup: 'animated-toast',
+        title: 'toast-title',
+        closeButton: 'toast-close-btn',
+        icon: tipo,
+        image: 'toast-image',
+        input: 'toast-input',
+        actions: 'toast-actions',
+        confirmButton: 'toast-confirm-btn',
+        cancelButton: 'toast-cancel-btn',
+      },
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer);
+        toast.addEventListener('mouseleave', Swal.resumeTimer);
+      }
     });
 
     Toast.fire({
-      icon: tipo,
       title: mensaje,
+      icon: config[tipo].icon as SweetAlertIcon,
+      background: config[tipo].background,
+      color: '#ffffff',
+      iconColor: config[tipo].iconColor,
+      timerProgressBar: true,
+      showClass: {
+        popup: 'animate__animated animate__fadeInDown animate__faster'
+      },
+      hideClass: {
+        popup: 'animate__animated animate__fadeOutUp animate__faster'
+      }
     });
   }
 
   enviarOferta() {
     if (this.authService.userRole === 'ADMINISTRADOR' || this.authService.userRole === 'PROMOTOR') {
-      this.mostrarToast('error', 'Solo los artistas pueden postularse a eventos.');
+      //this.mostrarToast('error', 'Solo los artistas pueden postularse a eventos.');
+      // Alternativa con mensaje inline:
+      this.errorMessage = 'Solo los artistas pueden postularse a eventos.';
+      this.showError = true;
       return;
     }
 
@@ -125,12 +191,10 @@ export class EventosComponent implements OnInit {
             break;
           default:
             this.mostrarToast('error', `Respuesta inesperada: ${response.status}`);
-            console.warn(`Status inesperado: ${response.status}`);
         }
       },
       error: (err) => {
         const mensaje = err.error?.message ?? 'Error desconocido';
-        console.error(`Error al enviar la oferta: ${mensaje}`);
         this.mostrarToast('error', `Error en la solicitud: ${mensaje}`);
       },
     });
@@ -142,9 +206,36 @@ export class EventosComponent implements OnInit {
 
   abrirModal() {
     this.mostrarModal = true;
+    // Detener el scroll del body cuando el modal está abierto
+    document.body.style.overflow = 'hidden';
   }
 
   cerrarModal() {
     this.mostrarModal = false;
+    // Restaurar el scroll del body
+    document.body.style.overflow = '';
+  }
+
+
+  private showCustomToast(type: 'success' | 'error', message: string, duration: number = 3000) {
+    if (type === 'success') {
+      this.successMessage = message;
+      this.showSuccess = true;
+    } else {
+      this.errorMessage = message;
+      this.showError = true;
+    }
+
+    setTimeout(() => {
+      this.hideToast(type);
+    }, duration);
+  }
+
+  private hideToast(type: 'success' | 'error') {
+    if (type === 'success') {
+      this.showSuccess = false;
+    } else {
+      this.showError = false;
+    }
   }
 }
