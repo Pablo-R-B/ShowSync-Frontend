@@ -29,6 +29,7 @@ export class ElegirChatComponent implements OnInit {
   chatPartners: (Artistas | Promotor)[] = []; // Lista de artistas o promotores con los que se puede chatear
   loading: boolean = true;
   error: string | null = null;
+  private routeTo= inject(Router);
 
   ngOnInit(): void {
     // Obtener el rol del usuario actual desde AuthService
@@ -122,5 +123,9 @@ export class ElegirChatComponent implements OnInit {
 
   getPartnerImage(partner: any): string {
     return this.currentUserRole === 'artista' ? (partner.imagenPerfil || 'https://placehold.co/50x50/cccccc/ffffff?text=P') : (partner.imagenPerfil || 'https://placehold.co/50x50/cccccc/ffffff?text=A');
+  }
+
+  volver(): void {
+    this.routeTo.navigate(['/perfil-promotores']);
   }
 }

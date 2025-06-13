@@ -1,7 +1,15 @@
 <body>
 <div class="container">
   <div class="header">
-  <div class="logo"><img src="assets/images/logo_1.png" alt="Logo de ShowSync"></div>
+    <button (click)="volver()" class="flex items-center gap-4 text-gray-200 hover:text-white transition px-6 py-8 rounded-full border border-gray-600 hover:border-white text-2xl">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+      <span style="margin-right: 0.5em;">Volver</span>
+
+    </button>
+
+    <div class="logo"><img src="assets/images/logo_1.png" alt="Logo de ShowSync"></div>
     <h1>Política de Privacidad</h1>
     <p class="subtitle">En ShowSync (operado por SAFA SL), tu privacidad es una prioridad. Nos comprometemos a ser transparentes sobre cómo recopilamos, usamos y protegemos tus datos personales en nuestra plataforma.</p>
   </div>
@@ -98,7 +106,7 @@
   </div>
 </div>
 
-<button class="scroll-top" onclick="scrollToTop()" aria-label="Volver arriba">↑</button>
+<button class="scroll-top" (click)="scrollToTop()" aria-label="Volver arriba">↑</button>
 
 
 </body>

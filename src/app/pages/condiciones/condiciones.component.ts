@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import {Component, inject} from '@angular/core';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-condiciones',
@@ -7,6 +8,8 @@ import { Component } from '@angular/core';
   styleUrl: './condiciones.component.css'
 })
 export class CondicionesComponent {
+
+  private routeTo= inject(Router);
 
   // Método para mostrar/ocultar el botón de scroll to top
   private setupScrollButton(): void {
@@ -50,5 +53,10 @@ export class CondicionesComponent {
     this.setupScrollButton();
     this.setupSmoothScroll();
   }
+
+  volver(): void {
+    this.routeTo.navigate(['/landing-page']);
+  }
+
 
 }

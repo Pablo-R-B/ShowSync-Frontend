@@ -43,6 +43,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private cd = inject(ChangeDetectorRef);
+  private routeto = inject(Router);
+
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -363,5 +365,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   // Método trackBy para optimizar el renderizado de *ngFor
   trackByMensajeId(index: number, mensaje: any): number | string | undefined {
     return mensaje.id || mensaje.temporalId || index;
+  }
+
+  volver(): void {
+    this.routeto.navigate(['/elegir-chat']);
   }
 }
