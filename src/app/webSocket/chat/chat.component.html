@@ -1,20 +1,18 @@
-<!-- Estado de conexión -->
-<div *ngIf="!conectado" class="text-center text-gray-700 p-4">
-  Conectando al servidor WebSocket...
-</div>
-
 <!-- Contenedor principal del chat -->
-<div *ngIf="conectado" class="h-screen bg-gray-300 flex items-center justify-center">
-  <div class="w-80 h-96 bg-white rounded-2xl shadow-2xl flex flex-col">
+<div *ngIf="conectado" class="h-screen bg-gray-100 flex items-center justify-center">
+  <div class="w-[600px] h-[800px] bg-white rounded-3xl shadow-2xl flex flex-col">
 
     <!-- Cabecera del chat -->
-    <nav class="h-10 bg-gray-900 rounded-t-2xl flex items-center justify-between px-2">
-      <div class="flex items-center">
-        <!-- Imagen del usuario en la cabecera (ya funciona con imagenUsuario) -->
-        <img [src]="imagenUsuario" class="w-6 h-6 rounded-full mr-1" />
-        <span class="text-xs font-medium text-gray-300">{{ nombreUsuario }}</span>
+    <nav class="h-16 bg-gray-800 rounded-t-3xl flex items-center justify-between px-4">
+      <div class="flex items-center relative">
+        <img [src]="imagenUsuario" class="w-10 h-10 rounded-full mr-3" />
+        <span
+          [ngClass]="conectado ? 'bg-green-500' : 'bg-gray-500'"
+          class="absolute bottom-0 right-0 w-2 h-2 rounded-full ring-2 ring-white">
+        </span>
+        <span class="text-lg font-semibold text-gray-200">{{ nombreUsuario }}</span>
       </div>
-      <div class="flex items-center space-x-2 text-gray-300 text-base">
+      <div class="flex items-center space-x-4 text-gray-300 text-xl">
         <i class="mdi mdi-video"></i>
         <i class="mdi mdi-phone"></i>
         <i class="mdi mdi-dots-vertical"></i>
@@ -22,56 +20,76 @@
     </nav>
 
     <!-- Área de mensajes -->
-    <div class="flex-1 overflow-y-auto px-1 py-1" id="journal-scroll">
-      <div
-        *ngFor="let msg of mensajes"
-        [ngClass]="msg.tipo === 'artista' || msg.tipo === 'bot' ? 'flex items-center pr-10 pt-1' : 'flex justify-end pt-2 pl-10'"
-      >
-        <!-- Mensaje de artista o bot (alineado a la izquierda) -->
-        <ng-container *ngIf="msg.tipo === 'artista' || msg.tipo === 'bot'">
-          <!-- ¡CORREGIDO! Usa la URL dinámica msg.imagen -->
-          <img [src]="msg.imagen" class="w-4 h-4 rounded-full shadow mr-1" />
-          <span class="bg-gray-900 text-gray-200 text-xs rounded px-2 py-1 flex items-end space-x-1">
-            <span>{{ msg.texto }}</span>
-            <span class="text-gray-400 text-[8px]">{{ msg.hora }}</span>
-          </span>
-        </ng-container>
+    <div class="flex-1 overflow-y-auto px-4 py-4" id="journal-scroll">
+      <div *ngFor="let msg of mensajes">
+        <ng-container [ngSwitch]="msg.tipo">
 
-        <!-- Mensaje del promotor (alineado a la derecha) -->
-        <ng-container *ngIf="msg.tipo === 'promotor'">
-          <span class="bg-green-900 text-gray-200 text-xs rounded px-2 py-1 flex items-end space-x-1">
-            <span>{{ msg.texto }}</span>
-            <span class="text-gray-400 text-[8px]">{{ msg.hora }}</span>
-          </span>
-          <!-- ¡CORREGIDO! Usa la URL dinámica msg.imagen para el promotor,
-               y colócala después del mensaje para alineación a la derecha. -->
-          <img [src]="msg.imagen" class="w-4 h-4 rounded-full shadow ml-1" />
+          <!-- Artista o Bot (lado izquierdo) -->
+          <div *ngSwitchCase="'artista'" class="flex items-center pr-20 pt-2">
+            <div class="relative inline-block mr-3">
+              <img [src]="msg.imagen" class="inline-block w-11 h-11 rounded-full shadow" />
+              <span class="absolute top-0 end-0 block w-3 h-3 rounded-full ring-2 ring-white bg-teal-400"></span>
+            </div>
+            <span class="bg-gray-800 text-gray-200 text-sm rounded-lg px-4 py-2 flex items-end space-x-2">
+              <span>{{ msg.texto }}</span>
+              <span class="text-gray-400 text-xs">{{ msg.hora }}</span>
+            </span>
+          </div>
+
+          <div *ngSwitchCase="'bot'" class="flex items-center pr-20 pt-2">
+            <div class="relative inline-block mr-3">
+              <img [src]="msg.imagen" class="inline-block w-11 h-11 rounded-full shadow" />
+              <span class="absolute top-0 end-0 block w-3 h-3 rounded-full ring-2 ring-white bg-teal-400"></span>
+            </div>
+            <span class="bg-gray-800 text-gray-200 text-sm rounded-lg px-4 py-2 flex items-end space-x-2">
+              <span>{{ msg.texto }}</span>
+              <span class="text-gray-400 text-xs">{{ msg.hora }}</span>
+            </span>
+          </div>
+
+          <!-- Promotor (lado derecho) -->
+          <div *ngSwitchCase="'promotor'" class="flex justify-end items-center pl-20 pt-2">
+            <span class="bg-green-700 text-gray-200 text-sm rounded-lg px-4 py-2 flex items-end space-x-2">
+              <span>{{ msg.texto }}</span>
+              <span class="text-gray-400 text-xs">{{ msg.hora }}</span>
+            </span>
+            <div class="relative inline-block ml-3">
+              <img [src]="msg.imagen" class="inline-block w-11 h-11 rounded-full shadow" />
+              <span class="absolute top-0 end-0 block w-3 h-3 rounded-full ring-2 ring-white bg-teal-400"></span>
+            </div>
+          </div>
+
         </ng-container>
       </div>
     </div>
 
     <!-- Input de mensajes -->
-    <div class="flex items-center justify-between p-1">
-      <div class="relative w-[250px]">
-        <i class="mdi mdi-emoticon-excited-outline absolute top-1 left-1 text-gray-400 text-lg"></i>
+    <div class="sticky bottom-0 flex items-center justify-between p-4 bg-gray-200 rounded-b-3xl">
+      <div class="relative w-full">
+        <i class="mdi mdi-emoticon-excited-outline absolute top-3 left-3 text-gray-500 text-2xl"></i>
         <input
           [(ngModel)]="mensajeInput"
           type="text"
           placeholder="Escribe un mensaje..."
-          class="w-full rounded-full pl-6 pr-12 py-1 bg-gray-900 text-white placeholder-gray-100 text-xs focus:outline-none"
+          class="w-full rounded-full pl-12 pr-16 py-3 bg-white text-gray-800 placeholder-gray-500 text-sm focus:outline-none shadow"
         />
-        <i class="mdi mdi-paperclip absolute right-8 top-1 -rotate-45 text-gray-400"></i>
-        <i class="mdi mdi-camera absolute right-2 top-1 text-gray-400"></i>
+        <i class="mdi mdi-paperclip absolute right-12 top-3 -rotate-45 text-gray-500 text-xl"></i>
+        <i class="mdi mdi-camera absolute right-6 top-3 text-gray-500 text-xl"></i>
       </div>
 
       <!-- Botón enviar -->
       <button
-        class="w-7 h-7 flex items-center justify-center bg-blue-300 rounded-full text-gray-900 hover:bg-gray-900 hover:text-white transition-colors duration-200 disabled:opacity-50"
+        type="button"
+        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center me-2"
         (click)="enviarMensaje()"
         [disabled]="!mensajeInput.trim()"
       >
-        <i class="mdi mdi-send text-sm"></i>
+        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
+        </svg>
+        <span class="sr-only">Enviar mensaje</span>
       </button>
     </div>
+
   </div>
 </div>

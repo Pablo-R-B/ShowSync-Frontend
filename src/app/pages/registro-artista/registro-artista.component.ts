@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {NgClass, NgForOf, NgIf} from '@angular/common';
+import {NgForOf, NgIf} from '@angular/common';
 import {FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ArtistasService} from '../../servicios/artistas.service';
 import {AuthService} from '../../servicios/auth.service';
@@ -22,7 +22,6 @@ import {MessageService} from 'primeng/api';
     ReactiveFormsModule,
     NgForOf,
     FileUploadModule,
-    NgClass,
     ToastModule,
   ],
   templateUrl: './registro-artista.component.html',
