@@ -1,5 +1,13 @@
 <div class="min-h-screen bg-cover bg-center flex items-center justify-center custom-bg-image p-4" style="margin-top: 30px;">
-<div class="bg-customNegro border-4 border-customBlanco p-8 rounded-3xl w-full max-w-4xl shadow-2xl">
+  <!-- Notificación flotante -->
+  <div *ngIf="showNotification"
+       [class]="'fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg text-white ' +
+                (notificationType === 'success' ? 'bg-green-500' : 'bg-red-500')"
+       @fadeInOut>
+    {{ notificationMessage }}
+  </div>
+
+  <div class="bg-customNegro border-4 border-customBlanco p-8 rounded-3xl w-full max-w-4xl shadow-2xl">
     <h2 class="font-medula text-customBlanco text-5xl mb-6 text-center">Editar Evento</h2>
     <hr class="border-customGrisOscurso mb-6" />
 
@@ -20,6 +28,7 @@
 
     <form [formGroup]="editarEventoForm" (ngSubmit)="onSubmit()" *ngIf="!loading && !errorMensaje">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+        <!-- Columna izquierda -->
         <div>
           <div class="mb-4">
             <label for="nombreEvento" class="block text-customGrisClaro text-sm font-bold mb-2">Nombre del Evento:</label>
@@ -81,11 +90,12 @@
             </div>
           </div>
 
-         <div>
-           <img src="../../../assets/images/logo_1.png" alt="Imagen del evento" class="w-full h-auto rounded-lg shadow-md " />
-         </div>
+          <div>
+            <img src="../../../assets/images/logo_1.png" alt="Imagen del evento" class="w-full h-auto rounded-lg shadow-md" />
+          </div>
         </div>
 
+        <!-- Columna derecha -->
         <div>
           <div class="mb-6">
             <label for="imagenEventoFile" class="block text-customGrisClaro text-sm font-bold mb-2">Imagen del Evento:</label>
@@ -152,7 +162,7 @@
 
           <div class="mb-6">
             <label class="block text-customNegro text-lg font-semibold mb-2">Géneros Musicales:</label>
-            <div class="bg-customBlanco  rounded-lg p-4 max-h-40 overflow-y-auto custom-scrollbar border border-customGrisMedio">
+            <div class="bg-customBlanco rounded-lg p-4 max-h-40 overflow-y-auto custom-scrollbar border border-customGrisMedio">
               <div *ngIf="generosMusicalesDisponibles.length === 0" class="text-customNegro">No hay géneros musicales disponibles.</div>
               <div *ngFor="let genero of generosMusicalesDisponibles" class="flex items-center mb-2">
                 <input
@@ -162,7 +172,7 @@
                   (change)="onGenreCheckboxChange($event, genero.id)"
                   class="form-checkbox h-5 w-5 text-customRed bg-customGrisMedio border-customGrisMedio rounded cursor-pointer transition-colors duration-200 checked:bg-customRed checked:border-customRed focus:ring-customRed focus:ring-offset-customNegro"
                 />
-                <label [for]="'genero-' + genero.id" class="ml-2 text-customNegro cursor-pointer  transition-colors duration-200">{{ genero.nombre }}</label>
+                <label [for]="'genero-' + genero.id" class="ml-2 text-customNegro cursor-pointer transition-colors duration-200">{{ genero.nombre }}</label>
               </div>
             </div>
             <div *ngIf="selectedGenreIds.length === 0 && (editarEventoForm.touched || editarEventoForm.dirty)" class="text-customRed text-sm mt-1">
@@ -175,7 +185,7 @@
       <div class="mt-6">
         <button
           type="submit"
-          [disabled]="editarEventoForm.invalid || loading || artistasAsignados.length === 0 || selectedGenreIds.length === 0"
+          [disabled]="editarEventoForm.invalid || loading || artistasAsignados.length === 0 || selectedGenreIds.length === 0 || !hasChanges()"
           class="w-full bg-customRed hover:bg-customBurbundy text-customBlanco py-3 rounded-full
                  text-lg font-semibold transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
         >
@@ -186,7 +196,8 @@
           type="button"
           class="w-full mt-4 bg-customGrisMedio hover:bg-customGrisOscurso text-customBlanco py-3 rounded-full text-lg font-semibold transition duration-300 shadow-lg hover:shadow-xl"
           (click)="navigateToPerfilPromotores()"
-        > Salir
+        >
+          Salir
         </button>
       </div>
     </form>
