@@ -23,6 +23,10 @@ export class EventosComponent implements OnInit {
   idEvento!: number;
   eventoPasado: boolean = false;
   mostrarModal: boolean = false;
+  errorMessage: string = '';
+  showError: boolean = false;
+  successMessage: string = '';
+  showSuccess: boolean = false;
 
   constructor(
     private eventosService: EventosService,
@@ -82,9 +86,10 @@ export class EventosComponent implements OnInit {
   }
 
   mostrarToast(tipo: 'success' | 'error', mensaje: string) {
+    // Opción 1: Usar SweetAlert2 (como lo tienes actualmente)
     const Toast = Swal.mixin({
       toast: true,
-      position: 'center',
+      position: 'top-end',
       iconColor: 'white',
       customClass: {
         popup: 'colored-toast',
@@ -98,11 +103,17 @@ export class EventosComponent implements OnInit {
       icon: tipo,
       title: mensaje,
     });
+
+    // Opción 2: Usar nuestro sistema personalizado
+    // this.showCustomToast(tipo, mensaje);
   }
 
   enviarOferta() {
     if (this.authService.userRole === 'ADMINISTRADOR' || this.authService.userRole === 'PROMOTOR') {
-      this.mostrarToast('error', 'Solo los artistas pueden postularse a eventos.');
+      //this.mostrarToast('error', 'Solo los artistas pueden postularse a eventos.');
+      // Alternativa con mensaje inline:
+      this.errorMessage = 'Solo los artistas pueden postularse a eventos.';
+      this.showError = true;
       return;
     }
 
@@ -125,12 +136,10 @@ export class EventosComponent implements OnInit {
             break;
           default:
             this.mostrarToast('error', `Respuesta inesperada: ${response.status}`);
-            console.warn(`Status inesperado: ${response.status}`);
         }
       },
       error: (err) => {
         const mensaje = err.error?.message ?? 'Error desconocido';
-        console.error(`Error al enviar la oferta: ${mensaje}`);
         this.mostrarToast('error', `Error en la solicitud: ${mensaje}`);
       },
     });
@@ -142,9 +151,36 @@ export class EventosComponent implements OnInit {
 
   abrirModal() {
     this.mostrarModal = true;
+    // Detener el scroll del body cuando el modal está abierto
+    document.body.style.overflow = 'hidden';
   }
 
   cerrarModal() {
     this.mostrarModal = false;
+    // Restaurar el scroll del body
+    document.body.style.overflow = '';
+  }
+
+
+  private showCustomToast(type: 'success' | 'error', message: string, duration: number = 3000) {
+    if (type === 'success') {
+      this.successMessage = message;
+      this.showSuccess = true;
+    } else {
+      this.errorMessage = message;
+      this.showError = true;
+    }
+
+    setTimeout(() => {
+      this.hideToast(type);
+    }, duration);
+  }
+
+  private hideToast(type: 'success' | 'error') {
+    if (type === 'success') {
+      this.showSuccess = false;
+    } else {
+      this.showError = false;
+    }
   }
 }

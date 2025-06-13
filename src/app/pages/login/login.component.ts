@@ -116,7 +116,6 @@ export class LoginComponent implements OnInit {
           this.redirectByRole(decoded.rol);
 
         } catch (error) {
-          console.error('Error al procesar el token:', error);
           this.error = 'Error interno. Por favor, inténtalo de nuevo.';
         } finally {
           this.isLoading = false;

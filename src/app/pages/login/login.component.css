@@ -1,4 +1,4 @@
-/* Animaciones personalizadas para el componente de login */
+/* Animaciones personalizadas para el componente de login *********/
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -144,7 +144,7 @@
   }
 }
 
-/* Efectos para mensajes de error */
+/* Efectos para mensajes de error ****/
 .error-message {
   animation: fadeInUp 0.5s ease-out;
   backdrop-filter: blur(10px);

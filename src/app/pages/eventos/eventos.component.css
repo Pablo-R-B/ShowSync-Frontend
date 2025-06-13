@@ -1,3 +1,4 @@
+@import url('../../../styles/error-toast.css');
 
 .bg-customNegro {
   background-color: #0d0d0d;
@@ -24,3 +25,32 @@
   background-color: #555555;
 }
 
+/* eventos.component.css */
+/* Importa el estilo de mensajes/toasts si está en un archivo separado */
+
+/* Estilos adicionales específicos para este componente */
+.evento-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Ajustes para los toasts de SweetAlert2 */
+.colored-toast.swal2-icon-success {
+  background-color: rgba(16, 185, 129, 0.9) !important;
+  color: white !important;
+}
+
+.colored-toast.swal2-icon-error {
+  background-color: rgba(191, 13, 34, 0.9) !important;
+  color: white !important;
+}
+
+.colored-toast .swal2-title {
+  color: white !important;
+  font-size: 1.1rem !important;
+}
+
+.colored-toast .swal2-timer-progress-bar {
+  background: rgba(255, 255, 255, 0.4) !important;
+}
