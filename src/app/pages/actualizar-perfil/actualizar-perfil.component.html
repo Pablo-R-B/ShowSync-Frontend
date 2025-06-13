@@ -3,6 +3,17 @@
     <h2 class="font-medula text-white text-5xl mb-6 text-center">Actualizar Perfil</h2>
     <hr class="border-gray-600 mb-6">
 
+    <!-- Sección de datos actuales -->
+    <div class="mb-6 p-4 bg-gray-800 rounded-lg">
+      <h3 class="text-white text-lg font-semibold mb-2">Tus datos actuales:</h3>
+      <div class="text-gray-300 mb-1">
+        <span class="font-medium">Usuario:</span> {{username || 'Cargando...'}}
+      </div>
+      <div class="text-gray-300">
+        <span class="font-medium">Email:</span> {{email || 'Cargando...'}}
+      </div>
+    </div>
+
     <form [formGroup]="perfilForm" (ngSubmit)="onSubmit()">
       <!-- Nuevo nombre de usuario -->
       <div class="mb-4">

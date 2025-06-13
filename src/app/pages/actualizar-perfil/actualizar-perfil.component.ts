@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import {RouterModule, Router} from '@angular/router';
 import {AuthService} from '../../servicios/auth.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-actualizar-perfil',
@@ -17,6 +18,11 @@ export class ActualizarPerfilComponent {
   perfilForm: FormGroup;
   mensaje: string = '';
   esEdicion: boolean = true;
+  username: string = '';
+  email: string = '';
+
+  private userSub!: Subscription;
+
 
   constructor(
     private fb: FormBuilder,
@@ -30,6 +36,43 @@ export class ActualizarPerfilComponent {
       nuevoEmail: [''],
       repetirEmail: [''],
     });
+  }
+
+
+  ngOnInit(): void {
+    // Obtener datos iniciales del localStorage
+    this.username = localStorage.getItem('username') || '';
+
+    // Suscribirse a cambios en los datos del usuario
+    this.userSub = this.perfilService.userData$.subscribe(userData => {
+      if (userData) {
+        this.username = userData.username;
+        // Si necesitas el email, podrías obtenerlo de otra forma o añadirlo al userData
+      }
+    });
+
+    // Opcional: Obtener el email actual si no está en el localStorage
+    // Podrías hacer una llamada al backend para obtener el email actual
+    this.getCurrentEmail();
+  }
+
+  getCurrentEmail(): void {
+    // Implementa este método según cómo obtengas el email actual
+    // Por ejemplo:
+    this.perfilService.getPerfil().subscribe({
+      next: (profile) => {
+        this.email = profile.email; // Ajusta según la estructura de tu respuesta
+      },
+      error: (err) => {
+        console.error('Error al obtener el perfil:', err);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.userSub) {
+      this.userSub.unsubscribe();
+    }
   }
 
   // Método para verificar si algún campo ha sido modificado
