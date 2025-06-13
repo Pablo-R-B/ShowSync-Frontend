@@ -186,6 +186,11 @@
                       <span >{{ evento.nombreSala }}</span>
                     </div>
                     <div class="text-gray-200 text-sm mb-2 flex items-center justify-center md:justify-start group-hover:text-white group-hover:text-bold group-hover:shadow-black transition-colors" style="text-shadow: 6px 6px 12px rgba(0, 0, 0, 1);">
+                      <i class="fa fa-music mr-2 text-customGrisClaro2"></i>
+                      <span>{{ evento.generosMusicales?.join(', ') }}</span>
+                    </div>
+
+                    <div class="text-gray-200 text-sm mb-2 flex items-center justify-center md:justify-start group-hover:text-white group-hover:text-bold group-hover:shadow-black transition-colors" style="text-shadow: 6px 6px 12px rgba(0, 0, 0, 1);">
                     <i class="fa fa-calendar mr-2 text-customGrisClaro2"></i>
                       <span>{{ formatearFecha(evento.fechaEvento) }}</span>
                     </div>
