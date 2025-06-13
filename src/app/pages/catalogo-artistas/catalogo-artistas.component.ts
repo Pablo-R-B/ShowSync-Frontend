@@ -26,7 +26,7 @@ export class CatalogoArtistasComponent implements OnInit {
   generoSeleccionado: string = '';
   errorMsj:string ='';
   busqueda:string ='';
-  pageSize: number = 6;
+  pageSize: number = 8;
   totalItems: number = 0;
   paginaActual: number = 0;
 
