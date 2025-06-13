@@ -65,10 +65,11 @@ export class ActualizarPerfilComponent {
 
     this.perfilService.updateProfile(datos).subscribe({
       next: (response) => {
-        this.mensaje = response.message || 'Perfil actualizado correctamente.';
+        this.mensaje = 'Perfil actualizado correctamente';
+        // El header se actualizará automáticamente gracias a la suscripción
       },
       error: (err) => {
-        this.mensaje = err.error?.message || 'Error al actualizar el perfil.';
+        this.mensaje = 'Error al actualizar el perfil';
       }
     });
   }

@@ -26,21 +26,28 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
 
   private routerSubscription?: Subscription;
-
+  private authSubscription?: Subscription;
 
   constructor(private router: Router,
-              private elementRef: ElementRef
+              private elementRef: ElementRef,
+              private authService: AuthService
+
   ) {}
 
 
   ngOnInit() {
     this.actualizarEstadoUsuario();
 
-    // Suscribirse a cambios de ruta para actualizar el estado
+    // Suscribirse a cambios de ruta
     this.routerSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.actualizarEstadoUsuario();
       }
+    });
+
+    // Suscribirse a cambios en los datos del usuario
+    this.authSubscription = this.authService.userData$.subscribe(userData => {
+      this.actualizarEstadoUsuario();
     });
   }
 
@@ -51,11 +58,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   private actualizarEstadoUsuario() {
-    const token = localStorage.getItem('token');
-    this.estaLogueado = !!token;
+    this.estaLogueado = this.authService.isLoggedIn();
     this.username = localStorage.getItem('username') || '';
-    this.rolUsuario = localStorage.getItem('rol') || '';
-    this.perfilCompleto = localStorage.getItem('perfilCompleto') === 'true'; // Verificar si el perfil está completo
+    this.rolUsuario = this.authService.userRole;
+    this.perfilCompleto = this.authService.getPerfilCompletoFromToken();
   }
 
   toggleMenu() {
