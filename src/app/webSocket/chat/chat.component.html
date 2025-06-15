@@ -1,5 +1,6 @@
 <!-- Contenedor principal del chat -->
-<div *ngIf="conectado" class="h-screen bg-gray-100 flex items-center justify-center">
+
+<div *ngIf="conectado" class="h-screen bg-red-500 flex items-center justify-center" style="background-size: contain; background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('assets/images/img.png') repeat-y center;">
   <div class="w-[600px] h-[800px] bg-white rounded-3xl shadow-2xl flex flex-col">
 
     <!-- Cabecera del chat -->
@@ -86,7 +87,7 @@
       <!-- Botón enviar -->
       <button
         type="button"
-        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center me-2"
+        class="text-white bg-customRed hover:bg-customGrisMedio focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center me-2"
         (click)="enviarMensaje()"
         [disabled]="!mensajeInput.trim()"
       >
