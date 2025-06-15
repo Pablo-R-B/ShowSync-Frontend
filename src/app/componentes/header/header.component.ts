@@ -121,14 +121,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
       case 'SALA':
         return 'assets/images/user_sala.png';
       case 'ARTISTA':
-        return 'assets/images/user_artista.png';
+        return 'assets/images/user_music.png';
       default:
         return '';
     }
   }
 
+
   esAdministrador(): boolean {
     return this.rolUsuario === 'ADMINISTRADOR';
+  }
+
+  esArtista(): boolean {
+    return this.rolUsuario === 'ARTISTA';
   }
 
 

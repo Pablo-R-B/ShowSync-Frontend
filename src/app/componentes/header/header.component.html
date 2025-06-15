@@ -1,5 +1,5 @@
 <!-- Template HTML modificado con restricciones -->
-<header class="fixed top-0 left-0 w-full bg-black text-white px-6 py-4 shadow-md backdrop-blur-sm bg-opacity-90 z-50">
+<header class="fixed top-0 left-0 w-full bg-black text-white px-6 py-4 shadow-md backdrop-blur-sm bg-opacity-90 z-50 ">
   <!-- Contenedor principal -->
   <div class="flex items-center justify-between max-w-screen-xl mx-auto">
     <!-- Logo y enlaces -->
@@ -40,12 +40,11 @@
 
     <!-- Icono de usuario con menú -->
     <div *ngIf="estaLogueado" class="relative hidden md:flex items-center space-x-4">
-      <span class="text-white font-medium text-lg saludo-oculto">¡Hola, {{ username }}!</span>
+      <span class="text-white font-medium text-lg saludo-oculto cursor-pointer">¡Hola, {{ username }}!</span>
       <button (click)="toggleMenuPerfil()"
               class="hover:text-customGrisMedio transition"
               [attr.aria-expanded]="mostrarMenuPerfil"
               data-menu-perfil-button>
-
         <!-- Mostrar imagen si es administrador -->
         <img *ngIf="esAdministrador()"
              [ngSrc]="getImagenUsuario()"
@@ -54,8 +53,16 @@
              height="32"
              width="32">
 
-        <!-- Mostrar ícono SVG para otros roles -->
-        <svg *ngIf="!esAdministrador()"
+        <!-- Mostrar imagen si es artista -->
+        <img *ngIf="esArtista()"
+             [ngSrc]="getImagenUsuario()"
+             alt="Artista"
+             class="w-8 h-8 rounded-full object-cover"
+             height="32"
+             width="32">
+
+        <!-- Mostrar ícono SVG para otros roles (PROMOTOR, SALA, etc.) -->
+        <svg *ngIf="!esAdministrador() && !esArtista()"
              xmlns="http://www.w3.org/2000/svg"
              fill="none" viewBox="0 0 24 24"
              stroke-width="1.5" stroke="currentColor"

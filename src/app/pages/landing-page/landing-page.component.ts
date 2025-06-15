@@ -111,7 +111,7 @@ export class LandingPageComponent implements OnInit {
   }
 
   mostrarAdvertencia(): void {
-    alert('Debes iniciar sesión para ver los detalles del evento.');
+    console.warn('Debes iniciar sesión para ver los detalles del evento.');
   }
 
   // Para la animación del carrusel
