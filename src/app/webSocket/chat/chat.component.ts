@@ -368,6 +368,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   volver(): void {
-    this.routeto.navigate(['/elegir-chat']);
+    window.history.back();
   }
 }
