@@ -188,7 +188,6 @@ export class EditarEventosComponent implements OnInit {
 
   hasChanges(): boolean {
     // Verificar cambios en campos del formulario
-    const formValues = this.editarEventoForm.value;
     const formChanged = this.editarEventoForm.dirty;
 
     // Verificar cambios en artistas
@@ -287,14 +286,24 @@ export class EditarEventosComponent implements OnInit {
   onSubmit() {
     this.editarEventoForm.markAllAsTouched();
 
-    if (this.artistasAsignados.length === 0) {
+    // Solo validar artistas y géneros si hay cambios en ellos o si están vacíos inicialmente
+    const hasArtistChanges = JSON.stringify(this.artistasAsignados.map(a => a.id)) !==
+      JSON.stringify(this.artistasOriginales.map(a => a.id));
+    const hasGenreChanges = JSON.stringify(this.selectedGenreIds.sort()) !==
+      JSON.stringify(this.originalGenreIds.sort());
+
+    // Si hay cambios en artistas y la lista queda vacía, mostrar error
+    if (hasArtistChanges && this.artistasAsignados.length === 0) {
       this.showErrorNotification('Debe seleccionar al menos un artista.');
       return;
     }
-    if (this.selectedGenreIds.length === 0) {
+
+    // Si hay cambios en géneros y la lista queda vacía, mostrar error
+    if (hasGenreChanges && this.selectedGenreIds.length === 0) {
       this.showErrorNotification('Debe seleccionar al menos un género musical.');
       return;
     }
+
     if (this.editarEventoForm.invalid) {
       this.showErrorNotification('Complete todos los campos requeridos.');
       return;
