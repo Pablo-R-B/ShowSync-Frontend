@@ -2,7 +2,7 @@ import { Component, inject, OnInit, OnDestroy, ChangeDetectorRef } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import {CommonModule, NgClass, NgForOf, NgIf, NgSwitch} from '@angular/common';
+import {CommonModule, NgForOf, NgIf, NgSwitch} from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../servicios/auth.service';
 import { PromotoresService } from '../../servicios/promotores.service';
@@ -13,7 +13,7 @@ import { ConversacionesService } from '../../servicios/ConversacionesService';
 @Component({
   selector: 'app-websocket',
   standalone: true,
-  imports: [NgForOf, FormsModule, CommonModule, NgIf, NgClass, NgSwitch],
+  imports: [NgForOf, FormsModule, CommonModule, NgIf,  NgSwitch],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })

@@ -1,0 +1,29 @@
+.cookie-banner {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  padding: 15px; /* Incrementado para mejor visibilidad */
+  z-index: 1000;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5); /* Añadido para un efecto de sombra */
+  font-size: 1rem; /* Tamaño de fuente ajustado */
+}
+
+.cookie-banner button {
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  padding: 12px 25px; /* Ajustado para mayor comodidad */
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 0.9rem; /* Tamaño de fuente ajustado */
+  transition: background-color 0.3s ease; /* Transición suave */
+}
+
+.cookie-banner button:hover {
+  background-color: #45a049;
+  transform: scale(1.05); /* Efecto de escala al pasar el cursor */
+}

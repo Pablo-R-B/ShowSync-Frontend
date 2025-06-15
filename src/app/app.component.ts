@@ -8,6 +8,7 @@ import { FooterComponent } from './componentes/footer/footer.component';
 import { SharedModule } from 'primeng/api';
 import localeEs from '@angular/common/locales/es';
 import { ReproductorComponent } from './componentes/reproductor/reproductor.component';
+import {CookiesAcceptedComponent} from './componentes/cookies-accepted/cookies-accepted.component';
 
 registerLocaleData(localeEs, 'es');
 
@@ -21,7 +22,8 @@ registerLocaleData(localeEs, 'es');
     FooterComponent,
     SharedModule,
     ReproductorComponent,
-    RouterOutlet  // <-- Agrega aquí RouterOutlet
+    RouterOutlet,  // <-- Agrega aquí RouterOutlet
+    CookiesAcceptedComponent,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
