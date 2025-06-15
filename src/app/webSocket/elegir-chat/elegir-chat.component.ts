@@ -126,6 +126,6 @@ export class ElegirChatComponent implements OnInit {
   }
 
   volver(): void {
-    this.routeTo.navigate(['/perfil-promotores']);
+    window.history.back();
   }
 }
