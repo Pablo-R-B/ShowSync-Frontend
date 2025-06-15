@@ -128,4 +128,25 @@ export class LandingPageComponent implements OnInit {
       carousel.style.transition = 'all 0.2s ease-out';
     }
   }
+
+
+  ngAfterViewInit(): void {
+    // Inicializar animaciones al cargar
+    document.addEventListener('DOMContentLoaded', () => {
+      // Trigger para las animaciones staggered
+      const slideUpElements = document.querySelectorAll('.slide-up');
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            (entry.target as HTMLElement).style.animationPlayState = 'running';
+          }
+        });
+      });
+
+      slideUpElements.forEach(el => {
+        observer.observe(el);
+      });
+    });
+  }
 }
