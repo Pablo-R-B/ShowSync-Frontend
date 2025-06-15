@@ -201,7 +201,7 @@ export class EventosComponent implements OnInit {
   }
 
   volver(): void {
-    this.routeTo.navigate(['/busqueda-eventos']);
+      window.history.back();
   }
 
   abrirModal() {

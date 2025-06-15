@@ -34,7 +34,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 })
 export class EditarEventosComponent implements OnInit {
   editarEventoForm!: FormGroup;
-  salas: Sala[] = [];
+  salaAsignada: Sala | null = null; // Solo la sala del evento
   estados: string[] = [];
   artistasDisponibles: Artistas[] = [];
   generosMusicalesDisponibles: GeneroMusicalDTO[] = [];
@@ -116,41 +116,49 @@ export class EditarEventosComponent implements OnInit {
     this.loading = true;
     this.errorMensaje = null;
 
-    forkJoin({
-      estados: this.estadoService.getEstados() as Observable<string[]>,
-      salas: this.salaService.obtenerTodas() as Observable<Sala[]>,
-      artistasPromotor: this.artistasService.artistasPorPromotor(this.promotorId) as Observable<Artistas[]>,
-      generos: this.generosMusicalesService.listarGeneros() as Observable<GeneroMusicalDTO[]>,
-      evento: this.eventoService.obtenerEventoDetalleParaEdicion(this.idEvento) as Observable<any>
-    }).subscribe({
-      next: ({ estados, salas, artistasPromotor, generos, evento }) => {
-        this.estados = estados;
-        this.salas = salas;
-        this.artistasDisponibles = artistasPromotor;
-        this.generosMusicalesDisponibles = generos;
+    // Primero obtenemos los datos del evento para conocer el idSala
+    this.eventoService.obtenerEventoDetalleParaEdicion(this.idEvento).subscribe({
+      next: (evento) => {
         this.salaOriginalId = evento.idSala;
 
-        const salaOriginal = this.salas.find(s => s.id === this.salaOriginalId);
-        const nombreSalaOriginal = salaOriginal ? salaOriginal.nombre : 'Sala no encontrada';
+        // Ahora cargamos todos los datos incluyendo solo la sala específica
+        forkJoin({
+          estados: this.estadoService.getEstados() as Observable<string[]>,
+          salaAsignada: this.salaService.obtenerPorId(this.salaOriginalId) as Observable<Sala>,
+          artistasPromotor: this.artistasService.artistasPorPromotor(this.promotorId) as Observable<Artistas[]>,
+          generos: this.generosMusicalesService.listarGeneros() as Observable<GeneroMusicalDTO[]>
+        }).subscribe({
+          next: ({ estados, salaAsignada, artistasPromotor, generos }) => {
+            this.estados = estados;
+            this.salaAsignada = salaAsignada;
+            this.artistasDisponibles = artistasPromotor;
+            this.generosMusicalesDisponibles = generos;
 
-        this.editarEventoForm.patchValue({
-          nombreEvento: evento.nombreEvento,
-          descripcion: evento.descripcion,
-          idSala: nombreSalaOriginal,
-          estado: evento.estado,
+            // Rellenar el formulario con los datos del evento
+            this.editarEventoForm.patchValue({
+              nombreEvento: evento.nombreEvento,
+              descripcion: evento.descripcion,
+              idSala: this.salaAsignada.nombre,
+              estado: evento.estado,
+            });
+
+            this.imagenPreviaUrl = evento.imagenEvento || null;
+
+            if (evento.artistasAsignados && Array.isArray(evento.artistasAsignados)) {
+              this.artistasAsignados = this.processArtistas(evento.artistasAsignados);
+              this.artistasOriginales = [...this.artistasAsignados];
+            }
+
+            this.selectedGenreIds = evento.generosMusicales?.map((g: any) => g.id) || [];
+            this.originalGenreIds = [...this.selectedGenreIds];
+
+            this.loading = false;
+          },
+          error: (err: HttpErrorResponse) => {
+            this.showErrorNotification(err.error?.message || 'Error al cargar los datos del evento.');
+            this.loading = false;
+          }
         });
-
-        this.imagenPreviaUrl = evento.imagenEvento || null;
-
-        if (evento.artistasAsignados && Array.isArray(evento.artistasAsignados)) {
-          this.artistasAsignados = this.processArtistas(evento.artistasAsignados);
-          this.artistasOriginales = [...this.artistasAsignados];
-        }
-
-        this.selectedGenreIds = evento.generosMusicales?.map((g: any) => g.id) || [];
-        this.originalGenreIds = [...this.selectedGenreIds];
-
-        this.loading = false;
       },
       error: (err: HttpErrorResponse) => {
         this.showErrorNotification(err.error?.message || 'Error al cargar los datos del evento.');

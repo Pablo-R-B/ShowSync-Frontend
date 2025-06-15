@@ -1,7 +1,7 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
 
-<div class="bg-[black] bg-cover min-h-screen text-white font-sans pt-[60px] sm:pt-[70px] flex flex-col"  style="background-image: linear-gradient(to bottom, black, rgba(255, 255, 255, 0.1)), url('assets/images/fondo_2.png');" >>
+<div class="bg-[black] bg-cover min-h-screen text-white font-sans pt-[60px] sm:pt-[70px] flex flex-col"  style="background-image: linear-gradient(to bottom, black, rgba(255, 255, 255, 0.1)), url('assets/images/fondo_2.png');" >
 
   <!-- Header Promotor -->
   <div class="p-6 sm:p-8 flex items-center gap-6 sm:ml-[10%]">
@@ -20,12 +20,11 @@
       <img
         [src]="eventoDestacado.imagenEvento || logoUrl"
         alt="Evento Destacado"
-        class="w-full h-[220px] sm:h-[400px] object-cover rounded-xl shadow-xl transition-all duration-300 cursor-pointer hover:brightness-90"
-
+        class="w-full h-[220px] sm:h-[400px] object-cover rounded-xl shadow-xl transition-all duration-300 cursor-pointer brightness-35 blur-sm"
       />
 
       <!-- Nombre visible siempre -->
-      <p class="absolute inset-0 flex items-center justify-center text-white text-3xl sm:text-6xl font-bold drop-shadow-lg">
+      <p class="absolute inset-0 flex items-center justify-center text-white text-3xl sm:text-6xl font-bold drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)]">
         {{ eventoDestacado.nombreEvento || 'Evento destacado' }}
       </p>
 

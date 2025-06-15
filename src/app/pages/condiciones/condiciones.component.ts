@@ -55,7 +55,7 @@ export class CondicionesComponent {
   }
 
   volver(): void {
-    this.routeTo.navigate(['/landing-page']);
+    window.history.back();
   }
 
 
